@@ -1,0 +1,41 @@
+{
+  "verbose": true,
+  "rootDir": "../",
+  "transform": {
+    ".*\\.(js|vue)$": "<rootDir>/tests/preprocessor.js"
+  },
+  "snapshotSerializers": [
+    "jest-serializer-vue"
+  ],
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "/debug/"
+  ],
+  "collectCoverageFrom": [
+    "src/*.vue",
+    "src/mixins/*.js"
+  ],
+  "moduleFileExtensions": [
+    "node",
+    "json",
+    "vue",
+    "js"
+  ],
+  "testRegex": ".*\\.spec.js$",
+  "coverageDirectory": "<rootDir>/coverage/client",
+  "coverageReporters": [
+    "json",
+    "html",
+    "text",
+    "text-summary",
+    "lcov"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "branches": 50,
+      "functions": 50,
+      "lines": 50,
+      "statements": 50
+    }
+  }
+}

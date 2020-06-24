@@ -1,0 +1,553 @@
+<template>
+    <div>
+           <Header/>
+
+        <h1>Examples</h1>
+
+               <carousel :navigationClickTargetSize="10" :paginationSize="20" paginationActiveColor='#e6e600' :navigationEnabled="true" :perPage=this.perPage>
+
+    
+  <slide>
+
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#1 Fibonacci Sequence  </h3>
+
+<pre id="CodeID1" >
+
+
+
+Fibonacci=[]
+दुहराओ a को (0,25)
+{
+अगर (a<3)
+{
+Fibonacci[a]=a
+}
+अगर (a>1)
+{
+x=Fibonacci[a-2]
+y=Fibonacci[a-1]
+Fibonacci[a]=x+y
+}
+}
+
+प्रिंट(Fibonacci)
+}
+ 
+
+</pre>
+</p>
+
+</div>
+
+
+  </slide>
+  <slide>
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID2')">Try Code</button>
+
+<p id="CodePara" >
+
+<h3>
+#2 The Journey </h3>
+
+<pre id="CodeID2" >
+
+इनपुट(YourSign)
+line="|"
+space="  "
+Extra="  "
+
+X IS OUR ITERATOR WHICH WILL RUN A LOOP FROM 1 TO 15
+
+दुहराओ x को (1,15)
+{
+
+Road=space+line+space+space+space
++YourSign
++space+space+space+line+space
+
+space=space+Extra
+
+प्रिंट(Road)
+
+}
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+  </slide>
+    <slide>
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID3')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#3 Reverse a Custom String  </h3>
+
+<pre id="CodeID3" >
+
+इनपुट(Name)
+
+ReverseString='tempValue'
+
+प्रिंट ('Input String-'+ Name)
+
+length=Name.संख्या()
+
+दुहराओ b को Name मे
+
+{
+
+ReverseString=ReverseString+Name[length-1]
+
+length=length-1
+
+}
+
+प्रिंट ('Reversed String-'+ ReverseString)
+   
+
+ 
+
+</pre>
+</p>
+
+</div>
+  </slide>
+    <slide>
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID4')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#4 Function Usecase  </h3>
+
+<pre id="CodeID4" >
+
+
+FirstName='Swanand'
+
+LastName='Kadam'
+
+रचना First(First,Last)
+
+{
+
+प्रिंट(First)
+
+प्रिंट(Last)
+
+}
+
+First(FirstName,LastName)
+
+
+
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+<!--
+   <slide>
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID5')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#4 Function Usecase II </h3>
+
+
+<pre id="CodeID5" >
+
+
+रचना printname(count)
+{
+
+जबतक(count<20)
+
+{
+
+count=count+1
+
+प्रिंट(count)
+
+}
+
+
+}
+
+
+
+
+printname(0)
+
+
+
+
+
+</pre>
+
+
+</p>
+
+</div>
+  </slide>
+  -->
+    <slide>
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID6')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#5 Binary to Decimal </h3>
+
+<pre id="CodeID6" >
+
+
+
+इनपुट(Binary)
+
+DecimalValue=0
+
+length=Binary.संख्या()
+
+दुहराओ x को Binary मे
+
+{
+
+length=length-1
+
+BinaryCharacter=Binary[x]
+
+value=BinaryCharacter*2**length
+
+DecimalValue=DecimalValue+value
+
+}
+
+प्रिंट(DecimalValue)
+
+
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+    <slide>
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID7')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#6 Is Prime Number </h3>
+
+<pre id="CodeID7" >
+
+
+
+
+
+इनपुट(num)
+
+prime=[]
+
+दुहराओ b को (2,num)
+
+{
+
+Remainder=num%b
+
+अगर(Remainder==0)
+
+{
+
+prime.पुश(b)
+
+}
+
+}
+
+
+length=prime.संख्या()
+
+अगर(length==1)
+{
+
+प्रिंट(num + "is a Prime Number")
+
+}
+
+अन्यथा
+
+{
+
+प्रिंट(num + "is not a Prime Number")
+
+
+}
+
+
+ 
+
+
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+
+  </slide>
+
+ <slide>
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID8')">Try Code</button>
+<p id="CodePara" >
+
+<h3>#7 Basic Calculator </h3>
+
+<pre id="CodeID8" >
+
+
+
+इनपुट(FirstValue)
+
+इनपुट(SecondValue)
+
+प्रिंट('Values Entered Are- '+FirstValue+SecondValue)
+
+इनपुट(Operation)
+
+प्रिंट('Operation Selected- " + Operation)
+
+output=0
+
+अगर(Operation=='+')
+
+{
+
+output=FirstValue+SecondValue
+
+प्रिंट("Output- " + output)
+
+}
+
+अगर(Operation=='-')
+
+{
+
+output=FirstValue-SecondValue
+
+प्रिंट("Output- " + output)
+
+}
+
+अगर(Operation=='*')
+
+{
+
+output=FirstValue*SecondValue
+
+प्रिंट("Output- " + output)
+
+}
+
+अगर(Operation=='/')
+
+{
+
+output=FirstValue/SecondValue
+
+प्रिंट("Output- " + output)
+
+}
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+
+  </slide>
+
+</carousel>
+    </div>
+</template>
+
+<script>
+import Header from '../components/Header'
+
+import { Carousel, Slide } from 'vue-carousel';
+import { mapState } from 'vuex'
+
+export default {
+
+
+  data() {
+    return {
+      perPage:3
+    }
+  },
+
+  components: {
+    Carousel,
+    Slide,
+    Header
+  },
+
+  computed: mapState(['CurrentCode']),
+
+  created() {
+
+if(screen.width<420)
+{
+
+  this.perPage=1
+}
+},
+
+
+  methods: {
+      
+CopyCode:function(el)
+
+{
+
+
+ var copyText = document.getElementById(el);
+
+
+this.$store.state.CurrentCode= copyText.innerHTML
+
+
+  this.$router.push('/Practise')
+
+
+
+}
+      
+  },
+
+};
+
+</script>
+
+
+
+<style scoped >
+   #Mobilecarousel{
+
+
+     display: none
+   } 
+
+#slide{
+
+
+      width: 69%;
+    border: 0.5px solid;
+    height: 416px;
+    text-align: left;
+    display: inline-block;
+    padding-left: 4%;
+    font-size: 105%;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
+    overflow: auto;
+}
+
+h3{
+
+  margin-bottom: 0
+}
+
+pre{
+
+  margin-top: 0;
+}
+
+#TryCodebtn
+{
+
+margin-top: 3%;
+
+
+  width: 36%;
+  height: 28px;
+      cursor: pointer;
+      border: 1px solid rgb(52, 204, 218);
+      background: white;
+         border-radius: 2em;
+
+
+  
+}
+
+#TryCodebtn:hover{
+
+
+    background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
+    border: none
+}
+
+
+
+#CodePara{
+
+     
+    width: 100%;
+    text-align: left;
+    padding-left: 4%;
+    font-size: 100%;
+}
+
+.VueCarousel-navigation-button{
+
+
+  font-size: larger;
+    margin-right: 3%;
+}
+
+button:focus {outline:0;}
+#carousel{
+
+
+  display: block
+}
+
+@media only screen
+and (max-width : 480px) {
+
+#carousel{
+
+
+  display: none
+}
+ #Mobilecarousel{
+
+
+     display: block
+   } 
+}
+
+</style>
