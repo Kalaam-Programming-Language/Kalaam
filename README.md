@@ -10,7 +10,7 @@ Kalaam is the first-ever programming language in Hindi and has all the basic fun
 
 Kalaam was created as a part of an educational project to help my students under the age of 18 to understand programming through a different dimension. Anyone with a smartphone or a computer can start coding in.
 
-As the development of Kalaam continues, expect advanced features and major bug fixes in the next version.
+As the development of Kalaam continues, expect advanced features and major bug fixes in the next version. Thank you to all the amazing developers who showed interest in contributing to the development of Kalaam. 
 
 
 ## Documentation
