@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["FourOhFour"],{"4c57":function(o,t,n){"use strict";n.r(t);var r=function(){var o=this,t=o.$createElement,n=o._self._c||t;return n("div",[n("h1",[o._v("Four Oh Four you didn't")]),n("router-link",{attrs:{to:"/"}},[o._v("Go Home")])],1)},u=[],e=n("2877"),l={},c=Object(e["a"])(l,r,u,!1,null,null,null);t["default"]=c.exports}}]);
-//# sourceMappingURL=FourOhFour.8fd0d3e2.js.map
