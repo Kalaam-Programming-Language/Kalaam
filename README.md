@@ -13,6 +13,10 @@ Kalaam was created as a part of an educational project to help my students under
 As the development of Kalaam continues, expect advanced features and major bug fixes in the next version. Thank you to all the amazing developers who showed interest in contributing to the development of Kalaam. 
 
 
+## Where is the compiler code?:
+
+Visit src/lib/Compiler/main.js to access Kalaam compile engine.
+
 ## Documentation
 
 To check out documentation visit [Documentation](https://www.kalaam.io/documentation).
