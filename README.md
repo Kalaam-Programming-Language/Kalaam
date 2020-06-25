@@ -15,7 +15,13 @@ As the development of Kalaam continues, expect advanced features and major bug f
 
 ## Where is the compiler code?:
 
-Visit src/lib/Compiler/main.js to access Kalaam compile engine.
+Visit 'src/lib/Compiler/main.js' in repo structure to access Kalaam compile engine and learn about how Kalaam works.
+
+## Priority List
+
+- Better Documentation (Written in Hindi)
+- Building a Core development team
+- Expanding the reach of Kalaam
 
 ## Documentation
 
