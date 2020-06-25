@@ -20,7 +20,7 @@ To check out documentation visit [Documentation](https://www.kalaam.io/documenta
 
 ## Examples
 
-To check out examples visit [live examples](https://www.kalaam.io/Support).
+To check out examples visit [live examples](https://www.kalaam.io/examples).
 
 ## Questions
 
@@ -28,7 +28,7 @@ For questions and support please use [the discord server](https://discord.com/in
 
 ## Issues
 
-Found and issue in Kalaam? Please use [submit issue](https://github.com/Kalaam-Programming-Language/Kalaam/issues).
+Found an issue in Kalaam? Please use [submit issue](https://github.com/Kalaam-Programming-Language/Kalaam/issues).
 
 ## License
 
