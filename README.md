@@ -1,4 +1,4 @@
-<p align="center"><a href="kalaam.io" target="_blank" rel="noopener noreferrer"><img width="100" src="https://i.ibb.co/Dg3jzC5/Logo.png" alt="Kalaam logo"></a></p>
+<p align="center"><a href="kalaam.io" target="_blank" rel="noopener noreferrer"><img width="300" src="https://i.ibb.co/Dg3jzC5/Logo.png" alt="Kalaam logo"></a></p>
 
 
 <h2 align="center">Supporting Kalaam</h2>
