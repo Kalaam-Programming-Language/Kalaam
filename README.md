@@ -10,12 +10,12 @@ Kalaam is the first-ever programming language in Hindi and has all the basic fun
 
 Kalaam was created as a part of an educational project to help my students under the age of 18 to understand programming through a different dimension. Anyone with a smartphone or a computer can start coding in.
 
-As the development of Kalaam continues, expect advanced features and major bug fixes in the next version. Kalaam. 
+As the development of Kalaam continues, expect advanced features and major bug fixes in the next version.
 
 
 ## Documentation
 
-To check out documentation visit [live examples](https://www.kalaam.io/documentation).
+To check out documentation visit [Documentation](https://www.kalaam.io/documentation).
 
 
 ## Examples
@@ -24,11 +24,11 @@ To check out examples visit [live examples](https://www.kalaam.io/Support).
 
 ## Questions
 
-For questions and support please use [the discord server](https://discord.com/invite/EMyA8TA).
+For questions and support please use [the discord server](https://discord.com/invite/EMyA8TA). 
 
 ## Issues
 
-
+Found and issue in Kalaam? Please use [submit issue](https://github.com/Kalaam-Programming-Language/Kalaam/issues).
 
 ## License
 
