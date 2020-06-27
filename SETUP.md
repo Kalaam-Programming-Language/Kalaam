@@ -11,7 +11,7 @@ Clone the forked repository to local machine using:
 ```bash
 git clone https://github.com/{Your Github Username}/Kalaam.git
 ```
-Enter your github name inside url 
+Enter your github name inside the curly braces present inside the url. 
 
 ### Step 3:
 
@@ -36,4 +36,4 @@ npm run build
 npm run serve
 ```
 
-After running the above command `kalaam.io` will be launched on the local machine and testing can be done accordingly.
+After running the above command [kalaam.io](https://www.kalaam.io/) will be launched on the local server and testing can be done accordingly.
