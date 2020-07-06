@@ -10,22 +10,22 @@
 
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
 
-<h5> Print characters on the output screen</h5>
+<h5> अक्षरोंको प्रिंट करने के लिए प्रिंट() का उपयोग किया जाता है। </h5>
 
-<h2>Implementation</h2>
+<h2>इसका उपयोग कैसे करे?</h2>
 
-<h4>1: Print a Declared Variable </h4>
+<h4>1.एक घोषित (declared) वेरिएबल को प्रिंट करने के लिए ।   </h4>
 <p>Name="Hello World" </p>  
 <p>प्रिंट(Name) </p>  
 <p>    </p>
 
-<h4>2: Print a Direct String </h4>
+<h4>२. Direct शब्दों प्रिंट करने के लिए ।  </h4>
 <p>प्रिंट("Hello World")</p> 
 <p>प्रिंट(007)</p> 
 
-<h4>3: Print a Multi/Concatenated String </h4>
+<h4>३. Multi/Concatenated शब्दों को प्रिंट करने के लिए ।    </h4>
 <p>Name="Kalam" </p> 
 <p>प्रिंट("Hello World," + "My Name is" + Name + "!")</p> 
 
@@ -33,7 +33,7 @@
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -72,48 +72,49 @@ Name="Kalam"
 
 <div>
 
-<h2>Usage</h2>
-
-<h5> Reusable code wrapped inside a block, also known as a function.</h5>
-
-<h2>Implementation</h2>
-
-<h4>1: Define a Function </h4>
-<h3>रचना <i>FunctionName</i> (<i>argument1</i> ,<i>argument2</i> ) </h3>  
-<h5><b>Function Name</b></h5>  
-<p>Function names are case sensitive and should contain only alphabet letters </p>  
-<h5> <b>Function Arguments</b>  </h5>  
-<p>Function Arguments set themselves with temporary values that are passed inside a function when a function is called. </p>  
-<p>Arguments names are also case sensitive Argument names are your choice but should contain only alphabet letters.</p> 
+<h2>काम</h2>
 
 
+<h5> कोड जो दोबारा इस्तेमाल किया जा सकता है उसे एक ब्लॉक में wrap किया जाता है, जिसे हम रचना कहते है। </h5>
+
+<h2>इसका उपयोग कैसे करे?</h2>
+
+<h4>।. एक रचना को डिफाइन करने के लिए </h4>
+<h3>रचना <i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3>  
+<h5><b>रचना का नाम:</b></h5>  
+<p>रचना का नाम केस सेंसिटिव होता है और उसमे सिर्फ अक्षरोंका (अल्फाबेट्स का) इस्तेमाल करना चाहिए। </p>  
+<h5> <b>रचना पर्याय:</b>  </h5>  
+<p>रचना पर्याय का टेम्पररी वैल्यूज स्टोर  करनेमे इस्तेमाल किया जा सकता है। जब किसी रचना को कॉल किया जाता है तभी ये वैल्यूज पास किये जाते है।  </p>  
+<p>पर्याय के नाम भी  केस सेंसिटिव होते है और ये आपकी चॉइस के हिसाब से चेंज किये जा सकते है।  मगर इनमे सिर्फ अक्षरोंका अर्थात अल्फाबेट्स का इस्तेमाल करे। </p> 
 
 
-<h4>2: Calling a Function </h4>
-<h3><i>FunctionName</i> (<i>argument1</i> ,<i>argument2</i> ) </h3> 
-<h5><b>Function Name- PrintFullName</b>  </h5>  
-<p>While calling function, make sure that the Function name declaration is same as a function call. <br> For e.g PrintFullName≠printfullname  </p>  
 
-<h2> Example</h2>
-<h5><b>Define Variables</b></h5>
+
+<h4>2: रचना को कॉल करना ।  </h4>
+<h3><i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3> 
+<h5><b>रचना का नाम - PrintFullName</b>  </h5>  
+<p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName≠printfullname  </p>  
+
+<h2> उदाहरण</h2>
+<h5><b># वेरिएबल्स को डिफाइन करे। </b></h5>
 <h5>FirstName- 'Sachin' </h5> 
 <h5>LastName- 'Tendulkar' </h5> 
 
-<h5><b> Function declaration</b></h5>
+<h5><b> रचना declaration</b></h5>
  <h5>PrintFullName (x, y) </h5> 
 
- <h5><b> Function Body</b></h5>
+ <h5><b> रचना Body</b></h5>
  <h5>{</h5>
  <h5>प्रिंट( x + y ) </h5> 
  <h5>}</h5>
 
-<h5><b>Function call</b>  </h5>  
+<h5><b>रचना call</b>  </h5>  
 <h5>PrintFullName(FirstName,LastName)</h5>
 
-<p>While calling function, make sure that the Function name declaration is same as a function call. <br> For e.g PrintFullName≠printfullname  </p>  
+<p># जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।  <br> For e.g PrintFullName≠printfullname  </p>  
 
-<h5> <b>Function Argument Values Passed- ('Sachin','Tendulkar')</b>  </h5>  
-<p>As per the grammer set under the hood of this programming language, ( x , y ) will become ('Sachin','Tendulkar').  </p>
+<h5> <b>रचना पर्याय- ('Sachin','Tendulkar')</b>  </h5>  
+<p>इस प्रोग्रामिंग भाषा के  तहत निर्धारित ग्रामर के अनुसार, (x, y) ('Sachin','Tendulkar) बन जाएगा। </p>
 <p>x will take a temporary value of 'Sachin'</p>
 <p>y will take a temporary value of 'Tendulkar'</p>
 
@@ -122,7 +123,7 @@ Name="Kalam"
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID2')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID2')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -153,7 +154,7 @@ NewLastName='Chetri'
 
 }
 
-#FUNCTION EXECUTION EXAMPLES- PASS THE DIFFERENT DESIRED VALUES AS ARGUMENTS
+#FUNCTION EXECUTION उदाहरणS- PASS THE DIFFERENT DESIRED VALUES AS ARGUMENTS
 
 PrintFullName(FirstName,LastName)
 
@@ -161,7 +162,7 @@ PrintFullName(NewFirstName,NewLastName)
 
 
 
-#FUNCTION EXAMPLE 2
+#FUNCTION उदाहरण 2
 
 Job='Doctor'
 City='Pune'
@@ -185,7 +186,7 @@ City='Pune'
 AboutMe(Job,City)
 
 
- #Example 3
+ #उदाहरण 3
 
 
 NumberOne=20
@@ -231,27 +232,28 @@ Add(NumberOne,NumberTwo)
 <div v-if="showStar2" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
 
-<h5> Accept an Input and set it to a Variable </h5>
 
-<h2>Implementation</h2>
+<h5> एक इनपुट accept  करके उसे वेरिएबल में transfer करना।  </h5>
 
-<h4>1: Pass a Variable inside <i> इनपुट() </i></h4>
+<h2>इसका उपयोग कैसे करे?</h2>
+
+<h4>१: <i> इनपुट() </i> में वेरिएबल को पास करना।  </h4>
 <h5>इनपुट(<i> YourVariable </i>)</h5>  
 
-<h2> Example</h2>
+<h2> उदाहरण</h2>
 
 <h5>इनपुट(Name)</h5> 
-<p>If you have entered <i>Kalam</i>  as input then complier will set <b> Name="Kalam".</b> </p> 
-<p>Once the value is set, you can use that variable value throughout the program. </p> 
+<p>अगर आपने इनपुट के दौर पर <i>Kalam</i>  डाला होगा तो कम्पाइलर उसे ऐसे सेट करेगा।  <b> Name="Kalam".</b> </p> 
+<p>एकबार Value सेट होनेपर उसे Program के अंत तक use किया जा सकता है ।</p> 
 
 
 
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -279,16 +281,20 @@ Add(NumberOne,NumberTwo)
 <div v-if="showStar3" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
 
-<h5> Allow code execution on a certain condition. Evaluates to TRUTH or False  </h5>
 
-<h2>Implementation</h2>
+<h5> एक Certain Conditionके तहत कोड Execution को Allow करता है। 
+इसमें २ Conditions होती है |
+1.True
+2.False  </h5>
 
-<h4>1: Pass a Single Condition to Evaluate in अगर() </h4>
+<h2>इसका उपयोग कैसे करे?</h2>
+
+<h4>१ . Single Condition को मूल्यांकन (Evaluate) करना।   </h4>
 <h5> अगर (Language=='kalam') </h5>  
 <h5> अगर (Age > 18) </h5>  
-<p><b> The accepted comparison operators are: </b>  </p>
+<p><b> स्वीकृत  Comparion operators नीचे दिए गए है : </b>  </p>
 <p><b>></b> - Greater than</p>
 <p><b><</b> -  Less than</p>
 <p><b>==</b> - is Equal to</p>
@@ -296,20 +302,21 @@ Add(NumberOne,NumberTwo)
 
 
 
-<h4>2: Pass a Multi Condition to Evaluate in अगर() </h4>
+<h4>२: Multiple Conditions को मूल्यांकन (Evaluate) करना। 
+ </h4>
 <h5>अगर (Age>16 && Education =='ssc')</h5> 
 <h5>अगर (Country=='india' || Language=='hindi')</h5> 
 
 
-<p><b> The accepted comparison operators are: </b> </p>
-<p><b>&&</b> - If BOTH of the conditions are true, evaluates to TRUE</p>
-<p><b>||</b> - If ONE of the conditions is true, evaluates to TRUE</p>
+<p><b>  स्वीकृत comparison Operators नीचे दिए गए है: </b> </p>
+<p><b>&&</b> - अगर दोनों Conditions सत्य हो तो उसे True समझा जाता है। </p>
+<p><b>||</b> - अगर एक Condition सत्य हो तो True समझा जाता है।</p>
 
 
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -333,7 +340,7 @@ Add(NumberOne,NumberTwo)
 }
 
 
-EXAMPLE 2
+उदाहरण 2
 
 #ACCEPT INPUTS
 
@@ -369,24 +376,24 @@ EXAMPLE 2
 <div v-if="showStar8" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
 
-<h5> Run a block of code if none of the conditions are satisfied</h5>
 
-<h2>Implementation</h2>
+<h5> अगर कोई भी कंडीशन satisfy ना हो तो एक Block of code  execute करना |</h5>
+
+<h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>1: Define  </h4>
 <h5>अन्यथा </h5>  
 
-<p> Please note that अन्यथा does not take any arguments even if it has open brackets.     </p>
-<p>I just didn't want to snatch that superpower away fom her.</p>
+<p> कृपया इस बात की दखल ले की अन्यथा ओपन ब्रैकेट्स होने पर भी कोई पर्याय नहीं लेता। </p>
 
 
 
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -437,17 +444,19 @@ language='kalam'
 <div v-if="showStar4" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
 
-<h5> Run a particular code multiple times</h5>
 
-<h2>Implementation</h2>
+<h5> एक ही कोड को बार-बार दोहराना। </h5>
 
-<h4>1: Define the loop </h4>
+<h2>इसका उपयोग कैसे करे?</h2>
+
+<h4>१ . लूप को डिफाइन करे।  </h4>
 <h5> <b> दुहराओ x को y मे </b></h5>  
 
-<p> Here y is a range and can be defined as (0,10), (5,100) etc.  </p>
-<p> Here x is an index or iterator. For e.g x takes values from 1 and 10 (both inclusive) in (0,10)  </p>
+<p> यहाँ  y एक रेंज है और (०,१० ) , (५,१०० ) आदि की तरह Define की जा सकती है।   </p>
+<p> x एक index या फिर iterator है। . For e.g  १ और १० के बीच में की Values ले सकता है (१ और १० भी )
+(० , १०)  </p>
 
 <h5> <b> दुहराओ x को City मे </b></h5>  
  <p>Here instead of a custom range we iterate it over the length of variable.</p>  
@@ -460,13 +469,13 @@ language='kalam'
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
 <pre id="CodeID1" >
 
-#EXAMPLE 1  
+#उदाहरण 1  
 
 #DEFINE A RANGE AND AN ITERATOR
 
@@ -481,7 +490,7 @@ value= x*5
 }
 
 
-#EXAMPLE 2  
+#उदाहरण 2  
 
 #DEFINE A VARIABLE AND AN ITERATOR
 
@@ -513,11 +522,12 @@ value=Name[y]
 <div v-if="showStar5" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
+
 
 <h5>Run a particular code until a certain condition is met</h5>
 
-<h2>Implementation</h2>
+<h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>1: Define </h4>
 <h5>जबतक(<i>YourCondition</i> ) </h5>  
@@ -528,7 +538,7 @@ value=Name[y]
 <p><b>==</b> - is Equal to</p>
 <p><b>!=</b> - is Not Equal to</p>
 
-<h2> Example</h2>
+<h2> उदाहरण</h2>
 
 <h5> <b>जबतक(count<25)</b> </h5> 
 <p>The code will run until the condition evaluates itself to true. </p> 
@@ -540,7 +550,7 @@ value=Name[y]
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -580,16 +590,17 @@ count=count+1
 <div v-if="showStar6" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
+
 
 <h5> Directly find out the length of a String or Array</h5>
 
-<h2>Implementation</h2>
+<h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>1: Define</h4>
 <h5> <i>YourVariable</i>.संख्या() </h5>  
 
-<h2> Example</h2>
+<h2> उदाहरण</h2>
 
 <h5> <b>City.संख्या()</b> </h5> 
 <p>If City='Banglore' then City.संख्या() will output the value <b>8</b>  </p> 
@@ -600,7 +611,7 @@ count=count+1
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -642,11 +653,12 @@ Citieslength=Cities.संख्या()
 <div v-if="showStar7" class="content">
 <div>
 
-<h2>Usage</h2>
+<h2>काम</h2>
+
 
 <h5> Push values to array</h5>
 
-<h2>Implementation</h2>
+<h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>1: Push Value to an Array </h4>
 <h5> <i>ArrayName</i> =[] </h5>  
@@ -658,7 +670,7 @@ Citieslength=Cities.संख्या()
 </div>
 
 <div>
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Play with the Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
 
@@ -666,7 +678,7 @@ Citieslength=Cities.संख्या()
 
 
 
-#EXAMPLE 1
+#उदाहरण 1
 
 Numbers=[]
 
@@ -684,7 +696,7 @@ Numbers.पुश(x)
 प्रिंट(Numbers)
 
 
-#EXAMPLE 2
+#उदाहरण 2
 
 Numbers=[]
 
