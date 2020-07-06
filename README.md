@@ -12,10 +12,13 @@ Kalaam was created as a part of an educational project to help my students under
 
 As the development of Kalaam continues, expect advanced features and major bug fixes in the next version. Thank you to all the amazing developers who showed interest in contributing to the development of Kalaam. 
 
-
 ## Where is the compiler code?:
 
 Visit 'src/lib/Compiler/main.js' in repo structure to access Kalaam compile engine and learn about how Kalaam works.
+
+## To test kalaam.io locally
+
+The setups for recreating the project have been given in the [SETUP.md](SETUP.md) file.
 
 ## Priority List
 
