@@ -14,7 +14,7 @@
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">Try Code</button>
 <p id="CodePara" >
 
-<h3>#1 Fibonacci Sequence  </h3>
+<h3>#1 Fibonacci अनुक्रम  </h3>
 
 <pre id="CodeID1" >
 
@@ -54,7 +54,7 @@ Fibonacci[a]=x+y
 <p id="CodePara" >
 
 <h3>
-#2 The Journey </h3>
+#2 The सफ़र </h3>
 
 <pre id="CodeID2" >
 
@@ -92,7 +92,7 @@ space=space+Extra
  <button id="TryCodebtn" @click="CopyCode('CodeID3')">Try Code</button>
 <p id="CodePara" >
 
-<h3>#3 Reverse a Custom String  </h3>
+<h3>#3 किसी शब्द का उलटा रूप  </h3>
 
 <pre id="CodeID3" >
 
@@ -130,7 +130,7 @@ length=length-1
  <button id="TryCodebtn" @click="CopyCode('CodeID4')">Try Code</button>
 <p id="CodePara" >
 
-<h3>#4 Function Usecase  </h3>
+<h3>#4 रचना का उदाहरण  </h3>
 
 <pre id="CodeID4" >
 
@@ -213,7 +213,7 @@ printname(0)
  <button id="TryCodebtn" @click="CopyCode('CodeID6')">Try Code</button>
 <p id="CodePara" >
 
-<h3>#5 Binary to Decimal </h3>
+<h3>#5 बाइनरी से Decimal ( Binary to Decimal ) </h3>
 
 <pre id="CodeID6" >
 
@@ -255,7 +255,7 @@ DecimalValue=DecimalValue+value
  <button id="TryCodebtn" @click="CopyCode('CodeID7')">Try Code</button>
 <p id="CodePara" >
 
-<h3>#6 Is Prime Number </h3>
+<h3>#6 क्या यह एक प्रमुख संख्या है? </h3>
 
 <pre id="CodeID7" >
 
@@ -323,7 +323,7 @@ length=prime.संख्या()
  <button id="TryCodebtn" @click="CopyCode('CodeID8')">Try Code</button>
 <p id="CodePara" >
 
-<h3>#7 Basic Calculator </h3>
+<h3>#7 कैलकुलेटर (Calculator) </h3>
 
 <pre id="CodeID8" >
 

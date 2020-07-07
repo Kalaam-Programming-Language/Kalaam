@@ -32,8 +32,8 @@ Kalaam is the first-ever programming language in Hindi and has all the basic fun
 from functions to conditional statements.
  </p>
  <p>
-Kalaam was created as a part of an educational project to help my students under the age of 18 to understand programming through a different dimension.
-As the development of Kalaam continues, expect advanced features and major bug fixes in the next version.
+Programming needs to reach every part of India if we have to produce more number of quality startups and technically sound ecosystem. Language and unfamiliarity should not become barriers to these students to learn to code.
+Familiarity can make anything more connected, and learning does not seem shallow. What could be more familiar than the language we used for communication. The language between friends and families is now a language between human and computer .
  </p>
  <p>
 Anyone with a smartphone or a computer can start coding in Kalaam. <br>
@@ -72,9 +72,30 @@ Anyone with a smartphone or a computer can start coding in Kalaam. <br>
 
 <div>
 
-<p>Kalaam was a part of my educational project to help my students learn programming through a familiar dimension. Syntax is just a tool and if you are already familiar with a tool, the process of using that tool becomes easy.
-    Hence, students can focus more on the logic part and not worry about why 'x' has name 'x' or why 'y' has name 'y'. Also, I believe the creation of Kalaam will inspire coders of our country to take on tough challenges and learn
-    by building things.
+<p>Technology is the next big thing for the growth of India, and programming is how we can make it happen. India has massive untapped talent in Tier-2 and Tier-3 cities. Most of the students and parents are aware of how technology is going to shape lives in the future, but they are not even aware of this concept called computer programming.
+
+
+I have talked to directors of numerous coaching classes in Tier-2 and Tier-3 cities. All shared a similar concern over programming penetration in such parts of India. We are missing out on the talented ecosystem of these students just because they believe programming is an out of bound thing for them.
+
+
+Even if they know about it, it sounds alien to them because of syntax, courses, and unfamiliarity with the learning process. Since it's completely new territory for them, they either get confused and lose interest or postpone learning it.
+
+
+Programming needs to reach every part of India if we have to produce more number of quality startups and technically sound ecosystem. Language and unfamiliarity should not become barriers to these students to learn to code.
+
+
+Familiarity can make anything more connected, and learning does not seem shallow. What could be more familiar than the language we used for communication. The language between friends and families is now a language between human and computer 
+
+
+Kalam, a programming language in Hindi/Marathi, dedicated to Dr. APJ Abdul Kalam, will solve this problem of improving coding literacy in remote parts of India.
+
+
+ Kalaam is the first-ever online programming language in Hindi/Marathi and has all the basic functionalities of a modern programming language. Anyone with a smartphone or a computer can start coding in Kalaam. The syntax and grammar of Kalaam are developed in such a way that students will find flexibility in adopting other languages too.
+
+
+Kalaam coding environment can also be made offline and installable on the user device. Students can code for a lifetime on Kalaam without a need for the internet in the next version. 
+
+
      </p>
 
 
