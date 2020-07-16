@@ -32,7 +32,7 @@
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -122,7 +122,7 @@ Name="Kalam"
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID2')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -252,7 +252,7 @@ Add(NumberOne,NumberTwo)
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -315,7 +315,7 @@ Add(NumberOne,NumberTwo)
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -392,7 +392,7 @@ Add(NumberOne,NumberTwo)
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -468,7 +468,7 @@ language='kalam'
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -549,7 +549,7 @@ value=Name[y]
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -610,7 +610,7 @@ count=count+1
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -669,7 +669,7 @@ Citieslength=Cities.संख्या()
 
 </div>
 
-<div>
+<div style="border: solid 2px #31d8f3;">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -792,7 +792,7 @@ this.$store.state.CurrentCode= copyText.innerHTML
 <style scoped>
 
 .collapsible {
-     background-color: rgb(236, 236, 236);
+     background-color: white;
     color: rgb(0, 0, 0);
     cursor: pointer;
     padding: 18px;
@@ -802,7 +802,7 @@ this.$store.state.CurrentCode= copyText.innerHTML
     outline: none;
     font-size: 110%;
     font-weight: 500;
-    border: solid 0.5px;
+    border: solid 0.5px #cad638;;
     margin-top: 2%;
 }
 .collapsible:hover {
@@ -848,7 +848,7 @@ this.$store.state.CurrentCode= copyText.innerHTML
 
   width: 45%;
     margin-top: 4%;
-    background-color: #f1f1f1;
+    background-color: #fdfdfd;
     padding-left: 2%;
     height: fit-content;
 }
@@ -877,6 +877,20 @@ h2{
 {
 
 margin-top: 3%;
+
+  width: 38%;
+  height: 50px;
+      cursor: pointer;
+      border: none;
+
+        background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
+
+
+}
+
+#TryCodebtn:hover{
+
+      background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgb(22, 21, 3) 91.8% );
 
 }
 

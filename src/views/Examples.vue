@@ -4,14 +4,14 @@
 
         <h1>Examples</h1>
 
-               <carousel :navigationClickTargetSize="10" :paginationSize="20" paginationActiveColor='#e6e600' :navigationEnabled="true" :perPage=this.perPage>
+               <carousel :navigationClickTargetSize="40" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
 
     
   <slide>
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#1 Fibonacci अनुक्रम  </h3>
@@ -49,7 +49,7 @@ Fibonacci[a]=x+y
   <slide>
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID2')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID2')">Run Code</button>
 
 <p id="CodePara" >
 
@@ -89,7 +89,7 @@ space=space+Extra
     <slide>
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID3')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID3')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#3 किसी शब्द का उलटा रूप  </h3>
@@ -127,7 +127,7 @@ length=length-1
     <slide>
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID4')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#4 रचना का उदाहरण  </h3>
@@ -165,7 +165,7 @@ First(FirstName,LastName)
    <slide>
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID5')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID5')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#4 Function Usecase II </h3>
@@ -210,7 +210,7 @@ printname(0)
     <slide>
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID6')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#5 बाइनरी से Decimal ( Binary to Decimal ) </h3>
@@ -252,7 +252,7 @@ DecimalValue=DecimalValue+value
     <slide>
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID7')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#6 क्या यह एक प्रमुख संख्या है? </h3>
@@ -320,7 +320,7 @@ length=prime.संख्या()
  <slide>
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID8')">Try Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#7 कैलकुलेटर (Calculator) </h3>
@@ -489,14 +489,14 @@ pre{
 #TryCodebtn
 {
 
-margin-top: 3%;
+margin-top: 8%;
 
 
   width: 36%;
   height: 28px;
       cursor: pointer;
-      border: 1px solid rgb(52, 204, 218);
-      background: white;
+      border: 1px solid rgb(102, 100, 8);
+    background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
          border-radius: 2em;
 
 
@@ -506,7 +506,6 @@ margin-top: 3%;
 #TryCodebtn:hover{
 
 
-    background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
     border: none
 }
 
