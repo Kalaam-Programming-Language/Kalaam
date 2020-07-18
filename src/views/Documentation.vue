@@ -39,18 +39,17 @@
 
 <pre id="CodeID1" >
 
-
-#PRINT A DECLARED VARIABLE
+#किसी शब्द को प्रिंट करना (दिखाना)
 
 Name="Hello World"   
 प्रिंट(Name)   
 
-#PRINT A DIRECT STRING
+#किसी वाक्य को प्रिंट करना(दिखाना)
 
 प्रिंट("Tic Tac Toe") 
 प्रिंट(007) 
 
-#PRINT A MULTI/CONCANATED STRING
+#किसी वाक्य और शब्द को एकत्र प्रिंट करना(दिखाना)
 
 Name="Kalam"  
 प्रिंट("Hello World," + "My Name is" + Name + "!") 
@@ -260,11 +259,9 @@ Add(NumberOne,NumberTwo)
 <pre id="CodeID1" >
 
 
-#PASS A VARIABLE TO GRAB THE VALUE
 
 इनपुट(Name)
 
-#CHECK THE ACCEPTED VARIABLE VALUE
  
 प्रिंट(Name)
 

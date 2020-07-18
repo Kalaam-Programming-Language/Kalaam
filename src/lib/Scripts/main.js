@@ -184,9 +184,9 @@ function SplitElementsArray(element, i)
   {
 
     element = element.replace(/' '/g, '')
+    
 
   }
-
   //get index of operation from updated tokens, as a reference
 
   var StringVar = [] // here StrVar values will get pushed
@@ -197,7 +197,7 @@ function SplitElementsArray(element, i)
 
     // find if element[j] is alphabet
 
-    if (/^[A-Z]+$/i.test(element[j]) || (element[j] == '[' || element[j] == ']') || isNumber(element[j]))
+    if (/^[A-Z]+$/i.test(element[j]) || (element[j] == '[' || element[j] == ']')  || (element[j] == '"' || element[j] == "'") || isNumber(element[j]))
     {
 
       StrVar = StrVar + element[j] //keep on pushing for long variable names as strings e.g hello, kalaam
@@ -381,7 +381,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens)
 
   let SetInputValueAs = tokens[index].AcceptAs
 
-  var value = prompt('Enter Value for ' + SetInputValueAs)
+  var value = prompt('आप ' + '"' +  SetInputValueAs +  '"' + ' को क्या कहना चाहते हो ?' )
 
   updated_tokens.push(
   {
@@ -706,13 +706,15 @@ function isNumber(element)
 
 function SetValues(StringVar, updated_tokens)
 
-{
 
+{
+  console.log('StringVar: ', StringVar);
   StringVar.forEach((el, i) =>
 
     {
 
       el = el.replace(/\ /g, '');
+      
 
       if (el.charAt(el.length - 1) == ']')
       {
@@ -739,6 +741,7 @@ function SetValues(StringVar, updated_tokens)
     })
 
   return StringVar
+  
 
 }
 

@@ -452,13 +452,19 @@ from '../Scripts/main.js'
     {
 
       let x = SplitElementsArray(NextTokenValue)
+      
 
       StringVar = SetValues(x, updated_tokens)
 
       StringVar = StringVar.join('')
       StringVar = StringVar.split("+")
 
+    
+
       let output = StringVar.join(' ')
+
+      output = output.replace(/"/g, '');
+      output = output.replace(/'/g, '');
       output = RemoveBrackets(output)
 
       AddOutput( output + "\n")
@@ -989,6 +995,7 @@ from '../Scripts/main.js'
  
  //If a code is not working, it is probably because it's not cleaned properly. 
   cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity)
+  console.log('cleaned_sourcedata: ', cleaned_sourcedata);
   
   
 
@@ -2365,7 +2372,7 @@ from '../Scripts/main.js'
 
   if (kalaam.linebylineOutput != '' && kalaam.error.length == 0)
   {
-    kalaam.TimeTaken = "Compiled Succesfully in " + (t1 - t0).toPrecision(4) + "ms."
+    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है 🥳|( Speed =  " + (t1 - t0).toPrecision(4)/1000 + " Seconds)"
 
   }
   else
