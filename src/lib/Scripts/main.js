@@ -376,7 +376,7 @@ function AddElementToArray(Sourcedata, index, updated_tokens)
 
 }
 
-function AcceptInputandSetValue(tokens, index, updated_tokens)
+function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack)
 {
 
   let SetInputValueAs = tokens[index].AcceptAs
@@ -390,6 +390,13 @@ function AcceptInputandSetValue(tokens, index, updated_tokens)
     value: value,
 
   })
+
+  let message= ' Computer ने आपकी दी गयी वैल्यू, ' + value + ' को, ' + SetInputValueAs +  ' के नाम से स्वीकार किया है | इसका मतलब ' + SetInputValueAs + '=' + value
+ // console.log('message: ', message);
+
+  AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', SetInputValueAs, value, message)
+  
+
 
 }
 
@@ -457,6 +464,8 @@ function PushSetArrayIndexValue(value, tokens, data, i)
     ValueToSet: data[i + 2] //skipping =
   });
 
+
+
 }
 
 function PushGetArrayIndexValue(value, tokens, data, i)
@@ -504,10 +513,14 @@ function CreateArrayElement(Value, iterator)
 
 //Heavily used by compiler in loops
 
-function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValue, tokens)
+function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValue, tokens,ExecutionStack)
 {
 
+  let OriginalArrayElement=ArrayElement
+
+
   ArrayElement = ArrayElement.replace(']', '')
+
 
   let Split = ArrayElement.split('[')
 
@@ -588,12 +601,22 @@ function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValu
     //Run when iterator is not needed. iterator is present in ArrayEleMENT ALREADY. This is for Array[i]='Swanand'
 
     value[indexCollected] = NewValue
+    
 
   }
 
   //converting array back into the string representation of it for better printabillity
 
+  
+
   updated_tokens[index].value = '[' + value.toString() + ']'
+
+
+  let message= ' Computer ने आपकी दी गयी वैल्यू, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' के नाम से SET(दर्ज) किया है |'
+ 
+  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', OriginalArrayElement, value[indexCollected]  , message)
+  
+  
 
 }
 
@@ -708,7 +731,6 @@ function SetValues(StringVar, updated_tokens)
 
 
 {
-  console.log('StringVar: ', StringVar);
   StringVar.forEach((el, i) =>
 
     {
@@ -772,6 +794,13 @@ function UpdateUpdated_tokenswithValues(payload, i, updated_tokens)
 
     let a = StringVar[0].toString()
     let b = StringVar[2].toString()
+
+    a = a.replace('"', "")
+    a = a.replace("'", "")
+    b = b.replace('"', "")
+    b = b.replace("'", "")
+
+    
 
     let value = eval(a == b)
 
@@ -953,14 +982,19 @@ function ResetValue()
 
 //If a certain value is not being assigned properly start debugiing here
 
-function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalIterator, global)
+function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalIterator, global,ExecutionStack)
+
+
 {
+
 
   let variable = sourcedata[i - 1].value
 
   let variableType = sourcedata[i - 1].type
 
   let varvalue = sourcedata[i + 1].value
+
+  var FinalValue=''
 
   if (varvalue == '"' || varvalue == "'")
   {
@@ -1028,6 +1062,8 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     let ItemvalueLength = Itemvalue.length
 
+    FinalValue=ItemvalueLength
+
     updated_tokens.push(
     {
       name: variable,
@@ -1087,10 +1123,13 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
       //Get Numbers[3] value and now set it to our variable x
       let value = GetArrayorStringElement(ArrayElement, updated_tokens)
+      
 
       AccumulateValue += value
 
       updated_tokens[index].value = AccumulateValue
+      FinalValue=AccumulateValue
+
 
     }
     else
@@ -1106,6 +1145,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
     {
 
       let output = CalculateValues(Split[1], i, updated_tokens)
+      
 
       element = SplitandJoin(Split, output, element)
 
@@ -1140,6 +1180,9 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
       updated_tokens[index].value = value
 
+      FinalValue=value
+
+
     }
     else if (flag == false)
     {
@@ -1153,6 +1196,9 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
         identifier: i,
         type: sourcedata[i + 1].type
       })
+
+      FinalValue=value
+
     }
 
   }
@@ -1165,6 +1211,9 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
     {
 
       varvalue = m.value
+
+      FinalValue=varvalue
+
 
     }
 
@@ -1197,6 +1246,9 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
             type: sourcedata[i + 1].type
           })
 
+          FinalValue=value
+
+
         }
 
         //type 2- X= ageone+agetwo
@@ -1206,6 +1258,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
           //performing the calculation
 
           let value = CalculateValues(varvalue, i, updated_tokens, global)
+          
 
           updated_tokens.push(
           {
@@ -1216,6 +1269,9 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
             identifier: i,
             type: sourcedata[i + 1].type
           })
+
+          FinalValue=value
+
 
         }
 
@@ -1234,6 +1290,8 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
           identifier: i,
           type: sourcedata[i + 1].type
         })
+
+        FinalValue=varvalue
 
       }
 
@@ -1254,6 +1312,9 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
         n.value = NewValue
 
+        FinalValue=NewValue
+
+
       }
       else
       {
@@ -1261,11 +1322,21 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
         let index = updated_tokens.indexOf(n)
         updated_tokens[index].value = varvalue
 
+        FinalValue=varvalue
+
+
       }
 
     }
 
   }
+
+
+
+let message= ' Computer ने आपकी दी गयी वैल्यू, ' + variable + ' को, ' + FinalValue +  ' के नाम से SET(दर्ज) किया है |'
+ 
+AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, FinalValue , message)
+
 
 }
 
@@ -1341,6 +1412,7 @@ function GetConditionValue(element, updated_tokens, j)
     //let token= updated_tokens.find(el=> el.originalvalue==mutable_tokens[j].value)
 
     let SplitArray = SplitElementsArray(element, j)
+    
 
     let Values = SetValues(SplitArray, updated_tokens)
     Values = Values.filter(function(item)
@@ -1431,6 +1503,7 @@ function ForLoopSetMetadata(tokens, i, updated_tokens)
     Cycle,
     OriginalIterator,
     IterationStart,
+    IterationEnd,
     iterator,
     element,
     elementValue
@@ -1440,7 +1513,7 @@ function ForLoopSetMetadata(tokens, i, updated_tokens)
 
 //To resolve operations like Array[a]=a+2 in loops and in plain context
 
-function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator)
+function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
 {
 
   let Value = SourceData[i].value
@@ -1470,8 +1543,10 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
     // 
 
     NewValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
+    
 
-    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, false, NewValueToSet, tokens)
+    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, false, NewValueToSet, tokens,ExecutionStack)
+    
 
   }
 
@@ -1550,8 +1625,12 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
     //gave it a different name so it would not fuck up with for loop iterator
 
     NewValueToSet = CalculateValues(NewValueToSet, j, CompleteTokenValueList, )
+    
 
-    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterat, NewValueToSet, tokens)
+    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterat, NewValueToSet, tokens,ExecutionStack)
+
+ 
+
 
   }
 
@@ -1564,7 +1643,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 
       let iterator = true
 
-      SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens)
+      SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack)
 
     }
 
@@ -1577,7 +1656,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 
       ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
 
-      SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens)
+      SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack)
 
     }
 
@@ -1591,9 +1670,37 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 
     ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
 
-    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens)
+    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack)
 
   }
+
+}
+
+
+function AddtoExecutionStack(stack,keyword, keywordUse, variable, value ,message)
+{
+
+
+
+
+stack.push(
+  
+  {
+   keyword:keyword,
+   keywordUse:keywordUse,
+   variable:variable,
+   value:value,
+   message:message,
+   
+
+
+  }
+
+  
+
+)
+
+//console.log('stack: ', stack);
 
 }
 
@@ -1623,5 +1730,6 @@ export
   SplitElementsArray,
   SetValues,
   UpdateUpdated_tokenswithValues,
-  SetArrayIndexValue
+  SetArrayIndexValue,
+  AddtoExecutionStack
 }

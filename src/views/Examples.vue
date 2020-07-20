@@ -333,13 +333,14 @@ length=prime.संख्या()
 
 इनपुट(SecondValue)
 
-प्रिंट('Values Entered Are- '+FirstValue+SecondValue)
-
 इनपुट(Operation)
 
-प्रिंट('Operation Selected- " + Operation)
 
-output=0
+प्रिंट('FirstValue is '+FirstValue)
+प्रिंट('SecondValue is '+SecondValue)
+
+
+
 
 अगर(Operation=='+')
 
@@ -347,7 +348,7 @@ output=0
 
 output=FirstValue+SecondValue
 
-प्रिंट("Output- " + output)
+प्रिंट("Output is " + output)
 
 }
 
@@ -357,7 +358,7 @@ output=FirstValue+SecondValue
 
 output=FirstValue-SecondValue
 
-प्रिंट("Output- " + output)
+प्रिंट("Output is " + output)
 
 }
 
@@ -367,7 +368,7 @@ output=FirstValue-SecondValue
 
 output=FirstValue*SecondValue
 
-प्रिंट("Output- " + output)
+प्रिंट("Output is " + output)
 
 }
 
@@ -377,7 +378,7 @@ output=FirstValue*SecondValue
 
 output=FirstValue/SecondValue
 
-प्रिंट("Output- " + output)
+प्रिंट("Output is " + output)
 
 }
 

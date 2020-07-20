@@ -74,7 +74,8 @@ import
   HandleConditions,
   getLoopIndexStart,
   ForLoopSetMetadata,
-  SetArrayIndexValue
+  SetArrayIndexValue,
+  AddtoExecutionStack
 }
 from '../Scripts/main.js'
 
@@ -111,6 +112,7 @@ from '../Scripts/main.js'
 
   //This is where formatted and cleaned sourcedata will go.
   var cleaned_sourcedata = []
+  var ExecutionStack=[]
   var i = 0;
   //This is where tokens will be pushed depending upon their types like Variable, function, loops etc.
   var tokens = [];
@@ -477,10 +479,22 @@ from '../Scripts/main.js'
       NextTokenValue = RemoveBrackets(NextTokenValue)
 
       let output = CalculateValues(NextTokenValue, j, updated_tokens)
+      
+      
 
       AddOutput( output + "\n")
 
     }
+
+
+
+   let message= ' Computer ने आपकी दी गयी वैल्यू, ' + RemoveBrackets(NextTokenValue) + ' को प्रिंट() किया है |'
+
+  AddtoExecutionStack(ExecutionStack,'=', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message)
+  
+  
+  
+
 
   }
 
@@ -648,9 +662,15 @@ from '../Scripts/main.js'
     //For operations like Numbers[a]=a
     //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
     else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == true)
+    
     {
 
       PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
+
+      cleaned_sourcedata.splice(i+1, 1);
+     // cleaned_sourcedata.splice(i+2, 1);
+      //cleaned_sourcedata.splice(i+3, 1);
+
 
     }
 
@@ -1060,13 +1080,14 @@ from '../Scripts/main.js'
 
     {
 
-      SetArrayIndexValue(mutable_tokens, j, j, updated_tokens, tokens, OriginalIterator, iterator)
+      SetArrayIndexValue(mutable_tokens, j, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack)
 
     }
     else if (token == '=')
     {
 
-      AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self)
+      AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack)
+      
 
     }
     else if (tokenType == 'PushToArray')
@@ -1080,7 +1101,6 @@ from '../Scripts/main.js'
     {
 
       let result = HandleBlocks(mutable_tokens, j, result)
-      console.log('result: ', result);
       let StartofBlock = mutable_tokens[j + 1].startIndex
       let EndofBlock = mutable_tokens[j + 1].EndIndex
 
@@ -1098,7 +1118,10 @@ from '../Scripts/main.js'
     else if (tokenType == 'AcceptInput')
     {
 
-      AcceptInputandSetValue(mutable_tokens, j, updated_tokens)
+      AcceptInputandSetValue(mutable_tokens, j, updated_tokens,ExecutionStack)
+
+    
+      
 
     }
 
@@ -1128,6 +1151,12 @@ from '../Scripts/main.js'
 
       mutable_tokens[j].SourceData = functionSourceData
 
+
+      let message='इस रचना का नाम '+ token+ ' है जिसे हम कोड में बाद में NEW VALUES पास करके उपयोग कर सकते है|'
+
+      AddtoExecutionStack(ExecutionStack,'=', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message)
+
+
     }
 
     //We are out of the fucntion execution context and back to global execution context
@@ -1140,6 +1169,7 @@ from '../Scripts/main.js'
       //self function is the first step to calculate value of operations like अगर (ageone==10 && AverageAge<1000 && agetwo>100 || ageone==10) OR (ageone==10 )
 
       let ConditionValue = GetConditionValue(element, updated_tokens, j)
+      
       kalaam.LastConditionValue.push(ConditionValue)
 
       //if value is false, just skip the if loop context, if not it will be ran in final print module
@@ -1154,7 +1184,22 @@ from '../Scripts/main.js'
         let Returnvalue = HandleBlocks(mutable_tokens, j)
 
         j = Returnvalue.j
+
+        var message= 'कंडीशन '+ element+' FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं कर रहा है '
+
       }
+
+      else{
+        var message= 'कंडीशन '+ element+ ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन कर रहा है '
+        
+
+
+      }
+
+
+ 
+      AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message)
+      
 
     }
 
@@ -1178,6 +1223,7 @@ from '../Scripts/main.js'
       let ConditionValue = false
 
       let element = mutable_tokens[j + 1].value
+      
 
       let ExtratcedVariable = []
 
@@ -1226,6 +1272,10 @@ from '../Scripts/main.js'
       WhileLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, '{', WhileLoopSourcedataIndexStart)
 
       WhileLoopSourcedataTokens = getWhileLoopSourcedata(WhileLoopSourcedataIndexStart, mutable_tokens, '}', WhileLoopSourcedataTokens).StoreResult
+ 
+      let message='जबतक ' + element + ' सही होगा तब तक आगे का कोड रन किया जायेगा '
+
+      AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens  , message)
 
       //constantly accessing the conditionvalue
 
@@ -1240,13 +1290,15 @@ from '../Scripts/main.js'
           if (WhileLoopSourcedataTokens[i].value == '=')
           {
 
-            AssignorUpdateValues(WhileLoopSourcedataTokens, i, updated_tokens)
+            AssignorUpdateValues(WhileLoopSourcedataTokens, i, updated_tokens,'','','',ExecutionStack)
+            
+            
 
           }
           else if (WhileLoopSourcedataTokens[i].type == 'AcceptInput')
           {
 
-            AcceptInputandSetValue(WhileLoopSourcedataTokens, i, updated_tokens)
+            AcceptInputandSetValue(WhileLoopSourcedataTokens, i, updated_tokens,ExecutionStack)
 
           }
 
@@ -1276,7 +1328,7 @@ from '../Scripts/main.js'
 
           {
 
-            PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, self) //for operations like print(array[3])
+            PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, self,ExecutionStack) //for operations like print(array[3])
 
           }
 
@@ -1285,7 +1337,7 @@ from '../Scripts/main.js'
 
           {
 
-            SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator)
+            SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack)
 
           }
 
@@ -1314,6 +1366,8 @@ from '../Scripts/main.js'
 
       var OriginalIterator = ForLoopMetaData.OriginalIterator
       var IterationStart = ForLoopMetaData.IterationStart
+      var IterationEnd = ForLoopMetaData.IterationEnd
+
       var iterator = ForLoopMetaData.iterator
       var element = ForLoopMetaData.element
       var elementValue = ForLoopMetaData.elementValue
@@ -1370,6 +1424,11 @@ from '../Scripts/main.js'
 
       //Iterating over forloop sourcedata
       //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
+
+let message='दुहराओ के अंदर लिखे गए कोड को '+IterationStart+' से '+ IterationEnd + ' तक रन किया जायेगा '
+
+      AddtoExecutionStack(ExecutionStack,'=', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, ''  , message)
+
 
       for (iterator = IterationStart; iterator <= Cycle; iterator++)
       
@@ -1443,7 +1502,7 @@ from '../Scripts/main.js'
 
                   {
 
-                    PrintEngine(NestedSourcedataTokens, updated_tokens, index, self, y, NestedOriginalIterator)
+                    PrintEngine(NestedSourcedataTokens, updated_tokens, index, self, y, NestedOriginalIterator,)
 
                   }
                   else if (el.value == '=' && el.isNestedLoop == true)
@@ -1495,7 +1554,7 @@ from '../Scripts/main.js'
 
             //assigning values to variables in a for loop
 
-            AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator)
+            AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator,global,ExecutionStack)
             
 
           }
@@ -1527,7 +1586,7 @@ from '../Scripts/main.js'
 
           {
 
-            SetArrayIndexValue(SourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator)
+            SetArrayIndexValue(SourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack)
 
           }
 
@@ -1595,14 +1654,32 @@ from '../Scripts/main.js'
               {
 
                 i = i
+                let message= 'कंडीशन '+ condition+' FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं कर रहा है '
+                AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message)
+
+
 
               }
               else
               {
                 i = ConditionStartIndex
+
+                let message= 'कंडीशन '+ condition+ ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन कर रहा है '
+                AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message)
+
+
               }
 
+      
+       
+              
+
             }
+      
+           
+            
+
+            
 
           }
 
@@ -1736,7 +1813,7 @@ from '../Scripts/main.js'
 
         {
 
-          PrintEngine(functionSourceData, CompleteTokenValueList, i, self)
+          PrintEngine(functionSourceData, CompleteTokenValueList, i, self,ExecutionStack)
 
         }
 
@@ -1746,7 +1823,7 @@ from '../Scripts/main.js'
         else if (el.value == '=')
         {
 
-          AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self)
+          AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self,ExecutionStack)
 
         }
 
@@ -1754,7 +1831,7 @@ from '../Scripts/main.js'
         else if (el.type == 'AcceptInput')
         {
 
-          AcceptInputandSetValue(functionSourceData, i, updated_tokens)
+          AcceptInputandSetValue(functionSourceData, i, updated_tokens,ExecutionStack)
 
         }
 
@@ -1794,7 +1871,7 @@ from '../Scripts/main.js'
 
         {
 
-          SetArrayIndexValue(functionSourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator)
+          SetArrayIndexValue(functionSourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
 
         }
 
@@ -2084,7 +2161,7 @@ from '../Scripts/main.js'
 
               {
 
-                SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator)
+                SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
 
               }
 
@@ -2175,7 +2252,7 @@ from '../Scripts/main.js'
 
         {
 
-          SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator)
+          SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
 
         }
 
@@ -2239,6 +2316,12 @@ from '../Scripts/main.js'
 
           //constantly evaluating the conditionvalue. for e.g count<25 in जबतक(count<25)
 
+           // let message='जबतक' + 
+
+      //AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे', WhileLoopSourcedataTokens, ''  , message)
+
+
+
           while (GetConditionValue(element, CompleteTokenValueList, j + 1))
           {
 
@@ -2293,7 +2376,7 @@ from '../Scripts/main.js'
 
               {
 
-                SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator)
+                SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
 
               }
 
@@ -2372,7 +2455,7 @@ from '../Scripts/main.js'
 
   if (kalaam.linebylineOutput != '' && kalaam.error.length == 0)
   {
-    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है 🥳|( Speed =  " + (t1 - t0).toPrecision(4)/1000 + " Seconds)"
+    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है 🥳|( Speed =  " + ((t1 - t0)/10000).toPrecision(3) + " Seconds)"
 
   }
   else
