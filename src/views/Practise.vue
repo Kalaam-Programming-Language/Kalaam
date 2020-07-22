@@ -3,7 +3,7 @@
    
  <Header/>
 
-  <!-- <div v-if="PractiseOn" style="border:solid 5px green" class="PractiseMode" id="compiler">
+   <div v-if="PractiseOn" style="border:solid 5px green" class="PractiseMode" id="compiler">
 
 
    <div id="textarea">
@@ -68,7 +68,7 @@
 
     </div>
 </div>
-  -->
+  
 
    <div v-if="LearningOn" class="LearningMode" id="compiler">
 
@@ -238,7 +238,7 @@ export default
 
       LastConditionValue: [],
       LineByLineCode: [],
-      LearningOn:true,
+      LearningOn:false,
       PractiseOn:true,
 
       //Configuration for codemirror text edior that we are using
@@ -292,11 +292,8 @@ Mode()
 ,
  watch: {
     Mode (ModePrev, ModeNow) {
-      // Our fancy notification (2).
 this.PractiseOn=ModeNow
-console.log('this.PractiseOn: ', this.PractiseOn);
 this.LearningOn=!ModeNow
-console.log('this.LearningOn: ', this.LearningOn);
 
 
 
@@ -342,11 +339,7 @@ console.log('this.LearningOn: ', this.LearningOn);
       }
 
     },
-    onCmFocus(cm)
-    {
-
-      //this.cm=cm
-    },
+    
     onCmCodeChange(newCode)
     {
       this.code = newCode

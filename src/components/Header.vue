@@ -7,7 +7,7 @@
 </div>
   <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
 <ul id="headerlist">
-<!--
+
   <span v-if="isRoutePractise">
    <span v-if="!PractiseOn"><li >Practice Mode</li></span>  
   <span> <li style="color:green" v-if="PractiseOn" >Practice Mode</li></span>
@@ -23,7 +23,7 @@
    <span v-if="LearningOn"><li style="color:green"   >Learning Mode</li></span> 
 
       </span>
-      -->
+      
    <li v-if="!isRoutePractise" ><router-link to="/Practise">Practise</router-link> </li>
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>

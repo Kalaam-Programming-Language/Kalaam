@@ -391,7 +391,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack)
 
   })
 
-  let message= ' Computer ने आपकी दी गयी वैल्यू, ' + value + ' को, ' + SetInputValueAs +  ' के नाम से स्वीकार किया है | इसका मतलब ' + SetInputValueAs + '=' + value
+  let message= 'आपने ' + SetInputValueAs + ' को ' + value + ' ये Value देकर Computer के Memory में Store(दर्ज) करवाया है| '
 
   AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', SetInputValueAs, value, message)
   
@@ -611,7 +611,7 @@ function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValu
   updated_tokens[index].value = '[' + value.toString() + ']'
 
 
-  let message= ' Computer ने आपकी दी गयी वैल्यू, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' के नाम से SET(दर्ज) किया है |'
+  let message= ' Computer ने, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में Store(दर्ज) कर दिया है |'
  
   AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', OriginalArrayElement, value[indexCollected]  , message)
   
@@ -1332,7 +1332,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
 
 
-let message= ' Computer ने आपकी दी गयी वैल्यू, ' + variable + ' को, ' + FinalValue +  ' के नाम से SET(दर्ज) किया है |'
+  let message= ' Computer ने, ' + variable + ' को, ' + FinalValue  +  ' ये VALUE दे कर अपने Memory में Store(दर्ज) कर दिया है |'
  
 AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, FinalValue , message)
 
@@ -1699,7 +1699,6 @@ stack.push(
 
 )
 
-console.log('stack: ', stack);
 
 }
 
