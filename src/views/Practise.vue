@@ -2,7 +2,7 @@
   <div class="hello">
    
  <Header/>
-
+<!--
    <div v-if="PractiseOn" style="border:solid 5px green" class="PractiseMode" id="compiler">
 
 
@@ -69,7 +69,7 @@
     </div>
 </div>
   
-
+-->
    <div v-if="LearningOn" class="LearningMode" id="compiler">
 
 
@@ -238,7 +238,7 @@ export default
 
       LastConditionValue: [],
       LineByLineCode: [],
-      LearningOn:false,
+      LearningOn:true,
       PractiseOn:true,
 
       //Configuration for codemirror text edior that we are using
