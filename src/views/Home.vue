@@ -6,7 +6,7 @@
   <div id="header">
 <div id="LogoandTitle">
 <!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
-<router-link id="Kalaam" to="/" >Kalaam</router-link> 
+<router-link id="Kalaam" to="/" >कलाम</router-link> 
 </div>
   <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
 

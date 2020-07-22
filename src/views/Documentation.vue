@@ -62,166 +62,7 @@ Name="Kalam"
 </div>
 
 </transition>
-<button   v-on:click="showStar1 = !showStar1"  type="button" class="collapsible">रचना</button>
-<transition name="slide-fade">
-<div v-if="showStar1" class="content">
-
-<div>
-
-<h2>काम</h2>
-
-
-<h5> कोड जो दोबारा इस्तेमाल किया जा सकता है उसे एक ब्लॉक में wrap किया जाता है, जिसे हम रचना कहते है। </h5>
-
-<h2>इसका उपयोग कैसे करे?</h2>
-
-<h4>।. एक रचना को डिफाइन करने के लिए </h4>
-<h3>रचना <i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3>  
-<h5><b>रचना का नाम:</b></h5>  
-<p>रचना का नाम केस सेंसिटिव होता है और उसमे सिर्फ अक्षरोंका (अल्फाबेट्स का) इस्तेमाल करना चाहिए। </p>  
-<h5> <b>रचना पर्याय:</b>  </h5>  
-<p>रचना पर्याय का टेम्पररी वैल्यूज स्टोर  करनेमे इस्तेमाल किया जा सकता है। जब किसी रचना को कॉल किया जाता है तभी ये वैल्यूज पास किये जाते है।  </p>  
-<p>पर्याय के नाम भी  केस सेंसिटिव होते है और ये आपकी चॉइस के हिसाब से चेंज किये जा सकते है।  मगर इनमे सिर्फ अक्षरोंका अर्थात अल्फाबेट्स का इस्तेमाल करे। </p> 
-
-
-
-
-<h4>2: रचना को कॉल करना ।  </h4>
-<h3><i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3> 
-<h5><b>रचना का नाम - PrintFullName</b>  </h5>  
-<p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName≠printfullname  </p>  
-
-<h2> उदाहरण</h2>
-<h5><b># वेरिएबल्स को डिफाइन करे। </b></h5>
-<h5>FirstName- 'Sachin' </h5> 
-<h5>LastName- 'Tendulkar' </h5> 
-
-<h5><b> रचना declaration</b></h5>
- <h5>PrintFullName (x, y) </h5> 
-
- <h5><b> रचना Body</b></h5>
- <h5>{</h5>
- <h5>प्रिंट( x + y ) </h5> 
- <h5>}</h5>
-
-<h5><b>रचना call</b>  </h5>  
-<h5>PrintFullName(FirstName,LastName)</h5>
-
-<p># जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।  <br> For e.g PrintFullName≠printfullname  </p>  
-
-<h5> <b>रचना पर्याय- ('Sachin','Tendulkar')</b>  </h5>  
-<p>इस प्रोग्रामिंग भाषा के  तहत निर्धारित ग्रामर के अनुसार, (x, y) ('Sachin','Tendulkar) बन जाएगा। </p>
-<p>x will take a temporary value of 'Sachin'</p>
-<p>y will take a temporary value of 'Tendulkar'</p>
-
-
-
-</div>
-
-<div style="border: solid 2px #31d8f3;">
- <button id="TryCodebtn" @click="CopyCode('CodeID2')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID2" >
-
-
-
-#YOU CAN PRE DEFINE THE VARIABLES
-#YOU CAN ALSO ACCEPT THEM AS INPUT  
-
-FirstName='Sachin'
-
-LastName='Tendulkar'
-
-NewFirstName='Sunil'
-
-NewLastName='Chetri'
-
-#FUNCTION DECLARATION- NAME YOUR FUNCTION AND ARGUMENTS
-
-रचना PrintFullName(First,Last)
-
-{
-
-प्रिंट(First + Last)
-
-
-
-}
-
-#FUNCTION EXECUTION उदाहरणS- PASS THE DIFFERENT DESIRED VALUES AS ARGUMENTS
-
-PrintFullName(FirstName,LastName)
-
-PrintFullName(NewFirstName,NewLastName)
-
-
-
-#FUNCTION उदाहरण 2
-
-Job='Doctor'
-City='Pune'
-
-#FUNCTION DECLARATION- NAME YOUR FUNCTION AND ARGUMENTS
-
-रचना AboutMe(x,y)
-
-{
-
-
-
-प्रिंट("I am a" + x + "in" + y)
-
-
-}
-
-#FUNCTION EXECUTION
-
-
-AboutMe(Job,City)
-
-
- #उदाहरण 3
-
-
-NumberOne=20
-NumberTwo=40
-
-रचना Add(a,b)
-{
-
-c=a+b
-
-प्रिंट(c)
-
-
-}
-
-
-Add(NumberOne,NumberTwo)
-
-
- 
-
- 
-
-
-
-
- 
-
- 
-
-</pre>
-</p>
-</div>
-
-
-
-</div>
-</transition>
-</div>
+    </div>
 <button   v-on:click="showStar2 = !showStar2"  type="button" class="collapsible">इनपुट()</button>
 
 <transition name="slide-fade">
@@ -316,17 +157,13 @@ Add(NumberOne,NumberTwo)
 
 <pre id="CodeID1" >
 
-#ACCEPT AN INPUT
 
 इनपुट(language)
 
-#EVALUATE THE CONDITION
 
 अगर(language=='kalam')
 
 {
-
-#IF CONDITION IS TRUE, RUN THIS.
 
 प्रिंट('Alright, that's cool!')
 
@@ -336,18 +173,15 @@ Add(NumberOne,NumberTwo)
 
 उदाहरण 2
 
-#ACCEPT INPUTS
 
 इनपुट(language)
 
 इनपुट(country)
 
-#EVALUATE THE CONDITION
 
 अगर(language=='kalam' || country=='india')
 {
 
-#IF ONE OF THE CONDITION IS TRUE, RUN THIS
 
 
 प्रिंट('That works too.')
@@ -394,24 +228,20 @@ Add(NumberOne,NumberTwo)
 <pre id="CodeID1" >
 
 
-#ACCEPT AN INPUT
 
-language='kalam'
+language='kalaam'
 
-#EVALUATE THE CONDITION
 
-अगर(language=='kalam')
+अगर(language=='kalaam')
 
 {
 
-#IF CONDITION IS TRUE, RUN THIS.
 
 प्रिंट('Alright, that's cool!')
 
 
 }
 
-#IF NONE OF THE CONDITIONS ARE SATISFIED, RUN THIS.
 
 अन्यथा
 {
@@ -471,7 +301,7 @@ language='kalam'
 
 #उदाहरण 1  
 
-#DEFINE A RANGE AND AN ITERATOR
+
 
 दुहराओ x को (0,10) मे
 
@@ -486,7 +316,6 @@ value= x*5
 
 #उदाहरण 2  
 
-#DEFINE A VARIABLE AND AN ITERATOR
 
 Name="HALF COOKED RICE"
 
@@ -554,14 +383,12 @@ value=Name[y]
 
 count=0
 
-#EVALUATE THE CONDITION. IF TRUE, KEEP ON RUNNING.
 
 जबतक(count<25)
 {
 
 प्रिंट(count)
 
-#UPDATE THE VALUE OF COUNT ON EACH ITERATION
 
 count=count+1
 
@@ -612,21 +439,16 @@ count=count+1
 <pre id="CodeID1" >
 
 
-#DEFINE THE VARIABLES. EITHER STRING OR ARRAY
 
 City='Banglore'
 
 Cities=['Pusad','Pune','Mumbai','Delhi']
 
-#FIND OUT THE LENGTH
 
 Citylength= City.संख्या()
 
 Citieslength=Cities.संख्या()
 
-#PRINT THE LENGTH
-
-#CAN YOU PRINT THE LENGTH WITHOUT USING ".संख्या()"" ?
 
 प्रिंट('The length of the City is' + Citylength )
 
@@ -680,7 +502,6 @@ Numbers=[]
 
 {
 
-#PUSH CURRENT VALUE OF X INTO NUMBERS ARRAY
 
 Numbers.पुश(x)
 
@@ -695,16 +516,11 @@ Numbers.पुश(x)
 Numbers=[]
 
 
+Name='Angry Birds'
+type='Game'
 
-#PUSH DEFINED VALUES TO A DEFINED ARRAY. 
 
-
-Name='Swanand'
-Role='Developer'
-
-#IN THIS CASE ARRAY IS NUMBERS
-
-Numbers.पुश('hii')
+Numbers.पुश('Welcome to Kalaam')
 Numbers.पुश(Name)
 
 Numbers.पुश(Role)
@@ -722,6 +538,151 @@ Numbers.पुश(Role)
 </div>
 </div>
 </transition>
+
+<button   v-on:click="showStar1 = !showStar1"  type="button" class="collapsible">रचना</button>
+<transition name="slide-fade">
+<div v-if="showStar1" class="content">
+
+<div>
+
+<h2>काम</h2>
+
+
+<h5> कोड जो दोबारा इस्तेमाल किया जा सकता है उसे एक ब्लॉक में wrap किया जाता है, जिसे हम रचना कहते है। </h5>
+
+<h2>इसका उपयोग कैसे करे?</h2>
+
+<h4>।. एक रचना को डिफाइन करने के लिए </h4>
+<h3>रचना <i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3>  
+<h5><b>रचना का नाम:</b></h5>  
+<p>रचना का नाम केस सेंसिटिव होता है और उसमे सिर्फ अक्षरोंका (अल्फाबेट्स का) इस्तेमाल करना चाहिए। </p>  
+<h5> <b>रचना पर्याय:</b>  </h5>  
+<p>रचना पर्याय का टेम्पररी वैल्यूज स्टोर  करनेमे इस्तेमाल किया जा सकता है। जब किसी रचना को कॉल किया जाता है तभी ये वैल्यूज पास किये जाते है।  </p>  
+<p>पर्याय के नाम भी  केस सेंसिटिव होते है और ये आपकी चॉइस के हिसाब से चेंज किये जा सकते है।  मगर इनमे सिर्फ अक्षरोंका अर्थात अल्फाबेट्स का इस्तेमाल करे। </p> 
+
+
+
+
+<h4>2: रचना को कॉल करना ।  </h4>
+<h3><i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3> 
+<h5><b>रचना का नाम - PrintFullName</b>  </h5>  
+<p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName≠printfullname  </p>  
+
+<h2> उदाहरण</h2>
+<h5><b># वेरिएबल्स को डिफाइन करे। </b></h5>
+<h5>FirstName- 'Sachin' </h5> 
+<h5>LastName- 'Tendulkar' </h5> 
+
+<h5><b> रचना declaration</b></h5>
+ <h5>PrintFullName (x, y) </h5> 
+
+ <h5><b> रचना Body</b></h5>
+ <h5>{</h5>
+ <h5>प्रिंट( x + y ) </h5> 
+ <h5>}</h5>
+
+<h5><b>रचना call</b>  </h5>  
+<h5>PrintFullName(FirstName,LastName)</h5>
+
+<p># जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।  <br> For e.g PrintFullName≠printfullname  </p>  
+
+<h5> <b>रचना पर्याय- ('Sachin','Tendulkar')</b>  </h5>  
+<p>इस प्रोग्रामिंग भाषा के  तहत निर्धारित ग्रामर के अनुसार, (x, y) ('Sachin','Tendulkar) बन जाएगा। </p>
+<p>x will take a temporary value of 'Sachin'</p>
+<p>y will take a temporary value of 'Tendulkar'</p>
+
+
+
+</div>
+
+<div style="border: solid 2px #31d8f3;">
+ <button id="TryCodebtn" @click="CopyCode('CodeID2')">कोड के साथ खेलिए।</button>
+<p id="CodePara" >
+
+
+<pre id="CodeID2" >
+
+
+
+FirstName='Sachin'
+
+LastName='Tendulkar'
+
+NewFirstName='Sunil'
+
+NewLastName='Chetri'
+
+
+रचना PrintFullName(First,Last)
+
+{
+
+प्रिंट(First + Last)
+
+
+
+}
+
+
+PrintFullName(FirstName,LastName)
+
+PrintFullName(NewFirstName,NewLastName)
+
+Job='Doctor'
+City='Pune'
+
+रचना AboutMe(x,y)
+
+{
+
+
+
+प्रिंट("I am a" + x + "in" + y)
+
+
+}
+
+
+AboutMe(Job,City)
+
+
+NumberOne=20
+NumberTwo=40
+
+रचना Add(a,b)
+{
+
+c=a+b
+
+प्रिंट(c)
+
+
+}
+
+
+Add(NumberOne,NumberTwo)
+
+
+ 
+
+ 
+
+
+
+
+ 
+
+ 
+
+</pre>
+</p>
+</div>
+
+
+
+</div>
+</transition>
+</div>
 
   </div>
 </template>

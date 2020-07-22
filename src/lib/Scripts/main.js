@@ -392,7 +392,6 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack)
   })
 
   let message= ' Computer ने आपकी दी गयी वैल्यू, ' + value + ' को, ' + SetInputValueAs +  ' के नाम से स्वीकार किया है | इसका मतलब ' + SetInputValueAs + '=' + value
- // console.log('message: ', message);
 
   AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', SetInputValueAs, value, message)
   
@@ -1700,7 +1699,7 @@ stack.push(
 
 )
 
-//console.log('stack: ', stack);
+console.log('stack: ', stack);
 
 }
 

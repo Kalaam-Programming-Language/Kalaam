@@ -3,7 +3,74 @@
    
  <Header/>
 
-   <div id="compiler">
+  <!-- <div v-if="PractiseOn" style="border:solid 5px green" class="PractiseMode" id="compiler">
+
+
+   <div id="textarea">
+
+
+  <no-ssr placeholder="...">
+
+  <codemirror id="codearea" style="text-align:left;" ref="myCm"
+              :value="code" 
+              placeholder="Welcome To Kalaam, This is your Code Editor."
+              :options="cmOptions"
+              @ready="onCmReady"
+              @focus="onCmFocus"
+              @input="onCmCodeChange">
+  </codemirror>
+  </no-ssr>
+
+    <button style="background: linear-gradient(to right, #11998e, #12ff6b);
+    border: none;
+    font-weight: 600;" id="subm" @click="RUN()">RUN</button>
+        <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
+<button id="subm" @click="Add('रचना')">रचना</button>
+    <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
+
+    <button id="subm" @click="Add('अगर()')">अगर</button>
+
+    <button id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ </button>
+    <button id="subm" @click="Add('जबतक()')">जबतक</button>
+    <button id="subm" @click="Add('.संख्या()')">.संख्या</button>
+    <button id="subm" @click="Add('.पुश()')">.पुश</button>
+    <button id="subm" @click="Add('अन्यथा')">अन्यथा</button>
+    
+
+   
+   </div>
+
+    <div id="output">
+
+<div id="bharatDIV">
+
+<p id="version">Kalaam v1.0.0</p>
+<p id="CodeStatus" v-if="this.isError==false">{{TimeTaken}}</p>
+        
+<p id="CodeStatus" v-if="this.isError==true" >{{TimeTaken}}</p>
+        
+
+<div id="printOutput">
+
+<p style="white-space: pre; "  id="linebylineOutput" v-for="(output,index) in this.linebylineOutput" :key="index">
+
+
+ {{output}} 
+
+
+
+</p>
+</div>
+</div>
+
+
+
+
+    </div>
+</div>
+  -->
+
+   <div v-if="LearningOn" class="LearningMode" id="compiler">
 
 
    <div id="textarea">
@@ -44,7 +111,7 @@
 
 <div id="bharatDIV">
 
-<p id="version">Kalam v1.0.0</p>
+<p id="version">Kalaam v1.0.0</p>
 <p id="CodeStatus" v-if="this.isError==false">{{TimeTaken}}</p>
         
 <p id="CodeStatus" v-if="this.isError==true" >{{TimeTaken}}</p>
@@ -79,6 +146,10 @@
 //This is our header file AKA Navigation bar located in components folder. 
 import Header from '../components/Header'
 
+
+
+
+
 //CodeMirror is an npm package whcih provides rich code editors
 import
 {
@@ -88,7 +159,30 @@ from 'vue-codemirror'
 
 //Code editor styling
 import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/javascript/javascript.js'
 
+  // theme css
+  import 'codemirror/theme/monokai.css'
+
+  // require active-line.js
+  import'codemirror/addon/selection/active-line.js'
+
+
+  // keyMap
+  import'codemirror/addon/edit/matchbrackets.js'
+
+  import'codemirror/addon/search/searchcursor.js'
+  import'codemirror/keymap/sublime.js'
+
+  // foldGutter
+  import'codemirror/addon/fold/foldgutter.css'
+  import'codemirror/addon/fold/brace-fold.js'
+  import'codemirror/addon/fold/comment-fold.js'
+  import'codemirror/addon/fold/foldcode.js'
+  import'codemirror/addon/fold/foldgutter.js'
+  import'codemirror/addon/fold/indent-fold.js'
+  import'codemirror/addon/fold/markdown-fold.js'
+  import'codemirror/addon/fold/xml-fold.js'
 // Importing our Compile Engine
 //We need a name for our compiler, any suggestions?
 
@@ -110,7 +204,13 @@ export default
   },
 
   //Retriveing CurrentCode present in the Central data storage of Kalaam.
-  computed: mapState(['CurrentCode']),
+  computed: {
+
+
+
+
+  },
+
 
   //This is a local data restricted to Kalaam.io/practise component. 
   //Our Compiler takes data from here, does it's magic and save it back here
@@ -138,15 +238,32 @@ export default
 
       LastConditionValue: [],
       LineByLineCode: [],
+      LearningOn:true,
+      PractiseOn:true,
 
       //Configuration for codemirror text edior that we are using
       cmOptions:
       {
         // codemirror options
         tabSize: 4,
-        lineNumbers: true,
-        line: true,
-        theme: ''
+          styleActiveLine: true,
+          lineNumbers: true,
+          styleSelectedText: false,
+          line: true,
+          foldGutter: true,
+          gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+          highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true },
+          mode: 'text/javascript',
+          hintOptions:{
+            completeSingle: true
+          },
+          keyMap: "sublime",
+          matchBrackets: true,
+          showCursorWhenSelecting: true,
+          theme: "monokai",
+         scrollbarStyle:'null',
+
+          
       }
 
     };
@@ -160,9 +277,38 @@ export default
   },
 
   //Created() is Called synchronously after the instance is created or when kalaam.io/practise is visited
+
+computed:{
+
+
+Mode()
+{
+
+  return this.$store.state.PractiseOn
+}
+
+
+}
+,
+ watch: {
+    Mode (ModePrev, ModeNow) {
+      // Our fancy notification (2).
+this.PractiseOn=ModeNow
+console.log('this.PractiseOn: ', this.PractiseOn);
+this.LearningOn=!ModeNow
+console.log('this.LearningOn: ', this.LearningOn);
+
+
+
+}
+
+ }
+,
+
   created()
   {
 
+   
     //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
 
     let m = this.$store.state.CurrentCode.replace('&lt;', '<')
@@ -216,6 +362,7 @@ export default
       var doc = this.cm.getDoc();
       //Getting the current position of cursor on Code editor
       var cursor = doc.getCursor();
+
       //Adding the clikced element (insert)
       doc.replaceRange(insert, cursor);
 

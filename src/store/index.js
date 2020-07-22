@@ -6,11 +6,44 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
 
-    CurrentCode:''
+    CurrentCode:'',
+    LearningOn:true,
+    PractiseOn:false
   },
   mutations: {
+
+    changeMode (state) 
+    {
+
+      if(state.LearningOn==true)
+
+      {
+
+      state.PractiseOn=true
+      state.LearningOn=false
+      
+      
+      
+      }
+      
+      else if(state.PractiseOn==true)
+      {
+      state.LearningOn=true
+      state.PractiseOn=false
+      
+      
+      }
+      
+      
+      }
+
+
+    
   },
   actions: {
+
+
+
   },
   modules: {
   }

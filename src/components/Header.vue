@@ -3,12 +3,29 @@
       <div id="header">
 <div id="LogoandTitle">
 <!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
-<router-link id="Kalaam" to="/" >Kalaam</router-link> 
+<router-link id="Kalaam" to="/" >कलाम</router-link> 
 </div>
   <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
-
 <ul id="headerlist">
-   <li><router-link to="/Practise">Practice</router-link> </li>
+<!--
+  <span v-if="isRoutePractise">
+   <span v-if="!PractiseOn"><li >Practice Mode</li></span>  
+  <span> <li style="color:green" v-if="PractiseOn" >Practice Mode</li></span>
+
+
+<li style="margin:0px">
+  <label  class="switch">
+  <input @click="SwitchMode()" :v-bind="checked" type="checkbox" checked>
+  <span class="slider round"></span>
+</label>
+</li>
+  <span v-if="!LearningOn"><li >Learning Mode</li></span> 
+   <span v-if="LearningOn"><li style="color:green"   >Learning Mode</li></span> 
+
+      </span>
+      -->
+   <li v-if="!isRoutePractise" ><router-link to="/Practise">Practise</router-link> </li>
+
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
    <li><router-link to="/Support">Support</router-link> </li>
@@ -49,7 +66,13 @@ export default {
 
   data() {
     return {
-      showMenu:false
+      showMenu:false,
+
+      checked:false,
+
+      LearningOn:true,
+      PractiseOn:false,
+      isRoutePractise:false
     }
   },
 
@@ -57,7 +80,6 @@ export default {
     toggleMenu:function()
 {
 
-console.log('this: ', this.showMenu);
 if(this.showMenu==false)
 
 {
@@ -75,7 +97,50 @@ this.showMenu=false
 
 
 }
+,
+
+SwitchMode:function()
+{
+
+
+  this.$store.commit('changeMode')
+
+ if(this.LearningOn==true)
+
+      {
+
+      this.PractiseOn=true
+      this.LearningOn=false
+      
+      
+      
+      }
+      
+      else if(this.PractiseOn==true)
+      {
+      this.LearningOn=true
+      this.PractiseOn=false
+      
+      
+      }
+
+}
+
   },
+
+
+created() {
+  
+let route= this.$route.name
+
+if(route=='Practise')
+{
+
+this.isRoutePractise=true
+
+}
+
+},
 
 
 }
@@ -190,6 +255,68 @@ display: none;
   transform: translateY(10px);
   opacity: 0;
 }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(216, 215, 215);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: rgba(0, 0, 0, 0.733);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #e5f321;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+
 
 /* Smartphones (portrait) ----------- */
 @media only screen
