@@ -161,7 +161,7 @@ from 'vue-codemirror'
 
 //Code editor styling
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/Kalaam/Kalaam.js'
+import '../components/Kalaam'
 
   // theme css
   import 'codemirror/theme/yonce.css'
@@ -327,6 +327,7 @@ this.LearningOn=!ModeNow
     {
 
       this.cm = cm;
+      
 
       if (screen.width < 420)
       {
@@ -339,6 +340,13 @@ this.LearningOn=!ModeNow
 
         this.cm.setSize('100%', 500);
       }
+
+    },
+
+    onCmFocus(cm){
+
+
+
 
     },
     
@@ -360,6 +368,14 @@ this.LearningOn=!ModeNow
 
       //Adding the clikced element (insert)
       doc.replaceRange(insert, cursor);
+
+            //getting the active element
+            console.log('cm: ', this.cm.state.activeLines[0].text);
+
+            //setting as active line
+      doc.setCursor({line: 9})
+
+
 
     },
 
