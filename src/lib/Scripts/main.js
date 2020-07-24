@@ -339,7 +339,7 @@ function handlemultConditions(element)
 
 //For operarions like Numbers.पुश(23)
 
-function AddElementToArray(Sourcedata, index, updated_tokens)
+function AddElementToArray(Sourcedata, index, updated_tokens,ExecutionStack,LinebylineSourcedata)
 {
 
   let token = Sourcedata[index].value
@@ -374,9 +374,27 @@ function AddElementToArray(Sourcedata, index, updated_tokens)
 
   updated_tokens[indexofArray].value = ArrayValue
 
+
+  let message= 'आपने ' + ElementtoPush + ' को ' + Array + ' इस बकेट(Array) में Store(दर्ज) करवाया है| '
+
+
+
+let expression= Sourcedata[index].value;
+//console.log('expression: ', expression);
+
+  let Linenumber= LinebylineSourcedata.indexOf(expression)
+  Linenumber+=1
+
+  AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', Array, ElementtoPush,message,Linenumber)
+  
+
+
+
+
+
 }
 
-function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack)
+function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,LinebylineSourcedata)
 {
 
   let SetInputValueAs = tokens[index].AcceptAs
@@ -393,7 +411,13 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack)
 
   let message= 'आपने ' + SetInputValueAs + ' को ' + value + ' ये Value देकर Computer के Memory में Store(दर्ज) करवाया है| '
 
-  AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', SetInputValueAs, value, message)
+
+  let expression = 'इनपुट('+SetInputValueAs+')'
+
+  let Linenumber= LinebylineSourcedata.indexOf(expression)
+  Linenumber+=1
+
+  AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', SetInputValueAs, value, message,Linenumber)
   
 
 
@@ -612,6 +636,8 @@ function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValu
 
 
   let message= ' Computer ने, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में Store(दर्ज) कर दिया है |'
+
+  
  
   AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', OriginalArrayElement, value[indexCollected]  , message)
   
@@ -981,7 +1007,7 @@ function ResetValue()
 
 //If a certain value is not being assigned properly start debugiing here
 
-function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalIterator, global,ExecutionStack)
+function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalIterator, global,ExecutionStack,LinebylineSourcedata)
 
 
 {
@@ -1333,8 +1359,58 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
 
   let message= ' Computer ने, ' + variable + ' को, ' + FinalValue  +  ' ये VALUE दे कर अपने Memory में Store(दर्ज) कर दिया है |'
- 
-AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, FinalValue , message)
+
+
+//This is the experession whcih is getting evaluated. 
+
+let expression0=variable+ '='+varvalue
+let expression1= variable +'='+"'"+varvalue+"'"
+let expression2= variable +'='+'"'+varvalue+'"'
+
+
+LinebylineSourcedata.forEach((el,index)=>{
+
+  el=el.replace(/ /,'')
+  
+  
+  if(el.includes(expression0))
+  
+  {
+  
+    AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
+
+  
+  }
+  
+  else if(el.includes(expression1))
+{
+
+  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
+
+
+}
+
+else if(el.includes(expression2))
+{
+  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
+
+
+
+}
+  
+  
+  
+  
+  
+  
+  
+  })
+  
+
+
+
+
+
 
 
 }
@@ -1676,7 +1752,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 }
 
 
-function AddtoExecutionStack(stack,keyword, keywordUse, variable, value ,message)
+function AddtoExecutionStack(stack,keyword, keywordUse, variable, value ,message, Linenumber)
 {
 
 
@@ -1690,6 +1766,7 @@ stack.push(
    variable:variable,
    value:value,
    message:message,
+   Linenumber:Linenumber
    
 
 

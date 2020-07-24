@@ -21,7 +21,7 @@
 
 
 Fibonacci=[]
-दुहराओ a को (0,25)
+दुहराओ a को (0,25) मे
 {
 अगर (a<3)
 {
@@ -267,7 +267,7 @@ DecimalValue=DecimalValue+value
 
 prime=[]
 
-दुहराओ b को (2,num)
+दुहराओ b को (2,num) मे
 
 {
 

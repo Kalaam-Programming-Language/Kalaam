@@ -199,6 +199,7 @@ Name="Kalam"
 </div>
 </transition>
 
+<!--
 <button   v-on:click="showStar8 = !showStar8"  type="button" class="collapsible">अन्यथा</button>
 <transition name="slide-fade">
 <div v-if="showStar8" class="content">
@@ -261,7 +262,7 @@ language='kalaam'
 </div>
 </div>
 </transition>
-
+-->
 
 <button   v-on:click="showStar4 = !showStar4"  type="button" class="collapsible">दुहराओ x को y मे</button>
 <transition name="slide-fade">
@@ -520,10 +521,9 @@ Name='Angry Birds'
 type='Game'
 
 
-Numbers.पुश('Welcome to Kalaam')
 Numbers.पुश(Name)
 
-Numbers.पुश(Role)
+Numbers.पुश(type)
 
 
 

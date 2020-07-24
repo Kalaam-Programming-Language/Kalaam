@@ -24,6 +24,9 @@
     <button style="background: linear-gradient(to right, #11998e, #12ff6b);
     border: none;
     font-weight: 600;" id="subm" @click="RUN()">RUN</button>
+      <button style="background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
+    border: none;
+    font-weight: 600;" id="subm" @click="RUN()">Run LinebyLine</button>
         <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
 <button id="subm" @click="Add('रचना')">रचना</button>
     <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
@@ -34,7 +37,6 @@
     <button id="subm" @click="Add('जबतक()')">जबतक</button>
     <button id="subm" @click="Add('.संख्या()')">.संख्या</button>
     <button id="subm" @click="Add('.पुश()')">.पुश</button>
-    <button id="subm" @click="Add('अन्यथा')">अन्यथा</button>
     
 
    
@@ -88,6 +90,9 @@
   </codemirror>
   </no-ssr>
 
+
+  <div id="ControlPanel">
+
     <button style="background: linear-gradient(to right, #11998e, #12ff6b);
     border: none;
     font-weight: 600;" id="subm" @click="RUN()">RUN</button>
@@ -95,7 +100,7 @@
     <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
 
     <button id="subm" @click="Add('अगर()')">अगर</button>
-        <button id="subm" @click="Add('अन्यथा')">अन्यथा</button>
+      <button id="subm" @click="Add('अन्यथा')">अन्यथा</button>
 
 
     <button id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ </button>
@@ -106,7 +111,7 @@
 
     
 
-   
+   </div>
    </div>
 
     <div id="output">
@@ -164,7 +169,12 @@ import 'codemirror/lib/codemirror.css'
 import '../components/Kalaam'
 
   // theme css
-  import 'codemirror/theme/yonce.css'
+  //import 'codemirror/theme/yonce.css'
+//import 'codemirror/theme/monokai.css'
+
+import '../components/monokai.css'
+
+
 
   // require active-line.js
   import'codemirror/addon/selection/active-line.js'
@@ -262,7 +272,7 @@ export default
           keyMap: "sublime",
           matchBrackets: true,
           showCursorWhenSelecting: true,
-          theme: "yonce",
+          theme: "monokai",
          scrollbarStyle:'null',
 
           

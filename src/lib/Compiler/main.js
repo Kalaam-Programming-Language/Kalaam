@@ -108,6 +108,10 @@ from '../Scripts/main.js'
 
   //Sourcedata is the raw code provided by use
   var sourcedata = kalaam.code;
+
+  var LinebylineSourcedata=sourcedata.replace(/(?:\r\n|\r|\n)/g, 'line').split("line")
+  //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
+  ////console.log('LinebylineSourcedata: ', LinebylineSourcedata);
   
 
   //This is where formatted and cleaned sourcedata will go.
@@ -219,7 +223,7 @@ from '../Scripts/main.js'
 
   {
 
-    //Try console.log('Tokens, updated_tokens, j, global, iterator, OriginalIterator): ', Tokens, updated_tokens, j, global, iterator, OriginalIterator)); 
+    //Try //console.log('Tokens, updated_tokens, j, global, iterator, OriginalIterator): ', Tokens, updated_tokens, j, global, iterator, OriginalIterator)); 
     //To understand what kind of data is necessary to print a value 
 
     //Getting the current token as token and value to be printed as NextTokenValue
@@ -246,7 +250,7 @@ from '../Scripts/main.js'
 
     //SECTION - Outputting the code
     // finding the variable value in updated_tokens. Updated_tokens is where our Variable-value pairs exists.
-    //Try console.log(updated_tokens) to see how it looks
+    //Try //console.log(updated_tokens) to see how it looks
 
     //This loop is only for printing direct values like print(name), print(array)
     updated_tokens.forEach((el, i) =>
@@ -399,7 +403,7 @@ from '../Scripts/main.js'
         {
 
           ArrayElement = ArrayElement
-          //console.log('ArrayElement: ', ArrayElement);
+          ////console.log('ArrayElement: ', ArrayElement);
 
         }
 
@@ -490,7 +494,25 @@ from '../Scripts/main.js'
 
    let message= ' Computer ने आपकी दी गयी वैल्यू, ' + RemoveBrackets(NextTokenValue) + ' को प्रिंट() किया है |'
 
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message)
+//This is the experession whcih is getting evealuated. 
+
+  let expression= token + NextTokenValue
+
+  LinebylineSourcedata.forEach((el,index)=>{
+
+    el=el.replace(/ /,'')
+    
+    
+    if(el.includes(expression))
+    
+    {
+    
+      AddtoExecutionStack(ExecutionStack,'=', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message,index+1)
+  
+    
+    }
+  })
+
   
   
   
@@ -839,7 +861,7 @@ from '../Scripts/main.js'
 
       {
 
-        //console.log('foundString: ', foundString);
+        ////console.log('foundString: ', foundString);
         PushRealTimePrintOperation(foundString, tokens)
 
       }
@@ -1015,7 +1037,9 @@ from '../Scripts/main.js'
  
  //If a code is not working, it is probably because it's not cleaned properly. 
   cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity)
-  console.log('cleaned_sourcedata: ', cleaned_sourcedata);
+  //console.log('cleaned_sourcedata: ', cleaned_sourcedata);
+
+
   
   
 
@@ -1039,7 +1063,7 @@ from '../Scripts/main.js'
   //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
 
   tokens = tokens.filter(el => el.value != '')
-  console.log('tokens: ', tokens);
+  //console.log('tokens: ', tokens);
   
   
 
@@ -1086,14 +1110,14 @@ from '../Scripts/main.js'
     else if (token == '=')
     {
 
-      AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack)
+      AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack,LinebylineSourcedata)
       
 
     }
     else if (tokenType == 'PushToArray')
     {
 
-      AddElementToArray(mutable_tokens, j, updated_tokens)
+      AddElementToArray(mutable_tokens, j, updated_tokens,ExecutionStack,LinebylineSourcedata)
 
     }
     else if (token == 'अन्यथा')
@@ -1118,7 +1142,7 @@ from '../Scripts/main.js'
     else if (tokenType == 'AcceptInput')
     {
 
-      AcceptInputandSetValue(mutable_tokens, j, updated_tokens,ExecutionStack)
+      AcceptInputandSetValue(mutable_tokens, j, updated_tokens,ExecutionStack,LinebylineSourcedata)
 
     
       
@@ -1154,7 +1178,25 @@ from '../Scripts/main.js'
 
       let message='इस रचना का नाम '+ token+ ' है जिसे हम कोड में बाद में NEW VALUES पास करके उपयोग कर सकते है|'
 
-      AddtoExecutionStack(ExecutionStack,'=', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message)
+      let expression= 'रचना '+ token
+      let Linenumber=''
+      //console.log('expression: ', expression);
+
+LinebylineSourcedata.forEach((el,i)=>{
+
+if(el.includes(expression))
+{
+
+Linenumber=i+1
+
+}
+
+
+})
+
+
+
+      AddtoExecutionStack(ExecutionStack,'=', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message,Linenumber)
 
 
     }
@@ -1197,8 +1239,45 @@ from '../Scripts/main.js'
       }
 
 
- 
-      AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message)
+let expression= element
+
+
+if(expression.includes('"'))
+{
+
+  expression=expression.replace(/ ==/g,'=="') 
+  expression=expression.replace(/"/g,"'") 
+
+
+}
+
+else{
+
+  expression=expression.replace(/ ==/g,"=='") 
+
+  
+}
+
+LinebylineSourcedata.forEach((el,index)=>{
+
+el=el.replace(/ /,'')
+
+
+if(el.includes(expression))
+
+{
+
+  AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message,index+1)
+
+}
+
+
+
+
+
+})
+
+
       
 
     }
@@ -1275,7 +1354,25 @@ from '../Scripts/main.js'
  
       let message='जबतक ' + element + ' सही होगा तब तक आगे का कोड रन किया जायेगा '
 
-      AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens  , message)
+      let Linenumber=''
+      //console.log('element: ', element);
+      
+      LinebylineSourcedata.forEach((el,i)=>{
+
+
+        if(el.includes(element))
+        
+        {
+
+          AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens  , message,i+1)
+
+
+
+        }
+
+
+      })
+
 
       //constantly accessing the conditionvalue
 
@@ -1290,7 +1387,7 @@ from '../Scripts/main.js'
           if (WhileLoopSourcedataTokens[i].value == '=')
           {
 
-            AssignorUpdateValues(WhileLoopSourcedataTokens, i, updated_tokens,'','','',ExecutionStack)
+            AssignorUpdateValues(WhileLoopSourcedataTokens, i, updated_tokens,'','','',ExecutionStack,LinebylineSourcedata)
             
             
 
@@ -1427,7 +1524,13 @@ from '../Scripts/main.js'
 
 let message='दुहराओ के अंदर लिखे गए कोड को '+IterationStart+' से '+ IterationEnd + ' तक, मतलब '+ eval((IterationEnd-IterationStart)+1)  + ' बार RUN(रन) किया जायेगा '
 
-      AddtoExecutionStack(ExecutionStack,'=', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, ''  , message)
+//This is the experession whcih is getting evaluated. 
+let expression= 'दुहराओ ' + iterator +' को ' + mutable_tokens[j+1].value + ' मे'
+
+let Linenumber= LinebylineSourcedata.indexOf(expression)
+Linenumber=Linenumber+1
+
+      AddtoExecutionStack(ExecutionStack,'=', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, ''  , message, Linenumber)
 
 
       for (iterator = IterationStart; iterator <= Cycle; iterator++)
@@ -1554,7 +1657,7 @@ let message='दुहराओ के अंदर लिखे गए को�
 
             //assigning values to variables in a for loop
 
-            AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator,global,ExecutionStack)
+            AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator,global,ExecutionStack,LinebylineSourcedata)
             
 
           }
@@ -1562,7 +1665,7 @@ let message='दुहराओ के अंदर लिखे गए को�
 
           {
 
-            AddElementToArray(SourcedataTokens, i, updated_tokens)
+            AddElementToArray(SourcedataTokens, i, updated_tokens,ExecutionStack,LinebylineSourcedata)
 
           }
           else if (SourcedataTokens[i].type == 'AcceptInput')
@@ -1823,7 +1926,7 @@ let message='दुहराओ के अंदर लिखे गए को�
         else if (el.value == '=')
         {
 
-          AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self,ExecutionStack)
+          AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self,ExecutionStack,LinebylineSourcedata)
 
         }
 
@@ -1991,7 +2094,7 @@ let message='दुहराओ के अंदर लिखे गए को�
 
                 function getSourcedata(startIndex, SourcedataTokens, check, StoreResult)
                 {
-                  //console.log('startIndex, SourcedataTokens, check, StoreResult: ', startIndex, SourcedataTokens, check, StoreResult);
+                  ////console.log('startIndex, SourcedataTokens, check, StoreResult: ', startIndex, SourcedataTokens, check, StoreResult);
 
                   let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult)
                   StoreResult = Returnvalue.StoreResult
@@ -2003,7 +2106,7 @@ let message='दुहराओ के अंदर लिखे गए को�
                 NestedForLoopSourcedataIndexStart = getLoopIndexStart(SourcedataTokens, i, '{', NestedForLoopSourcedataIndexStart)
 
                 NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, '}', NestedSourcedataTokens)
-                //console.log('NestedSourcedataTokens: ', NestedSourcedataTokens);
+                ////console.log('NestedSourcedataTokens: ', NestedSourcedataTokens);
 
                 for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++)
                 {
@@ -2012,7 +2115,7 @@ let message='दुहराओ के अंदर लिखे गए को�
                     let y = Nestediterator
 
                     let Nestedforloopindex = CompleteTokenValueList.find(el => el.name == NestedOriginalIterator)
-                    //console.log('forloopindex: ', forloopindex);
+                    ////console.log('forloopindex: ', forloopindex);
 
                     Nestedforloopindex.value = y
 
@@ -2040,7 +2143,7 @@ let message='दुहराओ के अंदर लिखे गए को�
 
                       {
 
-                        //console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
+                        ////console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
 
                         let ConditionStartIndex = index
                         let condition = NestedSourcedataTokens[index].value
@@ -2102,17 +2205,17 @@ let message='दुहराओ के अंदर लिखे गए को�
                           else
                           {
                             index = ConditionStartIndex
-                            //console.log('i: ', i);
+                            ////console.log('i: ', i);
                           }
 
                         }
 
                       }
 
-                      //console.log('i: ', i);
+                      ////console.log('i: ', i);
 
                       // i = i + NestedSourcedataTokens.length
-                      //console.log('i: ', i);
+                      ////console.log('i: ', i);
                       else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true)
 
                       {
@@ -2148,7 +2251,7 @@ let message='दुहराओ के अंदर लिखे गए को�
 
                 //for operations like print(array[3])
 
-                // console.log('for looop prints: ', functionSourceData[i],i);
+                // //console.log('for looop prints: ', functionSourceData[i],i);
 
                 PrintEngine(SourcedataTokens, CompleteTokenValueList, i, self, iterator, OriginalIterator)
 
@@ -2170,7 +2273,7 @@ let message='दुहराओ के अंदर लिखे गए को�
 
               {
 
-                //console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
+                ////console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
 
                 let ConditionStartIndex = i
                 let condition = SourcedataTokens[i].value
@@ -2232,7 +2335,7 @@ let message='दुहराओ के अंदर लिखे गए को�
                   else
                   {
                     i = ConditionStartIndex
-                    //console.log('i: ', i);
+                    ////console.log('i: ', i);
                   }
 
                 }
@@ -2478,7 +2581,8 @@ let message='दुहराओ के अंदर लिखे गए को�
     return item !== ""
   })
 
+  ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
 
-console.log('ExecutionStack: ', ExecutionStack);
+////console.log('ExecutionStack: ', ExecutionStack );
 
 }
