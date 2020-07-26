@@ -139,7 +139,7 @@ Name="Kalam"
 
 <h4>२: Multiple Conditions को मूल्यांकन (Evaluate) करना। 
  </h4>
-<h5>अगर (Age &gt; 16 && Education &#61;&#61; 'ssc')</h5> 
+<h5>अगर (Age &gt; 16 &amp;&amp; Education &#61;&#61; 'ssc')</h5> 
 <h5>अगर (Country&#61;&#61;'india' || Language &#61;&#61; 'hindi')</h5> 
 
 
