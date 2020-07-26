@@ -29,7 +29,7 @@
       -->
 
       
-   <li v-if="!isRoutePractise" ><router-link to="/Practise">Practise</router-link> </li>
+   <li v-if="!isRoutePractise" ><router-link to="/Practise">Practice</router-link> </li>
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
