@@ -1227,6 +1227,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
     {
 
       element = SplitandJoin(Split, token.value, element)
+      
 
     }
 
@@ -1242,6 +1243,15 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     //Get Numbers[3] value and now set it to our variable x
     let value = GetArrayorStringElement(ArrayElement, updated_tokens)
+    //console.log('value: ', value);
+    if(value!=undefined)
+    {
+
+  value=value.replace(/'/g,'')
+    value=value.replace(/"/g,'')
+    }
+    
+    //console.log('value: ', value);
 
     if (n != undefined && flag == false)
     {
@@ -1442,7 +1452,6 @@ LinebylineSourcedata.forEach((el,index)=>{
   
   {
 
-console.log('hii');
   
     AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
     

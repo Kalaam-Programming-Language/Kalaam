@@ -355,6 +355,10 @@ from '../Scripts/main.js'
         let ArrayElement = CreateArrayElement(Value, iterator)
 
         let output = GetArrayorStringElement(ArrayElement, updated_tokens)
+        
+
+       output=output.replace(/'/g,'')
+      output=output.replace(/"/g,'')
 
         AddOutput( output)
 
