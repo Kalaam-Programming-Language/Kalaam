@@ -554,11 +554,10 @@ function CreateArrayElement(Value, iterator)
 
 //Heavily used by compiler in loops
 
-function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValue, tokens,ExecutionStack)
+function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, iterator, NewValue, tokens,ExecutionStack,LinebylineSourcedata)
 {
 
-  let OriginalArrayElement=ArrayElement
-
+ let variable=ArrayElement
 
   ArrayElement = ArrayElement.replace(']', '')
 
@@ -653,13 +652,39 @@ function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValu
   updated_tokens[index].value = '[' + value.toString() + ']'
 
 
-  let message= ' Computer ने, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+  let message= ' Computer ने, ' + variable + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+ 
+
+  let expression= OriginalElement
+
+  let Linenumber=''
+
+  expression=GetcleanedExpression(expression)
 
   
+  LinebylineSourcedata.forEach((el,index)=>{
+
  
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', OriginalArrayElement, value[indexCollected]  , message)
+    el=GetcleanedExpression(el)
+
+    if(el==expression)
+    {
+
+      AddtoExecutionStack(ExecutionStack,'=', ' किसी VARIABLE को नई VALUE सेट करना   ', variable, value[indexCollected]  , message,index+1)
+
+
+
+    }
+
+
+
+
+
+  })
+ // let Linenumber=''
+ 
   
-  
+
 
 }
 
@@ -1417,7 +1442,7 @@ LinebylineSourcedata.forEach((el,index)=>{
   
   {
 
-
+console.log('hii');
   
     AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
     
@@ -1427,6 +1452,8 @@ LinebylineSourcedata.forEach((el,index)=>{
   
   else if(el.includes(expression1))
 {
+  console.log('hii');
+
 
   AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, variable , message, index+1)
 
@@ -1435,6 +1462,9 @@ LinebylineSourcedata.forEach((el,index)=>{
 
 else if(el.includes(expression2))
 {
+
+  console.log('hii');
+
   AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
 
 
@@ -1631,12 +1661,15 @@ function ForLoopSetMetadata(tokens, i, updated_tokens)
 
 //To resolve operations like Array[a]=a+2 in loops and in plain context
 
-function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
+function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 {
 
   let Value = SourceData[i].value
 
   let ValueToSet = SourceData[i].ValueToSet
+  
+  let OriginalElement= Value+'='+ValueToSet
+  
 
   let element = RemoveBrackets(Value);
 
@@ -1663,7 +1696,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
     NewValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
     
 
-    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, false, NewValueToSet, tokens,ExecutionStack)
+    SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, false, NewValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
     
 
   }
@@ -1745,7 +1778,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
     NewValueToSet = CalculateValues(NewValueToSet, j, CompleteTokenValueList, )
     
 
-    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterat, NewValueToSet, tokens,ExecutionStack)
+    SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterat, NewValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
 
  
 
@@ -1761,7 +1794,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 
       let iterator = true
 
-      SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack)
+      SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
 
     }
 
@@ -1774,7 +1807,7 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 
       ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
 
-      SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack)
+      SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
 
     }
 
@@ -1788,9 +1821,16 @@ function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, Or
 
     ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
 
-    SetArrayorStringElement(ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack)
+    SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
 
   }
+
+
+
+
+
+
+
 
 }
 

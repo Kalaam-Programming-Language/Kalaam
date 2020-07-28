@@ -1043,7 +1043,7 @@ from '../Scripts/main.js'
  
  //If a code is not working, it is probably because it's not cleaned properly. 
   cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity)
-  //console.log('cleaned_sourcedata: ', cleaned_sourcedata);
+  console.log('cleaned_sourcedata: ', cleaned_sourcedata);
 
 
   
@@ -1110,7 +1110,7 @@ from '../Scripts/main.js'
 
     {
 
-      SetArrayIndexValue(mutable_tokens, j, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack)
+      SetArrayIndexValue(mutable_tokens, j, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
     }
     else if (token == '=')
@@ -1234,6 +1234,7 @@ Linenumber=i+1
         j = Returnvalue.j
 
         var message= 'कंडीशन '+ element+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं कर रहा है '
+        
 
       }
 
@@ -1253,7 +1254,6 @@ let expression= element
 
 expression=GetcleanedExpression(expression)
 
-console.log('expression: ', expression);
 
 LinebylineSourcedata.forEach((el,index)=>{
 
@@ -1430,7 +1430,7 @@ if(el.includes(expression))
 
           {
 
-            SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack)
+            SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
           }
 
@@ -1637,7 +1637,7 @@ Linenumber=Linenumber+1
 
                   {
 
-                    SetArrayIndexValue(NestedSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator)
+                    SetArrayIndexValue(NestedSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
                   }
 
@@ -1685,7 +1685,7 @@ Linenumber=Linenumber+1
 
           {
 
-            SetArrayIndexValue(SourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack)
+            SetArrayIndexValue(SourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
           }
 
@@ -1990,7 +1990,7 @@ Linenumber=index
 
         {
 
-          SetArrayIndexValue(functionSourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
+          SetArrayIndexValue(functionSourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
         }
 
@@ -2235,7 +2235,7 @@ Linenumber=index
                       else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true)
 
                       {
-                        SetArrayIndexValue(NestedSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator)
+                        SetArrayIndexValue(NestedSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
                       }
 
@@ -2280,7 +2280,7 @@ Linenumber=index
 
               {
 
-                SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
+                SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
               }
 
@@ -2371,7 +2371,7 @@ Linenumber=index
 
         {
 
-          SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
+          SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
         }
 
@@ -2495,7 +2495,7 @@ Linenumber=index
 
               {
 
-                SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack)
+                SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 
               }
 

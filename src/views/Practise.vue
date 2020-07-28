@@ -462,7 +462,9 @@ SwitchMode:function()
   this.flag=true
 
 
-this.ExecutionStackLinebyLine=this.ExecutionStackLinebyLine+this.ExecutionStack[this.CurrentLine].message +'\n'+'\n'
+  this.ExecutionStackLinebyLine= this.ExecutionStackLinebyLine+this.ExecutionStack[this.CurrentLine].message +'\n'+'\n'
+
+
 
 
 let Line= this.ExecutionStack[this.CurrentLine].Linenumber

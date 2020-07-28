@@ -4,7 +4,7 @@
 <div id="LogoandTitle">
 <!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
 
-c
+
 
 <router-link id="Kalaam" to="/" >कलाम</router-link> 
 </div>
@@ -15,7 +15,7 @@ c
       
 
       
-   <li v-if="!isRoutePractise" ><router-link to="/Practice">Practise</router-link> </li>
+   <li v-if="!isRoutePractise" ><router-link to="/Practice">Practice</router-link> </li>
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
