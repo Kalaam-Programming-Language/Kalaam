@@ -30,7 +30,7 @@
 <transition name="slide-fade">
 
 <ul v-if="showMenu==true" id="headerlistMobile">
- <div @click="toggleMenu()" ><li><router-link  to="/Practise">Practice</router-link> </li></div>  
+ <div @click="toggleMenu()" ><li><router-link  to="/Practice">Practice</router-link> </li></div>  
  <div @click="toggleMenu()"><li><router-link to="/Documentation">Documentation</router-link> </li></div>  
  <div @click="toggleMenu()"> <li><router-link to="/Examples">Examples</router-link> </li></div>  
   <div @click="toggleMenu()"> <li><router-link to="/Support">Support</router-link> </li></div>  
