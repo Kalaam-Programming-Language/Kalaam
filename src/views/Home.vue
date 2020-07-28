@@ -11,7 +11,7 @@
   <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
 
 <ul id="headerlist">
-   <li><router-link to="/Practise">Practice</router-link> </li>
+   <li><router-link to="/Practice">Practice</router-link> </li>
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
    <li><router-link to="/Support">Support</router-link> </li>
@@ -22,7 +22,7 @@
 <transition name="slide-fade">
 
 <ul v-if="showMenu==true" id="headerlistMobile">
- <div @click="toggleMenu()" ><li><router-link  to="/Practise">Practice</router-link> </li></div>  
+ <div @click="toggleMenu()" ><li><router-link  to="/Practice">Practice</router-link> </li></div>  
  <div @click="toggleMenu()"><li><router-link to="/Documentation">Documentation</router-link> </li></div>  
  <div @click="toggleMenu()"> <li><router-link to="/Examples">Examples</router-link> </li></div>  
   <div @click="toggleMenu()"> <li><router-link to="/Support">Support</router-link> </li></div>  
@@ -67,7 +67,7 @@
 <div id="buttons">
 
 
-<router-link to="/Practise"><button>Start Coding</button></router-link> 
+<router-link to="/Practice"><button>Start Coding</button></router-link> 
 <router-link to="/Documentation"><button id="button2"> Get Started</button></router-link> 
 
 

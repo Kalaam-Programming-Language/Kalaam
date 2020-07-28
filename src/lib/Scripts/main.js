@@ -173,6 +173,24 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
 
 }
 
+function GetcleanedExpression(expression)
+{
+
+
+  expression=expression.replace(/ /g,'')
+
+
+    expression=expression.replace(/"/g,'')
+
+
+
+    expression=expression.replace(/'/g,'')
+
+return expression
+
+
+}
+
 //To convert 'a+b-c*d' into ['a','+','-','c','*','d']
 
 function SplitElementsArray(element, i)
@@ -375,7 +393,7 @@ function AddElementToArray(Sourcedata, index, updated_tokens,ExecutionStack,Line
   updated_tokens[indexofArray].value = ArrayValue
 
 
-  let message= 'आपने ' + ElementtoPush + ' को ' + Array + ' इस बकेट(Array) में Store(दर्ज) करवाया है| '
+  let message= 'आपने ' + ElementtoPush + ' को ' + Array + ' इस बकेट(Array) में दर्ज(Store) करवाया है| '
 
 
 
@@ -409,7 +427,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,Lin
 
   })
 
-  let message= 'आपने ' + SetInputValueAs + ' को ' + value + ' ये Value देकर Computer के Memory में Store(दर्ज) करवाया है| '
+  let message= 'आपने ' + SetInputValueAs + ' को ' + value + ' ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| '
 
 
   let expression = 'इनपुट('+SetInputValueAs+')'
@@ -635,7 +653,7 @@ function SetArrayorStringElement(ArrayElement, updated_tokens, iterator, NewValu
   updated_tokens[index].value = '[' + value.toString() + ']'
 
 
-  let message= ' Computer ने, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में Store(दर्ज) कर दिया है |'
+  let message= ' Computer ने, ' + OriginalArrayElement + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
 
   
  
@@ -1356,28 +1374,53 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
   }
 
+  let message=''
+
+  if(isCalculation(sourcedata[i+1].value) || sourcedata[i+1].value.includes('संख्या') )
+  {
+
+  message= ' Computer सबसे पहले जाँच करता है की क्या, ' + sourcedata[i+1].value + ' को सुलझाने(Solve) करने की ज़रुरत है? अगर हा, तो Computer '+ sourcedata[i+1].value+ ' को Solve करके, ' +variable+ ' के नाम से Memory में दर्ज(Store)कर देगा | यहापर , '  + sourcedata[i+1].value + ' की कीमत (Value) , ' + FinalValue  +  ' आती है | इसलिए, Computer ' + variable + ' को ' + FinalValue +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |'
+  }
+
+  else{
+    message= 'Computer ने, '+ variable +' को, '+ varvalue + ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+    
 
 
-  let message= ' Computer ने, ' + variable + ' को, ' + FinalValue  +  ' ये VALUE दे कर अपने Memory में Store(दर्ज) कर दिया है |'
+
+  }
 
 
 //This is the experession whcih is getting evaluated. 
 
 let expression0=variable+ '='+varvalue
+
+expression0=GetcleanedExpression(expression0)
+
 let expression1= variable +'='+"'"+varvalue+"'"
+expression1=GetcleanedExpression(expression1)
+
 let expression2= variable +'='+'"'+varvalue+'"'
+expression2=GetcleanedExpression(expression2)
+
+
 
 
 LinebylineSourcedata.forEach((el,index)=>{
 
   el=el.replace(/ /,'')
+
+  el=GetcleanedExpression(el)
   
   
   if(el.includes(expression0))
   
   {
+
+
   
     AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
+    
 
   
   }
@@ -1385,7 +1428,7 @@ LinebylineSourcedata.forEach((el,index)=>{
   else if(el.includes(expression1))
 {
 
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
+  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, variable , message, index+1)
 
 
 }
@@ -1782,6 +1825,7 @@ stack.push(
 export
 {
   GetCleanSourcedata,
+  GetcleanedExpression,
   Count,
   ForLoopSetMetadata,
   getLoopIndexStart,

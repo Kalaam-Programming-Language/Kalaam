@@ -28,7 +28,7 @@ Vue.use(VueRouter)
     component: () => import(/* webpackChunkName: "Documentation" */ '../views/Documentation.vue')
   },
   {
-    path: '/Practise',
+    path: '/Practice',
     name: 'Practise',
     // route level code-splitting
     // this generates a separate chunk (Practise.[hash].js) for this route

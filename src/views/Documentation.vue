@@ -734,7 +734,7 @@ CopyCode:function(el)
 this.$store.state.CurrentCode= copyText.innerHTML
 
 
-  this.$router.push('/Practise')
+  this.$router.push('/Practice')
 
 
 
