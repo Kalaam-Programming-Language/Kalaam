@@ -7,8 +7,8 @@ export default new Vuex.Store({
   state: {
 
     CurrentCode:'',
-    LearningOn:true,
-    PractiseOn:false
+    LearningOn:false,
+    PractiseOn:true
   },
   mutations: {
 

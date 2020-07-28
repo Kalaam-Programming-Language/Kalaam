@@ -2,8 +2,29 @@
   <div class="hello">
    
  <Header/>
+
 <!--
-   <div v-if="PractiseOn" style="border:solid 5px green" class="PractiseMode" id="compiler">
+<div id="Modes">
+   <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
+  <span v-if="this.$store.state.PractiseOn"> <li style="color:green"  >Practice Mode</li></span>
+
+
+<li style="margin:0px">
+  <label  class="switch">
+  <input @click="SwitchMode()" v-if="this.$store.state.PractiseOn" type="checkbox"  >
+    <input @click="SwitchMode()" v-if="this.$store.state.LearningOn" type="checkbox" checked  >
+
+  <span class="slider round"></span>
+</label>
+</li>
+  <span v-if="!this.$store.state.LearningOn"><li >Learning Mode</li></span> 
+   <span v-if="this.$store.state.LearningOn"><li style="color:green"   >Learning Mode</li></span> 
+
+      
+      </div>
+      -->
+      
+   <div v-if="this.$store.state.LearningOn"  style="border:solid 5px green" class="PractiseMode" id="compiler">
 
 
    <div id="textarea">
@@ -21,12 +42,13 @@
   </codemirror>
   </no-ssr>
 
-    <button style="background: linear-gradient(to right, #11998e, #12ff6b);
-    border: none;
-    font-weight: 600;" id="subm" @click="RUN()">RUN</button>
+  
       <button style="background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
     border: none;
-    font-weight: 600;" id="subm" @click="RUN()">Run LinebyLine</button>
+    font-weight: 600;" id="subm" @click="RunLinebyLine()">Run LinebyLine</button>
+      <button style="background: linear-gradient(to right, #11998e, #12ff6b);
+    border: none;
+    font-weight: 600;" id="subm" @click="Clear()">Clear</button>
         <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
 <button id="subm" @click="Add('रचना')">रचना</button>
     <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
@@ -54,10 +76,10 @@
 
 <div id="printOutput">
 
-<p style="white-space: pre; "  id="linebylineOutput" v-for="(output,index) in this.linebylineOutput" :key="index">
+<p style="white-space: pre; "  id="linebylineOutput" >
 
 
- {{output}} 
+ {{this.ExecutionStackLinebyLine}} 
 
 
 
@@ -71,8 +93,8 @@
     </div>
 </div>
   
--->
-   <div v-if="LearningOn" class="LearningMode" id="compiler">
+
+   <div v-if="this.$store.state.PractiseOn" class="PractiseMode" id="compiler">
 
 
    <div id="textarea">
@@ -153,10 +175,6 @@
 //This is our header file AKA Navigation bar located in components folder. 
 import Header from '../components/Header'
 
-
-
-
-
 //CodeMirror is an npm package whcih provides rich code editors
 import
 {
@@ -232,7 +250,7 @@ export default
 
       //Code written by user
       code: '',
-
+      checked:'',
       //Compiled Output
       output: '',
       cm: '',
@@ -244,14 +262,17 @@ export default
 
       //Calculating the time taken to compile the code
       TimeTaken: '',
+      flag:false,
       inputIndexes: [],
       //input: '',
       isError: '',
+      ExecutionStack:[],
+      ExecutionStackLinebyLine:'',
 
       LastConditionValue: [],
       LineByLineCode: [],
-      LearningOn:true,
-      PractiseOn:true,
+      CurrentLine:0,
+   
 
       //Configuration for codemirror text edior that we are using
       cmOptions:
@@ -293,23 +314,6 @@ export default
 computed:{
 
 
-Mode()
-{
-
-  return this.$store.state.PractiseOn
-}
-
-
-}
-,
- watch: {
-    Mode (ModePrev, ModeNow) {
-this.PractiseOn=ModeNow
-this.LearningOn=!ModeNow
-
-
-
-}
 
  }
 ,
@@ -317,11 +321,18 @@ this.LearningOn=!ModeNow
   created()
   {
 
+
+this.checked=true
    
     //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
 
-    let m = this.$store.state.CurrentCode.replace('&lt;', '<')
-    m = m.replace('&gt;', '>')
+    let m = this.$store.state.CurrentCode.replace(/&lt;/g, '<')
+
+    m = m.replace(/&gt;/g, '>')
+      m = m.replace(/&amp;/g, '&')
+
+
+
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     this.code = m
@@ -332,6 +343,36 @@ this.LearningOn=!ModeNow
   methods:
   {
 
+
+    Clear:function()
+    {
+
+
+      this.ExecutionStack=[]
+      this.ExecutionStackLinebyLine=[]
+      this.output=''
+      this.linebylineOutput=''
+
+      this.LineByLineCode=[]
+
+       this.flag=false
+       this.CurrentLine=0
+         var doc = this.cm.getDoc();
+      
+      doc.setCursor({line: this.CurrentLine})
+
+
+    },
+
+SwitchMode:function()
+{
+
+
+  this.$store.commit('changeMode')
+
+
+
+},
     // Below 3 are the fucntions provided by Codemirror code editor out of the box. We dynamically change it's height for different devices and make it responsive.
     onCmReady(cm)
     {
@@ -380,10 +421,8 @@ this.LearningOn=!ModeNow
       doc.replaceRange(insert, cursor);
 
             //getting the active element
-            console.log('cm: ', this.cm.state.activeLines[0].text);
 
             //setting as active line
-      doc.setCursor({line: 9})
 
 
 
@@ -400,6 +439,46 @@ this.LearningOn=!ModeNow
 //try console.log(this.$data) to see what we are sending to our compiler
       
     Compile(this.$data)
+
+    },
+
+       RunLinebyLine: function()
+    {
+
+//Compile is our #1 function located in /lib/compiler/main.js
+//this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
+//try console.log(this.$data) to see what we are sending to our compiler
+
+
+  
+  if(this.flag==false)
+  {
+
+  this.ExecutionStack= Compile(this.$data)
+  
+  }
+
+  
+  this.flag=true
+
+
+this.ExecutionStackLinebyLine=this.ExecutionStackLinebyLine+this.ExecutionStack[this.CurrentLine].message +'\n'+'\n'
+
+
+let Line= this.ExecutionStack[this.CurrentLine].Linenumber
+
+  //this.cm.state.activeLines
+      
+         var doc = this.cm.getDoc();
+      
+      doc.setCursor({line: Line-1})
+
+  
+
+this.CurrentLine+=1
+
+
+
 
     }
 
@@ -442,6 +521,16 @@ this.LearningOn=!ModeNow
 }
 
 button:focus {outline:0;}
+
+
+#Modes{
+
+  float: left;
+    display: flex;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 0.5%;
+}
 
 #bharatP{
 
@@ -501,6 +590,7 @@ color:rgb(231, 83, 83);
 #compiler{
 
   display: flex;
+      overflow-x: scroll;
 }
 
 #textarea{
@@ -515,7 +605,9 @@ color:rgb(231, 83, 83);
   width: 50%;
   background-color: black;
     color: white;
-    overflow: auto
+    overflow: auto;
+        overflow-y: scroll;
+    overflow-x: scroll;
   
 }
 h3 {
@@ -649,7 +741,8 @@ and (max-width : 480px) {
 #compiler{
 
 
-    display: inline-block
+    display: inline-block;
+        overflow-x: scroll;
 }
 
 #CodeStatus{
@@ -695,6 +788,8 @@ width: 20%;
    height: 330px;
 
     margin-top: 5%;
+        overflow-y: scroll;
+    overflow-x: scroll;
 }
 #printOutput{
 

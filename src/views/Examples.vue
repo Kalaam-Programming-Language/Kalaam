@@ -286,7 +286,8 @@ prime.पुश(b)
 
 length=prime.संख्या()
 
-अगर(length==1)
+अगर(length==1 &amp;&amp; num>1)
+
 {
 
 प्रिंट(num + "is a Prime Number")
@@ -442,7 +443,7 @@ CopyCode:function(el)
 this.$store.state.CurrentCode= copyText.innerHTML
 
 
-  this.$router.push('/Practise')
+  this.$router.push('/Practice')
 
 
 

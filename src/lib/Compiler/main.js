@@ -51,6 +51,7 @@ from '../PushTokens/main'
 import
 {
   GetCleanSourcedata,
+  GetcleanedExpression,
   RemoveBrackets,
   Count,
   AddElementToArray,
@@ -111,7 +112,7 @@ from '../Scripts/main.js'
 
   var LinebylineSourcedata=sourcedata.replace(/(?:\r\n|\r|\n)/g, 'line').split("line")
   //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
-  ////console.log('LinebylineSourcedata: ', LinebylineSourcedata);
+  console.log('LinebylineSourcedata: ', LinebylineSourcedata);
   
 
   //This is where formatted and cleaned sourcedata will go.
@@ -496,18 +497,23 @@ from '../Scripts/main.js'
 
 //This is the experession whcih is getting evealuated. 
 
+
+
   let expression= token + NextTokenValue
 
+  expression=GetcleanedExpression(expression)
+  
   LinebylineSourcedata.forEach((el,index)=>{
 
-    el=el.replace(/ /,'')
+   el=GetcleanedExpression(el)
+    
     
     
     if(el.includes(expression))
     
     {
     
-      AddtoExecutionStack(ExecutionStack,'=', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message,index+1)
+      AddtoExecutionStack(ExecutionStack,'प्रिंट()', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message,index+1)
   
     
     }
@@ -1063,7 +1069,7 @@ from '../Scripts/main.js'
   //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
 
   tokens = tokens.filter(el => el.value != '')
-  //console.log('tokens: ', tokens);
+  console.log('tokens: ', tokens);
   
   
 
@@ -1196,7 +1202,7 @@ Linenumber=i+1
 
 
 
-      AddtoExecutionStack(ExecutionStack,'=', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message,Linenumber)
+      AddtoExecutionStack(ExecutionStack,'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message,Linenumber)
 
 
     }
@@ -1242,32 +1248,22 @@ Linenumber=i+1
 let expression= element
 
 
-if(expression.includes('"'))
-{
-
-  expression=expression.replace(/ ==/g,'=="') 
-  expression=expression.replace(/"/g,"'") 
 
 
-}
 
-else{
+expression=GetcleanedExpression(expression)
 
-  expression=expression.replace(/ ==/g,"=='") 
-
-  
-}
+console.log('expression: ', expression);
 
 LinebylineSourcedata.forEach((el,index)=>{
 
-el=el.replace(/ /,'')
-
+el=GetcleanedExpression(el)
 
 if(el.includes(expression))
 
 {
 
-  AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message,index+1)
+  AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message,index)
 
 }
 
@@ -1364,7 +1360,7 @@ if(el.includes(expression))
         
         {
 
-          AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens  , message,i+1)
+          AddtoExecutionStack(ExecutionStack,'जबतक', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens  , message,i+1)
 
 
 
@@ -1522,7 +1518,7 @@ if(el.includes(expression))
       //Iterating over forloop sourcedata
       //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
 
-let message='दुहराओ के अंदर लिखे गए कोड को '+IterationStart+' से '+ IterationEnd + ' तक, मतलब '+ eval((IterationEnd-IterationStart)+1)  + ' बार RUN(रन) किया जायेगा '
+let message='दुहराओ के अंदर लिखे गए कोड को '+IterationStart+' से '+ IterationEnd + ' तक, मतलब '+ eval((IterationEnd-IterationStart)+1)  + ' बार RUN(रन) किया जायेगा |' + 'इसमें Computer, '+ iterator+' को Memory में, '+ IterationStart + ' से ' + IterationEnd +  ' तक क़ीमत(Values) सेट करता जाएगा|' 
 
 //This is the experession whcih is getting evaluated. 
 let expression= 'दुहराओ ' + iterator +' को ' + mutable_tokens[j+1].value + ' मे'
@@ -1530,7 +1526,7 @@ let expression= 'दुहराओ ' + iterator +' को ' + mutable_tokens[j+
 let Linenumber= LinebylineSourcedata.indexOf(expression)
 Linenumber=Linenumber+1
 
-      AddtoExecutionStack(ExecutionStack,'=', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, ''  , message, Linenumber)
+      AddtoExecutionStack(ExecutionStack,'दुहराओ', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, ''  , message, Linenumber)
 
 
       for (iterator = IterationStart; iterator <= Cycle; iterator++)
@@ -1751,14 +1747,34 @@ Linenumber=Linenumber+1
             {
 
               i = HandleConditions(SourcedataTokens, i, updated_tokens);
-              
 
+             
+    
+    
+              let expression= condition
+              let Linenumber=''
+
+expression=GetcleanedExpression(expression)
+
+LinebylineSourcedata.forEach((el,index)=>{
+
+el=GetcleanedExpression(el)
+if(el.includes(expression))
+{
+
+
+Linenumber=index
+
+
+}
+
+})
               if (i != undefined)
               {
 
                 i = i
                 let message= 'कंडीशन '+ condition+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं कर रहा है '
-                AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message)
+                AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message,Linenumber+1)
 
 
 
@@ -1768,7 +1784,7 @@ Linenumber=Linenumber+1
                 i = ConditionStartIndex
 
                 let message= 'कंडीशन '+ condition+ ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन कर रहा है '
-                AddtoExecutionStack(ExecutionStack,'=', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message)
+                AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message,Linenumber+1)
 
 
               }
@@ -2581,8 +2597,9 @@ Linenumber=Linenumber+1
     return item !== ""
   })
 
-  ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
+  //ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
+  console.log('ExecutionStack: ', ExecutionStack);
+  
 
-////console.log('ExecutionStack: ', ExecutionStack );
-
+return ExecutionStack
 }

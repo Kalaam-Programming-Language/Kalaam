@@ -3,33 +3,21 @@
       <div id="header">
 <div id="LogoandTitle">
 <!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
+
+c
+
 <router-link id="Kalaam" to="/" >कलाम</router-link> 
 </div>
   <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
 
 <ul id="headerlist">
 
- <!--
-
-  <span v-if="isRoutePractise">
-   <span v-if="!PractiseOn"><li >Practice Mode</li></span>  
-  <span> <li style="color:green" v-if="PractiseOn" >Practice Mode</li></span>
-
-
-<li style="margin:0px">
-  <label  class="switch">
-  <input @click="SwitchMode()" :v-bind="checked" type="checkbox" checked>
-  <span class="slider round"></span>
-</label>
-</li>
-  <span v-if="!LearningOn"><li >Learning Mode</li></span> 
-   <span v-if="LearningOn"><li style="color:green"   >Learning Mode</li></span> 
-
-      </span>
-      -->
+      
 
       
-   <li v-if="!isRoutePractise" ><router-link to="/Practise">Practice</router-link> </li>
+
+   <li v-if="!isRoutePractise" ><router-link to="/Practice">Practice</router-link> </li>
+
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
@@ -73,10 +61,7 @@ export default {
     return {
       showMenu:false,
 
-      checked:false,
-
-      LearningOn:true,
-      PractiseOn:false,
+     
       isRoutePractise:false
     }
   },
@@ -104,32 +89,7 @@ this.showMenu=false
 }
 ,
 
-SwitchMode:function()
-{
 
-
-  this.$store.commit('changeMode')
-
- if(this.LearningOn==true)
-
-      {
-
-      this.PractiseOn=true
-      this.LearningOn=false
-      
-      
-      
-      }
-      
-      else if(this.PractiseOn==true)
-      {
-      this.LearningOn=true
-      this.PractiseOn=false
-      
-      
-      }
-
-}
 
   },
 
