@@ -15,7 +15,12 @@
       
 
       
+<<<<<<< HEAD
    <li v-if="!isRoutePractise" ><router-link to="/Practice">Practice</router-link> </li>
+=======
+
+ 
+>>>>>>> b8ef72c08f0368a9f1426d7dd97fb4d0fce1ae27
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
