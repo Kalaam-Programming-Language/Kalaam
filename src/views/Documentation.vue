@@ -17,7 +17,7 @@
 <h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>1.एक घोषित (declared) वेरिएबल को प्रिंट करने के लिए ।   </h4>
-<p>Name="Hello World" </p>  
+<p>Name &#61; "Hello World" </p>  
 <p>प्रिंट(Name) </p>  
 <p>    </p>
 
@@ -26,7 +26,7 @@
 <p>प्रिंट(007)</p> 
 
 <h4>३. Multi/Concatenated शब्दों को प्रिंट करने के लिए ।    </h4>
-<p>Name="Kalam" </p> 
+<p>Name &#61; "Kalam" </p> 
 <p>प्रिंट("Hello World," + "My Name is" + Name + "!")</p> 
 
 
@@ -127,25 +127,25 @@ Name="Kalam"
 <h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>१ . Single Condition को मूल्यांकन (Evaluate) करना।   </h4>
-<h5> अगर (Language=='kalam') </h5>  
-<h5> अगर (Age > 18) </h5>  
+<h5> अगर (Language &#61;&#61; 'kalam') </h5>  
+<h5> अगर (Age &gt; 18) </h5>  
 <p><b> स्वीकृत  Comparion operators नीचे दिए गए है : </b>  </p>
-<p><b>></b> - Greater than</p>
-<p><b><</b> -  Less than</p>
-<p><b>==</b> - is Equal to</p>
-<p><b>!=</b> - is Not Equal to</p>
+<p><b>&gt;</b> - Greater than</p>
+<p><b>&lt;</b> -  Less than</p>
+<p><b>&#61;&#61;</b> - is Equal to</p>
+<p><b>&#33;&#61;</b> - is Not Equal to</p>
 
 
 
 <h4>२: Multiple Conditions को मूल्यांकन (Evaluate) करना। 
  </h4>
-<h5>अगर (Age>16 && Education =='ssc')</h5> 
-<h5>अगर (Country=='india' || Language=='hindi')</h5> 
+<h5>अगर (Age &gt; 16 &amp;&amp; Education &#61;&#61; 'ssc')</h5> 
+<h5>अगर (Country&#61;&#61;'india' || Language &#61;&#61; 'hindi')</h5> 
 
 
 <p><b>  स्वीकृत comparison Operators नीचे दिए गए है: </b> </p>
-<p><b>&&</b> - अगर दोनों Conditions सत्य हो तो उसे True समझा जाता है। </p>
-<p><b>||</b> - अगर एक Condition सत्य हो तो True समझा जाता है।</p>
+<p><b>&amp;&amp;</b> - अगर दोनों Conditions सत्य हो तो उसे True समझा जाता है। </p>
+<p><b>&#124;&#124;</b> - अगर एक Condition सत्य हो तो True समझा जाता है।</p>
 
 
 </div>
@@ -357,14 +357,14 @@ value=Name[y]
 <h5>जबतक(<i>YourCondition</i> ) </h5>  
 
 <p><b> The accepted comparison operators are: </b>  </p>
-<p><b>></b> - Greater than</p>
-<p><b><</b> -  Less than</p>
-<p><b>==</b> - is Equal to</p>
-<p><b>!=</b> - is Not Equal to</p>
+<p><b>&gt;</b> - Greater than</p>
+<p><b>&lt;</b> -  Less than</p>
+<p><b>&#61;&#61;</b> - is Equal to</p>
+<p><b>&#33;&#61;</b> - is Not Equal to</p>
 
 <h2> उदाहरण</h2>
 
-<h5> <b>जबतक(count<25)</b> </h5> 
+<h5> <b>जबतक(count &lt; 25)</b> </h5> 
 <p>The code will run until the condition evaluates itself to true. </p> 
 <p>When the value of count reaches 26, code execution will stop. </p> 
 
@@ -425,8 +425,8 @@ count=count+1
 <h2> उदाहरण</h2>
 
 <h5> <b>City.संख्या()</b> </h5> 
-<p>If City='Banglore' then City.संख्या() will output the value <b>8</b>  </p> 
-<p>If City=['Pusad','Pune','Mumbai','Delhi'] then City.संख्या() will output the value <b>4</b> </p> 
+<p>If City &#61; 'Banglore' then City.संख्या() will output the value <b>8</b>  </p> 
+<p>If City &#61; ['Pusad','Pune','Mumbai','Delhi'] then City.संख्या() will output the value <b>4</b> </p> 
 
 
 
@@ -478,7 +478,7 @@ Citieslength=Cities.संख्या()
 <h2>इसका उपयोग कैसे करे?</h2>
 
 <h4>1: Push Value to an Array </h4>
-<h5> <i>ArrayName</i> =[] </h5>  
+<h5> <i>ArrayName</i> = &nbsp;[ &nbsp; ] </h5>  
 <h5>ArrayName.पुश(<i>YourValue</i>) </h5>  
 
 
@@ -566,19 +566,19 @@ Numbers.पुश(type)
 <h4>2: रचना को कॉल करना ।  </h4>
 <h3><i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3> 
 <h5><b>रचना का नाम - PrintFullName</b>  </h5>  
-<p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName≠printfullname  </p>  
+<p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName &ne; printfullname  </p>  
 
 <h2> उदाहरण</h2>
-<h5><b># वेरिएबल्स को डिफाइन करे। </b></h5>
-<h5>FirstName- 'Sachin' </h5> 
-<h5>LastName- 'Tendulkar' </h5> 
+<h5><b> वेरिएबल्स (Variables) को डिफाइन करे। </b></h5>
+<h5>FirstName &#61; 'Sachin' </h5> 
+<h5>LastName 	&#61; 'Tendulkar' </h5> 
 
 <h5><b> रचना declaration</b></h5>
  <h5>PrintFullName (x, y) </h5> 
 
  <h5><b> रचना Body</b></h5>
  <h5>{</h5>
- <h5>प्रिंट( x + y ) </h5> 
+ <h5>प्रिंट( x 	&#43; y ) </h5> 
  <h5>}</h5>
 
 <h5><b>रचना call</b>  </h5>  
