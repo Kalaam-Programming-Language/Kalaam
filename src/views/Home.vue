@@ -68,7 +68,7 @@
 
 
 <router-link to="/Practice"><button>Start Coding</button></router-link> 
-<router-link to="/Documentation"><button id="button2"> Get Started</button></router-link> 
+<router-link to="/Documentation"><button id="button2">Learn Kalaam</button></router-link> 
 
 
 </div>

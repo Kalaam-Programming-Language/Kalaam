@@ -32,7 +32,7 @@
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div style="border: 2px solid rgb(240 243 49);">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -803,7 +803,8 @@ this.$store.state.CurrentCode= copyText.innerHTML
 
   width: 45%;
     margin-top: 4%;
-    background-color: #fdfdfd;
+    background-color: black;
+    color: white;
     padding-left: 2%;
     height: fit-content;
 }

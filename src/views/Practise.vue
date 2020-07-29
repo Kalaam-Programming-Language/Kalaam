@@ -294,7 +294,7 @@ export default
           matchBrackets: true,
           showCursorWhenSelecting: true,
           theme: "monokai",
-         scrollbarStyle:'null',
+          scrollbarStyle:'null',
 
           
       }
@@ -336,6 +336,15 @@ this.checked=true
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     this.code = m
+
+
+   if(this.code=='')
+   {
+
+
+     this.code=localStorage.getItem('Code')
+   }
+
 
   },
 
@@ -403,8 +412,12 @@ SwitchMode:function()
     
     onCmCodeChange(newCode)
     {
-      this.code = newCode
-    },
+      this.code = newCode;
+      
+      localStorage.setItem('Code', newCode);
+      
+
+},
 
     //Add() is a function used to add clicked keywords on to the code editor. 
     //This keywords are in hindi, provided in the control panel at the bottom of our code editor.

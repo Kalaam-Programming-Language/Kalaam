@@ -186,6 +186,9 @@ function GetcleanedExpression(expression)
 
     expression=expression.replace(/'/g,'')
 
+    expression=expression.replace(/\(/g,'')
+    expression=expression.replace(/\)/g,'')
+
 return expression
 
 
