@@ -3,6 +3,7 @@
    
  <Header/>
 
+<!--
 
 <div id="Modes">
    <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
@@ -22,7 +23,7 @@
 
       
       </div>
-      
+      -->
       
    <div v-if="this.$store.state.LearningOn"  style="border:solid 5px green" class="PractiseMode" id="compiler">
 
@@ -392,7 +393,7 @@ SwitchMode:function()
       if (screen.width < 420)
       {
 
-        this.cm.setSize('100%', 300);
+        this.cm.setSize('100%', 340);
 
       }
       else
@@ -779,11 +780,11 @@ text-align: left;
 #textarea{
 
     width: 100%;
-    margin: 0%
+    margin: 0%;
 }
 #codearea{
 
-       height: 310px;
+       height: 340px;
        width: 99%;
        margin-left: 0
 
@@ -792,7 +793,7 @@ text-align: left;
 #textarea button{
 
 width: 20%;
-    height: 30px;
+    height: 41px;
     font-size: small;
 }
 
@@ -800,7 +801,7 @@ width: 20%;
 
 
     width: 100%;
-   height: 330px;
+   height: 340px;
 
     margin-top: 5%;
         overflow-y: scroll;
