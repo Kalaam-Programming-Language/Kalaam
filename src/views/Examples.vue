@@ -4,39 +4,76 @@
 
         <h1>Examples</h1>
 
-               <carousel :navigationClickTargetSize="40" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
+               <carousel :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
 
-    
-  <slide>
 
+
+ <slide>
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#1 Fibonacci अनुक्रम  </h3>
+<h3>#1 कैलकुलेटर (Calculator) </h3>
 
-<pre id="CodeID1" >
+<pre id="CodeID8" >
 
 
 
-Fibonacci=[]
-दुहराओ a को (0,25) मे
+इनपुट(FirstValue)
+
+इनपुट(SecondValue)
+
+इनपुट(Operation)
+
+
+प्रिंट('FirstValue is '+FirstValue)
+प्रिंट('SecondValue is '+SecondValue)
+
+
+
+
+अगर(Operation=='+')
+
 {
-अगर (a<3)
-{
-Fibonacci[a]=a
-}
-अगर (a>1)
-{
-x=Fibonacci[a-2]
-y=Fibonacci[a-1]
-Fibonacci[a]=x+y
-}
+
+output=FirstValue+SecondValue
+
+प्रिंट("Output is " + output)
+
 }
 
-प्रिंट(Fibonacci)
+अगर(Operation=='-')
+
+{
+
+output=FirstValue-SecondValue
+
+प्रिंट("Output is " + output)
+
 }
+
+अगर(Operation=='*')
+
+{
+
+output=FirstValue*SecondValue
+
+प्रिंट("Output is " + output)
+
+}
+
+अगर(Operation=='/')
+
+{
+
+output=FirstValue/SecondValue
+
+प्रिंट("Output is " + output)
+
+}
+
+
  
 
 </pre>
@@ -44,8 +81,8 @@ Fibonacci[a]=x+y
 
 </div>
 
-
   </slide>
+
   <slide>
     <div id="slide">
 
@@ -124,13 +161,82 @@ length=length-1
 
 </div>
   </slide>
+
+          <slide>
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#4 क्या यह एक प्रमुख संख्या है? </h3>
+
+<pre id="CodeID7" >
+
+
+
+
+
+इनपुट(num)
+
+prime=[]
+
+दुहराओ b को (2,num) मे
+
+{
+
+Remainder=num%b
+
+अगर(Remainder==0)
+
+{
+
+prime.पुश(b)
+
+}
+
+}
+
+
+length=prime.संख्या()
+
+अगर(length==1 &amp;&amp; num>1)
+
+{
+
+प्रिंट(num + "is a Prime Number")
+
+}
+
+अन्यथा
+
+{
+
+प्रिंट(num + "is not a Prime Number")
+
+
+}
+
+
+ 
+
+
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+
+  </slide>
     <slide>
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#4 रचना का उदाहरण  </h3>
+<h3>#5 रचना का उदाहरण  </h3>
 
 <pre id="CodeID4" >
 
@@ -213,7 +319,7 @@ printname(0)
  <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#5 बाइनरी से Decimal ( Binary to Decimal ) </h3>
+<h3>#6 बाइनरी से Decimal ( Binary to Decimal ) </h3>
 
 <pre id="CodeID6" >
 
@@ -249,66 +355,38 @@ DecimalValue=DecimalValue+value
 
 </div>
   </slide>
+
+
     <slide>
+
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#6 क्या यह एक प्रमुख संख्या है? </h3>
+<h3>#7 Fibonacci अनुक्रम  </h3>
 
-<pre id="CodeID7" >
-
-
+<pre id="CodeID1" >
 
 
 
-इनपुट(num)
-
-prime=[]
-
-दुहराओ b को (2,num) मे
-
+Fibonacci=[]
+दुहराओ a को (0,25) मे
 {
-
-Remainder=num%b
-
-अगर(Remainder==0)
-
+अगर (a<3)
 {
-
-prime.पुश(b)
-
+Fibonacci[a]=a
+}
+अगर (a>1)
+{
+x=Fibonacci[a-2]
+y=Fibonacci[a-1]
+Fibonacci[a]=x+y
+}
 }
 
+प्रिंट(Fibonacci)
 }
-
-
-length=prime.संख्या()
-
-अगर(length==1 &amp;&amp; num>1)
-
-{
-
-प्रिंट(num + "is a Prime Number")
-
-}
-
-अन्यथा
-
-{
-
-प्रिंट(num + "is not a Prime Number")
-
-
-}
-
-
- 
-
-
-
-
  
 
 </pre>
@@ -316,84 +394,12 @@ length=prime.संख्या()
 
 </div>
 
-  </slide>
-
- <slide>
-<div id="slide">
-
- <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
-<p id="CodePara" >
-
-<h3>#7 कैलकुलेटर (Calculator) </h3>
-
-<pre id="CodeID8" >
-
-
-
-इनपुट(FirstValue)
-
-इनपुट(SecondValue)
-
-इनपुट(Operation)
-
-
-प्रिंट('FirstValue is '+FirstValue)
-प्रिंट('SecondValue is '+SecondValue)
-
-
-
-
-अगर(Operation=='+')
-
-{
-
-output=FirstValue+SecondValue
-
-प्रिंट("Output is " + output)
-
-}
-
-अगर(Operation=='-')
-
-{
-
-output=FirstValue-SecondValue
-
-प्रिंट("Output is " + output)
-
-}
-
-अगर(Operation=='*')
-
-{
-
-output=FirstValue*SecondValue
-
-प्रिंट("Output is " + output)
-
-}
-
-अगर(Operation=='/')
-
-{
-
-output=FirstValue/SecondValue
-
-प्रिंट("Output is " + output)
-
-}
-
-
- 
-
-</pre>
-</p>
-
-</div>
 
   </slide>
 
 </carousel>
+
+<p style="text-align:center" >Click on the dots above to scroll through more examples</p>
     </div>
 </template>
 

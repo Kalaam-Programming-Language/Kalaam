@@ -355,6 +355,10 @@ from '../Scripts/main.js'
         let ArrayElement = CreateArrayElement(Value, iterator)
 
         let output = GetArrayorStringElement(ArrayElement, updated_tokens)
+        
+
+       output=output.replace(/'/g,'')
+      output=output.replace(/"/g,'')
 
         AddOutput( output)
 
@@ -503,18 +507,23 @@ from '../Scripts/main.js'
 
   expression=GetcleanedExpression(expression)
   
+  let flag=true
+  
   LinebylineSourcedata.forEach((el,index)=>{
 
    el=GetcleanedExpression(el)
     
     
     
-    if(el.includes(expression))
+    if(el.includes(expression) && flag==true)
+    
+    
     
     {
-    
+
+
       AddtoExecutionStack(ExecutionStack,'प्रिंट()', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message,index+1)
-  
+     flag=false
     
     }
   })
@@ -1233,13 +1242,13 @@ Linenumber=i+1
 
         j = Returnvalue.j
 
-        var message= 'कंडीशन '+ element+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं कर रहा है '
+        var message= 'कंडीशन '+ element+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा '
         
 
       }
 
       else{
-        var message= 'कंडीशन '+ element+ ' , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन कर रहा है '
+        var message= 'कंडीशन '+ element+ ' , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा '
         
 
 
@@ -1263,7 +1272,7 @@ if(el.includes(expression))
 
 {
 
-  AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message,index)
+  AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message,index+1)
 
 }
 
@@ -1773,7 +1782,7 @@ Linenumber=index
               {
 
                 i = i
-                let message= 'कंडीशन '+ condition+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं कर रहा है '
+                let message= 'कंडीशन '+ condition+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा '
                 AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message,Linenumber+1)
 
 
@@ -1783,7 +1792,7 @@ Linenumber=index
               {
                 i = ConditionStartIndex
 
-                let message= 'कंडीशन '+ condition+ ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन कर रहा है '
+                let message= 'कंडीशन '+ condition+ ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा '
                 AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message,Linenumber+1)
 
 

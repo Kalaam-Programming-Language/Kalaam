@@ -4,6 +4,7 @@
  <Header/>
 
 <!--
+
 <div id="Modes">
    <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
   <span v-if="this.$store.state.PractiseOn"> <li style="color:green"  >Practice Mode</li></span>
@@ -294,7 +295,7 @@ export default
           matchBrackets: true,
           showCursorWhenSelecting: true,
           theme: "monokai",
-         scrollbarStyle:'null',
+          scrollbarStyle:'null',
 
           
       }
@@ -336,6 +337,15 @@ this.checked=true
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     this.code = m
+
+
+   if(this.code=='')
+   {
+
+
+     this.code=localStorage.getItem('Code')
+   }
+
 
   },
 
@@ -383,7 +393,7 @@ SwitchMode:function()
       if (screen.width < 420)
       {
 
-        this.cm.setSize('100%', 300);
+        this.cm.setSize('100%', 340);
 
       }
       else
@@ -403,8 +413,12 @@ SwitchMode:function()
     
     onCmCodeChange(newCode)
     {
-      this.code = newCode
-    },
+      this.code = newCode;
+      
+      localStorage.setItem('Code', newCode);
+      
+
+},
 
     //Add() is a function used to add clicked keywords on to the code editor. 
     //This keywords are in hindi, provided in the control panel at the bottom of our code editor.
@@ -766,11 +780,11 @@ text-align: left;
 #textarea{
 
     width: 100%;
-    margin: 0%
+    margin: 0%;
 }
 #codearea{
 
-       height: 310px;
+       height: 340px;
        width: 99%;
        margin-left: 0
 
@@ -779,7 +793,7 @@ text-align: left;
 #textarea button{
 
 width: 20%;
-    height: 30px;
+    height: 41px;
     font-size: small;
 }
 
@@ -787,7 +801,7 @@ width: 20%;
 
 
     width: 100%;
-   height: 330px;
+   height: 340px;
 
     margin-top: 5%;
         overflow-y: scroll;
