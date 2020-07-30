@@ -3,7 +3,7 @@
    
  <Header/>
 
-<!--
+
 
 <div id="Modes">
    <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
@@ -23,7 +23,7 @@
 
       
       </div>
-      -->
+      
       
    <div v-if="this.$store.state.LearningOn"  style="border:solid 5px green" class="PractiseMode" id="compiler">
 
