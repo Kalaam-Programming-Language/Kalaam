@@ -110,7 +110,7 @@ from '../Scripts/main.js'
   //Sourcedata is the raw code provided by use
   var sourcedata = kalaam.code;
 
-  var LinebylineSourcedata=sourcedata.replace(/(?:\r\n|\r|\n)/g, 'line').split("line")
+  var LinebylineSourcedata=sourcedata.replace(/(?:\r\n|\r|\n)/g, 'breakpoint').split("breakpoint")
   //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
   console.log('LinebylineSourcedata: ', LinebylineSourcedata);
   
@@ -1204,6 +1204,9 @@ if(el.includes(expression))
 
 Linenumber=i+1
 
+AddtoExecutionStack(ExecutionStack,'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message,Linenumber)
+
+
 }
 
 
@@ -1211,7 +1214,6 @@ Linenumber=i+1
 
 
 
-      AddtoExecutionStack(ExecutionStack,'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message,Linenumber)
 
 
     }
@@ -1925,6 +1927,31 @@ Linenumber=index
       //Building a complete variable-value pair dataset
 
       var CompleteTokenValueList = [...updated_tokens, ...functionContextupdated_tokens]
+
+
+      let message='Computer '+ '"' +functionName + '"'  +  ' नाम की रचना को कॉल (Call) करता है | आपने ' + '"()"'+ ' के अंदर दिए गए New Values का रचना '+ functionName +  ' में उपयोग करके, रचना '+functionName+ ' में लिखे गए कोड को रन करता है |' 
+
+      let expression= functionName+'('
+      
+      let Linenumber=''
+      //console.log('expression: ', expression);
+
+LinebylineSourcedata.forEach((el,i)=>{
+
+if(el.includes(expression) && !el.includes('रचना'))
+{
+
+Linenumber=i+1
+
+AddtoExecutionStack(ExecutionStack,'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', functionName ,functionSourceData, message,Linenumber)
+
+
+}
+
+
+})
+
+
 
       //Now we start digging into the function execution
 

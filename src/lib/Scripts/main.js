@@ -1431,62 +1431,39 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
 //This is the experession whcih is getting evaluated. 
 
-let expression0=variable+ '='+varvalue
+let expression=variable+ '='+varvalue
 
-expression0=GetcleanedExpression(expression0)
-
-let expression1= variable +'='+"'"+varvalue+"'"
-expression1=GetcleanedExpression(expression1)
-
-let expression2= variable +'='+'"'+varvalue+'"'
-expression2=GetcleanedExpression(expression2)
+expression=GetcleanedExpression(expression)
 
 
 
 
 LinebylineSourcedata.forEach((el,index)=>{
 
+
   el=el.replace(/ /,'')
 
   el=GetcleanedExpression(el)
   
   
-  if(el.includes(expression0))
+  
+
+  
+  if(el==expression )
   
   {
 
+
   
     AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
-    
+
+        
 
   
   }
   
-  else if(el.includes(expression1))
-{
-  console.log('hii');
-
-
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, variable , message, index+1)
-
-
-}
-
-else if(el.includes(expression2))
-{
-
-  console.log('hii');
-
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
-
-
-
-}
   
-  
-  
-  
-  
+ 
   
   
   })

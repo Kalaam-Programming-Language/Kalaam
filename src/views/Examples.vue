@@ -100,14 +100,11 @@ line="|"
 space="  "
 Extra="  "
 
-X IS OUR ITERATOR WHICH WILL RUN A LOOP FROM 1 TO 15
 
-दुहराओ x को (1,15)
+दुहराओ x को (1,15) मे
 {
 
-Road=space+line+space+space+space
-+YourSign
-+space+space+space+line+space
+Road=space+line+space+space+space+YourSign+space+space+space+line+space
 
 space=space+Extra
 
