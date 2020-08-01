@@ -22,8 +22,8 @@
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
-   <li><router-link to="/Support">Support</router-link> </li>
-    <li><router-link to="/About">About</router-link> </li>
+   <li><router-link  to="/Support">Support</router-link> </li>
+    <li><router-link  to="/About">About</router-link> </li>
    
    
 </ul>
@@ -63,7 +63,10 @@ export default {
       showMenu:false,
 
      
-      isRoutePractise:false
+      isRoutePractise:false,
+
+      ShowSupport:true,
+      ShowAbout:true
     }
   },
 
@@ -102,7 +105,13 @@ let route= this.$route.name
 if(route=='Practise')
 {
 
-this.isRoutePractise=true
+this.isRoutePractise=true;
+
+this.ShowSupport=false;
+
+this.ShowAbout=false
+
+
 
 }
 

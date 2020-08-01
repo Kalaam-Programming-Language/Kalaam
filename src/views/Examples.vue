@@ -39,7 +39,6 @@
 
 output=FirstValue+SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
@@ -49,7 +48,6 @@ output=FirstValue+SecondValue
 
 output=FirstValue-SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
@@ -59,7 +57,6 @@ output=FirstValue-SecondValue
 
 output=FirstValue*SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
@@ -69,12 +66,14 @@ output=FirstValue*SecondValue
 
 output=FirstValue/SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
 
- 
+प्रिंट("Output is " + output)
+
+
+
 
 </pre>
 </p>
@@ -132,7 +131,7 @@ space=space+Extra
 
 इनपुट(Name)
 
-ReverseString='tempValue'
+ReverseString=''
 
 प्रिंट ('Input String-'+ Name)
 

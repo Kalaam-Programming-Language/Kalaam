@@ -416,6 +416,8 @@ SwitchMode:function()
       this.code = newCode;
       
       localStorage.setItem('Code', newCode);
+
+      this.$store.state.CurrentCode=newCode
       
 
 },

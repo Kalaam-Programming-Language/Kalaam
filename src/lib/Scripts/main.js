@@ -125,6 +125,7 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
   sourcedata = SourceDataReplaceforEasyParsing(sourcedata)
 
   sourcedata.forEach((element, i) =>
+  
   {
 
     //finding the elements which has =" in it so that to seprate them into name,==,swanand if input is name="swanand". 
@@ -133,11 +134,14 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
 
     //This is our cleaning factory
 
+    
+
     if (!element.includes('==') && (element.indexOf('="') > -1 || element.indexOf('=') > 0 || element.charAt(0) == "=") && element != '==')
 
     {
 
       impurities.push(element) //push such element as impurity in impurities
+      
 
       let elements = element.split("=")
       let index = cleaned_sourcedata.length
@@ -169,6 +173,7 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
     return item !== ""
   })
 
+
   return cleaned_sourcedata;
 
 }
@@ -198,7 +203,11 @@ return expression
 
 function SplitElementsArray(element, i)
 
+
+
 {
+
+element=RemoveBrackets(element)
 
   if (element.includes('>') || element.includes('<') || element.includes('==') || element.includes('!='))
 
@@ -218,7 +227,9 @@ function SplitElementsArray(element, i)
 
     // find if element[j] is alphabet
 
+
     if (/^[A-Z]+$/i.test(element[j]) || (element[j] == '[' || element[j] == ']')  || (element[j] == '"' || element[j] == "'") || isNumber(element[j]))
+    
     {
 
       StrVar = StrVar + element[j] //keep on pushing for long variable names as strings e.g hello, kalaam
@@ -260,7 +271,11 @@ function SplitElementsArray(element, i)
       StrVar = ''
 
     }
-    if (element[j] == "?" || element[j] == "|" || element[j] == ";" || element[j] == "&" || element[j] == "^" || element[j] == "%" || element[j] == "$" || element[j] == "#" || element[j] == "@" || element[j] == "!" || element[j] == ":" || element[j] == "+" || element[j] == "," || element[j] == "%" || element[j] == "-" || element[j + 1] == ')' || element[j] == "/" || element[j] == "*" || element[j] == '>' || element[j] == '<')
+
+//write a function for this
+
+    if (element[j] == "?"  || (element[j]=='=' && element[j+1]!='=' && element[j-1]!='=') || element[j] == "|" || element[j] == ";" || element[j] == "&" || element[j] == "^" || element[j] == "%" || element[j] == "$" || element[j] == "#" || element[j] == "@" || element[j] == "!" || element[j] == ":" || element[j] == "+" || element[j] == "," || element[j] == "%" || element[j] == "-" || element[j + 1] == ')' || element[j] == "/" || element[j] == "*" || element[j] == '>' || element[j] == '<')
+    
     {
 
       StringVar.push(StrVar) //push whatever string we have got because it's a string now, cant push operators with it
@@ -286,7 +301,12 @@ function SplitElementsArray(element, i)
 
   }
 
+
+
   return StringVar
+  
+  
+  
 
 }
 
@@ -396,7 +416,7 @@ function AddElementToArray(Sourcedata, index, updated_tokens,ExecutionStack,Line
   updated_tokens[indexofArray].value = ArrayValue
 
 
-  let message= 'आपने ' + ElementtoPush + ' को ' + Array + ' इस बकेट(Array) में दर्ज(Store) करवाया है| '
+  let message= 'आपने ' + '"' + ElementtoPush + '"'  + ' को ' + + '"' + Array + '"'  + ' इस बकेट(Array) में दर्ज(Store) करवाया है| '
 
 
 
@@ -430,7 +450,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,Lin
 
   })
 
-  let message= 'आपने ' + SetInputValueAs + ' को ' + value + ' ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| '
+  let message= 'आपने ' + '"' + SetInputValueAs + '"' + ' को ' + '"' + value + '"' + ' ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| '
 
 
   let expression = 'इनपुट('+SetInputValueAs+')'
@@ -655,7 +675,7 @@ function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, i
   updated_tokens[index].value = '[' + value.toString() + ']'
 
 
-  let message= ' Computer ने, ' + variable + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+  let message= ' Computer ने, ' + '"' +  variable + '"' + ' को, ' + '"' + value[indexCollected] + '"'  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
  
 
   let expression= OriginalElement
@@ -801,12 +821,15 @@ function isNumber(element)
 function SetValues(StringVar, updated_tokens)
 
 
+
 {
+
   StringVar.forEach((el, i) =>
 
     {
 
       el = el.replace(/\ /g, '');
+      
       
 
       if (el.charAt(el.length - 1) == ']')
@@ -1064,6 +1087,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
   let variableType = sourcedata[i - 1].type
 
   let varvalue = sourcedata[i + 1].value
+  
 
   var FinalValue=''
 
@@ -1417,11 +1441,11 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
   if(isCalculation(sourcedata[i+1].value) || sourcedata[i+1].value.includes('संख्या') )
   {
 
-  message= ' Computer सबसे पहले जाँच करता है की क्या, ' + sourcedata[i+1].value + ' को सुलझाने(Solve) करने की ज़रुरत है? अगर हा, तो Computer '+ sourcedata[i+1].value+ ' को Solve करके, ' +variable+ ' के नाम से Memory में दर्ज(Store)कर देगा | यहापर , '  + sourcedata[i+1].value + ' की कीमत (Value) , ' + FinalValue  +  ' आती है | इसलिए, Computer ' + variable + ' को ' + FinalValue +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |'
+  message= ' Computer सबसे पहले जाँच करता है की क्या, ' + '"' + sourcedata[i+1].value + '"' + ' को सुलझाने(Solve) करने की ज़रुरत है?' +'\n' + ' अगर हा, तो Computer '+ '"' + sourcedata[i+1].value + '"' +  ' को Solve करके, ' +'"' + variable + '"'+ ' के नाम से Memory में दर्ज(Store)कर देगा | ' +'\n' +  ' यहापर , '  +  '"' + sourcedata[i+1].value + '"' + ' की कीमत (Value) , ' + '"' + FinalValue + '"'  +  ' आती है |' +'\n' + ' इसलिए, Computer ' + '"'  + variable + '"' + ' को ' + '"' + FinalValue + '"' +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |'
   }
 
   else{
-    message= 'Computer ने, '+ variable +' को, '+ varvalue + ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+    message= ' Computer ने, '+ '"' + variable + '"' +' को, '+  '"' + varvalue + '"' + ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
     
 
 
@@ -1552,12 +1576,13 @@ function GetConditionValue(element, updated_tokens, j)
     
 
     let Values = SetValues(SplitArray, updated_tokens)
+    
+    
     Values = Values.filter(function(item)
     {
 
-      return item !== ""
+      return item !== "" && item !="'" && item !='"'
     })
-
     //Setting the final condition value in cases like अगर (ageone==10) 
 
     ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j)
