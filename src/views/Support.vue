@@ -37,7 +37,7 @@
             </div>
 
 
-          <div style="margin-top:5%">
+          <div id="bot">
 
 <h3>Start contributing to the development of Kalaam <a href="https://github.com/Kalaam-Programming-Language/Kalaam">here</a></h3>
 <h3>Join Kalaam Discord server for updates and anything cool → <a href="https://discord.gg/EMyA8TA"> here</a> </h3> 
@@ -78,7 +78,9 @@ export default {
 
 
 <style scoped>
-
+#bot{
+    margin-top:5%
+}
 #section{
 
     width: 100%;

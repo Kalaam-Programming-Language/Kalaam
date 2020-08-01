@@ -32,7 +32,7 @@
 
 </div>
 
-<div style="border: 2px solid rgb(240 243 49);">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -89,7 +89,7 @@ Name="Kalam"
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -150,7 +150,7 @@ Name="Kalam"
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -293,7 +293,7 @@ language='kalaam'
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -373,7 +373,7 @@ value=Name[y]
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -432,7 +432,7 @@ count=count+1
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -486,7 +486,7 @@ Citieslength=Cities.संख्या()
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -595,7 +595,7 @@ Numbers.पुश(type)
 
 </div>
 
-<div style="border: solid 2px #31d8f3;">
+<div id="doc">
  <button id="TryCodebtn" @click="CopyCode('CodeID2')">कोड के साथ खेलिए।</button>
 <p id="CodePara" >
 
@@ -745,6 +745,10 @@ this.$store.state.CurrentCode= copyText.innerHTML
 
 </script>
 <style scoped>
+#doc{
+	border: solid 2px #31d8f3;
+}
+
 
 .collapsible {
      background-color: white;

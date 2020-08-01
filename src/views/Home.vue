@@ -56,7 +56,7 @@
 <div id="IntroductionSection">
 
 
-<h1>The Programming Language <br>in <span style=" color: rgb(52, 204, 218)">हिन्दी</span> </h1>
+<h1>The Programming Language <br>in <span id="lang">हिन्दी</span> </h1>
 
   <div class="container">
       <span id="TypeWriter" class="typed-text">{{ typeValue }}</span>
@@ -82,7 +82,7 @@
 
 <div class="footer">
  <!-- <p style=" color: white">Released Under the MIT Licence</p>-->
-  <p style=""><a style="text-decoration:none;color: white"> © Swanand Kadam</a></p>
+  <p style=""><a id="credit"> © Swanand Kadam</a></p>
 </div>
 
 
@@ -174,7 +174,12 @@ this.showMenu=false
 
 
 <style scoped >
-
+#lang{
+	color: rgb(52, 204, 218);
+}
+#credit{
+	text-decoration:none;color: white
+}
 #KalamLogo
 {
 
