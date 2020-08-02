@@ -16,6 +16,18 @@ from '../Scripts/DataCleaning'
 
 //Needs improvement
 
+function IsSpecialChar(v,i)
+
+{
+
+
+  return v[i] == "?"  || (v[i]=='=' && v[i+1]!='=' && v[i-1]!='=') || v[i] == "|" || v[i] == ";" || v[i] == "&" || v[i] == "^" || v[i] == "%" || v[i] == "$" || v[i] == "#" || v[i] == "@" || v[i] == "!" || v[i] == ":" || v[i] == "+" || v[i] == "," || v[i] == "%" || v[i] == "-" || v[i + 1] == ')' || v[i] == "/" || v[i] == "*" || v[i] == '>' || v[i] == '<'
+
+
+
+}
+
+
 function isEmptyStringorChar()
 {
 
@@ -272,13 +284,13 @@ element=RemoveBrackets(element)
 
     }
 
-//write a function for this
 
-    if (element[j] == "?"  || (element[j]=='=' && element[j+1]!='=' && element[j-1]!='=') || element[j] == "|" || element[j] == ";" || element[j] == "&" || element[j] == "^" || element[j] == "%" || element[j] == "$" || element[j] == "#" || element[j] == "@" || element[j] == "!" || element[j] == ":" || element[j] == "+" || element[j] == "," || element[j] == "%" || element[j] == "-" || element[j + 1] == ')' || element[j] == "/" || element[j] == "*" || element[j] == '>' || element[j] == '<')
+    if (IsSpecialChar(element,j))
     
     {
 
       StringVar.push(StrVar) //push whatever string we have got because it's a string now, cant push operators with it
+      
 
       //finding the calculations that required brackets and adding them
 
