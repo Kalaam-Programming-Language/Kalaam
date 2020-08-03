@@ -25,7 +25,7 @@
       </div>
       
       
-   <div v-if="this.$store.state.LearningOn"   class="PractiseMode" id="compiler">
+   <div v-if="this.$store.state.LearningOn"  style="border:solid 5px green" class="PractiseMode" id="compiler">
 
 
    <div id="textarea">
@@ -33,7 +33,7 @@
 
   <no-ssr placeholder="...">
 
-  <codemirror id="codearea" ref="myCm"
+  <codemirror id="codearea" style="text-align:left;" ref="myCm"
               :value="code" 
               placeholder="Welcome To Kalaam, This is your Code Editor."
               :options="cmOptions"
@@ -44,16 +44,20 @@
   </no-ssr>
 
   
-      <button  id="subm other" @click="RunLinebyLine()">Run LinebyLine</button>
-      <button  id="subm run" @click="Clear()">Clear</button>
-      <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
-      <button id="subm" @click="Add('रचना')">रचना</button>
-      <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
-      <button id="subm" @click="Add('अगर()')">अगर</button>
-      <button id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ </button>
-      <button id="subm" @click="Add('जबतक()')">जबतक</button>
-      <button id="subm" @click="Add('.संख्या()')">.संख्या</button>
-      <button id="subm" @click="Add('.पुश()')">.पुश</button>
+       <button style="background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
+    border: none;
+    font-weight: 600;" id="subm" @click="RunLinebyLine()">Run LinebyLine</button>
+      <button style="background: linear-gradient(to right, #11998e, #12ff6b);
+    border: none;
+    font-weight: 600;" id="subm" @click="Clear()">Clear</button>
+        <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
+	<button id="subm" @click="Add('रचना')">रचना</button>
+    <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
+    <button id="subm" @click="Add('अगर()')">अगर</button>
+    <button id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ </button>
+    <button id="subm" @click="Add('जबतक()')">जबतक</button>
+    <button id="subm" @click="Add('.संख्या()')">.संख्या</button>
+    <button id="subm" @click="Add('.पुश()')">.पुश</button>
     
 
    
@@ -71,7 +75,7 @@
 
 <div id="printOutput">
 
-<p  id="linebylineOutput" >
+<p style="white-space: pre; "  id="linebylineOutput" >
 
 
  {{this.ExecutionStackLinebyLine}} 
