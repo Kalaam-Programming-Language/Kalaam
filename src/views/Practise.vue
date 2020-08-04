@@ -4,7 +4,7 @@
  <Header/>
 
 
-
+<!--
 <div id="Modes">
    <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
   <span v-if="this.$store.state.PractiseOn"> <li style="color:green"  >Practice Mode</li></span>
@@ -24,7 +24,7 @@
       
       </div>
       
-      
+      -->
   <div v-if="this.$store.state.LearningOn"    class="LearningMode" id="compiler">
 
 
@@ -446,7 +446,7 @@ SwitchMode:function()
 
 //Compile is our #1 function located in /lib/compiler/main.js
 //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
-//try console.log(this.$data) to see what we are sending to our compiler
+//try  to see what we are sending to our compiler
       
     Compile(this.$data)
 
@@ -457,7 +457,7 @@ SwitchMode:function()
 
 //Compile is our #1 function located in /lib/compiler/main.js
 //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
-//try console.log(this.$data) to see what we are sending to our compiler
+//try  to see what we are sending to our compiler
 
 
   

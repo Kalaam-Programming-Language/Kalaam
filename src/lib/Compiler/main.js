@@ -114,7 +114,7 @@ export default function Compile(kalaam) {
 
   var LinebylineSourcedata = sourcedata.replace(/(?:\r\n|\r|\n)/g, 'breakpoint').split("breakpoint")
   //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
-  //console.log('LinebylineSourcedata: ', LinebylineSourcedata);
+  //
 
 
   //This is where formatted and cleaned sourcedata will go.
@@ -221,7 +221,7 @@ export default function Compile(kalaam) {
 
   function PrintEngine(Tokens, updated_tokens, j, global, iterator, OriginalIterator) {
 
-    //Try //console.log('Tokens, updated_tokens, j, global, iterator, OriginalIterator): ', Tokens, updated_tokens, j, global, iterator, OriginalIterator)); 
+    //Try // 
     //To understand what kind of data is necessary to print a value 
 
     //Getting the current token as token and value to be printed as NextTokenValue
@@ -247,7 +247,7 @@ export default function Compile(kalaam) {
 
     //SECTION - Outputting the code
     // finding the variable value in updated_tokens. Updated_tokens is where our Variable-value pairs exists.
-    //Try //console.log(updated_tokens) to see how it looks
+    //Try // to see how it looks
 
     //This loop is only for printing direct values like print(name), print(array)
     updated_tokens.forEach((el, i) => {
@@ -382,7 +382,7 @@ export default function Compile(kalaam) {
         else {
 
           ArrayElement = ArrayElement
-          ////console.log('ArrayElement: ', ArrayElement);
+          ////
 
         }
 
@@ -991,7 +991,7 @@ export default function Compile(kalaam) {
   //If a code is not working, it is probably because it's not cleaned properly. 
 
   cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity)
-  console.log('cleaned_sourcedata: ', cleaned_sourcedata);
+  
 
 
   //#STEP 2- - Checking each token and adding to tokens array
@@ -1021,7 +1021,7 @@ export default function Compile(kalaam) {
 
   //Filtering seemed unnecessary, removed for now. 
   //tokens = tokens.filter(el => el.value != '')
-  console.log('tokens: ', tokens);
+  
 
 
 
@@ -1125,7 +1125,7 @@ export default function Compile(kalaam) {
 
       let expression = 'रचना ' + token
       let Linenumber = ''
-      //console.log('expression: ', expression);
+      //
 
       LinebylineSourcedata.forEach((el, i) => {
 
@@ -1278,7 +1278,7 @@ export default function Compile(kalaam) {
       let message = 'जबतक ' + element + ' सही होगा तब तक आगे का कोड रन किया जायेगा '
 
       let Linenumber = ''
-      //console.log('element: ', element);
+      //
 
       LinebylineSourcedata.forEach((el, i) => {
 
@@ -1784,7 +1784,7 @@ export default function Compile(kalaam) {
       let expression = functionName + '('
 
       let Linenumber = ''
-      //console.log('expression: ', expression);
+      //
 
       LinebylineSourcedata.forEach((el, i) => {
 
@@ -1970,7 +1970,7 @@ export default function Compile(kalaam) {
                 var NestedelementValue = NestedForLoopMetaData.elementValue
 
                 function getSourcedata(startIndex, SourcedataTokens, check, StoreResult) {
-                  ////console.log('startIndex, SourcedataTokens, check, StoreResult: ', startIndex, SourcedataTokens, check, StoreResult);
+                  ////
 
                   let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult)
                   StoreResult = Returnvalue.StoreResult
@@ -1982,7 +1982,7 @@ export default function Compile(kalaam) {
                 NestedForLoopSourcedataIndexStart = getLoopIndexStart(SourcedataTokens, i, '{', NestedForLoopSourcedataIndexStart)
 
                 NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, '}', NestedSourcedataTokens)
-                ////console.log('NestedSourcedataTokens: ', NestedSourcedataTokens);
+                ////
 
                 for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
                   {
@@ -1990,7 +1990,7 @@ export default function Compile(kalaam) {
                     let y = Nestediterator
 
                     let Nestedforloopindex = CompleteTokenValueList.find(el => el.name == NestedOriginalIterator)
-                    ////console.log('forloopindex: ', forloopindex);
+                    ////
 
                     Nestedforloopindex.value = y
 
@@ -2012,7 +2012,7 @@ export default function Compile(kalaam) {
                       }
                       else if (el.type == 'condition' && el.isNestedLoop == true) {
 
-                        ////console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
+                        ////
 
                         let ConditionStartIndex = index
                         let condition = NestedSourcedataTokens[index].value
@@ -2063,17 +2063,17 @@ export default function Compile(kalaam) {
                           }
                           else {
                             index = ConditionStartIndex
-                            ////console.log('i: ', i);
+                            ////
                           }
 
                         }
 
                       }
 
-                      ////console.log('i: ', i);
+                      ////
 
                       // i = i + NestedSourcedataTokens.length
-                      ////console.log('i: ', i);
+                      ////
                       else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true) {
                         SetArrayIndexValue(NestedSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
@@ -2103,7 +2103,7 @@ export default function Compile(kalaam) {
 
                 //for operations like print(array[3])
 
-                // //console.log('for looop prints: ', functionSourceData[i],i);
+                // //
 
                 PrintEngine(SourcedataTokens, CompleteTokenValueList, i, self, iterator, OriginalIterator)
 
@@ -2121,7 +2121,7 @@ export default function Compile(kalaam) {
               // Handling CONDITIONAL statements in for loop
               else if (SourcedataTokens[i].type == 'condition') {
 
-                ////console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
+                ////
 
                 let ConditionStartIndex = i
                 let condition = SourcedataTokens[i].value
@@ -2172,7 +2172,7 @@ export default function Compile(kalaam) {
                   }
                   else {
                     i = ConditionStartIndex
-                    ////console.log('i: ', i);
+                    ////
                   }
 
                 }
@@ -2329,7 +2329,7 @@ export default function Compile(kalaam) {
 
   }
 
-  console.log('updated_tokens: ', updated_tokens);
+  
 
 
   //This is where error handling kicks in
@@ -2369,7 +2369,7 @@ export default function Compile(kalaam) {
   var t1 = performance.now()
 
   if (kalaam.linebylineOutput != '' && kalaam.error.length == 0) {
-    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 10000).toPrecision(3) + " Seconds)"
+    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)"
 
   }
   else {

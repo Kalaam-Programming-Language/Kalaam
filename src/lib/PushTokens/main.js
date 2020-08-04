@@ -266,7 +266,7 @@ function PushFunctionData(value, tokens, sourcedata, i) {
     let functionName = sourcedata[i + 1]
     let functionNameSplit = functionName.split('(')
     let functionArguments = RemoveBrackets(functionNameSplit[1])
-    //   console.log('functionArguments: ', functionArguments);
+    //   
     functionArguments = functionArguments.split(',')
 
 
@@ -287,7 +287,7 @@ function PushFunctionExecution(value, tokens, sourcedata, i, passedValues) {
     let functionName = value
     let functionNameSplit = functionName.split('(')
     let functionArguments = RemoveBrackets(functionNameSplit[1])
-    //   console.log('functionArguments: ', functionArguments);
+    //   
     functionArguments = functionArguments.split(',')
 
 
@@ -350,7 +350,7 @@ function PushCalculation(value, tokens, cleaned_sourcedata, i) {
     //not allowing values like Numbers[a]
 
     if (!(!(/\d+/.test(cleaned_sourcedata[i - 3])) && cleaned_sourcedata[i - 3].includes('['))) {
-        //console.log('value passed: ', value,cleaned_sourcedata[i-3]);
+        //
 
         tokens.push({
             type: "Calculation",

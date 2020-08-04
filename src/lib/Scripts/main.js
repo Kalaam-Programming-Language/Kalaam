@@ -410,7 +410,7 @@ function AddElementToArray(Sourcedata, index, updated_tokens,ExecutionStack,Line
 
 
 let expression= Sourcedata[index].value;
-//console.log('expression: ', expression);
+//
 
   let Linenumber= LinebylineSourcedata.indexOf(expression)
   Linenumber+=1
@@ -1258,14 +1258,14 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     //Get Numbers[3] value and now set it to our variable x
     let value = GetArrayorStringElement(ArrayElement, updated_tokens)
-    //console.log('value: ', value);
+    //
     if(value!=undefined)
     {
 
   value=RemoveQuotes(value)
     }
     
-    //console.log('value: ', value);
+    //
 
     if (n != undefined && flag == false)
     {
