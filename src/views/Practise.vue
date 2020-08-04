@@ -25,7 +25,7 @@
       </div>
       
       
-   <div v-if="this.$store.state.LearningOn"   class="PractiseMode" id="compiler">
+  <div v-if="this.$store.state.LearningOn"    class="LearningMode" id="compiler">
 
 
    <div id="textarea">
@@ -44,8 +44,8 @@
   </no-ssr>
 
   
-      <button  id="subm other" @click="RunLinebyLine()">Run LinebyLine</button>
-      <button  id="subm run" @click="Clear()">Clear</button>
+      <button  id="RunlinebylineBtn" @click="RunLinebyLine()">Run LinebyLine</button>
+      <button  id="Runbtn" @click="Clear()">Clear</button>
       <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
       <button id="subm" @click="Add('रचना')">रचना</button>
       <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
@@ -63,7 +63,7 @@
 
 <div id="bharatDIV">
 
-<p id="version">Kalaam v1.0.0</p>
+<p id="version">Kalaam v1.0.0 (Learning Mode )</p>
 <p id="CodeStatus" v-if="this.isError==false">{{TimeTaken}}</p>
         
 <p id="CodeStatus" v-if="this.isError==true" >{{TimeTaken}}</p>
@@ -500,10 +500,30 @@ this.CurrentLine+=1
 </script>
 <style scoped>
 
-#run{
+.LearningMode{
+
+  border:solid 5px green;
+  
+}
+
+#RunlinebylineBtn{
+
+background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
+    border: none;
+    font-weight: 600;
+  width: 18.5%;
+  height: 50px;
+      cursor: pointer;
+      border: none
+}
+#Runbtn{
 	background: linear-gradient(to right, #11998e, #12ff6b);
     border: none;
     font-weight: 600;
+      width: 18.5%;
+  height: 50px;
+      cursor: pointer;
+      border: none
 }
 #other{
 	background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
@@ -664,6 +684,7 @@ width: 93%;
     border: none;
     outline: none;
     resize: none;
+    text-align: left;
 }
 
 #row{

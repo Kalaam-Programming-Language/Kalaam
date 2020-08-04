@@ -18,63 +18,66 @@ import * as AdvancedTypeCheck from '../TypeCheck/AdvancedTypeChecking'
 //To format user input into a proper String, Array or Condition. 
 import * as BuildOperation from '../Scripts/BuildOperations'
 
+import { RemoveQuotes, RemoveBrackets } from '../Scripts/Helpers'
+
+
+
 //Functions imported to push a particular data to our Tokens array. 
 //Tokens array is basically a clean, formatted and a word by word version of raw code provided by user
 import {
-PushArray,
-PushCalculation,
-PushConditionalKeyword,
-PushCondition,
-PushForLoop,
-PushWhileLoop,
-PushWhileLoopCondition,
-PushForLoopAruguments,
-PushExpression,
-PushKeyword,
-PushNumber,
-PushOperator,
-PushRealTimePrintOperation,
-PushString,
-PushStringandValueOperation,
-PushVariable,
-PushVariableValue,
-PushFunctionData,
-PushFunctionExecution,
-PushToArray,
-PushInput
+  PushArray,
+  PushCalculation,
+  PushConditionalKeyword,
+  PushCondition,
+  PushForLoop,
+  PushWhileLoop,
+  PushWhileLoopCondition,
+  PushForLoopAruguments,
+  PushExpression,
+  PushKeyword,
+  PushNumber,
+  PushOperator,
+  PushRealTimePrintOperation,
+  PushString,
+  PushStringandValueOperation,
+  PushVariable,
+  PushVariableValue,
+  PushFunctionData,
+  PushFunctionExecution,
+  PushToArray,
+  PushInput
 
 }
   from '../PushTokens/main'
 
 //This are other helper functions that we need for a particular task. All of this functions will be explained indepth as we see them in codebase.
 import {
-GetCleanSourcedata,
-GetcleanedExpression,
-RemoveBrackets,
-Count,
-AddElementToArray,
-ResetValue,
-isArrayOperation,
-CreateArrayElement,
-CalculateValues,
-GetArrayorStringElement,
-SetArrayorStringElement,
-handlemultConditions,
-HandleBlocks,
-SplitElementsArray,
-SetValues,
-PushSetArrayIndexValue,
-PushGetArrayIndexValue,
-UpdateUpdated_tokenswithValues,
-GetConditionValue,
-AcceptInputandSetValue,
-ForLoopArrayorStringOutput,
-AssignorUpdateValues,
-HandleConditions,
-getLoopIndexStart,
-ForLoopSetMetadata,
-SetArrayIndexValue,
-AddtoExecutionStack
+  IsReservedKeyword,
+  GetCleanSourcedata,
+  GetcleanedExpression,
+  AddElementToArray,
+  ResetValue,
+  isArrayOperation,
+  CreateArrayElement,
+  CalculateValues,
+  GetArrayorStringElement,
+  SetArrayorStringElement,
+  handlemultConditions,
+  HandleBlocks,
+  SplitElementsArray,
+  SetValues,
+  PushSetArrayIndexValue,
+  PushGetArrayIndexValue,
+  UpdateUpdated_tokenswithValues,
+  GetConditionValue,
+  AcceptInputandSetValue,
+  ForLoopArrayorStringOutput,
+  AssignorUpdateValues,
+  HandleConditions,
+  getLoopIndexStart,
+  ForLoopSetMetadata,
+  SetArrayIndexValue,
+  AddtoExecutionStack
 }
   from '../Scripts/main.js'
 
@@ -135,10 +138,7 @@ export default function Compile(kalaam) {
   //Pushing the variables that are assigned to filter out defined and undefined variables. Useful in error handling
   var assigned_variables = []
   var terms = []
-  var terms2 = []
-  var operation = ''
-  var CalculationStack = []
-  var foundToken = ''
+ 
   var ReIntializedVariables = []
 
   //TO REMOVE DUPLICATE VARIABLES, 
@@ -158,7 +158,7 @@ export default function Compile(kalaam) {
 
   const isOperator = TypeCheck.isOperator()
 
-  const isKeyword = TypeCheck.isKeyword()
+  const isPrintOperation = TypeCheck.isPrintOperation()
   const isConditionalKeyword = TypeCheck.isConditionalKeyword()
   const isForLoop = TypeCheck.isForLoop()
   const isWhileLoop = TypeCheck.isWhileLoop()
@@ -190,11 +190,11 @@ export default function Compile(kalaam) {
 
   const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleString()
 
-  const isStringandValue = AdvancedTypeCheck.isStringandValue()
+  //const isStringandValue = AdvancedTypeCheck.isStringandValue()
 
   const isCalculation = AdvancedTypeCheck.isCalculation()
 
-  const isDirectPrintArithmetic = AdvancedTypeCheck.isDirectPrintArithmetic()
+  // const isDirectPrintArithmetic = AdvancedTypeCheck.isDirectPrintArithmetic()
 
   //SECTION Build Operations 
 
@@ -337,8 +337,7 @@ export default function Compile(kalaam) {
         let output = GetArrayorStringElement(ArrayElement, updated_tokens)
 
 
-        output = output.replace(/'/g, '')
-        output = output.replace(/"/g, '')
+        output = RemoveQuotes(output)
 
         AddOutput(output)
 
@@ -423,8 +422,8 @@ export default function Compile(kalaam) {
 
 
 
-      output = output.replace(/"/g, '');
-      output = output.replace(/'/g, '');
+      output = RemoveQuotes(output)
+
 
       AddOutput(output + "\n")
 
@@ -436,20 +435,19 @@ export default function Compile(kalaam) {
       let x = SplitElementsArray(NextTokenValue)
 
       x = x.join('').split("+")
-      
- 
-      StringVar = SetValues(x, updated_tokens)
-      
 
-     
+
+      StringVar = SetValues(x, updated_tokens)
+
+
+
 
 
 
       let output = StringVar.join(' ')
 
-      output = output.replace(/"/g, '');
-      output = output.replace(/'/g, '');
       output = RemoveBrackets(output)
+      output = RemoveQuotes(output)
 
       AddOutput(output + "\n")
 
@@ -468,7 +466,7 @@ export default function Compile(kalaam) {
 
 
 
-    let message = ' Computer ने आपकी दी गयी वैल्यू, ' + '"' +  RemoveBrackets(NextTokenValue) + '"' + ' को प्रिंट() किया है |'
+    let message = ' Computer ने आपकी दी गयी वैल्यू, ' + '"' + RemoveBrackets(NextTokenValue) + '"' + ' को प्रिंट() किया है |'
 
     //This is the experession whcih is getting evaluated. 
 
@@ -524,7 +522,7 @@ export default function Compile(kalaam) {
     //Format: {type: "variable", value: "ReverseString"}
 
     if (isVariable(element) == true) {
-      
+
 
       //Here we seperate Message = 'Hello' into following three tokens :
 
@@ -536,7 +534,7 @@ export default function Compile(kalaam) {
 
       if (cleaned_sourcedata[i + 1] == '=') {
 
-        PushVariable(element, tokens)
+        PushVariable(element, tokens, cleaned_sourcedata[i + 2])
 
         //If we already have the variable declared before, push it to ReIntializedVariables array
 
@@ -615,7 +613,7 @@ export default function Compile(kalaam) {
       //Format: {type: "keyword", value: "प्रिंट"}
 
     }
-    else if (isKeyword(element) == true) {
+    else if (isPrintOperation(element) == true) {
 
       PushKeyword(element, tokens)
 
@@ -766,6 +764,7 @@ export default function Compile(kalaam) {
     //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
     else if (isRealTimePrintMultipleString(element) == true) {
 
+
       let foundString = ''
 
       let k = i
@@ -782,7 +781,7 @@ export default function Compile(kalaam) {
         let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2)
 
 
-        if (element.includes('दुहराओ') || element.includes('रचना') || element.includes('अन्यथा') || element.includes('इनपुट') || element.includes('पुश') || element.includes('प्रिंट') || element.includes('अगर') ||  /* cleaned_sourcedata[k + 1] == '='*/ element == '}') {
+        if (IsReservedKeyword(element)) {
 
           break;
 
@@ -812,13 +811,15 @@ export default function Compile(kalaam) {
 
       }
 
-      if ((!foundString.includes(">")) && (!foundString.includes('/')) && (!foundString.includes('*')) && (!foundString.includes('<')) /*&& (!foundString.includes('==') )*/) {
 
-        PushRealTimePrintOperation(foundString, tokens)
-
+      //if ((!foundString.includes(">")) && (!foundString.includes('/')) && (!foundString.includes('*')) && (!foundString.includes('<')) /*&& (!foundString.includes('==') )*/) {
 
 
-      }
+      PushRealTimePrintOperation(foundString, tokens)
+
+
+
+      //  }
 
       skipParsing = skip
 
@@ -841,7 +842,7 @@ export default function Compile(kalaam) {
 
     }
 
-    //An extension of isKeyword() function
+    //An extension of isPrintOperation() function
     // Needs improvement
     else if (/^(?=.*?प्रिंट)(?=.*[a-z])/.test(element)) {
 
@@ -879,8 +880,8 @@ export default function Compile(kalaam) {
 
     }
 
-    //This is experimental. For now, you can just neglect self
-    else if (!isKeyword(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element)) {
+    //This is experimental. For now, you can just neglect this
+    else if (!isPrintOperation(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element)) {
 
       //ANCHOR 
       /*Hnadling Impurity error-The main problem is figuring out how to solve "=7000" like things
@@ -947,7 +948,7 @@ export default function Compile(kalaam) {
 
 
 
-          if (isKeyword(element) == true) {
+          if (isPrintOperation(element) == true) {
 
               PushKeyword(element)
 
@@ -1021,7 +1022,6 @@ export default function Compile(kalaam) {
   //Filtering seemed unnecessary, removed for now. 
   //tokens = tokens.filter(el => el.value != '')
   console.log('tokens: ', tokens);
-
 
 
 
@@ -1423,7 +1423,7 @@ export default function Compile(kalaam) {
       //Iterating over forloop sourcedata
       //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
 
-      let message = 'दुहराओ के अंदर लिखे गए कोड को ' + IterationStart + ' से ' + IterationEnd + ' तक, मतलब ' + eval((IterationEnd - IterationStart) + 1) + ' बार RUN(रन) किया जायेगा |' + '\n' + ' इसमें Computer, ' + '"' +iterator + '"' + ' को Memory में, ' + IterationStart + ' से ' + IterationEnd + ' तक क़ीमत(Values) सेट करता जाएगा|'
+      let message = 'दुहराओ के अंदर लिखे गए कोड को ' + IterationStart + ' से ' + IterationEnd + ' तक, मतलब ' + eval((IterationEnd - IterationStart) + 1) + ' बार RUN(रन) किया जायेगा |' + '\n' + ' इसमें Computer, ' + '"' + iterator + '"' + ' को Memory में, ' + IterationStart + ' से ' + IterationEnd + ' तक क़ीमत(Values) सेट करता जाएगा|'
 
       //This is the experession whcih is getting evaluated. 
       let expression = 'दुहराओ ' + iterator + ' को ' + mutable_tokens[j + 1].value + ' मे'
@@ -2329,7 +2329,7 @@ export default function Compile(kalaam) {
 
   }
 
-//console.log('updated_tokens: ', updated_tokens);
+  console.log('updated_tokens: ', updated_tokens);
 
 
   //This is where error handling kicks in

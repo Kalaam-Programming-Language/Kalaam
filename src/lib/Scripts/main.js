@@ -1,14 +1,14 @@
-import
-{
-  Number
-}
-from "core-js"
+
 
 import
 {
   SourceDataReplaceforEasyParsing
 }
 from '../Scripts/DataCleaning'
+
+
+import {RemoveQuotes, RemoveBrackets} from '../Scripts/Helpers'
+
 
 //ANCHOR - Important functions to be used while parsing
 
@@ -25,6 +25,23 @@ function IsSpecialChar(v,i)
 
 
 
+}
+
+function IsConditionalOperator(e)
+
+{
+
+return e.includes('>') || e.includes('<') || e.includes('==') || e.includes('!=')
+
+
+}
+
+function IsReservedKeyword(e)
+
+{
+
+
+  return e.includes('दुहराओ') || e.includes('रचना') || e.includes('अन्यथा') || e.includes('इनपुट') || e.includes('पुश') || e.includes('प्रिंट') || e.includes('अगर') ||  /* cleaned_sourcedata[k + 1] == '='*/ e == '}'
 }
 
 
@@ -76,40 +93,6 @@ function isCalculation(element)
 
 //removing brackets from element
 
-function RemoveBrackets(element)
-{
-
-  let a = element.replace('(', '')
-  let b = a.replace(')', '')
-  let c = b.replace('}', '')
-  let d = c.replace('{', '')
-
-  return d
-
-}
-
-//handy count function
-
-function Count(item, element)
-{
-
-  let count = 0
-
-  for (let i = 0; i < element.length; i++)
-  {
-
-    if (element.charAt(i) == item && element.charAt(i + 1) == item)
-    {
-
-      count += 1
-
-    }
-
-  }
-
-  return count;
-
-}
 
 function isArrayOperation(element)
 {
@@ -196,13 +179,7 @@ function GetcleanedExpression(expression)
 
   expression=expression.replace(/ /g,'')
 
-
-    expression=expression.replace(/"/g,'')
-
-
-
-    expression=expression.replace(/'/g,'')
-
+expression=RemoveQuotes(expression)
     expression=expression.replace(/\(/g,'')
     expression=expression.replace(/\)/g,'')
 
@@ -221,7 +198,7 @@ function SplitElementsArray(element, i)
 
 element=RemoveBrackets(element)
 
-  if (element.includes('>') || element.includes('<') || element.includes('==') || element.includes('!='))
+  if (IsConditionalOperator(element))
 
   {
 
@@ -758,8 +735,7 @@ function GetArrayorStringElement(element, updated_tokens, NewValue, flag)
         if (!isNumber(NewValue))
         {
 
-          NewValue = NewValue.replace(/"/g, '')
-          NewValue = NewValue.replace(/“/g, '')
+          NewValue =RemoveQuotes(NewValue)
           NewValue = NewValue.replace(/'/g, '')
           NewValue = NewValue.replace(/‘/g, '')
         }
@@ -1286,8 +1262,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
     if(value!=undefined)
     {
 
-  value=value.replace(/'/g,'')
-    value=value.replace(/"/g,'')
+  value=RemoveQuotes(value)
     }
     
     //console.log('value: ', value);
@@ -1890,9 +1865,9 @@ stack.push(
 
 export
 {
+  IsReservedKeyword,
   GetCleanSourcedata,
   GetcleanedExpression,
-  Count,
   ForLoopSetMetadata,
   getLoopIndexStart,
   AddElementToArray,
@@ -1908,7 +1883,6 @@ export
   handlemultConditions,
   CreateArrayElement,
   SetArrayorStringElement,
-  RemoveBrackets,
   ForLoopArrayorStringOutput,
   GetArrayorStringElement,
   AcceptInputandSetValue,
