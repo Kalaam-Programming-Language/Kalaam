@@ -1,4 +1,4 @@
-  
+
 /*!
  * Kalaam v1.0.0
  * (C) 2020 Swanand Kadam
@@ -6,7 +6,7 @@
  */
 
 
- //SECTION - Importing function modules
+//SECTION - Importing function modules
 
 
 //To check variable types: Number, String, Array etc.
@@ -18,10 +18,13 @@ import * as AdvancedTypeCheck from '../TypeCheck/AdvancedTypeChecking'
 //To format user input into a proper String, Array or Condition. 
 import * as BuildOperation from '../Scripts/BuildOperations'
 
+import { RemoveQuotes, RemoveBrackets } from '../Scripts/Helpers'
+
+
+
 //Functions imported to push a particular data to our Tokens array. 
 //Tokens array is basically a clean, formatted and a word by word version of raw code provided by user
-import
-{
+import {
   PushArray,
   PushCalculation,
   PushConditionalKeyword,
@@ -45,15 +48,13 @@ import
   PushInput
 
 }
-from '../PushTokens/main'
+  from '../PushTokens/main'
 
 //This are other helper functions that we need for a particular task. All of this functions will be explained indepth as we see them in codebase.
-import
-{
+import {
+  IsReservedKeyword,
   GetCleanSourcedata,
   GetcleanedExpression,
-  RemoveBrackets,
-  Count,
   AddElementToArray,
   ResetValue,
   isArrayOperation,
@@ -78,22 +79,23 @@ import
   SetArrayIndexValue,
   AddtoExecutionStack
 }
-from '../Scripts/main.js'
+  from '../Scripts/main.js'
 
-  
+
 //We will be importing this whole function to practise.vue and it will be executed when user clicks on 'RUN'
 
-  export default function Compile(kalaam){
+export default function Compile(kalaam) {
 
 
 
- //'kalaam' is our global object and access it's value as 'this.$data' from practise.vue located in views
-//All the input sourcecode, tokens, output, error handling etc is stored in kalaam object
+  //'kalaam' is our global object and access it's value as 'this.$data' from practise.vue located in views
+  //All the input sourcecode, tokens, output, error handling etc is stored in kalaam object
 
 
 
   //t0 along with t1 takes record of Time taken to run the code. t1-t0 gives us the exact time taken.
   var t0 = performance.now()
+  var skipParsing = 0;
 
   //If an error is encountered we set the value to true and push the error to errors array.
   kalaam.isError = false
@@ -110,14 +112,14 @@ from '../Scripts/main.js'
   //Sourcedata is the raw code provided by use
   var sourcedata = kalaam.code;
 
-  var LinebylineSourcedata=sourcedata.replace(/(?:\r\n|\r|\n)/g, 'line').split("line")
+  var LinebylineSourcedata = sourcedata.replace(/(?:\r\n|\r|\n)/g, 'breakpoint').split("breakpoint")
   //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
-  console.log('LinebylineSourcedata: ', LinebylineSourcedata);
-  
+  //
+
 
   //This is where formatted and cleaned sourcedata will go.
   var cleaned_sourcedata = []
-  var ExecutionStack=[]
+  var ExecutionStack = []
   var i = 0;
   //This is where tokens will be pushed depending upon their types like Variable, function, loops etc.
   var tokens = [];
@@ -136,10 +138,7 @@ from '../Scripts/main.js'
   //Pushing the variables that are assigned to filter out defined and undefined variables. Useful in error handling
   var assigned_variables = []
   var terms = []
-  var terms2 = []
-  var operation = ''
-  var CalculationStack = []
-  var foundToken = ''
+ 
   var ReIntializedVariables = []
 
   //TO REMOVE DUPLICATE VARIABLES, 
@@ -154,12 +153,12 @@ from '../Scripts/main.js'
   //SECTION - Checking for type of characters. TypeCheck is an object which consists all self functions. Check Line 102
 
   const isVariable = TypeCheck.isVariable()
-  
+
   const isNumber = TypeCheck.isNumber()
 
   const isOperator = TypeCheck.isOperator()
 
-  const isKeyword = TypeCheck.isKeyword()
+  const isPrintOperation = TypeCheck.isPrintOperation()
   const isConditionalKeyword = TypeCheck.isConditionalKeyword()
   const isForLoop = TypeCheck.isForLoop()
   const isWhileLoop = TypeCheck.isWhileLoop()
@@ -191,11 +190,11 @@ from '../Scripts/main.js'
 
   const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleString()
 
-  const isStringandValue = AdvancedTypeCheck.isStringandValue()
+  //const isStringandValue = AdvancedTypeCheck.isStringandValue()
 
   const isCalculation = AdvancedTypeCheck.isCalculation()
 
-  const isDirectPrintArithmetic = AdvancedTypeCheck.isDirectPrintArithmetic()
+  // const isDirectPrintArithmetic = AdvancedTypeCheck.isDirectPrintArithmetic()
 
   //SECTION Build Operations 
 
@@ -220,11 +219,9 @@ from '../Scripts/main.js'
   //global- self or self
   //iterator and OriginalIterator are used to print values in for and while loops.
 
-  function PrintEngine(Tokens, updated_tokens, j, global, iterator, OriginalIterator)
+  function PrintEngine(Tokens, updated_tokens, j, global, iterator, OriginalIterator) {
 
-  {
-
-    //Try //console.log('Tokens, updated_tokens, j, global, iterator, OriginalIterator): ', Tokens, updated_tokens, j, global, iterator, OriginalIterator)); 
+    //Try // 
     //To understand what kind of data is necessary to print a value 
 
     //Getting the current token as token and value to be printed as NextTokenValue
@@ -241,8 +238,7 @@ from '../Scripts/main.js'
 
     //Adding the variable to variables_array
 
-    if (isVariable(VariableToPrint) && !variables_array.includes(VariableToPrint))
-    {
+    if (isVariable(VariableToPrint) && !variables_array.includes(VariableToPrint)) {
 
       variables_array.push(VariableToPrint)
       // 
@@ -251,70 +247,58 @@ from '../Scripts/main.js'
 
     //SECTION - Outputting the code
     // finding the variable value in updated_tokens. Updated_tokens is where our Variable-value pairs exists.
-    //Try //console.log(updated_tokens) to see how it looks
+    //Try // to see how it looks
 
     //This loop is only for printing direct values like print(name), print(array)
-    updated_tokens.forEach((el, i) =>
-    {
+    updated_tokens.forEach((el, i) => {
 
       //If we have a variable-value pair sitting in updated_tokens
 
-      if (el.name == VariableToPrint)
-      {
+      if (el.name == VariableToPrint) {
 
         //for calculations like x=ageone+agetwo
 
         //If we have already calculated value in assigned_variables, use that or else move forward
 
-        if (assigned_variables.includes(el) || assigned_variables.includes(el.name))
-        {
+        if (assigned_variables.includes(el) || assigned_variables.includes(el.name)) {
 
-          AddOutput( el.value)
+          AddOutput(el.value)
 
         }
-        else
-        {
+        else {
 
           //if the value found is a Number
 
-          if (isNumber(el.value))
-          {
+          if (isNumber(el.value)) {
 
-            AddOutput( el.value)
+            AddOutput(el.value)
 
             assigned_variables.push(el.name);
 
           }
 
           //if the value found is operations like age=2020-1996
-          else if (isPureEval(el.value))
-          {
+          else if (isPureEval(el.value)) {
 
             //we are using Javascript's eval function to calculate direct arithmetic operations 
             let outputpure = eval(el.value)
 
             el.value = outputpure
 
-            AddOutput( el.value)
+            AddOutput(el.value)
 
             assigned_variables.push(el.name);
 
           }
 
           //We will simplify self conditions as we move forward
-          else if (!isPureEval(el.value) && !isNumber(el.value))
+          else if (!isPureEval(el.value) && !isNumber(el.value)) {
 
-          {
+            if (!(el.name.includes(']') && el.name.includes('['))) {
 
-            if (!(el.name.includes(']') && el.name.includes('[')))
-            {
+              if (el.type == 'Array') {
 
-              if (el.type == 'Array')
-              {
-
-                if (el.value.includes('[') == false)
-
-                {
+                if (el.value.includes('[') == false) {
 
                   el.value = '[' + el.value.toString() + ']'
 
@@ -322,7 +306,7 @@ from '../Scripts/main.js'
 
               }
 
-              AddOutput( el.value)
+              AddOutput(el.value)
 
               assigned_variables.push(el.name);
             }
@@ -336,9 +320,7 @@ from '../Scripts/main.js'
     })
 
     //This is how we print Array in Kalaam
-    if (Tokens[j + 1].type == 'Array')
-
-    {
+    if (Tokens[j + 1].type == 'Array') {
 
       //To run only if iterator is present
 
@@ -346,30 +328,25 @@ from '../Scripts/main.js'
 
       //self runs only if for(i) and in the loop, array[i], not on array[x]. For loop Iterator and index should be same, in self case 'i'
 
-      if (iterator != undefined && Tokens[j + 1].IndexInput == OriginalIterator)
-
-      {
+      if (iterator != undefined && Tokens[j + 1].IndexInput == OriginalIterator) {
 
         let Value = NextTokenValue
 
         let ArrayElement = CreateArrayElement(Value, iterator)
 
         let output = GetArrayorStringElement(ArrayElement, updated_tokens)
-        
 
-       output=output.replace(/'/g,'')
-      output=output.replace(/"/g,'')
 
-        AddOutput( output)
+        output = RemoveQuotes(output)
+
+        AddOutput(output)
 
         assigned_variables.push(Tokens[j + 1]);
 
       }
 
       //This runs to Print(Array[2]) like specific array values
-      else if (Tokens[j + 1].IndexInput != OriginalIterator)
-
-      {
+      else if (Tokens[j + 1].IndexInput != OriginalIterator) {
 
         let Value = NextTokenValue
 
@@ -381,8 +358,7 @@ from '../Scripts/main.js'
 
         let Split = element.split('[')
 
-        if (Split[1].includes('-') || Split[1].includes('+'))
-        {
+        if (Split[1].includes('-') || Split[1].includes('+')) {
 
           let output = CalculateValues(Split[1], j, updated_tokens)
 
@@ -395,8 +371,7 @@ from '../Scripts/main.js'
 
         let token = updated_tokens.find(el => el.name == Split[1])
 
-        if (token != undefined && OriginalIterator != Split[1])
-        {
+        if (token != undefined && OriginalIterator != Split[1]) {
 
           Split[1] = token.value
 
@@ -404,133 +379,123 @@ from '../Scripts/main.js'
           ArrayElement = Split
 
         }
-        else
-        {
+        else {
 
           ArrayElement = ArrayElement
-          ////console.log('ArrayElement: ', ArrayElement);
+          ////
 
         }
 
         let output = GetArrayorStringElement(ArrayElement, updated_tokens)
 
-        AddOutput( output)
+        AddOutput(output)
 
       }
 
     }
 
     //printing direct numbers and direct calcultions like print(10), print(10*10)
-    else if (token == 'प्रिंट' && (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue))))
-    {
+    else if (token == 'प्रिंट' && (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))) {
 
       NextTokenValue = RemoveBrackets(NextTokenValue)
 
-      if (isNumber(NextTokenValue) && Tokens[j + 1].type != 'Calculation')
+      if (isNumber(NextTokenValue) && Tokens[j + 1].type != 'Calculation') {
 
-      {
-
-        AddOutput( NextTokenValue)
+        AddOutput(NextTokenValue)
 
       }
-      else
-      {
+      else {
 
         let a = eval(NextTokenValue)
 
-        AddOutput( a)
+        AddOutput(a)
 
       }
 
     }
 
     //foroperations like print('you live, you learn')
-    else if (Tokens[j + 1].mode == "RealTimePrint" && !NextTokenValue.includes('+') && !NextTokenValue.includes('='))
+    else if (Tokens[j + 1].mode == "RealTimePrint" && !NextTokenValue.includes('+') /*&& !NextTokenValue.includes('=')*/) {
 
-    {
 
       let output = RemoveBrackets(NextTokenValue)
 
-      output = output.replace(/"/g, '');
-      output = output.replace(/'/g, '');
 
-      AddOutput( output + "\n")
+
+      output = RemoveQuotes(output)
+
+
+      AddOutput(output + "\n")
 
     }
 
     //operations like print(Age + 'is young age') i.e string concatenations
-    else if (Tokens[j + 1].mode == "RealTimePrint" && NextTokenValue.includes('+'))
-    {
+    else if (Tokens[j + 1].mode == "RealTimePrint" && NextTokenValue.includes('+')) {
 
       let x = SplitElementsArray(NextTokenValue)
-      
+
+      x = x.join('').split("+")
+
 
       StringVar = SetValues(x, updated_tokens)
 
-      StringVar = StringVar.join('')
-      StringVar = StringVar.split("+")
 
-    
+
+
+
 
       let output = StringVar.join(' ')
 
-      output = output.replace(/"/g, '');
-      output = output.replace(/'/g, '');
       output = RemoveBrackets(output)
+      output = RemoveQuotes(output)
 
-      AddOutput( output + "\n")
+      AddOutput(output + "\n")
 
     }
-    else if (isCalculation(RemoveBrackets(NextTokenValue)) && Tokens[j + 1].mode != "RealTimePrint")
-
-    {
+    else if (isCalculation(RemoveBrackets(NextTokenValue)) && Tokens[j + 1].mode != "RealTimePrint") {
 
       NextTokenValue = RemoveBrackets(NextTokenValue)
 
       let output = CalculateValues(NextTokenValue, j, updated_tokens)
-      
-      
 
-      AddOutput( output + "\n")
+
+
+      AddOutput(output + "\n")
 
     }
 
 
 
-   let message= ' Computer ने आपकी दी गयी वैल्यू, ' + RemoveBrackets(NextTokenValue) + ' को प्रिंट() किया है |'
+    let message = ' Computer ने आपकी दी गयी वैल्यू, ' + '"' + RemoveBrackets(NextTokenValue) + '"' + ' को प्रिंट() किया है |'
 
-//This is the experession whcih is getting evealuated. 
-
-
-
-  let expression= token + NextTokenValue
-
-  expression=GetcleanedExpression(expression)
-  
-  let flag=true
-  
-  LinebylineSourcedata.forEach((el,index)=>{
-
-   el=GetcleanedExpression(el)
-    
-    
-    
-    if(el.includes(expression) && flag==true)
-    
-    
-    
-    {
+    //This is the experession whcih is getting evaluated. 
 
 
-      AddtoExecutionStack(ExecutionStack,'प्रिंट()', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint ,'', message,index+1)
-     flag=false
-    
-    }
-  })
 
-  
-  
-  
+    let expression = token + NextTokenValue
+
+    expression = GetcleanedExpression(expression)
+
+    let flag = true
+
+    LinebylineSourcedata.forEach((el, index) => {
+
+      el = GetcleanedExpression(el)
+
+
+
+      if (el.includes(expression) && flag == true) {
+
+
+        AddtoExecutionStack(ExecutionStack, 'प्रिंट()', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint, '', message, index + 1)
+        flag = false
+
+      }
+    })
+
+
+
+
 
 
   }
@@ -547,18 +512,17 @@ from '../Scripts/main.js'
 
   //It performs operations depending upon whether the element is variable, array, function, loop etc.
 
-  function Parse(cleaned_sourcedata, i)
-  {
+  function Parse(cleaned_sourcedata, i) {
 
     var element = cleaned_sourcedata[i];
 
-    var string = []
+    skipParsing = 0;
 
     //Push variables to tokens
     //Format: {type: "variable", value: "ReverseString"}
 
-    if (isVariable(element) == true)
-    {
+    if (isVariable(element) == true) {
+
 
       //Here we seperate Message = 'Hello' into following three tokens :
 
@@ -568,24 +532,22 @@ from '../Scripts/main.js'
 
       //3: {type: "value", value: "Hello"}
 
-      if (cleaned_sourcedata[i + 1] == '=')
-      {
+      if (cleaned_sourcedata[i + 1] == '=') {
 
-        PushVariable(element, tokens)
+        PushVariable(element, tokens, cleaned_sourcedata[i + 2])
 
         //If we already have the variable declared before, push it to ReIntializedVariables array
 
-        if (variableArray.includes(element))
-        {
+        if (variableArray.includes(element)) {
 
           let x = tokens.find(el => el.value == element)
 
           let index = tokens.indexOf(x)
 
           ReIntializedVariables.push(
-          {
-            name: element
-          })
+            {
+              name: element
+            })
 
           //
 
@@ -596,8 +558,7 @@ from '../Scripts/main.js'
         variableArray.push(element)
 
       }
-      else if (cleaned_sourcedata[i - 1] == '=')
-      {
+      else if (cleaned_sourcedata[i - 1] == '=') {
 
         PushVariableValue(element, tokens)
 
@@ -606,27 +567,23 @@ from '../Scripts/main.js'
       //Push variables to tokens
 
     }
-    else if (isNumber(element) == true)
-    {
+    else if (isNumber(element) == true) {
 
       PushNumber(element, tokens)
 
       //Push EmptyStrings to tokens
 
     }
-    else if (isEmptyStringorChar(element) == true)
-    {
+    else if (isEmptyStringorChar(element) == true) {
 
       //In some cases empty strings will be modified into something like "'" or '"'
       //We convert it back to " "
-      if (element.length > 1 && (element.charAt(0) == "'" || element.charAt(0) == '"'))
-      {
+      if (element.length > 1 && (element.charAt(0) == "'" || element.charAt(0) == '"')) {
 
         element = element.replace(/['"]+/g, '')
 
       }
-      else
-      {
+      else {
 
         element = " "
       }
@@ -637,9 +594,7 @@ from '../Scripts/main.js'
       //Format: {type: "AcceptInput", value: " ", AcceptAs: "Message"}
 
     }
-    else if (isInput(element) == true)
-
-    {
+    else if (isInput(element) == true) {
 
       PushInput(element, tokens, cleaned_sourcedata, i)
 
@@ -647,8 +602,9 @@ from '../Scripts/main.js'
       //Format: {type: "operator", value: "="}    
 
     }
-    else if (isOperator(element) == true)
-    {
+    else if (isOperator(element) == true) {
+
+
 
       PushOperator(element, tokens)
 
@@ -657,8 +613,7 @@ from '../Scripts/main.js'
       //Format: {type: "keyword", value: "प्रिंट"}
 
     }
-    else if (isKeyword(element) == true)
-    {
+    else if (isPrintOperation(element) == true) {
 
       PushKeyword(element, tokens)
 
@@ -666,8 +621,7 @@ from '../Scripts/main.js'
       //Format: {type: "function", value: "First", arguments: Array(2), FunctionInvocationExists: false, FunctionStack: Array(0), …}
 
     }
-    else if (isFunction(element) == true)
-    {
+    else if (isFunction(element) == true) {
 
       PushFunctionData(element, tokens, cleaned_sourcedata, i)
 
@@ -675,17 +629,14 @@ from '../Scripts/main.js'
 
     // Push array to tokens
     //Format: {type: "Array", value: "[]"}
-    else if (isArray(element) == true)
-    {
+    else if (isArray(element) == true) {
 
-      if (element.charAt(element.length - 1) == ']')
-      {
+      if (element.charAt(element.length - 1) == ']') {
 
         PushArray(element, tokens)
 
       }
-      else
-      {
+      else {
 
         //To convert '[',1,2,3,4,']'  into [1,2,3,4]
 
@@ -698,14 +649,12 @@ from '../Scripts/main.js'
 
     //For operations like Numbers[a]=a
     //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
-    else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == true)
-    
-    {
+    else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == true) {
 
       PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
 
-      cleaned_sourcedata.splice(i+1, 1);
-     // cleaned_sourcedata.splice(i+2, 1);
+      cleaned_sourcedata.splice(i + 1, 1);
+      // cleaned_sourcedata.splice(i+2, 1);
       //cleaned_sourcedata.splice(i+3, 1);
 
 
@@ -713,8 +662,7 @@ from '../Scripts/main.js'
 
     //For operations like a=Numbers[a], reverse of above
     //Format: {type: "GetArrayIndexValue", value: "Fibonacci[a-2]"}
-    else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == false)
-    {
+    else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == false) {
 
       PushGetArrayIndexValue(element, tokens, cleaned_sourcedata, i)
 
@@ -722,20 +670,17 @@ from '../Scripts/main.js'
 
     //Push conditions to tokens. The accepted keywords are अगर, जबतक, अन्यथा
     // Format: {type: "conditionalkeyword", value: "अगर"}
-    else if (isConditionalKeyword(element) == true)
-    {
+    else if (isConditionalKeyword(element) == true) {
 
       //Push while loops to tokens
       //Format: {type: "WhileLoopStart", value: "जबतक"}, {type: "condition", value: "count<25"}
 
-      if (isWhileLoop(element) == true)
-      {
+      if (isWhileLoop(element) == true) {
 
         PushWhileLoop(element, tokens, cleaned_sourcedata, i)
 
       }
-      else
-      {
+      else {
 
         PushConditionalKeyword(element, tokens)
       }
@@ -745,15 +690,15 @@ from '../Scripts/main.js'
       let foundcondition = BuildCondition(element, i, cleaned_sourcedata)
 
       //Push conditions to tokens array
-      PushCondition(foundcondition, tokens)
 
+      if (foundcondition != '') {
+        PushCondition(foundcondition, tokens)
+      }
     }
 
     //Finding operations like Numbers.पुश(x) 
     //Format: {type: "PushToArray", value: "Numbers.पुश(x)"}
-    else if (element.includes('पुश'))
-
-    {
+    else if (element.includes('पुश')) {
 
       PushToArray(element, tokens)
 
@@ -763,38 +708,33 @@ from '../Scripts/main.js'
     // Format: 
     // {type: "ForLoopStart", value: "दुहराओ"}
     // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
-    else if (isForLoop(element) == true)
-    {
+    else if (isForLoop(element) == true) {
 
       PushForLoop(element, tokens)
       PushForLoopAruguments(element, cleaned_sourcedata, i, tokens)
 
       updated_tokens.push(
-      {
+        {
 
-        name: cleaned_sourcedata[i + 1],
-        value: 0,
-        type: 'ForLoopIterator'
+          name: cleaned_sourcedata[i + 1],
+          value: 0,
+          type: 'ForLoopIterator'
 
-      })
+        })
 
     }
 
     //Pushing basic Calculations like 'length-1' to tokens
     //Format: {type: "Calculation", value: "length-1"}
-    else if (isCalculation(element) == true)
-    {
+    else if (isCalculation(element) == true) {
 
       let element = ''
 
-      if (cleaned_sourcedata[i + 1] != undefined)
-      {
+      if (cleaned_sourcedata[i + 1] != undefined) {
 
         // self is to perform long calculations like AverageAge=(ageone+agetwo)/2 + (ageone+agetwo)*2
 
-        while (isCalculation(cleaned_sourcedata[i]))
-
-        {
+        while (isCalculation(cleaned_sourcedata[i])) {
 
           element = element + cleaned_sourcedata[i];
 
@@ -811,8 +751,7 @@ from '../Scripts/main.js'
       var CleanedElement = RemoveBrackets(element)
 
       // to stop prevention of expressions like is"+ getting added as a calculation
-      if (!(CleanedElement.includes('"')) && element.charAt(0) != '/' && element.charAt(0) != '*' && element.charAt(0) != "'")
-      {
+      if (!(CleanedElement.includes('"')) && element.charAt(0) != '/' && element.charAt(0) != '*' && element.charAt(0) != "'") {
 
         PushCalculation(element, tokens, cleaned_sourcedata, i)
 
@@ -823,46 +762,43 @@ from '../Scripts/main.js'
     //finding operations like print(x + 'y'). The RealTimePrint operations
 
     //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
-    else if (isRealTimePrintMultipleString(element) == true)
-    {
+    else if (isRealTimePrintMultipleString(element) == true) {
+
 
       let foundString = ''
 
       let k = i
 
+      let skip = 0;
+
       let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2)
 
       var flag = 0;
 
-      for (k; k < cleaned_sourcedata.length; k++)
-      {
+      for (k; k < cleaned_sourcedata.length; k++) {
 
         let element = cleaned_sourcedata[k]
         let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2)
 
-        if (element.includes('दुहराओ') || element.includes('रचना') || element.includes('अन्यथा') || element.includes('इनपुट') || element.includes('पुश') || element.includes('प्रिंट') || element.includes('अगर') || cleaned_sourcedata[k + 1] == '=' || element == '}')
-        {
+
+        if (IsReservedKeyword(element)) {
 
           break;
 
         }
 
-        if (conditionEnd == ')"')
-
-        {
+        if (conditionEnd == ')"' || element.charAt(element.length - 1) == ')') {
 
           foundString = foundString + ' ' + cleaned_sourcedata[k];
           break;
 
         }
-        else if (flag == 1)
-        {
+        else if (flag == 1) {
 
           foundString = foundString + ' ' + cleaned_sourcedata[k]
 
         }
-        else if (flag == 0)
-        {
+        else if (flag == 0) {
 
           foundString = cleaned_sourcedata[k];
 
@@ -870,23 +806,31 @@ from '../Scripts/main.js'
 
         }
 
-      }
+        skip = skip + 1
 
-      if ((!foundString.includes(">")) && (!foundString.includes('/')) && (!foundString.includes('*')) && (!foundString.includes('<')) && (!foundString.includes('==')))
-
-      {
-
-        ////console.log('foundString: ', foundString);
-        PushRealTimePrintOperation(foundString, tokens)
 
       }
+
+
+      //if ((!foundString.includes(">")) && (!foundString.includes('/')) && (!foundString.includes('*')) && (!foundString.includes('<')) /*&& (!foundString.includes('==') )*/) {
+
+
+      PushRealTimePrintOperation(foundString, tokens)
+
+
+
+      //  }
+
+      skipParsing = skip
+
+
+
+
 
     }
 
     //storing only the string values to tokens ( not the strings in print statements)
-    else if (isString(element))
-
-    {
+    else if (isString(element)) {
 
       let calculatedString = BuildString(element, i, cleaned_sourcedata)
 
@@ -898,10 +842,9 @@ from '../Scripts/main.js'
 
     }
 
-    //An extension of isKeyword() function
+    //An extension of isPrintOperation() function
     // Needs improvement
-    else if (/^(?=.*?प्रिंट)(?=.*[a-z])/.test(element))
-    {
+    else if (/^(?=.*?प्रिंट)(?=.*[a-z])/.test(element)) {
 
       PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
 
@@ -912,8 +855,7 @@ from '../Scripts/main.js'
     //Used to push functions and expressions
     //Unnecessary data is being passed through kalaam.
     //This was created for a temporary fix
-    else if (isExpression(element) == true && !isCalculation(element) && !element.includes('[') && !element.includes(']') && (!isConditionalKeyword(cleaned_sourcedata[i - 1])) && (cleaned_sourcedata[i - 1] != 'मे' && cleaned_sourcedata[i - 1] != 'रचना'))
-    {
+    else if (isExpression(element) == true && !isCalculation(element) && !element.includes('[') && !element.includes(']') && (!isConditionalKeyword(cleaned_sourcedata[i - 1])) && (cleaned_sourcedata[i - 1] != 'मे' && cleaned_sourcedata[i - 1] != 'रचना')) {
 
       let CheckFunctionExpression = element.split('(')
 
@@ -921,29 +863,25 @@ from '../Scripts/main.js'
       passedValues = passedValues.split(',')
       let token = tokens.find(el => el.value == CheckFunctionExpression[0])
 
-      if (token != undefined)
-      {
+      if (token != undefined) {
 
         PushFunctionExecution(element, tokens, cleaned_sourcedata, i, passedValues)
 
       }
-      else
-      {
+      else {
 
         PushExpression(element, tokens)
       }
 
     }
-    else if (isExpression(element) == true && element.includes('[') && element.includes(']'))
-    {
+    else if (isExpression(element) == true && element.includes('[') && element.includes(']')) {
 
       PushArray(element, tokens)
 
     }
 
-    //This is experimental. For now, you can just neglect self
-    else if (!isKeyword(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element))
-    {
+    //This is experimental. For now, you can just neglect this
+    else if (!isPrintOperation(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element)) {
 
       //ANCHOR 
       /*Hnadling Impurity error-The main problem is figuring out how to solve "=7000" like things
@@ -1010,7 +948,7 @@ from '../Scripts/main.js'
 
 
 
-          if (isKeyword(element) == true) {
+          if (isPrintOperation(element) == true) {
 
               PushKeyword(element)
 
@@ -1031,71 +969,74 @@ from '../Scripts/main.js'
 
     }
 
+
+
+
   }
 
   //The final stage of adding an output to output stack i.e. kalaam.output or kalaam.output
 
-  function AddOutput( value)
-  {
+  function AddOutput(value) {
 
     kalaam.output = kalaam.output + value + "\n";
 
   }
 
-  
-  
-  
+
+
+
   //#STEP 1- Cleaning the sourcedata and setting the 'result' to 'cleaned_sourcedata'
 
- 
- 
- 
- //If a code is not working, it is probably because it's not cleaned properly. 
+
+  //If a code is not working, it is probably because it's not cleaned properly. 
+
   cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity)
-  console.log('cleaned_sourcedata: ', cleaned_sourcedata);
-
-
-  
   
 
-  
-  
+
   //#STEP 2- - Checking each token and adding to tokens array
-  
-  
-  
+
+
+
   //Parsing every single element from cleaned_sourcedata array and pushing it to Tokens depending upon the type pf element
 
   // PARSING INITIATION
 
-  for (i; i < cleaned_sourcedata.length; i++)
-  {
+  for (i; i < cleaned_sourcedata.length; i++) {
 
     Parse(cleaned_sourcedata, i)
+
+
+    //Code to skip improve a particular part of cleaned_sourcedata if it's being operated by two different functions.
+
+    if (skipParsing != 0) {
+
+      i = i + skipParsing
+
+    }
   }
 
   //CLEANING UP THE TOKENS ARRAY
   //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
 
-  tokens = tokens.filter(el => el.value != '')
-  console.log('tokens: ', tokens);
-  
+  //Filtering seemed unnecessary, removed for now. 
+  //tokens = tokens.filter(el => el.value != '')
   
 
-  
-  
+
+
+
   //#STEP 3 - evaluating conditions, finding values in updated_tokens and printing outputs
 
-  
-  
-  //As of now, self is how the timeline looks
+
+
+  //As of now, this is how the timeline looks
 
   //raw sourcecode -> cleaned_sourcedata -> tokens 
 
   //This is the final section
 
-  for (var j = 0; j < tokens.length; j++)
-  {
+  for (var j = 0; j < tokens.length; j++) {
 
     //We will be having a copy of tokens as mutable_tokens 
 
@@ -1103,7 +1044,7 @@ from '../Scripts/main.js'
 
     //token value
     var token = mutable_tokens[j].value
-    
+
 
     //type of token like variable, array, function, loops etc
     let tokenType = mutable_tokens[j].type
@@ -1111,33 +1052,27 @@ from '../Scripts/main.js'
     var StringVar = []
 
     let VarWithoutbrackets = RemoveBrackets(mutable_tokens[j].value)
-    
+
 
     VarWithoutbrackets = VarWithoutbrackets.replace(/ /g, '')
 
-    if (tokenType == "SetArrayIndexValue")
+    if (tokenType == "SetArrayIndexValue") {
 
-    {
-
-      SetArrayIndexValue(mutable_tokens, j, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+      SetArrayIndexValue(mutable_tokens, j, j, updated_tokens, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
     }
-    else if (token == '=')
-    {
+    else if (token == '=') {
 
-      AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack,LinebylineSourcedata)
-      
+      AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack, LinebylineSourcedata)
 
-    }
-    else if (tokenType == 'PushToArray')
-    {
-
-      AddElementToArray(mutable_tokens, j, updated_tokens,ExecutionStack,LinebylineSourcedata)
 
     }
-    else if (token == 'अन्यथा')
+    else if (tokenType == 'PushToArray') {
 
-    {
+      AddElementToArray(mutable_tokens, j, updated_tokens, ExecutionStack, LinebylineSourcedata)
+
+    }
+    else if (token == 'अन्यथा') {
 
       let result = HandleBlocks(mutable_tokens, j, result)
       let StartofBlock = mutable_tokens[j + 1].startIndex
@@ -1145,28 +1080,24 @@ from '../Scripts/main.js'
 
       let lastValue = kalaam.LastConditionValue.pop()
 
-      if (lastValue == true)
-
-      {
+      if (lastValue == true) {
 
         j = EndofBlock
 
       }
 
     }
-    else if (tokenType == 'AcceptInput')
-    {
+    else if (tokenType == 'AcceptInput') {
 
-      AcceptInputandSetValue(mutable_tokens, j, updated_tokens,ExecutionStack,LinebylineSourcedata)
+      AcceptInputandSetValue(mutable_tokens, j, updated_tokens, ExecutionStack, LinebylineSourcedata)
 
-    
-      
+
+
 
     }
 
     //Whenever we encounter a function, we create a seperate execution context 
-    else if (tokenType == 'function')
-    {
+    else if (tokenType == 'function') {
 
       //We are preparing the required data to execute a function call later in the prgroam
 
@@ -1182,8 +1113,7 @@ from '../Scripts/main.js'
 
       //To identify function context in tokens array
 
-      functionSourceData.forEach(el =>
-      {
+      functionSourceData.forEach(el => {
 
         el.context = 'function'
       })
@@ -1191,48 +1121,46 @@ from '../Scripts/main.js'
       mutable_tokens[j].SourceData = functionSourceData
 
 
-      let message='इस रचना का नाम '+ token+ ' है जिसे हम कोड में बाद में NEW VALUES पास करके उपयोग कर सकते है|'
+      let message = 'इस रचना का नाम ' + token + ' है जिसे हम कोड में बाद में NEW VALUES पास करके उपयोग कर सकते है|'
 
-      let expression= 'रचना '+ token
-      let Linenumber=''
-      //console.log('expression: ', expression);
+      let expression = 'रचना ' + token
+      let Linenumber = ''
+      //
 
-LinebylineSourcedata.forEach((el,i)=>{
+      LinebylineSourcedata.forEach((el, i) => {
 
-if(el.includes(expression))
-{
+        if (el.includes(expression)) {
 
-Linenumber=i+1
+          Linenumber = i + 1
 
-}
-
-
-})
+          AddtoExecutionStack(ExecutionStack, 'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result, functionSourceData, message, Linenumber)
 
 
+        }
 
-      AddtoExecutionStack(ExecutionStack,'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', result ,functionSourceData, message,Linenumber)
+
+      })
+
+
+
 
 
     }
 
     //We are out of the fucntion execution context and back to global execution context
-    else if (tokenType == 'condition')
-
-    {
+    else if (tokenType == 'condition') {
 
       let element = mutable_tokens[j].value
 
-      //self function is the first step to calculate value of operations like अगर (ageone==10 && AverageAge<1000 && agetwo>100 || ageone==10) OR (ageone==10 )
+      //this function is the first step to calculate value of operations like अगर (ageone==10 && AverageAge<1000 && agetwo>100 || ageone==10) OR (ageone==10 )
 
       let ConditionValue = GetConditionValue(element, updated_tokens, j)
-      
+
       kalaam.LastConditionValue.push(ConditionValue)
 
       //if value is false, just skip the if loop context, if not it will be ran in final print module
 
-      if (ConditionValue == false)
-      {
+      if (ConditionValue == false) {
 
         let InitializeLoop = tokens.indexOf(mutable_tokens[j])
 
@@ -1242,72 +1170,67 @@ Linenumber=i+1
 
         j = Returnvalue.j
 
-        var message= 'कंडीशन '+ element+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा '
-        
-
-      }
-
-      else{
-        var message= 'कंडीशन '+ element+ ' , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा '
-        
+        var message = 'कंडीशन ' + element + ' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा '
 
 
       }
 
-
-let expression= element
-
-
+      else {
+        var message = 'कंडीशन ' + element + ' , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा '
 
 
 
-expression=GetcleanedExpression(expression)
+      }
 
 
-LinebylineSourcedata.forEach((el,index)=>{
-
-el=GetcleanedExpression(el)
-
-if(el.includes(expression))
-
-{
-
-  AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue  , message,index+1)
-
-}
+      let expression = element
 
 
 
 
 
-})
+      expression = GetcleanedExpression(expression)
 
 
-      
+      LinebylineSourcedata.forEach((el, index) => {
+
+        el = GetcleanedExpression(el)
+
+        if (el.includes(expression)) {
+
+          AddtoExecutionStack(ExecutionStack, 'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', element, ConditionValue, message, index + 1)
+
+        }
+
+
+
+
+
+      })
+
+
+
 
     }
 
     //So that we don't print a same value twice. First in global execution context and the in function context
 
     //This one prints the global context values
-    else if (token == 'प्रिंट' && mutable_tokens[j].context != 'function')
-
-    {
+    else if (token == 'प्रिंट' && mutable_tokens[j].context != 'function') {
 
       PrintEngine(mutable_tokens, updated_tokens, j, self) //for operations like print(array[3])
 
     }
 
     //This runs our while loop .i.e जबतक
-    else if (tokenType == 'WhileLoopStart')
-    {
+    else if (tokenType == 'WhileLoopStart') {
 
       let TokensCurrentIndex = j + 3
 
       let ConditionValue = false
 
       let element = mutable_tokens[j + 1].value
-      
+
 
       let ExtratcedVariable = []
 
@@ -1315,28 +1238,24 @@ if(el.includes(expression))
       let WhileLoopSourcedataIndexStart = 0
       let WhileLoopSourcedataTokens = []
 
-      for (let i = 0; i < element.length; i++)
-      {
+      for (let i = 0; i < element.length; i++) {
         let x = element.charAt(i)
 
-        if (isVariable(x))
-
-        {
+        if (isVariable(x)) {
 
           variable = variable + x
 
         }
-        if (!isVariable(element.charAt(i + 1)) && isVariable(x))
-        {
+        if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
 
           let token = updated_tokens.find(el => el.name == variable)
 
           ExtratcedVariable.push(
-          {
-            variable: variable,
-            value: token.value
+            {
+              variable: variable,
+              value: token.value
 
-          })
+            })
 
           variable = ''
 
@@ -1344,8 +1263,7 @@ if(el.includes(expression))
 
       }
 
-      function getWhileLoopSourcedata(startIndex, mutable_tokens, check, StoreResult)
-      {
+      function getWhileLoopSourcedata(startIndex, mutable_tokens, check, StoreResult) {
 
         StoreResult = HandleBlocks(mutable_tokens, startIndex, StoreResult)
 
@@ -1356,20 +1274,18 @@ if(el.includes(expression))
       WhileLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, '{', WhileLoopSourcedataIndexStart)
 
       WhileLoopSourcedataTokens = getWhileLoopSourcedata(WhileLoopSourcedataIndexStart, mutable_tokens, '}', WhileLoopSourcedataTokens).StoreResult
- 
-      let message='जबतक ' + element + ' सही होगा तब तक आगे का कोड रन किया जायेगा '
 
-      let Linenumber=''
-      //console.log('element: ', element);
-      
-      LinebylineSourcedata.forEach((el,i)=>{
+      let message = 'जबतक ' + element + ' सही होगा तब तक आगे का कोड रन किया जायेगा '
+
+      let Linenumber = ''
+      //
+
+      LinebylineSourcedata.forEach((el, i) => {
 
 
-        if(el.includes(element))
-        
-        {
+        if (el.includes(element)) {
 
-          AddtoExecutionStack(ExecutionStack,'जबतक', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens  , message,i+1)
+          AddtoExecutionStack(ExecutionStack, 'जबतक', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |', element, WhileLoopSourcedataTokens, message, i + 1)
 
 
 
@@ -1381,65 +1297,53 @@ if(el.includes(expression))
 
       //constantly accessing the conditionvalue
 
-      while (GetConditionValue(element, updated_tokens, j + 1))
-      {
+      while (GetConditionValue(element, updated_tokens, j + 1)) {
 
-        for (let i = 0; i < WhileLoopSourcedataTokens.length; i++)
-        {
+        for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
 
           //SECTION while loop context
 
-          if (WhileLoopSourcedataTokens[i].value == '=')
-          {
+          if (WhileLoopSourcedataTokens[i].value == '=') {
 
-            AssignorUpdateValues(WhileLoopSourcedataTokens, i, updated_tokens,'','','',ExecutionStack,LinebylineSourcedata)
-            
-            
+            AssignorUpdateValues(WhileLoopSourcedataTokens, i, updated_tokens, '', '', '', ExecutionStack, LinebylineSourcedata)
+
+
 
           }
-          else if (WhileLoopSourcedataTokens[i].type == 'AcceptInput')
-          {
+          else if (WhileLoopSourcedataTokens[i].type == 'AcceptInput') {
 
-            AcceptInputandSetValue(WhileLoopSourcedataTokens, i, updated_tokens,ExecutionStack)
+            AcceptInputandSetValue(WhileLoopSourcedataTokens, i, updated_tokens, ExecutionStack)
 
           }
 
           // Handling CONDITIONAL statements in While loop
-          else if (WhileLoopSourcedataTokens[i].type == 'condition')
-
-          {
+          else if (WhileLoopSourcedataTokens[i].type == 'condition') {
 
             //if index returns a value, it means condition is false and skip the execution
 
             let index = HandleConditions(WhileLoopSourcedataTokens, i, updated_tokens)
 
-            if (index != undefined)
-            {
+            if (index != undefined) {
               i = index
 
             }
-            else
-            {
+            else {
               i = i
             }
 
           }
 
           //Handling प्रिंट statements in while loop
-          else if (WhileLoopSourcedataTokens[i].value == 'प्रिंट')
+          else if (WhileLoopSourcedataTokens[i].value == 'प्रिंट') {
 
-          {
-
-            PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, self,ExecutionStack) //for operations like print(array[3])
+            PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, self, ExecutionStack) //for operations like print(array[3])
 
           }
 
           //operations like Numbers[a]='xyz'
-          else if (WhileLoopSourcedataTokens[i].type == "SetArrayIndexValue")
+          else if (WhileLoopSourcedataTokens[i].type == "SetArrayIndexValue") {
 
-          {
-
-            SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+            SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
           }
 
@@ -1452,16 +1356,14 @@ if(el.includes(expression))
       //Handling For loops 
 
     }
-    else if (tokenType == 'ForLoopStart')
-
-    {
+    else if (tokenType == 'ForLoopStart') {
 
       var FlagPrimalLoop = 0
 
       var SourcedataTokens = []
 
       let ForLoopMetaData = ForLoopSetMetadata(mutable_tokens, j, updated_tokens)
-      
+
 
       var ForLoopSourcedataIndexStart = ForLoopMetaData.ForLoopSourcedataIndexStart
       var Cycle = ForLoopMetaData.Cycle
@@ -1474,8 +1376,7 @@ if(el.includes(expression))
       var element = ForLoopMetaData.element
       var elementValue = ForLoopMetaData.elementValue
 
-      function getSourcedata(startIndex, mutable_tokens, check, StoreResult)
-      {
+      function getSourcedata(startIndex, mutable_tokens, check, StoreResult) {
 
         let Returnvalue = HandleBlocks(mutable_tokens, startIndex, StoreResult)
         StoreResult = Returnvalue.StoreResult
@@ -1487,10 +1388,9 @@ if(el.includes(expression))
       ForLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, '{', ForLoopSourcedataIndexStart)
 
       SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, mutable_tokens, '}', SourcedataTokens)
-      
 
-      SourcedataTokens.forEach(el =>
-      {
+
+      SourcedataTokens.forEach(el => {
 
         el.isNestedLoop = false
 
@@ -1499,16 +1399,14 @@ if(el.includes(expression))
       //Checking if the for loop has one more for loop inside it
       let FindNestedLoop = SourcedataTokens.find(el => el.type == 'ForLoopStart')
 
-      if (FindNestedLoop != undefined)
-      {
+      if (FindNestedLoop != undefined) {
 
         let NestedLoopindex = SourcedataTokens.indexOf(FindNestedLoop) + 3
         let NestedLooplength = (SourcedataTokens[NestedLoopindex].EndIndex - SourcedataTokens[NestedLoopindex].startIndex) + 2
 
         //if we have a nested loop, set isNesteLoop to TRUE
 
-        for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++)
-        {
+        for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++) {
 
           SourcedataTokens[x].isNestedLoop = true
 
@@ -1516,9 +1414,7 @@ if(el.includes(expression))
 
       }
 
-      if (element.includes('(') && element.includes(','))
-
-      {
+      if (element.includes('(') && element.includes(',')) {
 
         FlagPrimalLoop = 1
 
@@ -1527,42 +1423,36 @@ if(el.includes(expression))
       //Iterating over forloop sourcedata
       //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
 
-let message='दुहराओ के अंदर लिखे गए कोड को '+IterationStart+' से '+ IterationEnd + ' तक, मतलब '+ eval((IterationEnd-IterationStart)+1)  + ' बार RUN(रन) किया जायेगा |' + 'इसमें Computer, '+ iterator+' को Memory में, '+ IterationStart + ' से ' + IterationEnd +  ' तक क़ीमत(Values) सेट करता जाएगा|' 
+      let message = 'दुहराओ के अंदर लिखे गए कोड को ' + IterationStart + ' से ' + IterationEnd + ' तक, मतलब ' + eval((IterationEnd - IterationStart) + 1) + ' बार RUN(रन) किया जायेगा |' + '\n' + ' इसमें Computer, ' + '"' + iterator + '"' + ' को Memory में, ' + IterationStart + ' से ' + IterationEnd + ' तक क़ीमत(Values) सेट करता जाएगा|'
 
-//This is the experession whcih is getting evaluated. 
-let expression= 'दुहराओ ' + iterator +' को ' + mutable_tokens[j+1].value + ' मे'
+      //This is the experession whcih is getting evaluated. 
+      let expression = 'दुहराओ ' + iterator + ' को ' + mutable_tokens[j + 1].value + ' मे'
 
-let Linenumber= LinebylineSourcedata.indexOf(expression)
-Linenumber=Linenumber+1
+      let Linenumber = LinebylineSourcedata.indexOf(expression)
+      Linenumber = Linenumber + 1
 
-      AddtoExecutionStack(ExecutionStack,'दुहराओ', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, ''  , message, Linenumber)
+      AddtoExecutionStack(ExecutionStack, 'दुहराओ', 'एक ही कोड को बार-बार दोहराना। ', SourcedataTokens, '', message, Linenumber)
 
 
-      for (iterator = IterationStart; iterator <= Cycle; iterator++)
-      
-      {
+      for (iterator = IterationStart; iterator <= Cycle; iterator++) {
 
         let forloopindex = updated_tokens.find(el => el.name == OriginalIterator)
 
         forloopindex.value = iterator
 
         //flag to avoid running self code if loop is primal because the payload needs to be compeltely different
-        if (FlagPrimalLoop = 0)
-        {
+        if (FlagPrimalLoop = 0) {
           ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, self)
 
         }
 
-        for (let i = 0; i < SourcedataTokens.length; i++)
-
-        {
+        for (let i = 0; i < SourcedataTokens.length; i++) {
 
           let isNested = SourcedataTokens[i].isNestedLoop
 
           //This code runs only if we have a nested loop situation
 
-          if (SourcedataTokens[i].type == 'ForLoopStart')
-          {
+          if (SourcedataTokens[i].type == 'ForLoopStart') {
 
             var NestedFlagPrimalLoop = 0
 
@@ -1577,8 +1467,7 @@ Linenumber=Linenumber+1
             var Nestedelement = NestedForLoopMetaData.element
             var NestedelementValue = NestedForLoopMetaData.elementValue
 
-            function getSourcedata(startIndex, SourcedataTokens, check, StoreResult)
-            {
+            function getSourcedata(startIndex, SourcedataTokens, check, StoreResult) {
 
               let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult)
               StoreResult = Returnvalue.StoreResult
@@ -1591,8 +1480,7 @@ Linenumber=Linenumber+1
 
             NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, '}', NestedSourcedataTokens)
 
-            for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++)
-            {
+            for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
               {
 
                 let y = Nestediterator
@@ -1601,27 +1489,21 @@ Linenumber=Linenumber+1
 
                 Nestedforloopindex.value = y
 
-                for (let index = 0; index < NestedSourcedataTokens.length; index++)
-                {
+                for (let index = 0; index < NestedSourcedataTokens.length; index++) {
 
                   let el = NestedSourcedataTokens[index]
 
-                  if (el.value == 'प्रिंट')
-
-                  {
+                  if (el.value == 'प्रिंट') {
 
                     PrintEngine(NestedSourcedataTokens, updated_tokens, index, self, y, NestedOriginalIterator,)
 
                   }
-                  else if (el.value == '=' && el.isNestedLoop == true)
-                  {
+                  else if (el.value == '=' && el.isNestedLoop == true) {
 
                     AssignorUpdateValues(NestedSourcedataTokens, index, updated_tokens, y, NestedOriginalIterator)
 
                   }
-                  else if (el.type == 'condition' && el.isNestedLoop == true)
-
-                  {
+                  else if (el.type == 'condition' && el.isNestedLoop == true) {
 
                     let ConditionStartIndex = index
                     let condition = NestedSourcedataTokens[index].value
@@ -1630,23 +1512,20 @@ Linenumber=Linenumber+1
                     //value of i depends on the conditions
 
                     let value = GetConditionValue(condition, updated_tokens, index)
-                    
+
 
                     kalaam.LastConditionValue.push(value)
 
-                    if (value == false)
-                    {
+                    if (value == false) {
 
                       break
 
                     }
 
                   }
-                  else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true)
+                  else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true) {
 
-                  {
-
-                    SetArrayIndexValue(NestedSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+                    SetArrayIndexValue(NestedSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
                   }
 
@@ -1657,80 +1536,63 @@ Linenumber=Linenumber+1
             }
 
           }
-          else if (SourcedataTokens[i].value == '=' && isNested == false)
-          {
+          else if (SourcedataTokens[i].value == '=' && isNested == false) {
 
             //assigning values to variables in a for loop
 
-            AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator,global,ExecutionStack,LinebylineSourcedata)
-            
+            AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator, global, ExecutionStack, LinebylineSourcedata)
+
 
           }
-          else if (SourcedataTokens[i].type == 'PushToArray')
+          else if (SourcedataTokens[i].type == 'PushToArray') {
 
-          {
-
-            AddElementToArray(SourcedataTokens, i, updated_tokens,ExecutionStack,LinebylineSourcedata)
+            AddElementToArray(SourcedataTokens, i, updated_tokens, ExecutionStack, LinebylineSourcedata)
 
           }
-          else if (SourcedataTokens[i].type == 'AcceptInput')
-          {
+          else if (SourcedataTokens[i].type == 'AcceptInput') {
 
             AcceptInputandSetValue(SourcedataTokens, i, updated_tokens)
 
           }
 
           //Handling print statements in for loop
-          else if (SourcedataTokens[i].value == 'प्रिंट' && isNested == false)
-
-          {
+          else if (SourcedataTokens[i].value == 'प्रिंट' && isNested == false) {
 
             PrintEngine(SourcedataTokens, updated_tokens, i, self, iterator, OriginalIterator)
 
           }
 
           //Handling set array element statements in for loop
-          else if (SourcedataTokens[i].type == "SetArrayIndexValue")
+          else if (SourcedataTokens[i].type == "SetArrayIndexValue") {
 
-          {
-
-            SetArrayIndexValue(SourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+            SetArrayIndexValue(SourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
           }
 
           // Handling CONDITIONAL statements in for loop
-          else if (SourcedataTokens[i].type == 'condition')
-
-          {
+          else if (SourcedataTokens[i].type == 'condition') {
 
             let ConditionStartIndex = i
             let condition = SourcedataTokens[i].value
-            
+
             //HandleConditions evaluates condition and return the index of from where printing should resume
             //value of i depends on the conditions
 
-            if (condition.includes('||') || condition.includes('&&'))
-
-            {
+            if (condition.includes('||') || condition.includes('&&')) {
 
               let value = GetConditionValue(condition, updated_tokens, i)
 
               //Experimental
               kalaam.LastConditionValue.push(value)
 
-              if (value == false)
-              {
+              if (value == false) {
 
                 let BlockLength = 0
                 let BlockStart = 0
 
-                while (SourcedataTokens[i].value != '{')
+                while (SourcedataTokens[i].value != '{') {
 
-                {
-
-                  if (SourcedataTokens[i + 1].value == '{')
-
-                  {
+                  if (SourcedataTokens[i + 1].value == '{') {
 
                     BlockLength = SourcedataTokens[i + 1].EndIndex - SourcedataTokens[i + 1].startIndex
 
@@ -1744,70 +1606,65 @@ Linenumber=Linenumber+1
                 }
 
               }
-              else
-              {
+              else {
 
                 i = i
 
               }
 
             }
-            else
-            {
+            else {
 
               i = HandleConditions(SourcedataTokens, i, updated_tokens);
 
-             
-    
-    
-              let expression= condition
-              let Linenumber=''
-
-expression=GetcleanedExpression(expression)
-
-LinebylineSourcedata.forEach((el,index)=>{
-
-el=GetcleanedExpression(el)
-if(el.includes(expression))
-{
 
 
-Linenumber=index
+
+              let expression = condition
+              let Linenumber = ''
+
+              expression = GetcleanedExpression(expression)
+
+              LinebylineSourcedata.forEach((el, index) => {
+
+                el = GetcleanedExpression(el)
+                if (el.includes(expression)) {
 
 
-}
+                  Linenumber = index
 
-})
-              if (i != undefined)
-              {
+
+                }
+
+              })
+              if (i != undefined) {
 
                 i = i
-                let message= 'कंडीशन '+ condition+' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा '
-                AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message,Linenumber+1)
+                let message = 'कंडीशन ' + condition + ' , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा '
+                AddtoExecutionStack(ExecutionStack, 'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, '', message, Linenumber + 1)
 
 
 
               }
-              else
-              {
+              else {
                 i = ConditionStartIndex
 
-                let message= 'कंडीशन '+ condition+ ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा '
-                AddtoExecutionStack(ExecutionStack,'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, ''  , message,Linenumber+1)
+                let message = 'कंडीशन ' + condition + ' TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा '
+                AddtoExecutionStack(ExecutionStack, 'अगर', 'एक Certain Condition के तहत कोड Execution को Allow करता है। ', condition, '', message, Linenumber + 1)
 
 
               }
 
-      
-       
-              
+
+
+
 
             }
-      
-           
-            
 
-            
+
+
+
+
 
           }
 
@@ -1820,8 +1677,7 @@ Linenumber=index
     }
 
     //END FOR LOOP EXECUTION
-    else if (tokenType == 'functionExecution')
-    {
+    else if (tokenType == 'functionExecution') {
 
       //checking if function is invoked somewhere later in the program
 
@@ -1849,8 +1705,7 @@ Linenumber=index
 
       //so we set x=3, y=4 and set self variable-value pair in functionContextupdated_tokens
 
-      functionArguments.forEach((el, index) =>
-      {
+      functionArguments.forEach((el, index) => {
 
         let val = passedValues[index]
 
@@ -1864,59 +1719,56 @@ Linenumber=index
         let FindInUpdatedTokens = updated_tokens.find(el => el.name == val)
 
         //For passing same argument and same value to function  e.g function foo (fibonacci) and fibonacci is already declared with some value
-        if (FindInUpdatedTokens == undefined)
-        {
+        if (FindInUpdatedTokens == undefined) {
 
           functionContextupdated_tokens.push(
-          {
+            {
 
-            name: el,
+              name: el,
 
-            value: val,
+              value: val,
 
-            identifier: j + index,
-            type: 'value',
-            context: 'FunctionExecutionContext'
+              identifier: j + index,
+              type: 'value',
+              context: 'FunctionExecutionContext'
 
-          })
+            })
 
         }
 
         //For passing different argument and value to function  e.g function foo (arr) and arr doesn't exist anywhere in tokens.
-        else if (el != FindInUpdatedTokens.name && FindInUpdatedTokens != undefined)
-        {
+        else if (el != FindInUpdatedTokens.name && FindInUpdatedTokens != undefined) {
 
           functionContextupdated_tokens.push(
-          {
+            {
 
-            name: el,
+              name: el,
 
-            value: FindInUpdatedTokens.value,
+              value: FindInUpdatedTokens.value,
 
-            identifier: j + index,
-            type: FindInUpdatedTokens.type,
-            context: 'FunctionExecutionContext',
-            IntheEndSetValueto: val
+              identifier: j + index,
+              type: FindInUpdatedTokens.type,
+              context: 'FunctionExecutionContext',
+              IntheEndSetValueto: val
 
-          })
+            })
 
         }
-        else
-        {
+        else {
 
           functionContextupdated_tokens.push(
-          {
+            {
 
-            name: el,
+              name: el,
 
-            value: val,
+              value: val,
 
-            identifier: j + index,
-            type: FindInUpdatedTokens.type,
-            context: 'FunctionExecutionContext',
-            IntheEndSetValueto: val
+              identifier: j + index,
+              type: FindInUpdatedTokens.type,
+              context: 'FunctionExecutionContext',
+              IntheEndSetValueto: val
 
-          })
+            })
 
         }
 
@@ -1926,47 +1778,63 @@ Linenumber=index
 
       var CompleteTokenValueList = [...updated_tokens, ...functionContextupdated_tokens]
 
+
+      let message = 'Computer ' + '"' + functionName + '"' + ' नाम की रचना को कॉल (Call) करता है | आपने ' + '"()"' + ' के अंदर दिए गए New Values का रचना ' + functionName + ' में उपयोग करके, रचना ' + functionName + ' में लिखे गए कोड को रन करता है |'
+
+      let expression = functionName + '('
+
+      let Linenumber = ''
+      //
+
+      LinebylineSourcedata.forEach((el, i) => {
+
+        if (el.includes(expression) && !el.includes('रचना')) {
+
+          Linenumber = i + 1
+
+          AddtoExecutionStack(ExecutionStack, 'रचना', ' एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ', functionName, functionSourceData, message, Linenumber)
+
+
+        }
+
+
+      })
+
+
+
       //Now we start digging into the function execution
 
-      for (let i = 1; i < functionSourceData.length; i++)
-
-      {
+      for (let i = 1; i < functionSourceData.length; i++) {
 
         let el = functionSourceData[i]
 
         //operations like प्रिंट(Message)
         //PrintEngine will take care of every print statement encountered in the program
 
-        if (el.value == 'प्रिंट')
+        if (el.value == 'प्रिंट') {
 
-        {
-
-          PrintEngine(functionSourceData, CompleteTokenValueList, i, self,ExecutionStack)
+          PrintEngine(functionSourceData, CompleteTokenValueList, i, self, ExecutionStack)
 
         }
 
         //operations like Message='Hello World'
 
         //AssignorUpdateValues function will take care of every assignment encountered in the program
-        else if (el.value == '=')
-        {
+        else if (el.value == '=') {
 
-          AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self,ExecutionStack,LinebylineSourcedata)
+          AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self, ExecutionStack, LinebylineSourcedata)
 
         }
 
         //operations like इनपुट(Message)
-        else if (el.type == 'AcceptInput')
-        {
+        else if (el.type == 'AcceptInput') {
 
-          AcceptInputandSetValue(functionSourceData, i, updated_tokens,ExecutionStack)
+          AcceptInputandSetValue(functionSourceData, i, updated_tokens, ExecutionStack)
 
         }
 
         //operations like x<24, y!=5, Message=='HellO World"
-        else if (el.type == 'condition')
-
-        {
+        else if (el.type == 'condition') {
 
           let element = functionSourceData[i].value
 
@@ -1979,8 +1847,7 @@ Linenumber=index
 
           //if value is false, just skip the if loop context, if not it will be ran in final print module
 
-          if (ConditionValue == false)
-          {
+          if (ConditionValue == false) {
 
             let InitializeLoop = tokens.indexOf(functionSourceData[i])
 
@@ -1995,18 +1862,14 @@ Linenumber=index
 
         //Handling set array element statements in for loop
         // for e.g Numbers[2]=28
-        else if (functionSourceData[i].type == "SetArrayIndexValue")
+        else if (functionSourceData[i].type == "SetArrayIndexValue") {
 
-        {
-
-          SetArrayIndexValue(functionSourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+          SetArrayIndexValue(functionSourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
         }
 
         //Opearting on for loop encountered in program
-        else if (functionSourceData[i].type == 'ForLoopStart')
-
-        {
+        else if (functionSourceData[i].type == 'ForLoopStart') {
 
           var FlagPrimalLoop = 0
 
@@ -2022,8 +1885,7 @@ Linenumber=index
           var element = ForLoopMetaData.element
           var elementValue = ForLoopMetaData.elementValue
 
-          function getSourcedata(startIndex, functionSourceData, check, StoreResult)
-          {
+          function getSourcedata(startIndex, functionSourceData, check, StoreResult) {
 
             let Returnvalue = HandleBlocks(functionSourceData, startIndex, StoreResult)
             StoreResult = Returnvalue.StoreResult
@@ -2038,22 +1900,19 @@ Linenumber=index
 
           SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, functionSourceData, '}', SourcedataTokens)
 
-          SourcedataTokens.forEach(el =>
-          {
+          SourcedataTokens.forEach(el => {
 
             el.isNestedLoop = false
 
           })
 
           let FindNestedLoop = SourcedataTokens.find(el => el.type == 'ForLoopStart')
-          if (FindNestedLoop != undefined)
-          {
+          if (FindNestedLoop != undefined) {
 
             let NestedLoopindex = SourcedataTokens.indexOf(FindNestedLoop) + 2
             let NestedLooplength = (SourcedataTokens[NestedLoopindex].EndIndex - SourcedataTokens[NestedLoopindex].startIndex) + 1
 
-            for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++)
-            {
+            for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++) {
 
               SourcedataTokens[x].isNestedLoop = true
 
@@ -2063,9 +1922,7 @@ Linenumber=index
 
           //Primal loop is the one where user gives us the range directly like (1,20) etc.
 
-          if (element.includes('(') && element.includes(','))
-
-          {
+          if (element.includes('(') && element.includes(',')) {
 
             FlagPrimalLoop = 1
 
@@ -2074,23 +1931,19 @@ Linenumber=index
           //Iterating over forloop sourcedata
           //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
 
-          for (iterator = IterationStart; iterator <= Cycle; iterator++)
-          {
+          for (iterator = IterationStart; iterator <= Cycle; iterator++) {
 
             let forloopindex = CompleteTokenValueList.find(el => el.name == OriginalIterator)
 
             forloopindex.value = iterator
 
             //flag to avoid running self code if loop is primal because the payload needs to be compeltely different
-            if (FlagPrimalLoop = 0)
-            {
+            if (FlagPrimalLoop = 0) {
               ForLoopArrayorStringOutput(elementValue, iterator, CompleteTokenValueList, self)
 
             }
 
-            for (let i = 0; i < SourcedataTokens.length; i++)
-
-            {
+            for (let i = 0; i < SourcedataTokens.length; i++) {
 
               let isNested = SourcedataTokens[i].isNestedLoop
 
@@ -2099,8 +1952,7 @@ Linenumber=index
 
               //NESTED FOR LOOP START
 
-              if (SourcedataTokens[i].type == 'ForLoopStart')
-              {
+              if (SourcedataTokens[i].type == 'ForLoopStart') {
 
                 var NestedFlagPrimalLoop = 0
 
@@ -2117,9 +1969,8 @@ Linenumber=index
                 var Nestedelement = NestedForLoopMetaData.element
                 var NestedelementValue = NestedForLoopMetaData.elementValue
 
-                function getSourcedata(startIndex, SourcedataTokens, check, StoreResult)
-                {
-                  ////console.log('startIndex, SourcedataTokens, check, StoreResult: ', startIndex, SourcedataTokens, check, StoreResult);
+                function getSourcedata(startIndex, SourcedataTokens, check, StoreResult) {
+                  ////
 
                   let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult)
                   StoreResult = Returnvalue.StoreResult
@@ -2131,70 +1982,56 @@ Linenumber=index
                 NestedForLoopSourcedataIndexStart = getLoopIndexStart(SourcedataTokens, i, '{', NestedForLoopSourcedataIndexStart)
 
                 NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, '}', NestedSourcedataTokens)
-                ////console.log('NestedSourcedataTokens: ', NestedSourcedataTokens);
+                ////
 
-                for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++)
-                {
+                for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
                   {
 
                     let y = Nestediterator
 
                     let Nestedforloopindex = CompleteTokenValueList.find(el => el.name == NestedOriginalIterator)
-                    ////console.log('forloopindex: ', forloopindex);
+                    ////
 
                     Nestedforloopindex.value = y
 
-                    for (let index = 0; index < NestedSourcedataTokens.length; index++)
-                    {
+                    for (let index = 0; index < NestedSourcedataTokens.length; index++) {
 
                       let el = NestedSourcedataTokens[index]
 
-                      if (el.value == 'प्रिंट')
-
-                      {
+                      if (el.value == 'प्रिंट') {
 
                         PrintEngine(NestedSourcedataTokens, CompleteTokenValueList, index, self, y, NestedOriginalIterator)
 
                       }
-                      else if (el.value == '=' && el.isNestedLoop == true)
-                      {
+                      else if (el.value == '=' && el.isNestedLoop == true) {
 
                         //assigning values to variables
 
                         AssignorUpdateValues(NestedSourcedataTokens, index, CompleteTokenValueList, y, NestedOriginalIterator, self)
 
                       }
-                      else if (el.type == 'condition' && el.isNestedLoop == true)
+                      else if (el.type == 'condition' && el.isNestedLoop == true) {
 
-                      {
-
-                        ////console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
+                        ////
 
                         let ConditionStartIndex = index
                         let condition = NestedSourcedataTokens[index].value
                         //HandleConditions evaluates condition and return the index of from where printing should resume
                         //value of i depends on the conditions
 
-                        if (condition.includes('||') || condition.includes('&&'))
-
-                        {
+                        if (condition.includes('||') || condition.includes('&&')) {
 
                           let value = GetConditionValue(condition, CompleteTokenValueList, index)
                           kalaam.LastConditionValue.push(value)
 
-                          if (value == false)
-                          {
+                          if (value == false) {
 
                             let BlockLength = 0
                             let BlockStart = 0
 
-                            while (NestedSourcedataTokens[index].value != '{')
+                            while (NestedSourcedataTokens[index].value != '{') {
 
-                            {
-
-                              if (NestedSourcedataTokens[index + 1].value == '{')
-
-                              {
+                              if (NestedSourcedataTokens[index + 1].value == '{') {
 
                                 BlockLength = NestedSourcedataTokens[index + 1].EndIndex - NestedSourcedataTokens[index + 1].startIndex
 
@@ -2208,43 +2045,37 @@ Linenumber=index
                             }
 
                           }
-                          else
-                          {
+                          else {
 
                             index = index
 
                           }
 
                         }
-                        else
-                        {
+                        else {
 
                           let x = HandleConditions(NestedSourcedataTokens, index, CompleteTokenValueList);
 
-                          if (x != undefined)
-                          {
+                          if (x != undefined) {
 
                             index = x
 
                           }
-                          else
-                          {
+                          else {
                             index = ConditionStartIndex
-                            ////console.log('i: ', i);
+                            ////
                           }
 
                         }
 
                       }
 
-                      ////console.log('i: ', i);
+                      ////
 
                       // i = i + NestedSourcedataTokens.length
-                      ////console.log('i: ', i);
-                      else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true)
-
-                      {
-                        SetArrayIndexValue(NestedSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+                      ////
+                      else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true) {
+                        SetArrayIndexValue(NestedSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
                       }
 
@@ -2255,13 +2086,11 @@ Linenumber=index
                 }
 
               }
-              else if (SourcedataTokens[i].type == 'AcceptInput' && isNested == false)
-              {
+              else if (SourcedataTokens[i].type == 'AcceptInput' && isNested == false) {
                 AcceptInputandSetValue(SourcedataTokens, i, updated_tokens)
 
               }
-              else if (SourcedataTokens[i].value == '=' && isNested == false)
-              {
+              else if (SourcedataTokens[i].value == '=' && isNested == false) {
 
                 //assigning values to variables
 
@@ -2270,13 +2099,11 @@ Linenumber=index
               }
 
               //Handling print statements in for loop
-              else if (SourcedataTokens[i].value == 'प्रिंट' && isNested == false)
-
-              {
+              else if (SourcedataTokens[i].value == 'प्रिंट' && isNested == false) {
 
                 //for operations like print(array[3])
 
-                // //console.log('for looop prints: ', functionSourceData[i],i);
+                // //
 
                 PrintEngine(SourcedataTokens, CompleteTokenValueList, i, self, iterator, OriginalIterator)
 
@@ -2285,46 +2112,35 @@ Linenumber=index
               }
 
               //Handling set array element statements in for loop
-              else if (SourcedataTokens[i].type == "SetArrayIndexValue")
+              else if (SourcedataTokens[i].type == "SetArrayIndexValue") {
 
-              {
-
-                SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+                SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
               }
 
               // Handling CONDITIONAL statements in for loop
-              else if (SourcedataTokens[i].type == 'condition')
+              else if (SourcedataTokens[i].type == 'condition') {
 
-              {
-
-                ////console.log('SourcedataTokens[i]: ', SourcedataTokens[i],i);
+                ////
 
                 let ConditionStartIndex = i
                 let condition = SourcedataTokens[i].value
                 //HandleConditions evaluates condition and return the index of from where printing should resume
                 //value of i depends on the conditions
 
-                if (condition.includes('||') || condition.includes('&&'))
-
-                {
+                if (condition.includes('||') || condition.includes('&&')) {
 
                   let value = GetConditionValue(condition, updated_tokens, i)
                   kalaam.LastConditionValue.push(value)
 
-                  if (value == false)
-                  {
+                  if (value == false) {
 
                     let BlockLength = 0
                     let BlockStart = 0
 
-                    while (SourcedataTokens[i].value != '{')
+                    while (SourcedataTokens[i].value != '{') {
 
-                    {
-
-                      if (SourcedataTokens[i + 1].value == '{')
-
-                      {
+                      if (SourcedataTokens[i + 1].value == '{') {
 
                         BlockLength = SourcedataTokens[i + 1].EndIndex - SourcedataTokens[i + 1].startIndex
 
@@ -2338,29 +2154,25 @@ Linenumber=index
                     }
 
                   }
-                  else
-                  {
+                  else {
 
                     i = i
 
                   }
 
                 }
-                else
-                {
+                else {
 
                   i = HandleConditions(SourcedataTokens, i, CompleteTokenValueList);
 
-                  if (i != undefined)
-                  {
+                  if (i != undefined) {
 
                     i = i
 
                   }
-                  else
-                  {
+                  else {
                     i = ConditionStartIndex
-                    ////console.log('i: ', i);
+                    ////
                   }
 
                 }
@@ -2376,17 +2188,14 @@ Linenumber=index
           //END NESTED FOR LOOP
 
         }
-        else if (functionSourceData[i].type == "SetArrayIndexValue")
+        else if (functionSourceData[i].type == "SetArrayIndexValue") {
 
-        {
-
-          SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+          SetArrayIndexValue(SourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
         }
 
         //Handling While loop in function
-        else if (functionSourceData[i].type == 'WhileLoopStart')
-        {
+        else if (functionSourceData[i].type == 'WhileLoopStart') {
 
           let TokensCurrentIndex = i + 3
 
@@ -2400,28 +2209,24 @@ Linenumber=index
           let WhileLoopSourcedataIndexStart = 0
           let WhileLoopSourcedataTokens = []
 
-          for (let i = 0; i < element.length; i++)
-          {
+          for (let i = 0; i < element.length; i++) {
             let x = element.charAt(i)
 
-            if (isVariable(x))
-
-            {
+            if (isVariable(x)) {
 
               variable = variable + x
 
             }
-            if (!isVariable(element.charAt(i + 1)) && isVariable(x))
-            {
+            if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
 
               let token = CompleteTokenValueList.find(el => el.name == variable)
 
               ExtratcedVariable.push(
-              {
-                variable: variable,
-                value: token.value
+                {
+                  variable: variable,
+                  value: token.value
 
-              })
+                })
 
               variable = ''
 
@@ -2429,8 +2234,7 @@ Linenumber=index
 
           }
 
-          function getWhileLoopSourcedata(startIndex, functionSourceData, check, StoreResult)
-          {
+          function getWhileLoopSourcedata(startIndex, functionSourceData, check, StoreResult) {
 
             StoreResult = HandleBlocks(functionSourceData, startIndex, StoreResult)
 
@@ -2444,22 +2248,19 @@ Linenumber=index
 
           //constantly evaluating the conditionvalue. for e.g count<25 in जबतक(count<25)
 
-           // let message='जबतक' + 
+          // let message='जबतक' + 
 
-      //AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे', WhileLoopSourcedataTokens, ''  , message)
+          //AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे', WhileLoopSourcedataTokens, ''  , message)
 
 
 
-          while (GetConditionValue(element, CompleteTokenValueList, j + 1))
-          {
+          while (GetConditionValue(element, CompleteTokenValueList, j + 1)) {
 
-            for (let i = 0; i < WhileLoopSourcedataTokens.length; i++)
-            {
+            for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
 
               //SECTION while loop context
 
-              if (WhileLoopSourcedataTokens[i].value == '=')
-              {
+              if (WhileLoopSourcedataTokens[i].value == '=') {
 
                 AssignorUpdateValues(WhileLoopSourcedataTokens, i, CompleteTokenValueList)
 
@@ -2468,43 +2269,34 @@ Linenumber=index
                 // 
 
               }
-              else if (WhileLoopSourcedataTokens[i].type == 'AcceptInput')
-              {
+              else if (WhileLoopSourcedataTokens[i].type == 'AcceptInput') {
 
                 AcceptInputandSetValue(WhileLoopSourcedataTokens, i, updated_tokens)
 
               }
 
               // Handling CONDITIONAL statements in for loop
-              else if (WhileLoopSourcedataTokens[i].type == 'condition')
-
-              {
+              else if (WhileLoopSourcedataTokens[i].type == 'condition') {
 
                 let index = HandleConditions(WhileLoopSourcedataTokens, i, CompleteTokenValueList)
 
-                if (index != undefined)
-                {
+                if (index != undefined) {
                   i = index
 
                 }
-                else
-                {
+                else {
                   i = i
                 }
 
               }
-              else if (WhileLoopSourcedataTokens[i].value == 'प्रिंट')
-
-              {
+              else if (WhileLoopSourcedataTokens[i].value == 'प्रिंट') {
 
                 PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i, self) //for operations like print(array[3])
 
               }
-              else if (WhileLoopSourcedataTokens[i].type == "SetArrayIndexValue")
+              else if (WhileLoopSourcedataTokens[i].type == "SetArrayIndexValue") {
 
-              {
-
-                SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
+                SetArrayIndexValue(WhileLoopSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata)
 
               }
 
@@ -2537,14 +2329,14 @@ Linenumber=index
 
   }
 
+  
 
 
   //This is where error handling kicks in
 
   //To find undefined variables
 
-  function onlyUnique(value, index, arr)
-  {
+  function onlyUnique(value, index, arr) {
     return arr.indexOf(value) === index;
   }
 
@@ -2552,12 +2344,9 @@ Linenumber=index
 
   let difference = variables_array.filter(x => !assigned_variables.includes(x))
 
-  if (difference.length > 0)
+  if (difference.length > 0) {
 
-  {
-
-    difference.forEach(el =>
-    {
+    difference.forEach(el => {
 
       kalaam.error.push('Variable ' + el + ' is undefined ')
 
@@ -2565,14 +2354,12 @@ Linenumber=index
 
   }
 
-  if (kalaam.error.length > 0)
-  {
+  if (kalaam.error.length > 0) {
 
     kalaam.linebylineOutput = kalaam.error
 
   }
-  else
-  {
+  else {
 
     kalaam.linebylineOutput = kalaam.output.split('\n')
 
@@ -2581,13 +2368,11 @@ Linenumber=index
   //time taken to transpile the code is t1-t0
   var t1 = performance.now()
 
-  if (kalaam.linebylineOutput != '' && kalaam.error.length == 0)
-  {
-    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0)/10000).toPrecision(3) + " Seconds)"
+  if (kalaam.linebylineOutput != '' && kalaam.error.length == 0) {
+    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)"
 
   }
-  else
-  {
+  else {
 
     kalaam.isError = true
 
@@ -2597,18 +2382,13 @@ Linenumber=index
 
   //kalaam.linebylineoutput is what you will finally see on output screen
 
-  kalaam.linebylineOutput = kalaam.linebylineOutput.filter(function(item)
-  
-
-  
-  {
+  kalaam.linebylineOutput = kalaam.linebylineOutput.filter(function (item) {
 
     return item !== ""
   })
 
   //ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
-  console.log('ExecutionStack: ', ExecutionStack);
-  
 
-return ExecutionStack
+
+  return ExecutionStack
 }

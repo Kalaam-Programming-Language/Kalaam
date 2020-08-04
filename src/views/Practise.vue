@@ -3,8 +3,8 @@
    
  <Header/>
 
-<!--
 
+<!--
 <div id="Modes">
    <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
   <span v-if="this.$store.state.PractiseOn"> <li style="color:green"  >Practice Mode</li></span>
@@ -23,9 +23,9 @@
 
       
       </div>
-      -->
       
-   <div v-if="this.$store.state.LearningOn"  style="border:solid 5px green" class="PractiseMode" id="compiler">
+      -->
+  <div v-if="this.$store.state.LearningOn"    class="LearningMode" id="compiler">
 
 
    <div id="textarea">
@@ -33,7 +33,7 @@
 
   <no-ssr placeholder="...">
 
-  <codemirror id="codearea" style="text-align:left;" ref="myCm"
+  <codemirror id="codearea" ref="myCm"
               :value="code" 
               placeholder="Welcome To Kalaam, This is your Code Editor."
               :options="cmOptions"
@@ -44,22 +44,16 @@
   </no-ssr>
 
   
-      <button style="background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
-    border: none;
-    font-weight: 600;" id="subm" @click="RunLinebyLine()">Run LinebyLine</button>
-      <button style="background: linear-gradient(to right, #11998e, #12ff6b);
-    border: none;
-    font-weight: 600;" id="subm" @click="Clear()">Clear</button>
-        <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
-<button id="subm" @click="Add('रचना')">रचना</button>
-    <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
-
-    <button id="subm" @click="Add('अगर()')">अगर</button>
-
-    <button id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ </button>
-    <button id="subm" @click="Add('जबतक()')">जबतक</button>
-    <button id="subm" @click="Add('.संख्या()')">.संख्या</button>
-    <button id="subm" @click="Add('.पुश()')">.पुश</button>
+      <button  id="RunlinebylineBtn" @click="RunLinebyLine()">Run LinebyLine</button>
+      <button  id="Runbtn" @click="Clear()">Clear</button>
+      <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
+      <button id="subm" @click="Add('रचना')">रचना</button>
+      <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
+      <button id="subm" @click="Add('अगर()')">अगर</button>
+      <button id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ </button>
+      <button id="subm" @click="Add('जबतक()')">जबतक</button>
+      <button id="subm" @click="Add('.संख्या()')">.संख्या</button>
+      <button id="subm" @click="Add('.पुश()')">.पुश</button>
     
 
    
@@ -69,7 +63,7 @@
 
 <div id="bharatDIV">
 
-<p id="version">Kalaam v1.0.0</p>
+<p id="version">Kalaam v1.0.0 (Learning Mode )</p>
 <p id="CodeStatus" v-if="this.isError==false">{{TimeTaken}}</p>
         
 <p id="CodeStatus" v-if="this.isError==true" >{{TimeTaken}}</p>
@@ -77,7 +71,7 @@
 
 <div id="printOutput">
 
-<p style="white-space: pre; "  id="linebylineOutput" >
+<p  id="linebylineOutput" >
 
 
  {{this.ExecutionStackLinebyLine}} 
@@ -416,6 +410,8 @@ SwitchMode:function()
       this.code = newCode;
       
       localStorage.setItem('Code', newCode);
+
+      this.$store.state.CurrentCode=newCode
       
 
 },
@@ -450,7 +446,7 @@ SwitchMode:function()
 
 //Compile is our #1 function located in /lib/compiler/main.js
 //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
-//try console.log(this.$data) to see what we are sending to our compiler
+//try  to see what we are sending to our compiler
       
     Compile(this.$data)
 
@@ -461,7 +457,7 @@ SwitchMode:function()
 
 //Compile is our #1 function located in /lib/compiler/main.js
 //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
-//try console.log(this.$data) to see what we are sending to our compiler
+//try  to see what we are sending to our compiler
 
 
   
@@ -504,7 +500,36 @@ this.CurrentLine+=1
 </script>
 <style scoped>
 
+.LearningMode{
 
+  border:solid 5px green;
+  
+}
+
+#RunlinebylineBtn{
+
+background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
+    border: none;
+    font-weight: 600;
+  width: 18.5%;
+  height: 50px;
+      cursor: pointer;
+      border: none
+}
+#Runbtn{
+	background: linear-gradient(to right, #11998e, #12ff6b);
+    border: none;
+    font-weight: 600;
+      width: 18.5%;
+  height: 50px;
+      cursor: pointer;
+      border: none
+}
+#other{
+	background: linear-gradient(to right, rgb(218 241 129), rgb(240 255 18));
+    border: none;
+    font-weight: 600;
+}
 ::-webkit-input-placeholder {
    text-align: center;
    vertical-align: middle;
@@ -586,7 +611,7 @@ text-align: left;
 {
 
 
-
+white-space: pre;
 height: 10px;
     text-align: left;
     
@@ -659,6 +684,7 @@ width: 93%;
     border: none;
     outline: none;
     resize: none;
+    text-align: left;
 }
 
 #row{

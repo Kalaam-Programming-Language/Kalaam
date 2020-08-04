@@ -22,8 +22,8 @@
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
-   <li><router-link to="/Support">Support</router-link> </li>
-    <li><router-link to="/About">About</router-link> </li>
+   <li><router-link  to="/Support">Support</router-link> </li>
+    <li><router-link  to="/About">About</router-link> </li>
    
    
 </ul>
@@ -43,8 +43,8 @@
 
    </div>
    <div id="footer">
-  <p style=" color: white">Released Under the MIT Licence</p>
-  <p style="color: #ffeb00"><a style="text-decoration:none;">Created By Swanand Kadam</a></p>
+  <p id="licence">Released Under the MIT Licence</p>
+  <p id="created"><a>Created By Swanand Kadam</a></p>
 </div>
 
 
@@ -63,7 +63,10 @@ export default {
       showMenu:false,
 
      
-      isRoutePractise:false
+      isRoutePractise:false,
+
+      ShowSupport:true,
+      ShowAbout:true
     }
   },
 
@@ -102,7 +105,13 @@ let route= this.$route.name
 if(route=='Practise')
 {
 
-this.isRoutePractise=true
+this.isRoutePractise=true;
+
+this.ShowSupport=false;
+
+this.ShowAbout=false
+
+
 
 }
 
@@ -113,8 +122,15 @@ this.isRoutePractise=true
 </script>
 
 <style >
-
-
+#licence{
+  color: white
+}
+#created{
+  color: #ffeb00
+}
+#created>a{
+  text-decoration:none;
+}
 #Kalaam{
 
   float: left;

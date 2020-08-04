@@ -1,8 +1,4 @@
-import
-{
-  Number
-}
-from "core-js"
+
 
 import
 {
@@ -10,11 +6,44 @@ import
 }
 from '../Scripts/DataCleaning'
 
+
+import {RemoveQuotes, RemoveBrackets} from '../Scripts/Helpers'
+
+
 //ANCHOR - Important functions to be used while parsing
 
 //Checking if string is empty. The way we check string is empty or not boils down to how cleaned_sourcedata sees empty string s
 
 //Needs improvement
+
+function IsSpecialChar(v,i)
+
+{
+
+
+  return v[i] == "?"  || (v[i]=='=' && v[i+1]!='=' && v[i-1]!='=') || v[i] == "|" || v[i] == ";" || v[i] == "&" || v[i] == "^" || v[i] == "%" || v[i] == "$" || v[i] == "#" || v[i] == "@" || v[i] == "!" || v[i] == ":" || v[i] == "+" || v[i] == "," || v[i] == "%" || v[i] == "-" || v[i + 1] == ')' || v[i] == "/" || v[i] == "*" || v[i] == '>' || v[i] == '<'
+
+
+
+}
+
+function IsConditionalOperator(e)
+
+{
+
+return e.includes('>') || e.includes('<') || e.includes('==') || e.includes('!=')
+
+
+}
+
+function IsReservedKeyword(e)
+
+{
+
+
+  return e.includes('दुहराओ') || e.includes('रचना') || e.includes('अन्यथा') || e.includes('इनपुट') || e.includes('पुश') || e.includes('प्रिंट') || e.includes('अगर') ||  /* cleaned_sourcedata[k + 1] == '='*/ e == '}'
+}
+
 
 function isEmptyStringorChar()
 {
@@ -64,40 +93,6 @@ function isCalculation(element)
 
 //removing brackets from element
 
-function RemoveBrackets(element)
-{
-
-  let a = element.replace('(', '')
-  let b = a.replace(')', '')
-  let c = b.replace('}', '')
-  let d = c.replace('{', '')
-
-  return d
-
-}
-
-//handy count function
-
-function Count(item, element)
-{
-
-  let count = 0
-
-  for (let i = 0; i < element.length; i++)
-  {
-
-    if (element.charAt(i) == item && element.charAt(i + 1) == item)
-    {
-
-      count += 1
-
-    }
-
-  }
-
-  return count;
-
-}
 
 function isArrayOperation(element)
 {
@@ -125,6 +120,7 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
   sourcedata = SourceDataReplaceforEasyParsing(sourcedata)
 
   sourcedata.forEach((element, i) =>
+  
   {
 
     //finding the elements which has =" in it so that to seprate them into name,==,swanand if input is name="swanand". 
@@ -133,11 +129,14 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
 
     //This is our cleaning factory
 
+    
+
     if (!element.includes('==') && (element.indexOf('="') > -1 || element.indexOf('=') > 0 || element.charAt(0) == "=") && element != '==')
 
     {
 
       impurities.push(element) //push such element as impurity in impurities
+      
 
       let elements = element.split("=")
       let index = cleaned_sourcedata.length
@@ -169,6 +168,7 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
     return item !== ""
   })
 
+
   return cleaned_sourcedata;
 
 }
@@ -179,13 +179,7 @@ function GetcleanedExpression(expression)
 
   expression=expression.replace(/ /g,'')
 
-
-    expression=expression.replace(/"/g,'')
-
-
-
-    expression=expression.replace(/'/g,'')
-
+expression=RemoveQuotes(expression)
     expression=expression.replace(/\(/g,'')
     expression=expression.replace(/\)/g,'')
 
@@ -198,9 +192,13 @@ return expression
 
 function SplitElementsArray(element, i)
 
+
+
 {
 
-  if (element.includes('>') || element.includes('<') || element.includes('==') || element.includes('!='))
+element=RemoveBrackets(element)
+
+  if (IsConditionalOperator(element))
 
   {
 
@@ -218,7 +216,9 @@ function SplitElementsArray(element, i)
 
     // find if element[j] is alphabet
 
+
     if (/^[A-Z]+$/i.test(element[j]) || (element[j] == '[' || element[j] == ']')  || (element[j] == '"' || element[j] == "'") || isNumber(element[j]))
+    
     {
 
       StrVar = StrVar + element[j] //keep on pushing for long variable names as strings e.g hello, kalaam
@@ -260,10 +260,14 @@ function SplitElementsArray(element, i)
       StrVar = ''
 
     }
-    if (element[j] == "?" || element[j] == "|" || element[j] == ";" || element[j] == "&" || element[j] == "^" || element[j] == "%" || element[j] == "$" || element[j] == "#" || element[j] == "@" || element[j] == "!" || element[j] == ":" || element[j] == "+" || element[j] == "," || element[j] == "%" || element[j] == "-" || element[j + 1] == ')' || element[j] == "/" || element[j] == "*" || element[j] == '>' || element[j] == '<')
+
+
+    if (IsSpecialChar(element,j))
+    
     {
 
       StringVar.push(StrVar) //push whatever string we have got because it's a string now, cant push operators with it
+      
 
       //finding the calculations that required brackets and adding them
 
@@ -286,7 +290,12 @@ function SplitElementsArray(element, i)
 
   }
 
+
+
   return StringVar
+  
+  
+  
 
 }
 
@@ -396,12 +405,12 @@ function AddElementToArray(Sourcedata, index, updated_tokens,ExecutionStack,Line
   updated_tokens[indexofArray].value = ArrayValue
 
 
-  let message= 'आपने ' + ElementtoPush + ' को ' + Array + ' इस बकेट(Array) में दर्ज(Store) करवाया है| '
+  let message= 'आपने ' + '"' + ElementtoPush + '"'  + ' को ' + + '"' + Array + '"'  + ' इस बकेट(Array) में दर्ज(Store) करवाया है| '
 
 
 
 let expression= Sourcedata[index].value;
-//console.log('expression: ', expression);
+//
 
   let Linenumber= LinebylineSourcedata.indexOf(expression)
   Linenumber+=1
@@ -430,7 +439,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,Lin
 
   })
 
-  let message= 'आपने ' + SetInputValueAs + ' को ' + value + ' ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| '
+  let message= 'आपने ' + '"' + SetInputValueAs + '"' + ' को ' + '"' + value + '"' + ' ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| '
 
 
   let expression = 'इनपुट('+SetInputValueAs+')'
@@ -655,7 +664,7 @@ function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, i
   updated_tokens[index].value = '[' + value.toString() + ']'
 
 
-  let message= ' Computer ने, ' + variable + ' को, ' + value[indexCollected]  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+  let message= ' Computer ने, ' + '"' +  variable + '"' + ' को, ' + '"' + value[indexCollected] + '"'  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
  
 
   let expression= OriginalElement
@@ -726,8 +735,7 @@ function GetArrayorStringElement(element, updated_tokens, NewValue, flag)
         if (!isNumber(NewValue))
         {
 
-          NewValue = NewValue.replace(/"/g, '')
-          NewValue = NewValue.replace(/“/g, '')
+          NewValue =RemoveQuotes(NewValue)
           NewValue = NewValue.replace(/'/g, '')
           NewValue = NewValue.replace(/‘/g, '')
         }
@@ -801,12 +809,15 @@ function isNumber(element)
 function SetValues(StringVar, updated_tokens)
 
 
+
 {
+
   StringVar.forEach((el, i) =>
 
     {
 
       el = el.replace(/\ /g, '');
+      
       
 
       if (el.charAt(el.length - 1) == ']')
@@ -1064,6 +1075,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
   let variableType = sourcedata[i - 1].type
 
   let varvalue = sourcedata[i + 1].value
+  
 
   var FinalValue=''
 
@@ -1246,15 +1258,14 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     //Get Numbers[3] value and now set it to our variable x
     let value = GetArrayorStringElement(ArrayElement, updated_tokens)
-    //console.log('value: ', value);
+    //
     if(value!=undefined)
     {
 
-  value=value.replace(/'/g,'')
-    value=value.replace(/"/g,'')
+  value=RemoveQuotes(value)
     }
     
-    //console.log('value: ', value);
+    //
 
     if (n != undefined && flag == false)
     {
@@ -1417,11 +1428,11 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
   if(isCalculation(sourcedata[i+1].value) || sourcedata[i+1].value.includes('संख्या') )
   {
 
-  message= ' Computer सबसे पहले जाँच करता है की क्या, ' + sourcedata[i+1].value + ' को सुलझाने(Solve) करने की ज़रुरत है? अगर हा, तो Computer '+ sourcedata[i+1].value+ ' को Solve करके, ' +variable+ ' के नाम से Memory में दर्ज(Store)कर देगा | यहापर , '  + sourcedata[i+1].value + ' की कीमत (Value) , ' + FinalValue  +  ' आती है | इसलिए, Computer ' + variable + ' को ' + FinalValue +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |'
+  message= ' Computer सबसे पहले जाँच करता है की क्या, ' + '"' + sourcedata[i+1].value + '"' + ' को सुलझाने(Solve) करने की ज़रुरत है?' +'\n' + ' अगर हा, तो Computer '+ '"' + sourcedata[i+1].value + '"' +  ' को Solve करके, ' +'"' + variable + '"'+ ' के नाम से Memory में दर्ज(Store)कर देगा | ' +'\n' +  ' यहापर , '  +  '"' + sourcedata[i+1].value + '"' + ' की कीमत (Value) , ' + '"' + FinalValue + '"'  +  ' आती है |' +'\n' + ' इसलिए, Computer ' + '"'  + variable + '"' + ' को ' + '"' + FinalValue + '"' +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |'
   }
 
   else{
-    message= 'Computer ने, '+ variable +' को, '+ varvalue + ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+    message= ' Computer ने, '+ '"' + variable + '"' +' को, '+  '"' + varvalue + '"' + ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
     
 
 
@@ -1431,62 +1442,39 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
 //This is the experession whcih is getting evaluated. 
 
-let expression0=variable+ '='+varvalue
+let expression=variable+ '='+varvalue
 
-expression0=GetcleanedExpression(expression0)
-
-let expression1= variable +'='+"'"+varvalue+"'"
-expression1=GetcleanedExpression(expression1)
-
-let expression2= variable +'='+'"'+varvalue+'"'
-expression2=GetcleanedExpression(expression2)
+expression=GetcleanedExpression(expression)
 
 
 
 
 LinebylineSourcedata.forEach((el,index)=>{
 
+
   el=el.replace(/ /,'')
 
   el=GetcleanedExpression(el)
   
   
-  if(el.includes(expression0))
+  
+
+  
+  if(el==expression )
   
   {
 
+
   
     AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
-    
+
+        
 
   
   }
   
-  else if(el.includes(expression1))
-{
-  console.log('hii');
-
-
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, variable , message, index+1)
-
-
-}
-
-else if(el.includes(expression2))
-{
-
-  console.log('hii');
-
-  AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
-
-
-
-}
   
-  
-  
-  
-  
+ 
   
   
   })
@@ -1575,12 +1563,13 @@ function GetConditionValue(element, updated_tokens, j)
     
 
     let Values = SetValues(SplitArray, updated_tokens)
+    
+    
     Values = Values.filter(function(item)
     {
 
-      return item !== ""
+      return item !== "" && item !="'" && item !='"'
     })
-
     //Setting the final condition value in cases like अगर (ageone==10) 
 
     ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j)
@@ -1876,9 +1865,9 @@ stack.push(
 
 export
 {
+  IsReservedKeyword,
   GetCleanSourcedata,
   GetcleanedExpression,
-  Count,
   ForLoopSetMetadata,
   getLoopIndexStart,
   AddElementToArray,
@@ -1894,7 +1883,6 @@ export
   handlemultConditions,
   CreateArrayElement,
   SetArrayorStringElement,
-  RemoveBrackets,
   ForLoopArrayorStringOutput,
   GetArrayorStringElement,
   AcceptInputandSetValue,

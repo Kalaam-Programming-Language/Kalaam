@@ -1,26 +1,35 @@
-     //ANCHOR - Functions to push token with type and value into tokens array for further parsing
-     function RemoveBrackets(element){
 
-        let a = element.replace('(', '')
-        let b = a.replace(')', '')
-        let c = b.replace('}', '')
-        let d = c.replace('{', '')
-    
-        return d
-    
-    }
-    
-          
+import {RemoveQuotes, RemoveBrackets} from '../Scripts/Helpers'
 
-  function PushVariable(value,tokens) {
+//ANCHOR - Functions to push token with type and value into tokens array for further parsing
+
+function isNumber(element) {
+
+
+
+    return (/^[0-9]*$/gm.test(element))
+
+};
+
+
+
+function PushVariable(value, tokens, Varvalue) {
+    
+    Varvalue=RemoveQuotes(Varvalue)
+
+    let Datatype = (isNumber(Varvalue) && Varvalue!='') ? 'Number' : 'String'
+
+
+
     tokens.push({
         type: "variable",
-        value: value
+        value: value,
+        Datatype:Datatype
     });
 
 }
 
-function PushString(value,tokens) {
+function PushString(value, tokens) {
     tokens.push({
         type: "string",
         value: value
@@ -28,10 +37,10 @@ function PushString(value,tokens) {
 
 }
 
-function PushVariableValue(value,tokens) {
+function PushVariableValue(value, tokens) {
 
 
-   
+
     tokens.push({
         type: "value",
         value: value
@@ -39,26 +48,26 @@ function PushVariableValue(value,tokens) {
 
 }
 
-function PushNumber(value,tokens) {
+function PushNumber(value, tokens) {
     tokens.push({
-            type: "value",
-            value: value,
-           
-        }
+        type: "value",
+        value: value,
+
+    }
 
     );
 }
 
-function PushOperator(value,tokens) {
+function PushOperator(value, tokens) {
     tokens.push({
-            type: 'operator',
-            value: value
-        }
+        type: 'operator',
+        value: value
+    }
 
     );
 }
 
-function PushKeyword(value,tokens) {
+function PushKeyword(value, tokens) {
 
     value = value.replace("+", ' + ')
 
@@ -68,7 +77,7 @@ function PushKeyword(value,tokens) {
     });
 
 }
-function PushConditionalKeyword(value,tokens) {
+function PushConditionalKeyword(value, tokens) {
     tokens.push({
         type: "conditionalkeyword",
         value: value
@@ -77,17 +86,17 @@ function PushConditionalKeyword(value,tokens) {
 }
 
 
-function PushEmptyArrayInit(tokens,data,i) {
+function PushEmptyArrayInit(tokens, data, i) {
     tokens.push({
         type: "EmptyArrayInit",
-        value: data[i-1],
-         //skipping =
+        value: data[i - 1],
+        //skipping =
     });
 
 }
 
 
-function PushForLoop(value,tokens) {
+function PushForLoop(value, tokens) {
     tokens.push({
         type: "ForLoopStart",
         value: value
@@ -95,22 +104,22 @@ function PushForLoop(value,tokens) {
 
 }
 
-function PushInput(value,tokens,cleaned_sourcedata,i) {
+function PushInput(value, tokens, cleaned_sourcedata, i) {
 
-let lastchar=value.charAt(value.length-1)
+    let lastchar = value.charAt(value.length - 1)
 
 
-value= (lastchar==',')?value=value+cleaned_sourcedata[i+1]:value
+    value = (lastchar == ',') ? value = value + cleaned_sourcedata[i + 1] : value
 
-value=RemoveBrackets(value)
+    value = RemoveBrackets(value)
 
-value=value.replace('इनपुट','')
+    value = value.replace('इनपुट', '')
 
 
     tokens.push({
         type: "AcceptInput",
-        value:' ',
-        AcceptAs:value 
+        value: ' ',
+        AcceptAs: value
     });
 
 }
@@ -119,7 +128,7 @@ value=value.replace('इनपुट','')
 
 
 
-function PushWhileLoop(value,tokens,cleaned_sourcedata,i) {
+function PushWhileLoop(value, tokens, cleaned_sourcedata, i) {
 
 
 
@@ -130,7 +139,7 @@ function PushWhileLoop(value,tokens,cleaned_sourcedata,i) {
 
 }
 
-function PushWhileLoopCondition(value,tokens) {
+function PushWhileLoopCondition(value, tokens) {
     tokens.push({
         type: "WhileLoopCondition",
         value: value
@@ -139,81 +148,80 @@ function PushWhileLoopCondition(value,tokens) {
 }
 
 
-function PushForLoopAruguments(element,cleaned_sourcedata,i,tokens){
-    
+function PushForLoopAruguments(element, cleaned_sourcedata, i, tokens) {
+
     //This values will be fixed even though for loop definations change
-   let iterator=cleaned_sourcedata[i+1]
-   let value=cleaned_sourcedata[i+3]
+    let iterator = cleaned_sourcedata[i + 1]
+    let value = cleaned_sourcedata[i + 3]
 
-   if(value.includes('(')&& value.includes(','))
-{
+    if (value.includes('(') && value.includes(',')) {
 
-let Range= RemoveBrackets(value).split(',')
-let iterationStart= Range[0]
-let iterationEnd= Range[1]
+        let Range = RemoveBrackets(value).split(',')
+        let iterationStart = Range[0]
+        let iterationEnd = Range[1]
 
-let k=i+5
+        let k = i + 5
 
-PushArgs(iterator,value,iterationStart,iterationEnd)
+        PushArgs(iterator, value, iterationStart, iterationEnd)
 
 
-//run a function to collect arguments
+        //run a function to collect arguments
+
+    }
+
+    else {
+
+
+
+        let Range = RemoveBrackets(cleaned_sourcedata[i + 5]).split(',')
+
+        let iterationStart = Range[0]
+        let iterationEnd = Range[1]
+
+        let k = i + 6
+
+
+
+        PushArgs(iterator, value, iterationStart, iterationEnd)
+
+
+    }
+
+
+    //to get (2,9) into start=2 and end=9
+
+    //run a function to store sourcedata
+
+
+
+
+    function PushArgs(iterator, value, iterationStart, iterationEnd) {
+
+        tokens.push({
+
+            type: 'ForLoopArguments',
+            iterator: iterator,
+            value: value,
+            iterationStart: iterationStart,
+            iterationEnd: iterationEnd,
+
+
+
+        })
+
+    }
+
+
+
+
 
 }
 
-else{ 
-    
-    
-    
-let Range= RemoveBrackets(cleaned_sourcedata[i+5]).split(',')
-
-let iterationStart= Range[0]
-let iterationEnd= Range[1]
-
-let k=i+6
 
 
-
-PushArgs(iterator,value,iterationStart,iterationEnd)
-
-
-}
+function PushCondition(value, tokens) {
 
 
-   //to get (2,9) into start=2 and end=9
-
-  //run a function to store sourcedata
-
-
- 
-
-function PushArgs(iterator,value,iterationStart,iterationEnd){
-
-    tokens.push({
-
-        type:'ForLoopArguments',
-        iterator:iterator,
-        value:value,
-        iterationStart:iterationStart,
-        iterationEnd:iterationEnd,
-    
-    
-    
-       })
-
-}
-  
-   
-
-
-
-}
-
-
-
-function PushCondition(value,tokens) {
-
-    
     tokens.push({
         type: "condition",
         value: value
@@ -222,10 +230,10 @@ function PushCondition(value,tokens) {
 }
 
 
-function PushToArray(value,tokens) {
+function PushToArray(value, tokens) {
 
-   
-   
+
+
 
     tokens.push({
         type: "PushToArray",
@@ -238,125 +246,120 @@ function PushToArray(value,tokens) {
 }
 
 
-function PushExpression(value,tokens) {
+function PushExpression(value, tokens) {
 
-   
-   
 
-        tokens.push({
-            type: "expression",
-            value: value
-        });
-    
 
-    
+
+    tokens.push({
+        type: "expression",
+        value: value
+    });
+
+
+
 
 }
 
-function PushFunctionData(value,tokens,sourcedata,i) {
+function PushFunctionData(value, tokens, sourcedata, i) {
 
-    let functionName=sourcedata[i+1]
-   let functionNameSplit=functionName.split('(')
-  let functionArguments = RemoveBrackets(functionNameSplit[1])
-//   console.log('functionArguments: ', functionArguments);
-  functionArguments=functionArguments.split(',')
+    let functionName = sourcedata[i + 1]
+    let functionNameSplit = functionName.split('(')
+    let functionArguments = RemoveBrackets(functionNameSplit[1])
+    //   
+    functionArguments = functionArguments.split(',')
 
 
-   
+
     tokens.push({
         type: "function",
         value: functionNameSplit[0],
-        arguments:functionArguments,
-        FunctionInvocationExists:false,
-        FunctionStack:[]
+        arguments: functionArguments,
+        FunctionInvocationExists: false,
+        FunctionStack: []
     });
 
 
 }
 
-function PushFunctionExecution(value,tokens,sourcedata,i,passedValues) {
+function PushFunctionExecution(value, tokens, sourcedata, i, passedValues) {
 
-    let functionName=value
-   let functionNameSplit=functionName.split('(')
-  let functionArguments = RemoveBrackets(functionNameSplit[1])
-//   console.log('functionArguments: ', functionArguments);
-  functionArguments=functionArguments.split(',')
+    let functionName = value
+    let functionNameSplit = functionName.split('(')
+    let functionArguments = RemoveBrackets(functionNameSplit[1])
+    //   
+    functionArguments = functionArguments.split(',')
 
 
-   
+
     tokens.push({
         type: "functionExecution",
         value: functionNameSplit[0],
-        arguments:functionArguments,
-        FunctionInvocationExists:true,
-        passedValues:passedValues
+        arguments: functionArguments,
+        FunctionInvocationExists: true,
+        passedValues: passedValues
     });
 
 
 }
 
-function PushArray(value,tokens) {
-    
-
-   if(value.includes('(')&& value.includes(')'))
-   
-   {
-
-    value=RemoveBrackets(value)
-
-    value = value.replace(']', '')
-
-                       
-    let Split= value.split('[')
-
-    let IndexInput= Split[1]
-
-    value=value+']'
-
-    tokens.push({
-        type: "Array",
-        value: value,
-        IndexInput:IndexInput
-    });
-
- 
-
-   }
-
-   else{
-
-    tokens.push({
-        
-        type: "Array",
-        value: value
-        
-        
-    });
-
-   }
+function PushArray(value, tokens) {
 
 
-    
+    if (value.includes('(') && value.includes(')')) {
+
+        value = RemoveBrackets(value)
+
+        value = value.replace(']', '')
+
+
+        let Split = value.split('[')
+
+        let IndexInput = Split[1]
+
+        value = value + ']'
+
+        tokens.push({
+            type: "Array",
+            value: value,
+            IndexInput: IndexInput
+        });
+
+
+
+    }
+
+    else {
+
+        tokens.push({
+
+            type: "Array",
+            value: value
+
+
+        });
+
+    }
+
+
+
 }
 
-function PushCalculation(value,tokens,cleaned_sourcedata,i) {
+function PushCalculation(value, tokens, cleaned_sourcedata, i) {
 
-//not allowing values like Numbers[a]
+    //not allowing values like Numbers[a]
 
-    if(!(!(/\d+/.test(cleaned_sourcedata[i-3])) && cleaned_sourcedata[i-3].includes('[')))
-    
-    
-{
-    //console.log('value passed: ', value,cleaned_sourcedata[i-3]);
+    if (!(!(/\d+/.test(cleaned_sourcedata[i - 3])) && cleaned_sourcedata[i - 3].includes('['))) {
+        //
 
-    tokens.push({
-        type: "Calculation",
-        value: value,
-        
-       
+        tokens.push({
+            type: "Calculation",
+            value: value,
 
-    });
-}
+
+
+        });
+    }
 }
 
 
@@ -364,7 +367,7 @@ function PushCalculation(value,tokens,cleaned_sourcedata,i) {
 
 function PushRealTimePrintOperation(value, tokens, operation) {
 
-    
+
     tokens.push({
         type: "value",
         value: value,
@@ -385,4 +388,4 @@ function PushStringandValueOperation(value, tokens, operation) {
 }
 
 
-export {PushVariableValue,PushToArray, PushFunctionExecution,PushFunctionData, PushInput,  PushArray,PushEmptyArrayInit,PushCalculation,PushConditionalKeyword,PushCondition, PushWhileLoop,PushWhileLoopCondition, PushForLoop,PushForLoopAruguments,  PushExpression,PushKeyword,PushNumber,PushOperator,PushRealTimePrintOperation,PushString,PushStringandValueOperation,PushVariable}
+export { PushVariableValue, PushToArray, PushFunctionExecution, PushFunctionData, PushInput, PushArray, PushEmptyArrayInit, PushCalculation, PushConditionalKeyword, PushCondition, PushWhileLoop, PushWhileLoopCondition, PushForLoop, PushForLoopAruguments, PushExpression, PushKeyword, PushNumber, PushOperator, PushRealTimePrintOperation, PushString, PushStringandValueOperation, PushVariable }

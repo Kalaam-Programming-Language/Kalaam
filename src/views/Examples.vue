@@ -39,7 +39,6 @@
 
 output=FirstValue+SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
@@ -49,7 +48,6 @@ output=FirstValue+SecondValue
 
 output=FirstValue-SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
@@ -59,7 +57,6 @@ output=FirstValue-SecondValue
 
 output=FirstValue*SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
@@ -69,12 +66,14 @@ output=FirstValue*SecondValue
 
 output=FirstValue/SecondValue
 
-प्रिंट("Output is " + output)
 
 }
 
 
- 
+प्रिंट("Output is " + output)
+
+
+
 
 </pre>
 </p>
@@ -100,14 +99,11 @@ line="|"
 space="  "
 Extra="  "
 
-X IS OUR ITERATOR WHICH WILL RUN A LOOP FROM 1 TO 15
 
-दुहराओ x को (1,15)
+दुहराओ x को (1,15) मे
 {
 
-Road=space+line+space+space+space
-+YourSign
-+space+space+space+line+space
+Road=space+line+space+space+space+YourSign+space+space+space+line+space
 
 space=space+Extra
 
@@ -135,7 +131,7 @@ space=space+Extra
 
 इनपुट(Name)
 
-ReverseString='tempValue'
+ReverseString=''
 
 प्रिंट ('Input String-'+ Name)
 
