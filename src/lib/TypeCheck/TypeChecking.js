@@ -1,3 +1,8 @@
+
+//import HindiRegex from '../Scripts/HindiChars'
+
+var Keywords=['अगर', 'दुहराओ','जबतक', 'प्रिंट', 'इनपुट','रचना']
+
 function RemoveBrackets(element){
 
     let a = element.replace('(', '')
@@ -29,9 +34,10 @@ function isArrayOperation(element){
 export function isVariable () {
 
     return function(element){
-        if (/^[a-z]+$/i.test(element)) {
-            return true;
-        }
+        
+       
+            return (/^[a-z]+$/i.test(element)) && !Keywords.includes(element)
+
 
     }
     
@@ -39,9 +45,9 @@ export function isVariable () {
 export function isNumber() {
 
     return function(element){
-    if (/^[0-9]*$/gm.test(element)) {
-        return true;
-    }
+   
+        return (/^[0-9]*$/gm.test(element))
+    
 }
 };
 
@@ -49,66 +55,66 @@ export function isNumber() {
 export function isOperator () {
 
     return function(element){
-    if (/^(=|}|{)*$/gm.test(element)) {
-        return true;
-    }
+   
+        return (/^(=|}|{)*$/gm.test(element)) ;
+    
 }
 };
 
 export function isInput () {
 
     return function(element){
-    if (element.includes('इनपुट')) {
-        return true;
-    }
+  
+        return element.includes('इनपुट');
+
 }
 };
 
 
 
 
-export function isKeyword() {
+export function isPrintOperation() {
 
     return function(element){
-    if (/^(प्रिंट)*$/gm.test(element)) {
-        return true;
-    }
+    
+        return (/^(प्रिंट)*$/gm.test(element));
+    
 }
 };
 
 export function isConditionalKeyword() {
 
     return function(element){
-    if (element=="अगर" || element=='जबतक' || element=='अन्यथा') {
-        return true;
-    }
+   
+        return (element=="अगर" || element=='जबतक' || element=='अन्यथा');
+    
 }
 };
 
 export function isForLoop() {
 
     return function(element){
-    if (element=="दुहराओ") {
-        return true;
-    }
+   
+        return element=="दुहराओ";
+    
 }
 };
 
 export function isWhileLoop() {
 
     return function(element){
-    if (element=="जबतक") {
-        return true;
-    }
+ 
+        return element=="जबतक";
+    
 }
 };
 
 export function isFunction() {
 
     return function(element){
-    if (element=="रचना") {
-        return true;
-    }
+  
+        return element=="रचना";
+    
 }
 };
 
@@ -119,18 +125,18 @@ export function isExpression() {
     return function(element){
 
        
-    if (/\(([^)]+)\)/.test(element) || element.includes('()') ) {
-        return true;
-    }
+
+        return (/\(([^)]+)\)/.test(element)) || element.includes('()') 
+    
 }
 };
 
 export function isArray() {
 
     return function(element){
-    if (element.charAt(0)=='[') {
-        return true;
-    }
+    
+        return element.charAt(0)=='[';
+    
 }
 };
 
@@ -156,12 +162,13 @@ export function isSetArrayIndexValue() {
 }
 };
 
+
 export function isEmptyArrayInit() {
 
     return function(element,data,i){
-    if (element=='=' && data[i+1]=='[]') {
-        return true;
-    }
+    
+        return element=='=' && data[i+1]=='[]';
+    
 }
 };
 
@@ -170,14 +177,14 @@ export function isEmptyStringorChar(){
 
      
     return function(element){
-if(element=='"'|| element=="'" || element=='*'||element=='$'||element=='/'||element=='@'||element=='|'||element=='/'||element=='?'||element=="#"||(element.charAt(0)=="'" &&element.charAt(element.length-1)=="'" )||(element.charAt(0)=='"'&&element.charAt(element.length-1)=='"'))
 
 
-{
 
-return true
 
-}
+
+return element=='"'|| element=="'" || element=='*'||element=='$'||element=='/'||element=='@'||element=='|'||element=='/'||element=='?'||element=="#"||(element.charAt(0)=="'" &&element.charAt(element.length-1)=="'" )||(element.charAt(0)=='"'&&element.charAt(element.length-1)=='"')
+
+
     }
 
 
@@ -189,17 +196,17 @@ export function isString(){
 
      
     return function(element){
-if(element.charAt(0) == "'" || element.charAt(0) == '"' && !(element.includes("प्रिंट")))
 
 
-{
+return element.charAt(0) == "'" || element.charAt(0) == '"' && !(element.includes("प्रिंट"))
 
-return true
 
-}
     }
 
 
 }
+
+
+
 
 
