@@ -157,7 +157,7 @@ length=length-1
 
 </div>
   </slide>
-
+<!--
           <slide>
 <div id="slide">
 
@@ -226,6 +226,8 @@ length=prime.संख्या()
 </div>
 
   </slide>
+  
+  -->
     <slide>
     <div id="slide">
 
