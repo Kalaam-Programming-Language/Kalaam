@@ -46,7 +46,7 @@
   
       <button  id="RunlinebylineBtn" @click="RunLinebyLine()">Run LinebyLine</button>
       <button  id="Runbtn" @click="Clear()">Clear</button>
-      <button id="subm" @click="Add('प्रिंट()')"> प्रिंट</button>
+      <button id="subm" @click="Add(Keyword.Print+'()')">{{Keyword.Print}}</button>
       <button id="subm" @click="Add('रचना')">रचना</button>
       <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
       <button id="subm" @click="Add('अगर()')">अगर</button>
@@ -113,8 +113,8 @@
     <button style="background: linear-gradient(to right, #11998e, #12ff6b);
     border: none;
     font-weight: 600;" id="subm" @click="RUN()">RUN</button>
-        <button id="subm" @click="Add('प्रिंट()')">प्रिंट</button>
-    <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
+    <button id="subm" @click="Add(Keyword.Print+'()')">{{Keyword.Print}}</button>   
+     <button id="subm" @click="Add('इनपुट()')">इनपुट</button>
 
     <button id="subm" @click="Add('अगर()')">अगर</button>
       <button id="subm" @click="Add('अन्यथा')">अन्यथा</button>
@@ -169,6 +169,9 @@
 <script>
 //This is our header file AKA Navigation bar located in components folder. 
 import Header from '../components/Header'
+
+import { Keyword } from "../lib/Compiler/constants";
+
 
 //CodeMirror is an npm package whcih provides rich code editors
 import
@@ -267,6 +270,7 @@ export default
       LastConditionValue: [],
       LineByLineCode: [],
       CurrentLine:0,
+      Keyword:Keyword,
    
 
       //Configuration for codemirror text edior that we are using

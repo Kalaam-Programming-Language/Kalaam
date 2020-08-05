@@ -30,7 +30,7 @@
         "if": kw("if"), "while": A, "with": A, "else": B, "do": B, "try": B, "finally": B,
         "return": D, "break": D, "continue": D, "new": kw("new"), "delete": C, "void": C, "throw": C,
         "debugger": kw("debugger"), "var": kw("var"), "const": kw("var"), "let": kw("var"),
-        "प्रिंट": kw("प्रिंट"), "रचना": kw("रचना"),
+        "दिखाए": kw("दिखाए"), "रचना": kw("रचना"),
         "इनपुट": kw("इनपुट"), "अगर": kw("अगर"), "दुहराओ": kw("दुहराओ"), "को": kw("को"),
         "जबतक": kw("जबतक"),"संख्या": kw("संख्या"),"पुश": kw("पुश"),"अन्यथा": kw("अन्यथा"),"मे": kw("मे"),
         "in": operator, "typeof": operator, "instanceof": operator,

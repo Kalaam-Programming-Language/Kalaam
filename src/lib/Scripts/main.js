@@ -6,8 +6,10 @@ import
 }
 from '../Scripts/DataCleaning'
 
+import { Keyword } from "../Compiler/constants";
 
-import {RemoveQuotes, RemoveBrackets} from '../Scripts/Helpers'
+
+import {RemoveQuotes, RemoveBrackets, Count} from '../Scripts/Helpers'
 
 
 //ANCHOR - Important functions to be used while parsing
@@ -41,7 +43,7 @@ function IsReservedKeyword(e)
 {
 
 
-  return e.includes('दुहराओ') || e.includes('रचना') || e.includes('अन्यथा') || e.includes('इनपुट') || e.includes('पुश') || e.includes('प्रिंट') || e.includes('अगर') ||  /* cleaned_sourcedata[k + 1] == '='*/ e == '}'
+  return e.includes('दुहराओ') || e.includes('रचना') || e.includes('अन्यथा') || e.includes('इनपुट') || e.includes('पुश') || e.includes(Keyword.Print) || e.includes('अगर') ||  /* cleaned_sourcedata[k + 1] == '='*/ e == '}'
 }
 
 
@@ -1087,7 +1089,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
   //if someone accidenlty types Name=इनपुट or any other primary keywords
 
-  if (varvalue.includes('दुहराओ') || varvalue.includes('रचना') || varvalue.includes('अन्यथा') || varvalue.includes('इनपुट') || varvalue.includes('पुश') || varvalue.includes('प्रिंट') || varvalue.includes('अगर'))
+  if (varvalue.includes('दुहराओ') || varvalue.includes('रचना') || varvalue.includes('अन्यथा') || varvalue.includes('इनपुट') || varvalue.includes('पुश') || varvalue.includes(Keyword.Print) || varvalue.includes('अगर'))
 
   {
 
@@ -1499,6 +1501,7 @@ function GetConditionValue(element, updated_tokens, j)
   {
 
     let MultConditionsCount = parseInt(Count('&', element)) + parseInt(Count('|', element))
+    
 
     //this will be our final values
     //converted as true&&false&&true||true

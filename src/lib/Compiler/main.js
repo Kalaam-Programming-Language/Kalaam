@@ -12,6 +12,9 @@
 //To check variable types: Number, String, Array etc.
 import * as TypeCheck from '../TypeCheck/TypeChecking'
 
+import { Keyword } from "../Compiler/constants";
+
+
 //To check other operations like MultiString, Arithmetic Operation etc.
 import * as AdvancedTypeCheck from '../TypeCheck/AdvancedTypeChecking'
 
@@ -114,8 +117,6 @@ export default function Compile(kalaam) {
 
   var LinebylineSourcedata = sourcedata.replace(/(?:\r\n|\r|\n)/g, 'breakpoint').split("breakpoint")
   //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
-  //
-
 
   //This is where formatted and cleaned sourcedata will go.
   var cleaned_sourcedata = []
@@ -210,7 +211,7 @@ export default function Compile(kalaam) {
 
   const BuildCondition = BuildOperation.BuildCondition()
 
-  //This will run for every प्रिंट() statement encountered in the program, not just for loops
+  //This will run for every दिखाए() statement encountered in the program, not just for loops
 
   //ARGUMENTS TO PrintEngine are:
   //Tokens- Tokens array 
@@ -225,7 +226,7 @@ export default function Compile(kalaam) {
     //To understand what kind of data is necessary to print a value 
 
     //Getting the current token as token and value to be printed as NextTokenValue
-    //e.g. For प्रिंट(Name), Name is the NextTokenValue and it is the one which we will have to print
+    //e.g. For दिखाए(Name), Name is the NextTokenValue and it is the one which we will have to print
 
     var token = Tokens[j].value
 
@@ -324,7 +325,7 @@ export default function Compile(kalaam) {
 
       //To run only if iterator is present
 
-      //This runs on for loop - प्रिंट(Array[a]) etc
+      //This runs on for loop - दिखाए(Array[a]) etc
 
       //self runs only if for(i) and in the loop, array[i], not on array[x]. For loop Iterator and index should be same, in self case 'i'
 
@@ -395,7 +396,7 @@ export default function Compile(kalaam) {
     }
 
     //printing direct numbers and direct calcultions like print(10), print(10*10)
-    else if (token == 'प्रिंट' && (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))) {
+    else if (token == Keyword.Print && (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))) {
 
       NextTokenValue = RemoveBrackets(NextTokenValue)
 
@@ -466,7 +467,7 @@ export default function Compile(kalaam) {
 
 
 
-    let message = ' Computer ने आपकी दी गयी वैल्यू, ' + '"' + RemoveBrackets(NextTokenValue) + '"' + ' को प्रिंट() किया है |'
+    let message = ' Computer ने आपकी दी गयी वैल्यू, ' + '"' + RemoveBrackets(NextTokenValue) + '"' + ' को दिखाया है |'
 
     //This is the experession whcih is getting evaluated. 
 
@@ -487,7 +488,7 @@ export default function Compile(kalaam) {
       if (el.includes(expression) && flag == true) {
 
 
-        AddtoExecutionStack(ExecutionStack, 'प्रिंट()', 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है।   ', VariableToPrint, '', message, index + 1)
+        AddtoExecutionStack(ExecutionStack, Keyword.Print, 'किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है।   ', VariableToPrint, '', message, index + 1)
         flag = false
 
       }
@@ -608,9 +609,9 @@ export default function Compile(kalaam) {
 
       PushOperator(element, tokens)
 
-      //Push keyowrds to tokens. The accepted keywords is प्रिंट
+      //Push keyowrds to tokens. The accepted keywords is दिखाए
 
-      //Format: {type: "keyword", value: "प्रिंट"}
+      //Format: {type: "keyword", value: Keyword.Print}
 
     }
     else if (isPrintOperation(element) == true) {
@@ -836,7 +837,7 @@ export default function Compile(kalaam) {
 
       calculatedString = calculatedString.replace(/['"]+/g, '')
 
-      if (!(calculatedString.includes("प्रिंट")))
+      if (!(calculatedString.includes(Keyword.Print)))
 
         PushString(calculatedString, tokens)
 
@@ -844,7 +845,7 @@ export default function Compile(kalaam) {
 
     //An extension of isPrintOperation() function
     // Needs improvement
-    else if (/^(?=.*?प्रिंट)(?=.*[a-z])/.test(element)) {
+    else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
 
       PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
 
@@ -991,6 +992,7 @@ export default function Compile(kalaam) {
   //If a code is not working, it is probably because it's not cleaned properly. 
 
   cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity)
+  console.log('cleaned_sourcedata: ', cleaned_sourcedata);
   
 
 
@@ -1021,6 +1023,7 @@ export default function Compile(kalaam) {
 
   //Filtering seemed unnecessary, removed for now. 
   //tokens = tokens.filter(el => el.value != '')
+  console.log('tokens: ', tokens);
   
 
 
@@ -1216,7 +1219,7 @@ export default function Compile(kalaam) {
     //So that we don't print a same value twice. First in global execution context and the in function context
 
     //This one prints the global context values
-    else if (token == 'प्रिंट' && mutable_tokens[j].context != 'function') {
+    else if (token == Keyword.Print && mutable_tokens[j].context != 'function') {
 
       PrintEngine(mutable_tokens, updated_tokens, j, self) //for operations like print(array[3])
 
@@ -1333,8 +1336,8 @@ export default function Compile(kalaam) {
 
           }
 
-          //Handling प्रिंट statements in while loop
-          else if (WhileLoopSourcedataTokens[i].value == 'प्रिंट') {
+          //Handling दिखाए statements in while loop
+          else if (WhileLoopSourcedataTokens[i].value == Keyword.Print) {
 
             PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, self, ExecutionStack) //for operations like print(array[3])
 
@@ -1493,7 +1496,7 @@ export default function Compile(kalaam) {
 
                   let el = NestedSourcedataTokens[index]
 
-                  if (el.value == 'प्रिंट') {
+                  if (el.value == Keyword.Print) {
 
                     PrintEngine(NestedSourcedataTokens, updated_tokens, index, self, y, NestedOriginalIterator,)
 
@@ -1556,7 +1559,7 @@ export default function Compile(kalaam) {
           }
 
           //Handling print statements in for loop
-          else if (SourcedataTokens[i].value == 'प्रिंट' && isNested == false) {
+          else if (SourcedataTokens[i].value == Keyword.Print && isNested == false) {
 
             PrintEngine(SourcedataTokens, updated_tokens, i, self, iterator, OriginalIterator)
 
@@ -1808,10 +1811,10 @@ export default function Compile(kalaam) {
 
         let el = functionSourceData[i]
 
-        //operations like प्रिंट(Message)
+        //operations like दिखाए(Message)
         //PrintEngine will take care of every print statement encountered in the program
 
-        if (el.value == 'प्रिंट') {
+        if (el.value == Keyword.Print) {
 
           PrintEngine(functionSourceData, CompleteTokenValueList, i, self, ExecutionStack)
 
@@ -1998,7 +2001,7 @@ export default function Compile(kalaam) {
 
                       let el = NestedSourcedataTokens[index]
 
-                      if (el.value == 'प्रिंट') {
+                      if (el.value == Keyword.Print) {
 
                         PrintEngine(NestedSourcedataTokens, CompleteTokenValueList, index, self, y, NestedOriginalIterator)
 
@@ -2099,7 +2102,7 @@ export default function Compile(kalaam) {
               }
 
               //Handling print statements in for loop
-              else if (SourcedataTokens[i].value == 'प्रिंट' && isNested == false) {
+              else if (SourcedataTokens[i].value == Keyword.Print && isNested == false) {
 
                 //for operations like print(array[3])
 
@@ -2289,7 +2292,7 @@ export default function Compile(kalaam) {
                 }
 
               }
-              else if (WhileLoopSourcedataTokens[i].value == 'प्रिंट') {
+              else if (WhileLoopSourcedataTokens[i].value == Keyword.Print) {
 
                 PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i, self) //for operations like print(array[3])
 
@@ -2328,9 +2331,6 @@ export default function Compile(kalaam) {
     }
 
   }
-
-  
-
 
   //This is where error handling kicks in
 

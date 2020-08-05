@@ -3,7 +3,7 @@
      <Header/>
 
     <div>
-<button  v-on:click="showStar0 = !showStar0"  type="button" class="collapsible">प्रिंट()</button>
+<button  v-on:click="showStar0 = !showStar0"  type="button" class="collapsible">दिखाए()</button>
 
 <transition name="slide-fade">
 <div v-if="showStar0" class="content">
@@ -12,22 +12,22 @@
 
 <h2>काम</h2>
 
-<h5> RESULTS को OUTPUT SCREEN पे दिखाने के लिए प्रिंट() का उपयोग होता है। </h5>
+<h5> RESULTS को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है। </h5>
 
 <h2>इसका उपयोग कैसे करे?</h2>
 
-<h4>1.एक घोषित (declared) वेरिएबल को प्रिंट करने के लिए ।   </h4>
+<h4>1.एक घोषित (declared) वेरिएबल को दिखाए करने के लिए ।   </h4>
 <p>Name &#61; "Hello World" </p>  
-<p>प्रिंट(Name) </p>  
+<p>दिखाए(Name) </p>  
 <p>    </p>
 
-<h4>२. Direct शब्दों प्रिंट करने के लिए ।  </h4>
-<p>प्रिंट("Hello World")</p> 
-<p>प्रिंट(007)</p> 
+<h4>२. Direct शब्दों दिखाए करने के लिए ।  </h4>
+<p>दिखाए("Hello World")</p> 
+<p>दिखाए(007)</p> 
 
-<h4>३. Multi/Concatenated शब्दों को प्रिंट करने के लिए ।    </h4>
+<h4>३. Multi/Concatenated शब्दों को दिखाए करने के लिए ।    </h4>
 <p>Name &#61; "Kalam" </p> 
-<p>प्रिंट("Hello World," + "My Name is" + Name + "!")</p> 
+<p>दिखाए("Hello World," + "My Name is" + Name + "!")</p> 
 
 
 </div>
@@ -41,15 +41,15 @@
 
 
 Name="Hello World"   
-प्रिंट(Name)   
+दिखाए(Name)   
 
 
-प्रिंट("Tic Tac Toe") 
-प्रिंट(007) 
+दिखाए("Tic Tac Toe") 
+दिखाए(007) 
 
 
 Name="Kalam"  
-प्रिंट("Hello World," + "My Name is" + Name + "!") 
+दिखाए("Hello World," + "My Name is" + Name + "!") 
 
 
  
@@ -101,7 +101,7 @@ Name="Kalam"
 इनपुट(Name)
 
  
-प्रिंट(Name)
+दिखाए(Name)
 
 
  
@@ -165,7 +165,7 @@ Name="Kalam"
 
 {
 
-प्रिंट('Alright, that's cool!')
+दिखाए('Alright, that's cool!')
 
 
 }
@@ -184,7 +184,7 @@ Name="Kalam"
 
 
 
-प्रिंट('That works too.')
+दिखाए('That works too.')
 
 
 }
@@ -238,7 +238,7 @@ language='kalaam'
 {
 
 
-प्रिंट('Alright, that's cool!')
+दिखाए('Alright, that's cool!')
 
 
 }
@@ -247,7 +247,7 @@ language='kalaam'
 अन्यथा
 {
 
-प्रिंट('Sorry, that did not worked!')
+दिखाए('Sorry, that did not worked!')
 
 
 
@@ -310,7 +310,7 @@ language='kalaam'
 
 value= x*5
 
-प्रिंट(value)
+दिखाए(value)
 
 }
 
@@ -326,7 +326,7 @@ Name="HALF COOKED RICE"
 
 value=Name[y]
 
-प्रिंट(value + y)
+दिखाए(value + y)
 
 }
 
@@ -388,7 +388,7 @@ count=0
 जबतक(count<25)
 {
 
-प्रिंट(count)
+दिखाए(count)
 
 
 count=count+1
@@ -451,9 +451,9 @@ Citylength= City.संख्या()
 Citieslength=Cities.संख्या()
 
 
-प्रिंट('The length of the City is' + Citylength )
+दिखाए('The length of the City is' + Citylength )
 
-प्रिंट('The length of the Cities is' + Citieslength )
+दिखाए('The length of the Cities is' + Citieslength )
 
 
 
@@ -509,7 +509,7 @@ Numbers.पुश(x)
 
 }
 
-प्रिंट(Numbers)
+दिखाए(Numbers)
 
 
 #उदाहरण 2
@@ -527,7 +527,7 @@ Numbers.पुश(type)
 
 
 
-प्रिंट(Numbers)
+दिखाए(Numbers)
 
 
 
@@ -578,7 +578,7 @@ Numbers.पुश(type)
 
  <h5><b> रचना Body</b></h5>
  <h5>{</h5>
- <h5>प्रिंट( x 	&#43; y ) </h5> 
+ <h5>दिखाए( x 	&#43; y ) </h5> 
  <h5>}</h5>
 
 <h5><b>रचना call</b>  </h5>  
@@ -617,7 +617,7 @@ NewLastName='Chetri'
 
 {
 
-प्रिंट(First + Last)
+दिखाए(First + Last)
 
 
 
@@ -637,7 +637,7 @@ City='Pune'
 
 
 
-प्रिंट("I am a" + x + "in" + y)
+दिखाए("I am a" + x + "in" + y)
 
 
 }
@@ -654,7 +654,7 @@ NumberTwo=40
 
 c=a+b
 
-प्रिंट(c)
+दिखाए(c)
 
 
 }

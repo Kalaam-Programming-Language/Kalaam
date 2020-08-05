@@ -100,7 +100,7 @@ import { setTimeout } from 'timers';
       return {
         typeValue: '',
         typeStatus: false,
-        typeArray: ['अगर', 'दुहराओ','जबतक', 'प्रिंट()', 'इनपुट()','रचना'],
+        typeArray: ['अगर', 'दुहराओ','जबतक', 'दिखाए()', 'इनपुट()','रचना'],
         typingSpeed: 120,
         erasingSpeed: 280,
         newTextDelay: 600,
