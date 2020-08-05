@@ -4,7 +4,7 @@ function SourceDataReplaceforEasyParsing(data)
 
 
     
-        data = data.replace(/प्रिंट/g, " प्रिंट ");
+        data = data.replace(/दिखाए/g, " दिखाए ");
         data = data.replace(/\( /g, '('); 
        // data = data.replace(/\)/g, ' )');
       //  data = data.replace(/\+ /g, '+');

@@ -47,5 +47,6 @@ function Count(item, element)
 export {
 
     RemoveQuotes,
-    RemoveBrackets
+    RemoveBrackets,
+    Count
 }

@@ -1,7 +1,10 @@
 
 //import HindiRegex from '../Scripts/HindiChars'
 
-var Keywords=['अगर', 'दुहराओ','जबतक', 'प्रिंट', 'इनपुट','रचना']
+
+import { Keyword } from "../Compiler/constants";
+
+var Keywords=['अगर', 'दुहराओ','जबतक', Keyword.Print, 'इनपुट','रचना']
 
 function RemoveBrackets(element){
 
@@ -77,7 +80,7 @@ export function isPrintOperation() {
 
     return function(element){
     
-        return (/^(प्रिंट)*$/gm.test(element));
+        return (/^(दिखाए)*$/gm.test(element));
     
 }
 };
@@ -198,7 +201,7 @@ export function isString(){
     return function(element){
 
 
-return element.charAt(0) == "'" || element.charAt(0) == '"' && !(element.includes("प्रिंट"))
+return element.charAt(0) == "'" || element.charAt(0) == '"' && !(element.includes(Keyword.Print))
 
 
     }

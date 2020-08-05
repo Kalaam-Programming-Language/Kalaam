@@ -4,11 +4,11 @@
 
         <h1>Examples</h1>
 
-               <carousel :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
+               <carousel  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
 
 
 
- <slide>
+ <slide class="slide">
 <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
@@ -27,8 +27,8 @@
 इनपुट(Operation)
 
 
-प्रिंट('FirstValue is '+FirstValue)
-प्रिंट('SecondValue is '+SecondValue)
+दिखाए('FirstValue is '+FirstValue)
+दिखाए('SecondValue is '+SecondValue)
 
 
 
@@ -70,7 +70,7 @@ output=FirstValue/SecondValue
 }
 
 
-प्रिंट("Output is " + output)
+दिखाए("Output is " + output)
 
 
 
@@ -82,7 +82,7 @@ output=FirstValue/SecondValue
 
   </slide>
 
-  <slide>
+  <slide class="slide">
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID2')">Run Code</button>
@@ -107,7 +107,7 @@ Road=space+line+space+space+space+YourSign+space+space+space+line+space
 
 space=space+Extra
 
-प्रिंट(Road)
+दिखाए(Road)
 
 }
 
@@ -119,7 +119,7 @@ space=space+Extra
 
 </div>
   </slide>
-    <slide>
+    <slide class="slide">
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID3')">Run Code</button>
@@ -133,7 +133,7 @@ space=space+Extra
 
 ReverseString=''
 
-प्रिंट ('Input String-'+ Name)
+दिखाए ('Input String-'+ Name)
 
 length=Name.संख्या()
 
@@ -147,7 +147,7 @@ length=length-1
 
 }
 
-प्रिंट ('Reversed String-'+ ReverseString)
+दिखाए ('Reversed String-'+ ReverseString)
    
 
  
@@ -158,7 +158,7 @@ length=length-1
 </div>
   </slide>
 
-          <slide>
+          <slide class="slide">
 <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
@@ -199,7 +199,7 @@ length=prime.संख्या()
 
 {
 
-प्रिंट(num + "is a Prime Number")
+दिखाए(num + "is a Prime Number")
 
 }
 
@@ -207,7 +207,7 @@ length=prime.संख्या()
 
 {
 
-प्रिंट(num + "is not a Prime Number")
+दिखाए(num + "is not a Prime Number")
 
 
 }
@@ -226,7 +226,7 @@ length=prime.संख्या()
 </div>
 
   </slide>
-    <slide>
+    <slide class="slide">
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
@@ -245,9 +245,9 @@ LastName='Kadam'
 
 {
 
-प्रिंट(First)
+दिखाए(First)
 
-प्रिंट(Last)
+दिखाए(Last)
 
 }
 
@@ -264,7 +264,7 @@ First(FirstName,LastName)
   </slide>
 
 <!--
-   <slide>
+   <slide class="slide">
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID5')">Run Code</button>
@@ -285,7 +285,7 @@ First(FirstName,LastName)
 
 count=count+1
 
-प्रिंट(count)
+दिखाए(count)
 
 }
 
@@ -309,7 +309,7 @@ printname(0)
 </div>
   </slide>
   -->
-    <slide>
+    <slide class="slide">
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
@@ -341,7 +341,7 @@ DecimalValue=DecimalValue+value
 
 }
 
-प्रिंट(DecimalValue)
+दिखाए(DecimalValue)
 
 
 
@@ -353,7 +353,7 @@ DecimalValue=DecimalValue+value
   </slide>
 
 
-    <slide>
+    <slide class="slide">
 
 <div id="slide">
 
@@ -381,7 +381,7 @@ Fibonacci[a]=x+y
 }
 }
 
-प्रिंट(Fibonacci)
+दिखाए(Fibonacci)
 }
  
 
@@ -465,6 +465,12 @@ this.$store.state.CurrentCode= copyText.innerHTML
 
      display: none
    } 
+
+.slide{
+
+
+  max-width: 33%;
+}
 
 #slide{
 
@@ -551,6 +557,12 @@ and (max-width : 480px) {
 
      display: block
    } 
+
+   .slide{
+
+
+     max-width: 100%;
+   }
 }
 
 </style>
