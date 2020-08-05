@@ -159,6 +159,7 @@ length=length-1
   </slide>
 
           <slide class="slide">
+
 <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
@@ -227,6 +228,7 @@ length=prime.संख्या()
 
   </slide>
     <slide class="slide">
+
     <div id="slide">
 
  <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
