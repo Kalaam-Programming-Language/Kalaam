@@ -2368,7 +2368,7 @@ export default function Compile(kalaam) {
   //time taken to transpile the code is t1-t0
   var t1 = performance.now()
 
-  if (kalaam.linebylineOutput != '' && kalaam.error.length == 0) {
+  if (kalaam.error.length == 0) {
     kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)"
 
   }
