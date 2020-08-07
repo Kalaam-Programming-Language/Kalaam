@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-/*We are not using service workers foor now*/
+/*We are not using service workers foor now
 
 import { register, } from "register-service-worker";
 
@@ -36,3 +36,6 @@ if (process.env.NODE_ENV === "production") {
         },
     });
 }
+
+
+*/

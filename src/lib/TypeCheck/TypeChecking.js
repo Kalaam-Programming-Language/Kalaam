@@ -6,6 +6,8 @@ import { Keyword, } from "../Compiler/constants";
 
 var Keywords=["अगर", "दुहराओ","जबतक", Keyword.Print, "इनपुट","रचना",];
 
+var NativeOperations=["संख्या",];
+
 function RemoveBrackets(element){
 
     let a = element.replace("(", "");
@@ -203,6 +205,69 @@ export function isString(){
 
         return element.charAt(0) == "'" || element.charAt(0) == "\"" && !(element.includes(Keyword.Print));
 
+
+    };
+
+
+}
+
+export function isNativeOperation(){
+
+
+     
+    return function(element){
+        
+        
+
+        let flag=false;
+
+        NativeOperations.forEach(el=>{
+
+
+            if(element.includes(el))
+   
+            {
+
+                flag=true;   
+            }
+        });        
+
+        return flag;
+
+
+    };
+
+
+
+}
+
+
+export function isFunctionCall(){
+
+
+     
+    return function(element,tokens,cleaned_sourcedata,i){
+        
+        
+
+        if(!Keywords.includes(cleaned_sourcedata[i-1]))
+
+        {
+
+            let CheckFunctionExpression = element.split("(");
+
+        
+            var token = tokens.find(el => (el.type=="function" && el.value == CheckFunctionExpression[0]));
+       
+       
+            return token!=undefined ? true:false;
+       
+
+        
+
+       
+
+        }
 
     };
 

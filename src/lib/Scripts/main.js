@@ -192,7 +192,7 @@ function GetcleanedExpression(expression)
 
 //To convert 'a+b-c*d' into ['a','+','-','c','*','d']
 
-function SplitElementsArray(element, i)
+function SplitElementsArray(element)
 
 
 
@@ -361,7 +361,7 @@ function handlemultConditions(element)
                 operator,
             };
 
-            break;
+            
 
         }
 
@@ -431,7 +431,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,Lin
 
     let SetInputValueAs = tokens[index].AcceptAs;
 
-    var value = prompt("आप " + "\"" +  SetInputValueAs +  "\"" + " को क्या कहना चाहते हो ?" );
+    var value = prompt("आप " + "\"" +  SetInputValueAs +  "\"" + " को क्या कहना चाहते हो ?" ); // eslint-disable-line
 
     updated_tokens.push(
         {
@@ -463,13 +463,11 @@ function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,Lin
 
 //If you are not getting the values right, this is where you should start debugging
 
-function CalculateValues(calculation, j, updated_tokens, IterationStart, global)
+function CalculateValues(calculation, j, updated_tokens)
 
 {
 
-    var flag = 0;
-    var error = "";
-    var calculationArray = SplitElementsArray(calculation, j);
+    var calculationArray = SplitElementsArray(calculation);
 
     var StringVar = SetValues(calculationArray, updated_tokens);
 
@@ -523,7 +521,7 @@ function PushSetArrayIndexValue(value, tokens, data, i)
 
 }
 
-function PushGetArrayIndexValue(value, tokens, data, i)
+function PushGetArrayIndexValue(value, tokens)
 {
 
     tokens.push(
@@ -609,13 +607,10 @@ function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, i
 
         //for Array[a]=a
 
-        if (isCalculation(NewValue))
+        if (!isCalculation(NewValue))
         {
 
-        }
-        else
-        {
-
+     
             NewValue = indexCollected;
 
         }
@@ -671,7 +666,6 @@ function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, i
 
     let expression= OriginalElement;
 
-    let Linenumber="";
 
     expression=GetcleanedExpression(expression);
 
@@ -706,7 +700,7 @@ function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, i
 
 //Printing a dynamic array element like Array[i], Array[i+1] etc.
 
-function GetArrayorStringElement(element, updated_tokens, NewValue, flag)
+function GetArrayorStringElement(element, updated_tokens, NewValue)
 {
 
     element = element.replace("]", "");
@@ -859,7 +853,7 @@ function SetValues(StringVar, updated_tokens)
 //Updated_tokens is updated by replacing "value:a+b-d" with "value:5+6-7". 
 //after eval function it will be set as "value:2"
 
-function UpdateUpdated_tokenswithValues(payload, i, updated_tokens)
+function UpdateUpdated_tokenswithValues(payload)
 {
 
     let StringVar = payload;
@@ -923,7 +917,7 @@ function HandleBlocks(mutable_tokens, j, StoreResult)
 
     let ArrayBrackets = [];
 
-    while (true)
+    while (true) // eslint-disable-line
 
     {
 
@@ -1008,11 +1002,11 @@ function HandleConditions(sourcedata, i, updated_tokens)
 
     //let token= updated_tokens.find(el=> el.originalvalue==sourcedata[i].value)
 
-    let SplitArray = SplitElementsArray(element, i);
+    let SplitArray = SplitElementsArray(element);
 
     let Values = SetValues(SplitArray, updated_tokens);
 
-    let ForLoopConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, i);
+    let ForLoopConditionValue = UpdateUpdated_tokenswithValues(Values);
 
     if (ForLoopConditionValue == false)
     {
@@ -1074,7 +1068,6 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     let variable = sourcedata[i - 1].value;
 
-    let variableType = sourcedata[i - 1].type;
 
     let varvalue = sourcedata[i + 1].value;
   
@@ -1101,7 +1094,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     let varvalueType = sourcedata[i + 1].type;
 
-    let x = updated_tokens.find((el, i) => el.name == varvalue);
+    let x = updated_tokens.find((el) => el.name == varvalue);
 
     //if a=b and user haven't defined b yet
 
@@ -1167,7 +1160,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     {
 
-        let n = updated_tokens.find((el, i) => el.name == variable);
+        let n = updated_tokens.find((el) => el.name == variable);
 
         let index = updated_tokens.indexOf(n);
 
@@ -1299,7 +1292,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
     else
     {
 
-        let m = updated_tokens.find((el, i) => el.name == varvalue);
+        let m = updated_tokens.find((el) => el.name == varvalue);
 
         if (m != undefined)
         {
@@ -1311,7 +1304,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
         }
 
-        let n = updated_tokens.find((el, i) => el.name == variable);
+        let n = updated_tokens.find((el) => el.name == variable);
 
         if (n == undefined)
         {
@@ -1351,7 +1344,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
                     //performing the calculation
 
-                    let value = CalculateValues(varvalue, i, updated_tokens, global);
+                    let value = CalculateValues(varvalue, i, updated_tokens);
           
 
                     updated_tokens.push(
@@ -1402,7 +1395,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
                 // 
 
-                let NewValue = CalculateValues(varvalue, i, updated_tokens, global);
+                let NewValue = CalculateValues(varvalue, i, updated_tokens);
 
                 n.value = NewValue;
 
@@ -1492,7 +1485,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
 //GetConditionValue is our goto function to evaluate a condition to true or false
 
-function GetConditionValue(element, updated_tokens, j)
+function GetConditionValue(element, updated_tokens)
 {
 
     var ConditionValue = false;
@@ -1520,11 +1513,11 @@ function GetConditionValue(element, updated_tokens, j)
                 let condition = LastResult.SweepedElement;
                 condition = condition.replace(/ /g, "");
 
-                let SplitArray = SplitElementsArray(condition, j);
+                let SplitArray = SplitElementsArray(condition);
 
                 let Values = SetValues(SplitArray, updated_tokens);
 
-                ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j);
+                ConditionValue = UpdateUpdated_tokenswithValues(Values);
 
                 BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue;
 
@@ -1540,11 +1533,11 @@ function GetConditionValue(element, updated_tokens, j)
                 let condition = result.condition;
                 condition = condition.replace(/ /g, "");
 
-                let SplitArray = SplitElementsArray(condition, j);
+                let SplitArray = SplitElementsArray(condition);
 
                 let Values = SetValues(SplitArray, updated_tokens);
 
-                ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j);
+                ConditionValue = UpdateUpdated_tokenswithValues(Values);
 
                 BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue + result.operator;
 
@@ -1562,7 +1555,7 @@ function GetConditionValue(element, updated_tokens, j)
 
         //let token= updated_tokens.find(el=> el.originalvalue==mutable_tokens[j].value)
 
-        let SplitArray = SplitElementsArray(element, j);
+        let SplitArray = SplitElementsArray(element);
     
 
         let Values = SetValues(SplitArray, updated_tokens);
@@ -1575,7 +1568,7 @@ function GetConditionValue(element, updated_tokens, j)
         });
         //Setting the final condition value in cases like अगर (ageone==10) 
 
-        ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j);
+        ConditionValue = UpdateUpdated_tokenswithValues(Values);
 
     }
 

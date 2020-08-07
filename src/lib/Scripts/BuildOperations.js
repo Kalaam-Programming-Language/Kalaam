@@ -133,7 +133,7 @@ export function BuildCondition() {
 
         for ( k; k < cleaned_sourcedata.length; k++) {
 
-            let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
+            // let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
 
 
             if (cleaned_sourcedata[k] == "{" || cleaned_sourcedata[k] == "){" || cleaned_sourcedata[k] == ") {" )

@@ -128,7 +128,7 @@ function PushInput(value, tokens, cleaned_sourcedata, i) {
 
 
 
-function PushWhileLoop(value, tokens, cleaned_sourcedata, i) {
+function PushWhileLoop(value, tokens) {
 
 
 
@@ -160,7 +160,7 @@ function PushForLoopAruguments(element, cleaned_sourcedata, i, tokens) {
         let iterationStart = Range[0];
         let iterationEnd = Range[1];
 
-        let k = i + 5;
+        // let k = i + 5;
 
         PushArgs(iterator, value, iterationStart, iterationEnd);
 
@@ -178,7 +178,7 @@ function PushForLoopAruguments(element, cleaned_sourcedata, i, tokens) {
         let iterationStart = Range[0];
         let iterationEnd = Range[1];
 
-        let k = i + 6;
+        //let k = i + 6;
 
 
 
@@ -253,6 +253,21 @@ function PushExpression(value, tokens) {
 
     tokens.push({
         type: "expression",
+        value: value,
+    });
+
+
+
+
+}
+
+function PushNativeOperation(value, tokens) {
+
+
+
+
+    tokens.push({
+        type: "NativeOperation",
         value: value,
     });
 
@@ -365,7 +380,7 @@ function PushCalculation(value, tokens, cleaned_sourcedata, i) {
 
 
 
-function PushRealTimePrintOperation(value, tokens, operation) {
+function PushRealTimePrintOperation(value, tokens) {
 
 
     tokens.push({
@@ -377,7 +392,7 @@ function PushRealTimePrintOperation(value, tokens, operation) {
 
 }
 
-function PushStringandValueOperation(value, tokens, operation) {
+function PushStringandValueOperation(value, tokens) {
     tokens.push({
         type: "value",
         value: value,
@@ -388,4 +403,4 @@ function PushStringandValueOperation(value, tokens, operation) {
 }
 
 
-export { PushVariableValue, PushToArray, PushFunctionExecution, PushFunctionData, PushInput, PushArray, PushEmptyArrayInit, PushCalculation, PushConditionalKeyword, PushCondition, PushWhileLoop, PushWhileLoopCondition, PushForLoop, PushForLoopAruguments, PushExpression, PushKeyword, PushNumber, PushOperator, PushRealTimePrintOperation, PushString, PushStringandValueOperation, PushVariable, };
+export { PushVariableValue,PushNativeOperation, PushToArray, PushFunctionExecution, PushFunctionData, PushInput, PushArray, PushEmptyArrayInit, PushCalculation, PushConditionalKeyword, PushCondition, PushWhileLoop, PushWhileLoopCondition, PushForLoop, PushForLoopAruguments, PushExpression, PushKeyword, PushNumber, PushOperator, PushRealTimePrintOperation, PushString, PushStringandValueOperation, PushVariable, };

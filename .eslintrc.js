@@ -19,6 +19,8 @@ module.exports = {
         "no-console": "off",
         "no-useless-escape":"off",
         "no-irregular-whitespace":"off",
+        "no-self-assign":"off",
+        "no-redeclare":"off"
       
 
     }

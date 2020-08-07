@@ -34,15 +34,16 @@ import {
     PushCondition,
     PushForLoop,
     PushWhileLoop,
-    PushWhileLoopCondition,
+    // PushWhileLoopCondition,
     PushForLoopAruguments,
     PushExpression,
+    PushNativeOperation,
     PushKeyword,
     PushNumber,
     PushOperator,
     PushRealTimePrintOperation,
     PushString,
-    PushStringandValueOperation,
+    // PushStringandValueOperation,
     PushVariable,
     PushVariableValue,
     PushFunctionData,
@@ -60,18 +61,18 @@ import {
     GetcleanedExpression,
     AddElementToArray,
     ResetValue,
-    isArrayOperation,
+    //isArrayOperation,
     CreateArrayElement,
     CalculateValues,
     GetArrayorStringElement,
-    SetArrayorStringElement,
-    handlemultConditions,
+    // SetArrayorStringElement,
+    // handlemultConditions,
     HandleBlocks,
     SplitElementsArray,
     SetValues,
     PushSetArrayIndexValue,
     PushGetArrayIndexValue,
-    UpdateUpdated_tokenswithValues,
+    // UpdateUpdated_tokenswithValues,
     GetConditionValue,
     AcceptInputandSetValue,
     ForLoopArrayorStringOutput,
@@ -97,7 +98,7 @@ export default function Compile(kalaam) {
 
 
     //t0 along with t1 takes record of Time taken to run the code. t1-t0 gives us the exact time taken.
-    var t0 = performance.now();
+    var t0 = performance.now(); // eslint-disable-line
     var skipParsing = 0;
 
     //If an error is encountered we set the value to true and push the error to errors array.
@@ -138,7 +139,7 @@ export default function Compile(kalaam) {
 
     //Pushing the variables that are assigned to filter out defined and undefined variables. Useful in error handling
     var assigned_variables = [];
-    var terms = [];
+    // var terms = [];
  
     var ReIntializedVariables = [];
 
@@ -164,6 +165,9 @@ export default function Compile(kalaam) {
     const isForLoop = TypeCheck.isForLoop();
     const isWhileLoop = TypeCheck.isWhileLoop();
     const isFunction = TypeCheck.isFunction();
+    const isFunctionCall = TypeCheck.isFunctionCall();
+    const isNativeOperation = TypeCheck.isNativeOperation();
+
 
     //needs work
     const isExpression = TypeCheck.isExpression();
@@ -220,7 +224,7 @@ export default function Compile(kalaam) {
     //global- self or self
     //iterator and OriginalIterator are used to print values in for and while loops.
 
-    function PrintEngine(Tokens, updated_tokens, j, global, iterator, OriginalIterator) {
+    function PrintEngine(Tokens, updated_tokens, j, iterator, OriginalIterator) {
 
         //Try // 
         //To understand what kind of data is necessary to print a value 
@@ -251,7 +255,7 @@ export default function Compile(kalaam) {
         //Try // to see how it looks
 
         //This loop is only for printing direct values like print(name), print(array)
-        updated_tokens.forEach((el, i) => {
+        updated_tokens.forEach((el) => {
 
             //If we have a variable-value pair sitting in updated_tokens
 
@@ -299,7 +303,7 @@ export default function Compile(kalaam) {
 
                             if (el.type == "Array") {
 
-                                if (el.value.includes("[") == false) {
+                                if (!el.value.includes("[")) {
 
                                     el.value = "[" + el.value.toString() + "]";
 
@@ -485,7 +489,7 @@ export default function Compile(kalaam) {
 
 
 
-            if (el.includes(expression) && flag == true) {
+            if (el.includes(expression) && flag ) {
 
 
                 AddtoExecutionStack(ExecutionStack, Keyword.Print, "किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है।   ", VariableToPrint, "", message, index + 1);
@@ -522,7 +526,7 @@ export default function Compile(kalaam) {
         //Push variables to tokens
         //Format: {type: "variable", value: "ReverseString"}
 
-        if (isVariable(element) == true) {
+        if (isVariable(element) ) {
 
 
             //Here we seperate Message = 'Hello' into following three tokens :
@@ -541,9 +545,9 @@ export default function Compile(kalaam) {
 
                 if (variableArray.includes(element)) {
 
-                    let x = tokens.find(el => el.value == element);
+                    //  let x = tokens.find(el => el.value == element);
 
-                    let index = tokens.indexOf(x);
+                    //let index = tokens.indexOf(x);
 
                     ReIntializedVariables.push(
                         {
@@ -568,14 +572,14 @@ export default function Compile(kalaam) {
             //Push variables to tokens
 
         }
-        else if (isNumber(element) == true) {
+        else if (isNumber(element) ) {
 
             PushNumber(element, tokens);
 
             //Push EmptyStrings to tokens
 
         }
-        else if (isEmptyStringorChar(element) == true) {
+        else if (isEmptyStringorChar(element) ) {
 
             //In some cases empty strings will be modified into something like "'" or '"'
             //We convert it back to " "
@@ -595,7 +599,7 @@ export default function Compile(kalaam) {
             //Format: {type: "AcceptInput", value: " ", AcceptAs: "Message"}
 
         }
-        else if (isInput(element) == true) {
+        else if (isInput(element) ) {
 
             PushInput(element, tokens, cleaned_sourcedata, i);
 
@@ -603,7 +607,7 @@ export default function Compile(kalaam) {
             //Format: {type: "operator", value: "="}    
 
         }
-        else if (isOperator(element) == true) {
+        else if (isOperator(element) ) {
 
 
 
@@ -614,15 +618,25 @@ export default function Compile(kalaam) {
             //Format: {type: "keyword", value: Keyword.Print}
 
         }
-        else if (isPrintOperation(element) == true) {
+        else if (isPrintOperation(element,cleaned_sourcedata,i) ) {
 
             PushKeyword(element, tokens);
+
+            let ExpressiontoPrint=cleaned_sourcedata[i+1];
+
+            if(!isRealTimePrintMultipleString(ExpressiontoPrint))
+
+            {
+
+                PushExpression(ExpressiontoPrint,tokens);
+
+            }
 
             //Push functions to tokens
             //Format: {type: "function", value: "First", arguments: Array(2), FunctionInvocationExists: false, FunctionStack: Array(0), …}
 
         }
-        else if (isFunction(element) == true) {
+        else if (isFunction(element) ) {
 
             PushFunctionData(element, tokens, cleaned_sourcedata, i);
 
@@ -630,7 +644,7 @@ export default function Compile(kalaam) {
 
         // Push array to tokens
         //Format: {type: "Array", value: "[]"}
-        else if (isArray(element) == true) {
+        else if (isArray(element) ) {
 
             if (element.charAt(element.length - 1) == "]") {
 
@@ -650,7 +664,7 @@ export default function Compile(kalaam) {
 
         //For operations like Numbers[a]=a
         //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
-        else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == true) {
+        else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) ) {
 
             PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
 
@@ -671,14 +685,14 @@ export default function Compile(kalaam) {
 
         //Push conditions to tokens. The accepted keywords are अगर, जबतक, अन्यथा
         // Format: {type: "conditionalkeyword", value: "अगर"}
-        else if (isConditionalKeyword(element) == true) {
+        else if (isConditionalKeyword(element) ) {
 
             //Push while loops to tokens
             //Format: {type: "WhileLoopStart", value: "जबतक"}, {type: "condition", value: "count<25"}
 
-            if (isWhileLoop(element) == true) {
+            if (isWhileLoop(element) ) {
 
-                PushWhileLoop(element, tokens, cleaned_sourcedata, i);
+                PushWhileLoop(element, tokens);
 
             }
             else {
@@ -709,7 +723,7 @@ export default function Compile(kalaam) {
         // Format: 
         // {type: "ForLoopStart", value: "दुहराओ"}
         // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
-        else if (isForLoop(element) == true) {
+        else if (isForLoop(element) ) {
 
             PushForLoop(element, tokens);
             PushForLoopAruguments(element, cleaned_sourcedata, i, tokens);
@@ -727,7 +741,7 @@ export default function Compile(kalaam) {
 
         //Pushing basic Calculations like 'length-1' to tokens
         //Format: {type: "Calculation", value: "length-1"}
-        else if (isCalculation(element) == true) {
+        else if (isCalculation(element) ) {
 
             let element = "";
 
@@ -745,7 +759,7 @@ export default function Compile(kalaam) {
 
             }
 
-            terms = element.split("");
+            //terms = element.split("");
 
             //removing the "("" and ")"
 
@@ -763,7 +777,7 @@ export default function Compile(kalaam) {
         //finding operations like print(x + 'y'). The RealTimePrint operations
 
         //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
-        else if (isRealTimePrintMultipleString(element) == true) {
+        else if (isRealTimePrintMultipleString(element) ) {
 
 
             let foundString = "";
@@ -772,7 +786,7 @@ export default function Compile(kalaam) {
 
             let skip = 0;
 
-            let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2);
+            // let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2);
 
             var flag = 0;
 
@@ -845,18 +859,51 @@ export default function Compile(kalaam) {
 
         //An extension of isPrintOperation() function
         // Needs improvement
-        else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
+
+
+        /*     else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
+            
 
             PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
 
             PushExpression(element.slice(6), tokens); //Pushing remaining expression like (a), (Message) etc
         }
+        */
 
         //error prone change made here- Pushing expression in here
         //Used to push functions and expressions
         //Unnecessary data is being passed through kalaam.
         //This was created for a temporary fix
-        else if (isExpression(element) == true && !isCalculation(element) && !element.includes("[") && !element.includes("]") && (!isConditionalKeyword(cleaned_sourcedata[i - 1])) && (cleaned_sourcedata[i - 1] != "मे" && cleaned_sourcedata[i - 1] != "रचना")) {
+       
+       
+        else if(isFunctionCall(element,tokens,cleaned_sourcedata,i))
+        {
+
+            let CheckFunctionExpression = element.split("(");
+            
+
+            let passedValues = RemoveBrackets(CheckFunctionExpression[1]);
+            passedValues = passedValues.split(",");
+ 
+            PushFunctionExecution(element, tokens, cleaned_sourcedata, i, passedValues);
+
+
+
+        }
+
+        else if(isNativeOperation(element))
+        
+        
+        {
+
+            PushNativeOperation(element,tokens);
+
+        }
+       
+       
+       
+        /* 
+        else if (isExpression(element)  && !isCalculation(element) && !element.includes("[") && !element.includes("]") && (!isConditionalKeyword(cleaned_sourcedata[i - 1])) && (cleaned_sourcedata[i - 1] != "मे" && cleaned_sourcedata[i - 1] != "रचना")) {
 
 
             
@@ -875,10 +922,13 @@ export default function Compile(kalaam) {
             else {
 
                 PushExpression(element, tokens);
+                
             }
 
         }
-        else if (isExpression(element) == true && element.includes("[") && element.includes("]")) {
+
+        */
+        else if (isExpression(element)  && element.includes("[") && element.includes("]")) {
 
             PushArray(element, tokens);
 
@@ -920,7 +970,7 @@ export default function Compile(kalaam) {
 
       impurity.forEach((element, i) => {
 
-          if (isVariable(element) == true) {
+          if (isVariable(element) ) {
 
 
 
@@ -936,7 +986,7 @@ export default function Compile(kalaam) {
           //Solution: Work on all the modules
 
 
-          if (isNumber(element) == true) {
+          if (isNumber(element) ) {
 
 
               PushNumber(element, tokens)
@@ -945,20 +995,20 @@ export default function Compile(kalaam) {
 
           //ANCHOR 
           //You might have to remove self extra filters since you are only working on numbers (Future Issue)
-          if (isOperator(element) == true) {
+          if (isOperator(element) ) {
               PushOperator(element, token)
 
           }
 
 
 
-          if (isPrintOperation(element) == true) {
+          if (isPrintOperation(element) ) {
 
               PushKeyword(element)
 
           }
 
-          if (isExpression(element) == true) {
+          if (isExpression(element) ) {
 
 
               PushExpression(element, tokens)
@@ -995,7 +1045,8 @@ export default function Compile(kalaam) {
     //If a code is not working, it is probably because it's not cleaned properly. 
 
     cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity);
-    console.log("cleaned_sourcedata: ", cleaned_sourcedata);
+    console.log("cleaned_sourcedata: ", cleaned_sourcedata);// eslint-disable-line
+    
   
 
 
@@ -1026,7 +1077,8 @@ export default function Compile(kalaam) {
 
     //Filtering seemed unnecessary, removed for now. 
     //tokens = tokens.filter(el => el.value != '')
-    console.log("tokens: ", tokens);
+    console.log("tokens: ", tokens); // eslint-disable-line
+    
   
 
 
@@ -1055,7 +1107,7 @@ export default function Compile(kalaam) {
         //type of token like variable, array, function, loops etc
         let tokenType = mutable_tokens[j].type;
 
-        var StringVar = [];
+        // var StringVar = [];
 
         let VarWithoutbrackets = RemoveBrackets(mutable_tokens[j].value);
 
@@ -1069,7 +1121,7 @@ export default function Compile(kalaam) {
         }
         else if (token == "=") {
 
-            AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack, LinebylineSourcedata);
+            AssignorUpdateValues(mutable_tokens, j, updated_tokens, iterator, OriginalIterator, self, ExecutionStack, LinebylineSourcedata); // eslint-disable-line
 
 
         }
@@ -1081,12 +1133,12 @@ export default function Compile(kalaam) {
         else if (token == "अन्यथा") {
 
             let result = HandleBlocks(mutable_tokens, j, result);
-            let StartofBlock = mutable_tokens[j + 1].startIndex;
+            // let StartofBlock = mutable_tokens[j + 1].startIndex;
             let EndofBlock = mutable_tokens[j + 1].EndIndex;
 
             let lastValue = kalaam.LastConditionValue.pop();
 
-            if (lastValue == true) {
+            if (lastValue ) {
 
                 j = EndofBlock;
 
@@ -1158,6 +1210,8 @@ export default function Compile(kalaam) {
 
             let element = mutable_tokens[j].value;
 
+            var message;
+
             //this function is the first step to calculate value of operations like अगर (ageone==10 && AverageAge<1000 && agetwo>100 || ageone==10) OR (ageone==10 )
 
             let ConditionValue = GetConditionValue(element, updated_tokens, j);
@@ -1166,9 +1220,9 @@ export default function Compile(kalaam) {
 
             //if value is false, just skip the if loop context, if not it will be ran in final print module
 
-            if (ConditionValue == false) {
+            if (!ConditionValue) {
 
-                let InitializeLoop = tokens.indexOf(mutable_tokens[j]);
+                //  let InitializeLoop = tokens.indexOf(mutable_tokens[j]);
 
                 //Handle Blocks is a function which takes care of nested block by taking care of nested { and } brackets
                 //it uses the stack to push and pop brackets to accurately identify start and the end of the block
@@ -1176,13 +1230,13 @@ export default function Compile(kalaam) {
 
                 j = Returnvalue.j;
 
-                var message = "कंडीशन " + element + " , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा ";
+                message = "कंडीशन " + element + " , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा ";
 
 
             }
 
             else {
-                var message = "कंडीशन " + element + " , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा ";
+                message = "कंडीशन " + element + " , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा ";
 
 
 
@@ -1224,16 +1278,17 @@ export default function Compile(kalaam) {
         //This one prints the global context values
         else if (token == Keyword.Print && mutable_tokens[j].context != "function") {
 
-            PrintEngine(mutable_tokens, updated_tokens, j, self); //for operations like print(array[3])
+            //for operations like print(array[3])
+            PrintEngine(mutable_tokens, updated_tokens, j); // eslint-disable-line 
 
         }
 
         //This runs our while loop .i.e जबतक
         else if (tokenType == "WhileLoopStart") {
 
-            let TokensCurrentIndex = j + 3;
+            // let TokensCurrentIndex = j + 3;
 
-            let ConditionValue = false;
+            // let ConditionValue = false;
 
             let element = mutable_tokens[j + 1].value;
 
@@ -1269,7 +1324,7 @@ export default function Compile(kalaam) {
 
             }
 
-            function getWhileLoopSourcedata(startIndex, mutable_tokens, check, StoreResult) {
+            function getWhileLoopSourcedata(startIndex, mutable_tokens, StoreResult) {
 
                 StoreResult = HandleBlocks(mutable_tokens, startIndex, StoreResult);
 
@@ -1279,12 +1334,12 @@ export default function Compile(kalaam) {
 
             WhileLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, "{", WhileLoopSourcedataIndexStart);
 
-            WhileLoopSourcedataTokens = getWhileLoopSourcedata(WhileLoopSourcedataIndexStart, mutable_tokens, "}", WhileLoopSourcedataTokens).StoreResult;
+            WhileLoopSourcedataTokens = getWhileLoopSourcedata(WhileLoopSourcedataIndexStart, mutable_tokens, WhileLoopSourcedataTokens).StoreResult;
 
             let message = "जबतक " + element + " सही होगा तब तक आगे का कोड रन किया जायेगा ";
 
-            let Linenumber = "";
-            //
+            // let Linenumber = "";
+            
 
             LinebylineSourcedata.forEach((el, i) => {
 
@@ -1342,7 +1397,7 @@ export default function Compile(kalaam) {
                     //Handling दिखाए statements in while loop
                     else if (WhileLoopSourcedataTokens[i].value == Keyword.Print) {
 
-                        PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, self, ExecutionStack); //for operations like print(array[3])
+                        PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, ExecutionStack); // eslint-disable-line
 
                     }
 
@@ -1364,7 +1419,7 @@ export default function Compile(kalaam) {
         }
         else if (tokenType == "ForLoopStart") {
 
-            var FlagPrimalLoop = 0;
+            var FlagPrimalLoop = 0; // eslint-disable-line
 
             var SourcedataTokens = [];
 
@@ -1382,7 +1437,7 @@ export default function Compile(kalaam) {
             var element = ForLoopMetaData.element;
             var elementValue = ForLoopMetaData.elementValue;
 
-            function getSourcedata(startIndex, mutable_tokens, check, StoreResult) {
+            function getSourcedata(startIndex, mutable_tokens, StoreResult) {
 
                 let Returnvalue = HandleBlocks(mutable_tokens, startIndex, StoreResult);
                 StoreResult = Returnvalue.StoreResult;
@@ -1393,7 +1448,7 @@ export default function Compile(kalaam) {
 
             ForLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, "{", ForLoopSourcedataIndexStart);
 
-            SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, mutable_tokens, "}", SourcedataTokens);
+            SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, mutable_tokens, SourcedataTokens);
 
 
             SourcedataTokens.forEach(el => {
@@ -1446,9 +1501,9 @@ export default function Compile(kalaam) {
 
                 forloopindex.value = iterator;
 
-                //flag to avoid running self code if loop is primal because the payload needs to be compeltely different
-                if (FlagPrimalLoop = 0) {
-                    ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, self);
+                //flag to avoid running this code if loop is primal because the payload needs to be compeltely different
+                if (FlagPrimalLoop == 0) {
+                    ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, self);// eslint-disable-line
 
                 }
 
@@ -1460,7 +1515,6 @@ export default function Compile(kalaam) {
 
                     if (SourcedataTokens[i].type == "ForLoopStart") {
 
-                        var NestedFlagPrimalLoop = 0;
 
                         var NestedSourcedataTokens = [];
 
@@ -1468,12 +1522,12 @@ export default function Compile(kalaam) {
                         var NestedForLoopSourcedataIndexStart = NestedForLoopMetaData.ForLoopSourcedataIndexStart;
                         var NestedCycle = NestedForLoopMetaData.Cycle + 1;
                         var NestedOriginalIterator = NestedForLoopMetaData.OriginalIterator;
-                        var NestedIterationStart = NestedForLoopMetaData.IterationStart;
+                        // var NestedIterationStart = NestedForLoopMetaData.IterationStart;
                         var Nestediterator = NestedForLoopMetaData.IterationStart;
-                        var Nestedelement = NestedForLoopMetaData.element;
-                        var NestedelementValue = NestedForLoopMetaData.elementValue;
+                        //var Nestedelement = NestedForLoopMetaData.element;
+                        //var NestedelementValue = NestedForLoopMetaData.elementValue;
 
-                        function getSourcedata(startIndex, SourcedataTokens, check, StoreResult) {
+                        function getSourcedata(startIndex, SourcedataTokens, StoreResult) {
 
                             let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult);
                             StoreResult = Returnvalue.StoreResult;
@@ -1484,7 +1538,7 @@ export default function Compile(kalaam) {
 
                         NestedForLoopSourcedataIndexStart = getLoopIndexStart(SourcedataTokens, i, "{", NestedForLoopSourcedataIndexStart);
 
-                        NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, "}", NestedSourcedataTokens);
+                        NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, NestedSourcedataTokens);
 
                         for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
                             {
@@ -1501,17 +1555,16 @@ export default function Compile(kalaam) {
 
                                     if (el.value == Keyword.Print) {
 
-                                        PrintEngine(NestedSourcedataTokens, updated_tokens, index, self, y, NestedOriginalIterator,);
+                                        PrintEngine(NestedSourcedataTokens, updated_tokens, index, y, NestedOriginalIterator,);
 
                                     }
-                                    else if (el.value == "=" && el.isNestedLoop == true) {
+                                    else if (el.value == "=" && el.isNestedLoop ) {
 
                                         AssignorUpdateValues(NestedSourcedataTokens, index, updated_tokens, y, NestedOriginalIterator);
 
                                     }
-                                    else if (el.type == "condition" && el.isNestedLoop == true) {
+                                    else if (el.type == "condition" && el.isNestedLoop ) {
 
-                                        let ConditionStartIndex = index;
                                         let condition = NestedSourcedataTokens[index].value;
                                         //HandleConditions evaluates condition and return the index of from where printing should resume
 
@@ -1522,14 +1575,14 @@ export default function Compile(kalaam) {
 
                                         kalaam.LastConditionValue.push(value);
 
-                                        if (value == false) {
+                                        if (!value) {
 
                                             break;
 
                                         }
 
                                     }
-                                    else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true) {
+                                    else if (el.type == "SetArrayIndexValue" && el.isNestedLoop ) {
 
                                         SetArrayIndexValue(NestedSourcedataTokens, i, j, updated_tokens, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata);
 
@@ -1542,11 +1595,11 @@ export default function Compile(kalaam) {
                         }
 
                     }
-                    else if (SourcedataTokens[i].value == "=" && isNested == false) {
+                    else if (SourcedataTokens[i].value == "=" && !isNested) {
 
                         //assigning values to variables in a for loop
 
-                        AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator, global, ExecutionStack, LinebylineSourcedata);
+                        AssignorUpdateValues(SourcedataTokens, i, updated_tokens, iterator, OriginalIterator, global, ExecutionStack, LinebylineSourcedata); // eslint-disable-line
 
 
                     }
@@ -1562,9 +1615,9 @@ export default function Compile(kalaam) {
                     }
 
                     //Handling print statements in for loop
-                    else if (SourcedataTokens[i].value == Keyword.Print && isNested == false) {
+                    else if (SourcedataTokens[i].value == Keyword.Print && !isNested) {
 
-                        PrintEngine(SourcedataTokens, updated_tokens, i, self, iterator, OriginalIterator);
+                        PrintEngine(SourcedataTokens, updated_tokens, i, iterator, OriginalIterator);
 
                     }
 
@@ -1591,10 +1644,9 @@ export default function Compile(kalaam) {
                             //Experimental
                             kalaam.LastConditionValue.push(value);
 
-                            if (value == false) {
+                            if (!value) {
 
                                 let BlockLength = 0;
-                                let BlockStart = 0;
 
                                 while (SourcedataTokens[i].value != "{") {
 
@@ -1819,7 +1871,7 @@ export default function Compile(kalaam) {
 
                 if (el.value == Keyword.Print) {
 
-                    PrintEngine(functionSourceData, CompleteTokenValueList, i, self, ExecutionStack);
+                    PrintEngine(functionSourceData, CompleteTokenValueList, i, ExecutionStack);
 
                 }
 
@@ -1828,7 +1880,7 @@ export default function Compile(kalaam) {
                 //AssignorUpdateValues function will take care of every assignment encountered in the program
                 else if (el.value == "=") {
 
-                    AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self, ExecutionStack, LinebylineSourcedata);
+                    AssignorUpdateValues(functionSourceData, i, CompleteTokenValueList, iterator, OriginalIterator, self, ExecutionStack, LinebylineSourcedata); // eslint-disable-line
 
                 }
 
@@ -1853,9 +1905,8 @@ export default function Compile(kalaam) {
 
                     //if value is false, just skip the if loop context, if not it will be ran in final print module
 
-                    if (ConditionValue == false) {
+                    if (!ConditionValue) {
 
-                        let InitializeLoop = tokens.indexOf(functionSourceData[i]);
 
                         //Handle Blocks is a function which takes care of nested block by taking care of nested { and } brackets
                         //it uses the stack to push and pop brackets to accurately identify start and the end of the block
@@ -1877,7 +1928,7 @@ export default function Compile(kalaam) {
                 //Opearting on for loop encountered in program
                 else if (functionSourceData[i].type == "ForLoopStart") {
 
-                    var FlagPrimalLoop = 0;
+                    var FlagPrimalLoop = 0; // eslint-disable-line
 
                     var SourcedataTokens = [];
 
@@ -1891,7 +1942,7 @@ export default function Compile(kalaam) {
                     var element = ForLoopMetaData.element;
                     var elementValue = ForLoopMetaData.elementValue;
 
-                    function getSourcedata(startIndex, functionSourceData, check, StoreResult) {
+                    function getSourcedata(startIndex, functionSourceData, StoreResult) {
 
                         let Returnvalue = HandleBlocks(functionSourceData, startIndex, StoreResult);
                         StoreResult = Returnvalue.StoreResult;
@@ -1904,7 +1955,7 @@ export default function Compile(kalaam) {
 
                     //
 
-                    SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, functionSourceData, "}", SourcedataTokens);
+                    SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, functionSourceData, SourcedataTokens);
 
                     SourcedataTokens.forEach(el => {
 
@@ -1944,8 +1995,8 @@ export default function Compile(kalaam) {
                         forloopindex.value = iterator;
 
                         //flag to avoid running self code if loop is primal because the payload needs to be compeltely different
-                        if (FlagPrimalLoop = 0) {
-                            ForLoopArrayorStringOutput(elementValue, iterator, CompleteTokenValueList, self);
+                        if (FlagPrimalLoop == 0) {
+                            ForLoopArrayorStringOutput(elementValue, iterator, CompleteTokenValueList, self); // eslint-disable-line
 
                         }
 
@@ -1960,7 +2011,6 @@ export default function Compile(kalaam) {
 
                             if (SourcedataTokens[i].type == "ForLoopStart") {
 
-                                var NestedFlagPrimalLoop = 0;
 
                                 var NestedSourcedataTokens = [];
 
@@ -1969,13 +2019,10 @@ export default function Compile(kalaam) {
                                 var NestedForLoopSourcedataIndexStart = NestedForLoopMetaData.ForLoopSourcedataIndexStart;
                                 var NestedCycle = NestedForLoopMetaData.Cycle + 1;
                                 var NestedOriginalIterator = NestedForLoopMetaData.OriginalIterator;
-                                var NestedIterationStart = NestedForLoopMetaData.IterationStart;
                                 var Nestediterator = NestedForLoopMetaData.IterationStart;
 
-                                var Nestedelement = NestedForLoopMetaData.element;
-                                var NestedelementValue = NestedForLoopMetaData.elementValue;
 
-                                function getSourcedata(startIndex, SourcedataTokens, check, StoreResult) {
+                                function getSourcedata(startIndex, SourcedataTokens, StoreResult) {
                                     ////
 
                                     let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult);
@@ -1987,7 +2034,7 @@ export default function Compile(kalaam) {
 
                                 NestedForLoopSourcedataIndexStart = getLoopIndexStart(SourcedataTokens, i, "{", NestedForLoopSourcedataIndexStart);
 
-                                NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, "}", NestedSourcedataTokens);
+                                NestedSourcedataTokens = getSourcedata(NestedForLoopSourcedataIndexStart, SourcedataTokens, NestedSourcedataTokens);
                                 ////
 
                                 for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
@@ -2006,17 +2053,17 @@ export default function Compile(kalaam) {
 
                                             if (el.value == Keyword.Print) {
 
-                                                PrintEngine(NestedSourcedataTokens, CompleteTokenValueList, index, self, y, NestedOriginalIterator);
+                                                PrintEngine(NestedSourcedataTokens, CompleteTokenValueList, index, y, NestedOriginalIterator);
 
                                             }
-                                            else if (el.value == "=" && el.isNestedLoop == true) {
+                                            else if (el.value == "=" && el.isNestedLoop ) {
 
                                                 //assigning values to variables
 
-                                                AssignorUpdateValues(NestedSourcedataTokens, index, CompleteTokenValueList, y, NestedOriginalIterator, self);
+                                                AssignorUpdateValues(NestedSourcedataTokens, index, CompleteTokenValueList, y, NestedOriginalIterator, self); // eslint-disable-line
 
                                             }
-                                            else if (el.type == "condition" && el.isNestedLoop == true) {
+                                            else if (el.type == "condition" && el.isNestedLoop ) {
 
                                                 ////
 
@@ -2030,10 +2077,9 @@ export default function Compile(kalaam) {
                                                     let value = GetConditionValue(condition, CompleteTokenValueList, index);
                                                     kalaam.LastConditionValue.push(value);
 
-                                                    if (value == false) {
+                                                    if (!value) {
 
                                                         let BlockLength = 0;
-                                                        let BlockStart = 0;
 
                                                         while (NestedSourcedataTokens[index].value != "{") {
 
@@ -2080,7 +2126,7 @@ export default function Compile(kalaam) {
 
                                             // i = i + NestedSourcedataTokens.length
                                             ////
-                                            else if (el.type == "SetArrayIndexValue" && el.isNestedLoop == true) {
+                                            else if (el.type == "SetArrayIndexValue" && el.isNestedLoop ) {
                                                 SetArrayIndexValue(NestedSourcedataTokens, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator, ExecutionStack, LinebylineSourcedata);
 
                                             }
@@ -2092,26 +2138,26 @@ export default function Compile(kalaam) {
                                 }
 
                             }
-                            else if (SourcedataTokens[i].type == "AcceptInput" && isNested == false) {
+                            else if (SourcedataTokens[i].type == "AcceptInput" && !isNested) {
                                 AcceptInputandSetValue(SourcedataTokens, i, updated_tokens);
 
                             }
-                            else if (SourcedataTokens[i].value == "=" && isNested == false) {
+                            else if (SourcedataTokens[i].value == "=" && !isNested) {
 
                                 //assigning values to variables
 
-                                AssignorUpdateValues(SourcedataTokens, i, CompleteTokenValueList, iterator, OriginalIterator, self);
+                                AssignorUpdateValues(SourcedataTokens, i, CompleteTokenValueList, iterator, OriginalIterator, self); // eslint-disable-line
 
                             }
 
                             //Handling print statements in for loop
-                            else if (SourcedataTokens[i].value == Keyword.Print && isNested == false) {
+                            else if (SourcedataTokens[i].value == Keyword.Print && !isNested) {
 
                                 //for operations like print(array[3])
 
                                 // //
 
-                                PrintEngine(SourcedataTokens, CompleteTokenValueList, i, self, iterator, OriginalIterator);
+                                PrintEngine(SourcedataTokens, CompleteTokenValueList, i, iterator, OriginalIterator);
 
                                 //
 
@@ -2139,10 +2185,9 @@ export default function Compile(kalaam) {
                                     let value = GetConditionValue(condition, updated_tokens, i);
                                     kalaam.LastConditionValue.push(value);
 
-                                    if (value == false) {
+                                    if (!value) {
 
                                         let BlockLength = 0;
-                                        let BlockStart = 0;
 
                                         while (SourcedataTokens[i].value != "{") {
 
@@ -2203,9 +2248,7 @@ export default function Compile(kalaam) {
                 //Handling While loop in function
                 else if (functionSourceData[i].type == "WhileLoopStart") {
 
-                    let TokensCurrentIndex = i + 3;
 
-                    let ConditionValue = false;
 
                     let element = functionSourceData[i + 1].value;
 
@@ -2240,7 +2283,7 @@ export default function Compile(kalaam) {
 
                     }
 
-                    function getWhileLoopSourcedata(startIndex, functionSourceData, check, StoreResult) {
+                    function getWhileLoopSourcedata(startIndex, functionSourceData, StoreResult) {
 
                         StoreResult = HandleBlocks(functionSourceData, startIndex, StoreResult);
 
@@ -2250,7 +2293,7 @@ export default function Compile(kalaam) {
 
                     WhileLoopSourcedataIndexStart = getLoopIndexStart(functionSourceData, i, "{", WhileLoopSourcedataIndexStart);
                     //
-                    WhileLoopSourcedataTokens = getWhileLoopSourcedata(WhileLoopSourcedataIndexStart, functionSourceData, "}", WhileLoopSourcedataTokens).StoreResult;
+                    WhileLoopSourcedataTokens = getWhileLoopSourcedata(WhileLoopSourcedataIndexStart, functionSourceData, WhileLoopSourcedataTokens).StoreResult;
 
                     //constantly evaluating the conditionvalue. for e.g count<25 in जबतक(count<25)
 
@@ -2297,7 +2340,7 @@ export default function Compile(kalaam) {
                             }
                             else if (WhileLoopSourcedataTokens[i].value == Keyword.Print) {
 
-                                PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i, self); //for operations like print(array[3])
+                                PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i); //for operations like print(array[3])
 
                             }
                             else if (WhileLoopSourcedataTokens[i].type == "SetArrayIndexValue") {
@@ -2370,7 +2413,7 @@ export default function Compile(kalaam) {
     }
 
     //time taken to transpile the code is t1-t0
-    var t1 = performance.now();
+    var t1 = performance.now(); // eslint-disable-line
 
 
     if (kalaam.error.length == 0) {
