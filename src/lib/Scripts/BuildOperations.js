@@ -1,12 +1,12 @@
 
 function RemoveBrackets(element){
 
-    let a = element.replace('(', '')
-    let b = a.replace(')', '')
-    let c = b.replace('}', '')
-    let d = c.replace('{', '')
+    let a = element.replace("(", "");
+    let b = a.replace(")", "");
+    let c = b.replace("}", "");
+    let d = c.replace("{", "");
 
-    return d
+    return d;
 
 }
 
@@ -22,142 +22,142 @@ function RemoveBrackets(element){
 export function BuildString() {
 
 
-return function(element,i,cleaned_sourcedata){
+    return function(element,i,cleaned_sourcedata){
 
 
-     var foundString = ''
+        var foundString = "";
 
-//the flag is introduced to remove spaces introduced in strings. e.g " swanand kadam"
-     var flag=0
+        //the flag is introduced to remove spaces introduced in strings. e.g " swanand kadam"
+        var flag=0;
 
-     let k = i
+        let k = i;
 
 
 
-     for ( k; k < cleaned_sourcedata.length; k++) {
+        for ( k; k < cleaned_sourcedata.length; k++) {
 
-         let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1)
+            let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
          
 
-         if (item == '"' || item == "'")
+            if (item == "\"" || item == "'")
 
-         {
-             break;
-         } 
-          if(flag==1){
+            {
+                break;
+            } 
+            if(flag==1){
 
-             foundString = foundString + ' ' + cleaned_sourcedata[k]
+                foundString = foundString + " " + cleaned_sourcedata[k];
 
-         }
+            }
          
-         if(flag==0){
+            if(flag==0){
 
-             foundString = cleaned_sourcedata[k];
-             flag=1;
+                foundString = cleaned_sourcedata[k];
+                flag=1;
 
-         }
+            }
         
 
 
-     }
-     return foundString
+        }
+        return foundString;
      
 
 
- }
+    };
 }
 
- export function BuildArray() {
+export function BuildArray() {
 
 
     return function(element,i,cleaned_sourcedata){
 
-     var foundArray = ''
+        var foundArray = "";
 
-//the flag is introduced to remove spaces introduced in Arrays. e.g " swanand kadam"
-     var flag=0
+        //the flag is introduced to remove spaces introduced in Arrays. e.g " swanand kadam"
+        var flag=0;
 
-     let k = i
+        let k = i;
 
 
 
-     for ( k; k < cleaned_sourcedata.length; k++) {
+        for ( k; k < cleaned_sourcedata.length; k++) {
 
-         let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1)
+            let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
        
 
 
-         if (item == ']')
+            if (item == "]")
 
-         {
-             break;
-         } 
-          if(flag==1){
+            {
+                break;
+            } 
+            if(flag==1){
 
-             foundArray = foundArray + ' ' + cleaned_sourcedata[k]
+                foundArray = foundArray + " " + cleaned_sourcedata[k];
         
 
-         }
+            }
          
-         if(flag==0){
+            if(flag==0){
 
-             foundArray = cleaned_sourcedata[k];
-             flag=1;
+                foundArray = cleaned_sourcedata[k];
+                flag=1;
             
 
-         }
+            }
         
          
 
 
-     }
+        }
       
 
-     return foundArray
+        return foundArray;
     
-    }
+    };
 
 
- }
+}
 
 export function BuildCondition() {
 
 
     return function(element,i,cleaned_sourcedata){
 
-     var foundString = ''
+        var foundString = "";
 
-     let k = i+1 // +1 to skip if, else etc and acquire condition
+        let k = i+1; // +1 to skip if, else etc and acquire condition
      
 
 
-     for ( k; k < cleaned_sourcedata.length; k++) {
+        for ( k; k < cleaned_sourcedata.length; k++) {
 
-         let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1)
-
-
-         if (cleaned_sourcedata[k] == '{' || cleaned_sourcedata[k] == '){' || cleaned_sourcedata[k] == ') {' )
-
-         {
-             break;
-         } else {
-
-             foundString = foundString + ' ' + cleaned_sourcedata[k]
-
-         }
+            // let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
 
 
-     }
+            if (cleaned_sourcedata[k] == "{" || cleaned_sourcedata[k] == "){" || cleaned_sourcedata[k] == ") {" )
 
-    foundString=RemoveBrackets(foundString)
+            {
+                break;
+            } else {
 
-    foundString=foundString.replace(' ', '')
+                foundString = foundString + " " + cleaned_sourcedata[k];
 
-   return foundString
+            }
+
+
+        }
+
+        foundString=RemoveBrackets(foundString);
+
+        foundString=foundString.replace(" ", "");
+
+        return foundString;
    
 
 
- }
+    };
 }
 
 
