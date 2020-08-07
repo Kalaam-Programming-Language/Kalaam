@@ -5,90 +5,90 @@ export function isPureEval(){
 
     return function(element){
 
-    if(/^([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)*$/gm.test(element))
-    {
+        if(/^([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)*$/gm.test(element))
+        {
     
-    return true
+            return true;
     
-    }
+        }
+    };
+    
 }
-    
-                }
     
     
             
     
-            //if parser encounters anything like (" or (, then that's a realtime print. 
-            //buildstring will be applied now to create a string and push it into tokens
+//if parser encounters anything like (" or (, then that's a realtime print. 
+//buildstring will be applied now to create a string and push it into tokens
     
-            export function isRealTimePrintMultipleString (){
-    
-    
-                return function(element){
+export function isRealTimePrintMultipleString (){
     
     
-                    let conditionStart=element.charAt(0)
-                    let lastChar=element.charAt(element.length-1)
+    return function(element){
+    
+    
+        let conditionStart=element.charAt(0);
+        let lastChar=element.charAt(element.length-1);
     
     
                     
-                 //THE Principle condition to proceed building a string after identifyting it as a potential realtimestring   
+        //THE Principle condition to proceed building a string after identifyting it as a potential realtimestring   
     
-    if(((conditionStart=='(' && lastChar!=')') || (element.includes('("') || element.includes("('") )))
-    {
-    
-    
-    
-    return true
-    
-    }
-    
-                }
-            }
+        if(((conditionStart=="(" && lastChar!=")") || (element.includes("(\"") || element.includes("('") )))
+        {
     
     
-                export function isStringandValue (){
     
-                    return function(element){
+            return true;
+    
+        }
+    
+    };
+}
+    
+    
+export function isStringandValue (){
+    
+    return function(element){
 
-                    let x=element
+        let x=element;
     
     
     
-    if(x.includes('"')&&x.includes('+'))
-    {
+        if(x.includes("\"")&&x.includes("+"))
+        {
     
     
-    return true;
-    }
+            return true;
+        }
     
     
     
-                }
-            }
+    };
+}
     
     
                 
-          export function isCalculation() {
+export function isCalculation() {
 
-            return function(element){
+    return function(element){
 
-                if ((element.includes("+")  || element.includes("%") || element.includes("-") || element.includes("*") || element.includes("/")) && !element.includes('[') && ((element.includes('(')&& element.includes(')')) || (!element.includes('(')&& !element.includes(')')) ) &&  element.charAt(element.length-1)!='+' && (element.charAt(0)!='/' || element.charAt(0)!='*' )) {
+        if ((element.includes("+")  || element.includes("%") || element.includes("-") || element.includes("*") || element.includes("/")) && !element.includes("[") && ((element.includes("(")&& element.includes(")")) || (!element.includes("(")&& !element.includes(")")) ) &&  element.charAt(element.length-1)!="+" && (element.charAt(0)!="/" || element.charAt(0)!="*" )) {
 
-                    return true
-                }
+            return true;
+        }
 
-            }
-            }
-
-        export function isDirectPrintArithmetic(){
-
-            return function(token){
-if( ( token.includes("+") || token.includes("-") || token.includes("*") || token.includes("/") )  )
-{
-
-    return true
+    };
 }
 
-            }
+export function isDirectPrintArithmetic(){
+
+    return function(token){
+        if( ( token.includes("+") || token.includes("-") || token.includes("*") || token.includes("/") )  )
+        {
+
+            return true;
         }
+
+    };
+}

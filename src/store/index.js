@@ -1,50 +1,50 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
+    state: {
 
-    CurrentCode:'',
-    LearningOn:false,
-    PractiseOn:true
-  },
-  mutations: {
+        CurrentCode:"",
+        LearningOn:false,
+        PractiseOn:true,
+    },
+    mutations: {
 
-    changeMode (state) 
-    {
+        changeMode (state) 
+        {
 
-      if(state.LearningOn==true)
+            if(state.LearningOn==true)
 
-      {
+            {
 
-      state.PractiseOn=true
-      state.LearningOn=false
+                state.PractiseOn=true;
+                state.LearningOn=false;
       
       
       
-      }
+            }
       
-      else if(state.PractiseOn==true)
-      {
-      state.LearningOn=true
-      state.PractiseOn=false
-      
-      
-      }
+            else if(state.PractiseOn==true)
+            {
+                state.LearningOn=true;
+                state.PractiseOn=false;
       
       
-      }
+            }
+      
+      
+        },
 
 
     
-  },
-  actions: {
+    },
+    actions: {
 
 
 
-  },
-  modules: {
-  }
-})
+    },
+    modules: {
+    },
+});

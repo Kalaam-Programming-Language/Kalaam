@@ -2,14 +2,14 @@
 
 import
 {
-  SourceDataReplaceforEasyParsing
+    SourceDataReplaceforEasyParsing,
 }
-from '../Scripts/DataCleaning'
+    from "../Scripts/DataCleaning";
 
-import { Keyword } from "../Compiler/constants";
+import { Keyword, } from "../Compiler/constants";
 
 
-import {RemoveQuotes, RemoveBrackets, Count} from '../Scripts/Helpers'
+import {RemoveQuotes, RemoveBrackets, Count,} from "../Scripts/Helpers";
 
 
 //ANCHOR - Important functions to be used while parsing
@@ -23,7 +23,7 @@ function IsSpecialChar(v,i)
 {
 
 
-  return v[i] == "?"  || (v[i]=='=' && v[i+1]!='=' && v[i-1]!='=') || v[i] == "|" || v[i] == ";" || v[i] == "&" || v[i] == "^" || v[i] == "%" || v[i] == "$" || v[i] == "#" || v[i] == "@" || v[i] == "!" || v[i] == ":" || v[i] == "+" || v[i] == "," || v[i] == "%" || v[i] == "-" || v[i + 1] == ')' || v[i] == "/" || v[i] == "*" || v[i] == '>' || v[i] == '<'
+    return v[i] == "?"  || (v[i]=="=" && v[i+1]!="=" && v[i-1]!="=") || v[i] == "|" || v[i] == ";" || v[i] == "&" || v[i] == "^" || v[i] == "%" || v[i] == "$" || v[i] == "#" || v[i] == "@" || v[i] == "!" || v[i] == ":" || v[i] == "+" || v[i] == "," || v[i] == "%" || v[i] == "-" || v[i + 1] == ")" || v[i] == "/" || v[i] == "*" || v[i] == ">" || v[i] == "<";
 
 
 
@@ -33,7 +33,7 @@ function IsConditionalOperator(e)
 
 {
 
-return e.includes('>') || e.includes('<') || e.includes('==') || e.includes('!=')
+    return e.includes(">") || e.includes("<") || e.includes("==") || e.includes("!=");
 
 
 }
@@ -43,23 +43,23 @@ function IsReservedKeyword(e)
 {
 
 
-  return e.includes('दुहराओ') || e.includes('रचना') || e.includes('अन्यथा') || e.includes('इनपुट') || e.includes('पुश') || e.includes(Keyword.Print) || e.includes('अगर') ||  /* cleaned_sourcedata[k + 1] == '='*/ e == '}'
+    return e.includes("दुहराओ") || e.includes("रचना") || e.includes("अन्यथा") || e.includes("इनपुट") || e.includes("पुश") || e.includes(Keyword.Print) || e.includes("अगर") ||  /* cleaned_sourcedata[k + 1] == '='*/ e == "}";
 }
 
 
 function isEmptyStringorChar()
 {
 
-  return function(element)
-  {
-    if (element == '"' || element == "'" || element == '*' || element == '@' || element == "#" || element.charAt(0) == "'" || element.charAt(0) == '"')
-
+    return function(element)
     {
+        if (element == "\"" || element == "'" || element == "*" || element == "@" || element == "#" || element.charAt(0) == "'" || element.charAt(0) == "\"")
 
-      return true
+        {
 
-    }
-  }
+            return true;
+
+        }
+    };
 
 }
 
@@ -68,12 +68,12 @@ function isEmptyStringorChar()
 function isPureEval(element)
 {
 
-  if (/^([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)*$/gm.test(element))
-  {
+    if (/^([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)*$/gm.test(element))
+    {
 
-    return true
+        return true;
 
-  }
+    }
 }
 
 //Checking if an element is calculation to be performed
@@ -81,16 +81,16 @@ function isPureEval(element)
 function isCalculation(element)
 {
 
-  if (!isNumber(element))
-  {
-
-    if ((element.includes("+") || element.includes("%") || element.includes("-") || element.includes("*") || element.includes("/")) && ((element.includes('(') && element.includes(')')) || (!element.includes('(') && !element.includes(')'))) && element.charAt(element.length - 1) != '+')
+    if (!isNumber(element))
     {
 
-      return true
+        if ((element.includes("+") || element.includes("%") || element.includes("-") || element.includes("*") || element.includes("/")) && ((element.includes("(") && element.includes(")")) || (!element.includes("(") && !element.includes(")"))) && element.charAt(element.length - 1) != "+")
+        {
 
+            return true;
+
+        }
     }
-  }
 }
 
 //removing brackets from element
@@ -99,15 +99,15 @@ function isCalculation(element)
 function isArrayOperation(element)
 {
 
-  //To find Patterns like Array[2], Array[index] etc
+    //To find Patterns like Array[2], Array[index] etc
 
-  element = RemoveBrackets(element)
+    element = RemoveBrackets(element);
 
-  if (element.charAt(element.length - 1) == ']' && element.includes('[') && element.charAt(0) != '[')
-  {
+    if (element.charAt(element.length - 1) == "]" && element.includes("[") && element.charAt(0) != "[")
+    {
 
-    return true
-  }
+        return true;
+    }
 
 }
 
@@ -119,59 +119,59 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities)
 {
 
 
-  sourcedata = SourceDataReplaceforEasyParsing(sourcedata)
+    sourcedata = SourceDataReplaceforEasyParsing(sourcedata);
 
-  sourcedata.forEach((element, i) =>
+    sourcedata.forEach((element) =>
   
-  {
+    {
 
-    //finding the elements which has =" in it so that to seprate them into name,==,swanand if input is name="swanand". 
+        //finding the elements which has =" in it so that to seprate them into name,==,swanand if input is name="swanand". 
 
-    //We define such elements as impurites. We process them, bring them into a suitable form and push to cleaned_spircedata
+        //We define such elements as impurites. We process them, bring them into a suitable form and push to cleaned_spircedata
 
-    //This is our cleaning factory
+        //This is our cleaning factory
 
     
 
-    if (!element.includes('==') && (element.indexOf('="') > -1 || element.indexOf('=') > 0 || element.charAt(0) == "=") && element != '==')
+        if (!element.includes("==") && (element.indexOf("=\"") > -1 || element.indexOf("=") > 0 || element.charAt(0) == "=") && element != "==")
 
-    {
+        {
 
-      impurities.push(element) //push such element as impurity in impurities
+            impurities.push(element); //push such element as impurity in impurities
       
 
-      let elements = element.split("=")
-      let index = cleaned_sourcedata.length
+            let elements = element.split("=");
+            let index = cleaned_sourcedata.length;
 
-      cleaned_sourcedata[index] = (elements[0])
-      cleaned_sourcedata[index + 1] = ("=")
-      cleaned_sourcedata[index + 2] = (elements[1])
+            cleaned_sourcedata[index] = (elements[0]);
+            cleaned_sourcedata[index + 1] = ("=");
+            cleaned_sourcedata[index + 2] = (elements[1]);
 
-    }
+        }
 
-    //as long as element is pure, push it to new and clean version of sourcedata
-    if (!impurities.includes(element))
+        //as long as element is pure, push it to new and clean version of sourcedata
+        if (!impurities.includes(element))
+        {
+
+            cleaned_sourcedata.push(element);
+
+        }
+
+        //
+
+    });
+
+    //removing empty "" values for final version of sourcedata
+    //SECTION FInal sourcedata cleaning
+
+    cleaned_sourcedata = cleaned_sourcedata.filter(function(item)
     {
 
-      cleaned_sourcedata.push(element)
-
-    }
-
-    //
-
-  })
-
-  //removing empty "" values for final version of sourcedata
-  //SECTION FInal sourcedata cleaning
-
-  cleaned_sourcedata = cleaned_sourcedata.filter(function(item)
-  {
-
-    return item !== ""
-  })
+        return item !== "";
+    });
 
 
-  return cleaned_sourcedata;
+    return cleaned_sourcedata;
 
 }
 
@@ -179,13 +179,13 @@ function GetcleanedExpression(expression)
 {
 
 
-  expression=expression.replace(/ /g,'')
+    expression=expression.replace(/ /g,"");
 
-expression=RemoveQuotes(expression)
-    expression=expression.replace(/\(/g,'')
-    expression=expression.replace(/\)/g,'')
+    expression=RemoveQuotes(expression);
+    expression=expression.replace(/\(/g,"");
+    expression=expression.replace(/\)/g,"");
 
-return expression
+    return expression;
 
 
 }
@@ -198,103 +198,103 @@ function SplitElementsArray(element, i)
 
 {
 
-element=RemoveBrackets(element)
+    element=RemoveBrackets(element);
 
-  if (IsConditionalOperator(element))
+    if (IsConditionalOperator(element))
 
-  {
+    {
 
-    element = element.replace(/' '/g, '')
+        element = element.replace(/' '/g, "");
     
 
-  }
-  //get index of operation from updated tokens, as a reference
+    }
+    //get index of operation from updated tokens, as a reference
 
-  var StringVar = [] // here StrVar values will get pushed
-  var StrVar = '' // its used to read var values of any type (anna,a,bad,x etc.) and push it to StringVar
+    var StringVar = []; // here StrVar values will get pushed
+    var StrVar = ""; // its used to read var values of any type (anna,a,bad,x etc.) and push it to StringVar
 
-  for (let j = 0; j < element.length; j++)
-  {
+    for (let j = 0; j < element.length; j++)
+    {
 
-    // find if element[j] is alphabet
+        // find if element[j] is alphabet
 
 
-    if (/^[A-Z]+$/i.test(element[j]) || (element[j] == '[' || element[j] == ']')  || (element[j] == '"' || element[j] == "'") || isNumber(element[j]))
+        if (/^[A-Z]+$/i.test(element[j]) || (element[j] == "[" || element[j] == "]")  || (element[j] == "\"" || element[j] == "'") || isNumber(element[j]))
     
-    {
+        {
 
-      StrVar = StrVar + element[j] //keep on pushing for long variable names as strings e.g hello, kalaam
+            StrVar = StrVar + element[j]; //keep on pushing for long variable names as strings e.g hello, kalaam
 
-    }
+        }
 
-    if (element[j] == ')' || element[j] == '(')
-    {
+        if (element[j] == ")" || element[j] == "(")
+        {
 
-      StringVar.push(element[j])
+            StringVar.push(element[j]);
 
-    }
+        }
 
-    //to solve ["Age "] into ["Age"], so that it can correctly find its value in updated_tokens
+        //to solve ["Age "] into ["Age"], so that it can correctly find its value in updated_tokens
 
-    if (element[j] == ' ' && element[j + 1] != '+')
-    {
-      StrVar = StrVar + element[j]
+        if (element[j] == " " && element[j + 1] != "+")
+        {
+            StrVar = StrVar + element[j];
 
-    }
+        }
 
-    //for checking equivalency
-    if ((element[j] == '=' && element[j + 1] == '='))
-    {
+        //for checking equivalency
+        if ((element[j] == "=" && element[j + 1] == "="))
+        {
 
-      StringVar.push(StrVar)
-      StringVar.push(element[j] + element[j + 1])
-      StrVar = ''
+            StringVar.push(StrVar);
+            StringVar.push(element[j] + element[j + 1]);
+            StrVar = "";
 
-    }
+        }
 
-    //for checking !=
-    if ((element[j] == '!' && element[j + 1] == '='))
-    {
+        //for checking !=
+        if ((element[j] == "!" && element[j + 1] == "="))
+        {
 
-      StringVar.push(StrVar)
+            StringVar.push(StrVar);
 
-      StringVar.push(element[j] + element[j + 1])
-      StrVar = ''
+            StringVar.push(element[j] + element[j + 1]);
+            StrVar = "";
 
-    }
+        }
 
 
-    if (IsSpecialChar(element,j))
+        if (IsSpecialChar(element,j))
     
-    {
+        {
 
-      StringVar.push(StrVar) //push whatever string we have got because it's a string now, cant push operators with it
+            StringVar.push(StrVar); //push whatever string we have got because it's a string now, cant push operators with it
       
 
-      //finding the calculations that required brackets and adding them
+            //finding the calculations that required brackets and adding them
 
-      if (element[j + 1] != ')')
-      {
+            if (element[j + 1] != ")")
+            {
 
-        StringVar.push(element[j]) // fixing the bias
+                StringVar.push(element[j]); // fixing the bias
 
-      }
+            }
 
-      StrVar = '' // emptyig the StrVar for next variable
+            StrVar = ""; // emptyig the StrVar for next variable
+
+        }
+        if (element[j + 1] == null)
+        {
+
+            StringVar.push(StrVar); //fixing bias for last element
+
+        }
 
     }
-    if (element[j + 1] == null)
-    {
-
-      StringVar.push(StrVar) //fixing bias for last element
-
-    }
-
-  }
 
 
 
-  return StringVar
+    return StringVar;
   
   
   
@@ -307,21 +307,21 @@ function getLoopIndexStart(mutable_tokens, j, check, setIndex)
 
 {
 
-  while (mutable_tokens[j].value != check)
+    while (mutable_tokens[j].value != check)
 
-  {
-
-    if (mutable_tokens[j + 1].value == check)
     {
 
-      setIndex = j + 1
+        if (mutable_tokens[j + 1].value == check)
+        {
+
+            setIndex = j + 1;
+
+        }
+
+        j++;
 
     }
-
-    j++;
-
-  }
-  return setIndex
+    return setIndex;
 
 }
 
@@ -330,42 +330,42 @@ function getLoopIndexStart(mutable_tokens, j, check, setIndex)
 function handlemultConditions(element)
 {
 
-  for (let i = 0; i < element.length; i++)
-  {
-
-    if ((element.charAt(i) == '&') || (element.charAt(i) == '|'))
-
+    for (let i = 0; i < element.length; i++)
     {
 
-      let condition = element.substring(0, i + 2)
+        if ((element.charAt(i) == "&") || (element.charAt(i) == "|"))
 
-      let SweepedElement = element.replace(condition, "")
-      let operator = ''
+        {
 
-      if ((element.charAt(i) == '&'))
-      {
-        condition = condition.replace('&&', '')
-        operator = '&&'
+            let condition = element.substring(0, i + 2);
 
-      }
-      else if ((element.charAt(i) == '|'))
-      {
-        condition = condition.replace('||', '')
-        operator = '||'
+            let SweepedElement = element.replace(condition, "");
+            let operator = "";
 
-      }
+            if ((element.charAt(i) == "&"))
+            {
+                condition = condition.replace("&&", "");
+                operator = "&&";
 
-      return {
-        SweepedElement,
-        condition,
-        operator
-      }
+            }
+            else if ((element.charAt(i) == "|"))
+            {
+                condition = condition.replace("||", "");
+                operator = "||";
 
-      break;
+            }
+
+            return {
+                SweepedElement,
+                condition,
+                operator,
+            };
+
+            break;
+
+        }
 
     }
-
-  }
 
 }
 
@@ -374,50 +374,50 @@ function handlemultConditions(element)
 function AddElementToArray(Sourcedata, index, updated_tokens,ExecutionStack,LinebylineSourcedata)
 {
 
-  let token = Sourcedata[index].value
+    let token = Sourcedata[index].value;
 
-  token = token.replace('पुश', '')
-  let Split = token.split('.')
-  let Array = Split[0]
-  let ElementtoPush = RemoveBrackets(Split[1])
+    token = token.replace("पुश", "");
+    let Split = token.split(".");
+    let Array = Split[0];
+    let ElementtoPush = RemoveBrackets(Split[1]);
 
-  if (ElementtoPush.charAt(0) == '"' || ElementtoPush.charAt(0) == "'")
-  {
+    if (ElementtoPush.charAt(0) == "\"" || ElementtoPush.charAt(0) == "'")
+    {
 
-    ElementtoPush = ElementtoPush
-  }
-  else
-  {
-    ElementtoPush = updated_tokens.find(el => el.name == ElementtoPush).value
-  }
+        ElementtoPush = ElementtoPush;
+    }
+    else
+    {
+        ElementtoPush = updated_tokens.find(el => el.name == ElementtoPush).value;
+    }
 
-  let ArrayEl = updated_tokens.find(el => el.name == Array)
+    let ArrayEl = updated_tokens.find(el => el.name == Array);
 
-  let ArrayValue = ArrayEl.value
-  if (ArrayValue == '[]')
-  {
-    ArrayValue = ArrayValue.split(',')
-  }
-  ArrayValue.push(ElementtoPush)
+    let ArrayValue = ArrayEl.value;
+    if (ArrayValue == "[]")
+    {
+        ArrayValue = ArrayValue.split(",");
+    }
+    ArrayValue.push(ElementtoPush);
 
-  let indexofArray = updated_tokens.indexOf(ArrayEl)
+    let indexofArray = updated_tokens.indexOf(ArrayEl);
 
-  ArrayValue = ArrayValue.filter(el => el != '[]')
+    ArrayValue = ArrayValue.filter(el => el != "[]");
 
-  updated_tokens[indexofArray].value = ArrayValue
-
-
-  let message= 'आपने ' + '"' + ElementtoPush + '"'  + ' को ' + + '"' + Array + '"'  + ' इस बकेट(Array) में दर्ज(Store) करवाया है| '
+    updated_tokens[indexofArray].value = ArrayValue;
 
 
+    let message= "आपने " + "\"" + ElementtoPush + "\""  + " को " + + "\"" + Array + "\""  + " इस बकेट(Array) में दर्ज(Store) करवाया है| ";
 
-let expression= Sourcedata[index].value;
-//
 
-  let Linenumber= LinebylineSourcedata.indexOf(expression)
-  Linenumber+=1
 
-  AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', Array, ElementtoPush,message,Linenumber)
+    let expression= Sourcedata[index].value;
+    //
+
+    let Linenumber= LinebylineSourcedata.indexOf(expression);
+    Linenumber+=1;
+
+    AddtoExecutionStack(ExecutionStack,"इनपुट", "किसी नई VALUE को स्वीकार करना ", Array, ElementtoPush,message,Linenumber);
   
 
 
@@ -429,27 +429,27 @@ let expression= Sourcedata[index].value;
 function AcceptInputandSetValue(tokens, index, updated_tokens,ExecutionStack,LinebylineSourcedata)
 {
 
-  let SetInputValueAs = tokens[index].AcceptAs
+    let SetInputValueAs = tokens[index].AcceptAs;
 
-  var value = prompt('आप ' + '"' +  SetInputValueAs +  '"' + ' को क्या कहना चाहते हो ?' )
+    var value = prompt("आप " + "\"" +  SetInputValueAs +  "\"" + " को क्या कहना चाहते हो ?" );
 
-  updated_tokens.push(
-  {
-    name: SetInputValueAs,
+    updated_tokens.push(
+        {
+            name: SetInputValueAs,
 
-    value: value,
+            value: value,
 
-  })
+        });
 
-  let message= 'आपने ' + '"' + SetInputValueAs + '"' + ' को ' + '"' + value + '"' + ' ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| '
+    let message= "आपने " + "\"" + SetInputValueAs + "\"" + " को " + "\"" + value + "\"" + " ये Value देकर Computer के Memory में दर्ज(Store) करवाया है| ";
 
 
-  let expression = 'इनपुट('+SetInputValueAs+')'
+    let expression = "इनपुट("+SetInputValueAs+")";
 
-  let Linenumber= LinebylineSourcedata.indexOf(expression)
-  Linenumber+=1
+    let Linenumber= LinebylineSourcedata.indexOf(expression);
+    Linenumber+=1;
 
-  AddtoExecutionStack(ExecutionStack,'इनपुट', 'किसी नई VALUE को स्वीकार करना ', SetInputValueAs, value, message,Linenumber)
+    AddtoExecutionStack(ExecutionStack,"इनपुट", "किसी नई VALUE को स्वीकार करना ", SetInputValueAs, value, message,Linenumber);
   
 
 
@@ -467,43 +467,43 @@ function CalculateValues(calculation, j, updated_tokens, IterationStart, global)
 
 {
 
-  var flag = 0
-  var error = ''
-  var calculationArray = SplitElementsArray(calculation, j)
+    var flag = 0;
+    var error = "";
+    var calculationArray = SplitElementsArray(calculation, j);
 
-  var StringVar = SetValues(calculationArray, updated_tokens)
+    var StringVar = SetValues(calculationArray, updated_tokens);
 
-  let joinStringVar = StringVar.join('')
+    let joinStringVar = StringVar.join("");
 
-  let NewStringVar = ''
-  if (isNumber(joinStringVar.charAt(0)) == true)
-  {
-    NewStringVar = eval(joinStringVar)
+    let NewStringVar = "";
+    if (isNumber(joinStringVar.charAt(0)) == true)
+    {
+        NewStringVar = eval(joinStringVar);
 
-  }
-  else if (isNumber(joinStringVar.charAt(0)) == undefined)
-  {
-
-    StringVar.forEach(el =>
+    }
+    else if (isNumber(joinStringVar.charAt(0)) == undefined)
     {
 
-      if (el != '+')
-      {
-        el = el.toString()
-        NewStringVar = NewStringVar + el
-      }
+        StringVar.forEach(el =>
+        {
 
-    })
+            if (el != "+")
+            {
+                el = el.toString();
+                NewStringVar = NewStringVar + el;
+            }
 
-  }
-  else
-  {
+        });
 
-    StringVar = StringVar
+    }
+    else
+    {
 
-  }
+        StringVar = StringVar;
 
-  return (StringVar.length > 1 ? NewStringVar : StringVar)
+    }
+
+    return (StringVar.length > 1 ? NewStringVar : StringVar);
 
 }
 
@@ -512,12 +512,12 @@ function CalculateValues(calculation, j, updated_tokens, IterationStart, global)
 function PushSetArrayIndexValue(value, tokens, data, i)
 {
 
-  tokens.push(
-  {
-    type: "SetArrayIndexValue",
-    value: value,
-    ValueToSet: data[i + 2] //skipping =
-  });
+    tokens.push(
+        {
+            type: "SetArrayIndexValue",
+            value: value,
+            ValueToSet: data[i + 2], //skipping =
+        });
 
 
 
@@ -526,11 +526,11 @@ function PushSetArrayIndexValue(value, tokens, data, i)
 function PushGetArrayIndexValue(value, tokens, data, i)
 {
 
-  tokens.push(
-  {
-    type: "GetArrayIndexValue",
-    value: value,
-  });
+    tokens.push(
+        {
+            type: "GetArrayIndexValue",
+            value: value,
+        });
 
 }
 
@@ -543,24 +543,24 @@ function PushGetArrayIndexValue(value, tokens, data, i)
 function CreateArrayElement(Value, iterator)
 {
 
-  let ArrayElement = RemoveBrackets(Value);
+    let ArrayElement = RemoveBrackets(Value);
 
-  //Seprating out index identifier. a from Array[a]
-  let element = ArrayElement
-  element = element.replace(']', '')
+    //Seprating out index identifier. a from Array[a]
+    let element = ArrayElement;
+    element = element.replace("]", "");
 
-  let Split = element.split('[')
+    let Split = element.split("[");
 
-  Split[1] = iterator
+    Split[1] = iterator;
 
-  Split = Split.join('[')
+    Split = Split.join("[");
 
-  Split = Split + ']'
-  ArrayElement = Split
+    Split = Split + "]";
+    ArrayElement = Split;
 
-  ArrayElement = ArrayElement.replace(/' '/g, '')
+    ArrayElement = ArrayElement.replace(/' '/g, "");
 
-  return ArrayElement
+    return ArrayElement;
 
 }
 
@@ -571,131 +571,131 @@ function CreateArrayElement(Value, iterator)
 function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, iterator, NewValue, tokens,ExecutionStack,LinebylineSourcedata)
 {
 
- let variable=ArrayElement
+    let variable=ArrayElement;
 
-  ArrayElement = ArrayElement.replace(']', '')
+    ArrayElement = ArrayElement.replace("]", "");
 
 
-  let Split = ArrayElement.split('[')
+    let Split = ArrayElement.split("[");
 
-  let indexCollected = Split[1]
+    let indexCollected = Split[1];
 
-  let Element = updated_tokens.find(el => el.name == NewValue)
+    let Element = updated_tokens.find(el => el.name == NewValue);
 
-  //If element is an assigned variable. Find the value and set it.
+    //If element is an assigned variable. Find the value and set it.
 
-  if (Element)
-  {
-    if (isCalculation(NewValue))
+    if (Element)
     {
+        if (isCalculation(NewValue))
+        {
 
-      // This is to set x= y*100, Array[i]= x+ageone. 
+            // This is to set x= y*100, Array[i]= x+ageone. 
 
-      let token = tokens.find(el => el.value == NewValue)
-      let j = tokens.indexOf(token) - 1
+            let token = tokens.find(el => el.value == NewValue);
+            let j = tokens.indexOf(token) - 1;
 
-      let value = CalculateValues(NewValue, j, updated_tokens)
+            let value = CalculateValues(NewValue, j, updated_tokens);
 
-      NewValue = value
+            NewValue = value;
+
+        }
+
+        NewValue = Element.value;
 
     }
 
-    NewValue = Element.value
-
-  }
-
-  if (iterator == true)
-  {
-
-    //for Array[a]=a
-
-    if (isCalculation(NewValue))
+    if (iterator == true)
     {
+
+        //for Array[a]=a
+
+        if (isCalculation(NewValue))
+        {
+
+        }
+        else
+        {
+
+            NewValue = indexCollected;
+
+        }
+    }
+
+    //if fresh newvalue is foumd. the one which doesnt yet exist in the program, then run this.
+    else
+    {
+
+        NewValue = NewValue;
+    }
+
+    let token = updated_tokens.find(el => el.name == Split[0]);
+
+    let index = updated_tokens.indexOf(token);
+
+    //updated_tokens values will also get updated thrugh this reference
+    let value = token.value;
+
+    value = value.toString();
+
+    value = value.replace("]", "");
+    value = value.replace("[", "");
+    value = value.split(",");
+
+    if (iterator == true)
+    {
+
+        //This is for Array[a]=a
+
+        value[indexCollected] = indexCollected;
 
     }
     else
     {
 
-      NewValue = indexCollected
+        //Run when iterator is not needed. iterator is present in ArrayEleMENT ALREADY. This is for Array[i]='Swanand'
 
-    }
-  }
-
-  //if fresh newvalue is foumd. the one which doesnt yet exist in the program, then run this.
-  else
-  {
-
-    NewValue = NewValue
-  }
-
-  let token = updated_tokens.find(el => el.name == Split[0])
-
-  let index = updated_tokens.indexOf(token)
-
-  //updated_tokens values will also get updated thrugh this reference
-  let value = token.value
-
-  value = value.toString()
-
-  value = value.replace(']', '')
-  value = value.replace('[', '')
-  value = value.split(',')
-
-  if (iterator == true)
-  {
-
-    //This is for Array[a]=a
-
-    value[indexCollected] = indexCollected
-
-  }
-  else
-  {
-
-    //Run when iterator is not needed. iterator is present in ArrayEleMENT ALREADY. This is for Array[i]='Swanand'
-
-    value[indexCollected] = NewValue
+        value[indexCollected] = NewValue;
     
 
-  }
-
-  //converting array back into the string representation of it for better printabillity
-
-  
-
-  updated_tokens[index].value = '[' + value.toString() + ']'
-
-
-  let message= ' Computer ने, ' + '"' +  variable + '"' + ' को, ' + '"' + value[indexCollected] + '"'  +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
- 
-
-  let expression= OriginalElement
-
-  let Linenumber=''
-
-  expression=GetcleanedExpression(expression)
-
-  
-  LinebylineSourcedata.forEach((el,index)=>{
-
- 
-    el=GetcleanedExpression(el)
-
-    if(el==expression)
-    {
-
-      AddtoExecutionStack(ExecutionStack,'=', ' किसी VARIABLE को नई VALUE सेट करना   ', variable, value[indexCollected]  , message,index+1)
-
-
-
     }
 
+    //converting array back into the string representation of it for better printabillity
+
+  
+
+    updated_tokens[index].value = "[" + value.toString() + "]";
+
+
+    let message= " Computer ने, " + "\"" +  variable + "\"" + " को, " + "\"" + value[indexCollected] + "\""  +  " ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |";
+ 
+
+    let expression= OriginalElement;
+
+    let Linenumber="";
+
+    expression=GetcleanedExpression(expression);
+
+  
+    LinebylineSourcedata.forEach((el,index)=>{
+
+ 
+        el=GetcleanedExpression(el);
+
+        if(el==expression)
+        {
+
+            AddtoExecutionStack(ExecutionStack,"=", " किसी VARIABLE को नई VALUE सेट करना   ", variable, value[indexCollected]  , message,index+1);
+
+
+
+        }
 
 
 
 
-  })
- // let Linenumber=''
+
+    });
+    // let Linenumber=''
  
   
 
@@ -709,69 +709,69 @@ function SetArrayorStringElement(OriginalElement,ArrayElement, updated_tokens, i
 function GetArrayorStringElement(element, updated_tokens, NewValue, flag)
 {
 
-  element = element.replace(']', '')
+    element = element.replace("]", "");
 
-  let Split = element.split('[')
+    let Split = element.split("[");
 
-  let indexCollected = Split[1]
+    let indexCollected = Split[1];
 
-  if (isNumber(indexCollected))
-  {
-
-    let token = updated_tokens.find(el => el.name == Split[0])
-
-    let index = updated_tokens.indexOf(token)
-
-    let value = token.value.toString()
-
-    if (token.type == 'Array')
+    if (isNumber(indexCollected))
     {
 
-      value = value.replace(']', '')
-      value = value.replace('[', '')
-      value = value.split(',')
+        let token = updated_tokens.find(el => el.name == Split[0]);
 
-      if (NewValue != undefined)
-      {
+        let index = updated_tokens.indexOf(token);
 
-        if (!isNumber(NewValue))
+        let value = token.value.toString();
+
+        if (token.type == "Array")
         {
 
-          NewValue =RemoveQuotes(NewValue)
-          NewValue = NewValue.replace(/'/g, '')
-          NewValue = NewValue.replace(/‘/g, '')
+            value = value.replace("]", "");
+            value = value.replace("[", "");
+            value = value.split(",");
+
+            if (NewValue != undefined)
+            {
+
+                if (!isNumber(NewValue))
+                {
+
+                    NewValue =RemoveQuotes(NewValue);
+                    NewValue = NewValue.replace(/'/g, "");
+                    NewValue = NewValue.replace(/‘/g, "");
+                }
+                else
+                {
+
+                    NewValue = NewValue;
+                }
+
+                value[indexCollected] = NewValue;
+
+                updated_tokens[index].value = value;
+
+            }
+            else
+            {
+
+                value = value[indexCollected];
+                //////
+                //////
+
+            }
+
         }
-        else
+
+        else if (token.type == "string" || token.type != "Array")
         {
 
-          NewValue = NewValue
+            value = value.charAt(indexCollected);
+
         }
 
-        value[indexCollected] = NewValue
-
-        updated_tokens[index].value = value
-
-      }
-      else
-      {
-
-        value = value[indexCollected];
-        //////
-        //////
-
-      }
-
+        return value;
     }
-
-    else if (token.type == 'string' || token.type != 'Array')
-    {
-
-      value = value.charAt(indexCollected);
-
-    }
-
-    return value
-  }
 
 }
 
@@ -781,14 +781,14 @@ function ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, glob
 
 {
 
-  let CurrentElement = ''
+    let CurrentElement = "";
 
-  CurrentElement = elementValue.name + '[' + iterator + ']'
-  //Foundvalue is decided in the function depending upon the type. 
-  //if it's array run array[2], if its string run string.charAt(2)
-  let FoundValue = GetArrayorStringElement(CurrentElement, updated_tokens)
+    CurrentElement = elementValue.name + "[" + iterator + "]";
+    //Foundvalue is decided in the function depending upon the type. 
+    //if it's array run array[2], if its string run string.charAt(2)
+    let FoundValue = GetArrayorStringElement(CurrentElement, updated_tokens);
 
-  global.output = global.output + FoundValue + "\n";
+    global.output = global.output + FoundValue + "\n";
 
 }
 
@@ -797,12 +797,12 @@ function ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, glob
 function isNumber(element)
 {
 
-  if (/^[0-9]*$/gm.test(element))
-  {
-    return true;
+    if (/^[0-9]*$/gm.test(element))
+    {
+        return true;
 
-  }
-};
+    }
+}
 
 //one of the heavily used function
 
@@ -814,39 +814,39 @@ function SetValues(StringVar, updated_tokens)
 
 {
 
-  StringVar.forEach((el, i) =>
+    StringVar.forEach((el, i) =>
 
     {
 
-      el = el.replace(/\ /g, '');
+        el = el.replace(/\ /g, "");
       
       
 
-      if (el.charAt(el.length - 1) == ']')
-      {
-        let ArrayElementValue = GetArrayorStringElement(el, updated_tokens)
+        if (el.charAt(el.length - 1) == "]")
+        {
+            let ArrayElementValue = GetArrayorStringElement(el, updated_tokens);
 
-        ArrayElementValue = ArrayElementValue.replace(/['"]+/g, '')
+            ArrayElementValue = ArrayElementValue.replace(/['"]+/g, "");
 
-        StringVar[i] = ArrayElementValue
+            StringVar[i] = ArrayElementValue;
 
-      }
+        }
 
-      //finding variable value here 
+        //finding variable value here 
 
-      let token = updated_tokens.find(element => element.name == el);
+        let token = updated_tokens.find(element => element.name == el);
 
-      if (token != undefined)
-      {
+        if (token != undefined)
+        {
 
-        // if exists set it's value 
-        StringVar[i] = token.value
+            // if exists set it's value 
+            StringVar[i] = token.value;
 
-      }
+        }
 
-    })
+    });
 
-  return StringVar
+    return StringVar;
   
 
 }
@@ -862,51 +862,51 @@ function SetValues(StringVar, updated_tokens)
 function UpdateUpdated_tokenswithValues(payload, i, updated_tokens)
 {
 
-  let StringVar = payload
+    let StringVar = payload;
 
-  //run if it's arithmetic operation like ["5+6-7"]
-  if (isNumber(StringVar[0]))
-  {
+    //run if it's arithmetic operation like ["5+6-7"]
+    if (isNumber(StringVar[0]))
+    {
 
-    let value = eval(StringVar.join(''))
+        let value = eval(StringVar.join(""));
 
-    return value
+        return value;
 
-  }
-  else if (StringVar[1] == '==')
-  {
+    }
+    else if (StringVar[1] == "==")
+    {
 
-    let a = StringVar[0].toString()
-    let b = StringVar[2].toString()
+        let a = StringVar[0].toString();
+        let b = StringVar[2].toString();
 
-    a = a.replace('"', "")
-    a = a.replace("'", "")
-    b = b.replace('"', "")
-    b = b.replace("'", "")
+        a = a.replace("\"", "");
+        a = a.replace("'", "");
+        b = b.replace("\"", "");
+        b = b.replace("'", "");
 
     
 
-    let value = eval(a == b)
+        let value = eval(a == b);
 
-    return value
-
-  }
-
-  //run if it's String operation like ["reddit","+", "is goat"]
-  else
-  {
-
-    if (StringVar.includes("+"))
-    {
-
-      StringVar[StringVar.indexOf("+")] = " "
+        return value;
 
     }
 
-    let value = StringVar.join("")
+    //run if it's String operation like ["reddit","+", "is goat"]
+    else
+    {
 
-    return value
-  }
+        if (StringVar.includes("+"))
+        {
+
+            StringVar[StringVar.indexOf("+")] = " ";
+
+        }
+
+        let value = StringVar.join("");
+
+        return value;
+    }
 
 }
 
@@ -917,81 +917,81 @@ function UpdateUpdated_tokenswithValues(payload, i, updated_tokens)
 function HandleBlocks(mutable_tokens, j, StoreResult)
 {
 
-  //StoreResult is used to push data into it in case of forloop or while loop conetext
+    //StoreResult is used to push data into it in case of forloop or while loop conetext
 
-  //for a normal block like conditional block it might not need to be used yet
+    //for a normal block like conditional block it might not need to be used yet
 
-  let ArrayBrackets = []
+    let ArrayBrackets = [];
 
-  while (true)
+    while (true)
 
-  {
-
-    if (mutable_tokens[j].value == '{')
     {
 
-      ArrayBrackets.push(
-      {
-        type: '{',
-        index: j
-      })
+        if (mutable_tokens[j].value == "{")
+        {
 
-      if (StoreResult != undefined)
-      {
+            ArrayBrackets.push(
+                {
+                    type: "{",
+                    index: j,
+                });
 
-        StoreResult.push(mutable_tokens[j])
-      }
+            if (StoreResult != undefined)
+            {
+
+                StoreResult.push(mutable_tokens[j]);
+            }
+
+        }
+        else if (mutable_tokens[j].value == "}")
+        {
+
+            //As soon as open bracket is found, pop the last arraybracket stack value
+            //that's the match
+
+            let x = ArrayBrackets.pop();
+
+            if (StoreResult != undefined)
+            {
+
+                StoreResult.push(mutable_tokens[j]);
+
+                mutable_tokens[x.index].startIndex = x.index;
+                mutable_tokens[x.index].EndIndex = j;
+            }
+
+            //set start and end index value for that { } block
+            mutable_tokens[x.index].startIndex = x.index;
+            mutable_tokens[x.index].EndIndex = j;
+            if (ArrayBrackets.length == 0)
+            {
+
+                //As soon as stack is empty we have finished our last lblock
+
+                break;
+
+            }
+
+        }
+        else
+        {
+
+            if (StoreResult != undefined)
+            {
+
+                StoreResult.push(mutable_tokens[j]);
+            }
+
+        }
+
+        j++;
 
     }
-    else if (mutable_tokens[j].value == '}')
-    {
 
-      //As soon as open bracket is found, pop the last arraybracket stack value
-      //that's the match
-
-      let x = ArrayBrackets.pop()
-
-      if (StoreResult != undefined)
-      {
-
-        StoreResult.push(mutable_tokens[j])
-
-        mutable_tokens[x.index].startIndex = x.index
-        mutable_tokens[x.index].EndIndex = j
-      }
-
-      //set start and end index value for that { } block
-      mutable_tokens[x.index].startIndex = x.index
-      mutable_tokens[x.index].EndIndex = j
-      if (ArrayBrackets.length == 0)
-      {
-
-        //As soon as stack is empty we have finished our last lblock
-
-        break;
-
-      }
-
-    }
-    else
-    {
-
-      if (StoreResult != undefined)
-      {
-
-        StoreResult.push(mutable_tokens[j])
-      }
-
-    }
-
-    j++;
-
-  }
-
-  return {
-    StoreResult,
-    j
-  }
+    return {
+        StoreResult,
+        j,
+    };
 
 }
 
@@ -1004,34 +1004,34 @@ function HandleBlocks(mutable_tokens, j, StoreResult)
 function HandleConditions(sourcedata, i, updated_tokens)
 {
 
-  let element = sourcedata[i].value
+    let element = sourcedata[i].value;
 
-  //let token= updated_tokens.find(el=> el.originalvalue==sourcedata[i].value)
+    //let token= updated_tokens.find(el=> el.originalvalue==sourcedata[i].value)
 
-  let SplitArray = SplitElementsArray(element, i)
+    let SplitArray = SplitElementsArray(element, i);
 
-  let Values = SetValues(SplitArray, updated_tokens)
+    let Values = SetValues(SplitArray, updated_tokens);
 
-  let ForLoopConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, i)
+    let ForLoopConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, i);
 
-  if (ForLoopConditionValue == false)
-  {
-
-    while (sourcedata[i + 1].value != '}')
-
+    if (ForLoopConditionValue == false)
     {
 
-      //tokens.splice(i+1, 1);
+        while (sourcedata[i + 1].value != "}")
 
-      //No need to delete tokens, we are iust skipping over the values so that they won't be printed or run
+        {
 
-      i++;
+            //tokens.splice(i+1, 1);
+
+            //No need to delete tokens, we are iust skipping over the values so that they won't be printed or run
+
+            i++;
+
+        }
+
+        return i;
 
     }
-
-    return i
-
-  }
 
 }
 
@@ -1040,21 +1040,21 @@ function HandleConditions(sourcedata, i, updated_tokens)
 function SplitandJoin(array, output, element)
 {
 
-  array[1] = output
+    array[1] = output;
 
-  let Joinarray = array.join('[') + ']'
-  element = Joinarray
+    let Joinarray = array.join("[") + "]";
+    element = Joinarray;
 
-  return element
+    return element;
 
 }
 
-var AccumulateValue = ''
+var AccumulateValue = "";
 
 function ResetValue()
 {
 
-  AccumulateValue = ''
+    AccumulateValue = "";
 
 }
 
@@ -1072,414 +1072,414 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 {
 
 
-  let variable = sourcedata[i - 1].value
+    let variable = sourcedata[i - 1].value;
 
-  let variableType = sourcedata[i - 1].type
+    let variableType = sourcedata[i - 1].type;
 
-  let varvalue = sourcedata[i + 1].value
+    let varvalue = sourcedata[i + 1].value;
   
 
-  var FinalValue=''
+    var FinalValue="";
 
-  if (varvalue == '"' || varvalue == "'")
-  {
-
-    varvalue = ' '
-  }
-
-  //if someone accidenlty types Name=इनपुट or any other primary keywords
-
-  if (varvalue.includes('दुहराओ') || varvalue.includes('रचना') || varvalue.includes('अन्यथा') || varvalue.includes('इनपुट') || varvalue.includes('पुश') || varvalue.includes(Keyword.Print) || varvalue.includes('अगर'))
-
-  {
-
-    let error = 'Assignment error in ' + '"' + variable + ' = ' + '"'
-
-    global.error.push(error)
-
-  }
-
-  let varvalueType = sourcedata[i + 1].type
-
-  let x = updated_tokens.find((el, i) => el.name == varvalue)
-
-  //if a=b and user haven't defined b yet
-
-  if (!isNumber(varvalue) && varvalueType == 'value' && x == undefined && varvalue != ' ' && !isEmptyStringorChar(varvalue))
-
-  {
-
-    global.error.push('Cannot set ' + variable + ' to undefined ' + ': ' + varvalue + ' is undefined ')
-
-  }
-
-  //to count the length, Numbers.संख्या()
-
-  else if (varvalue.includes('संख्या'))
-
-  {
-
-    let Split = varvalue.split('.')
-
-    let item = Split[0]
-
-    let Itemvalue = updated_tokens.find(el => el.name == item).value
-
-    if (Itemvalue.includes('['))
+    if (varvalue == "\"" || varvalue == "'")
     {
 
-      Itemvalue = Itemvalue.toString().split(',')
-
+        varvalue = " ";
     }
-    else if (Itemvalue.length == 1)
+
+    //if someone accidenlty types Name=इनपुट or any other primary keywords
+
+    if (varvalue.includes("दुहराओ") || varvalue.includes("रचना") || varvalue.includes("अन्यथा") || varvalue.includes("इनपुट") || varvalue.includes("पुश") || varvalue.includes(Keyword.Print) || varvalue.includes("अगर"))
+
     {
 
-      Itemvalue = Itemvalue
+        let error = "Assignment error in " + "\"" + variable + " = " + "\"";
+
+        global.error.push(error);
 
     }
 
-    else
+    let varvalueType = sourcedata[i + 1].type;
+
+    let x = updated_tokens.find((el, i) => el.name == varvalue);
+
+    //if a=b and user haven't defined b yet
+
+    if (!isNumber(varvalue) && varvalueType == "value" && x == undefined && varvalue != " " && !isEmptyStringorChar(varvalue))
+
     {
 
-      Itemvalue = Itemvalue.toString()
+        global.error.push("Cannot set " + variable + " to undefined " + ": " + varvalue + " is undefined ");
 
     }
 
-    let ItemvalueLength = Itemvalue.length
+    //to count the length, Numbers.संख्या()
 
-    FinalValue=ItemvalueLength
-
-    updated_tokens.push(
-    {
-      name: variable,
-
-      value: ItemvalueLength,
-
-      identifier: i,
-      type: 'CalLength'
-    })
-
-  }
-
-  //this runs only for operations like x=Numbers[a]
-
-  else if (varvalueType == 'GetArrayIndexValue')
-
-  {
-
-    let n = updated_tokens.find((el, i) => el.name == variable)
-
-    let index = updated_tokens.indexOf(n)
-
-    //Iterator is used only when we are looping over provided index not for the index that needs to be calculated
-    let element = varvalue.replace(']', '')
-
-    if (element.includes('+'))
-    {
-
-      var Split = element.split('+')
-
-    }
-
-    else if (element.includes('-'))
-    {
-
-      var Split = element.split('-')
-
-    }
-
-    var flag = false
-
-    //For operations like Name=Name+ Array[i]
-
-    if (element.includes('+') || element.includes('-') && !Split[0].includes('['))
-    {
-
-      flag = true
-
-      let token = updated_tokens.find(el => el.name == Split[0])
-      let index = updated_tokens.indexOf(token)
-
-      let ArrayItem = Split[1].split('[')
-
-      let output = CalculateValues(ArrayItem[1], i, updated_tokens)
-
-      let ArrayElement = SplitandJoin(ArrayItem, output, element)
-
-      //Get Numbers[3] value and now set it to our variable x
-      let value = GetArrayorStringElement(ArrayElement, updated_tokens)
-      
-
-      AccumulateValue += value
-
-      updated_tokens[index].value = AccumulateValue
-      FinalValue=AccumulateValue
-
-
-    }
-    else
-    {
-
-      var Split = element.split('[')
-
-    }
-
-    //for operations like x= Array[i+1] etc
-
-    if ((Split[1].includes('-') || Split[1].includes('+')) && !Split[1].includes('['))
-    {
-
-      let output = CalculateValues(Split[1], i, updated_tokens)
-      
-
-      element = SplitandJoin(Split, output, element)
-
-    }
-
-    let token = updated_tokens.find(el => el.name == Split[1])
-
-    //for operations like Array[Age]. Here index is an already defined variable
-    if (token != undefined && OriginalIterator != Split[1] && token.name != '')
+    else if (varvalue.includes("संख्या"))
 
     {
 
-      element = SplitandJoin(Split, token.value, element)
-      
+        let Split = varvalue.split(".");
 
-    }
+        let item = Split[0];
 
-    //for operations like Array[i]: Looping over original index value
-    else if (OriginalIterator == Split[1])
-    {
+        let Itemvalue = updated_tokens.find(el => el.name == item).value;
 
-      element = SplitandJoin(Split, iterator, element)
-
-    }
-
-    let ArrayElement = element
-
-    //Get Numbers[3] value and now set it to our variable x
-    let value = GetArrayorStringElement(ArrayElement, updated_tokens)
-    //
-    if(value!=undefined)
-    {
-
-  value=RemoveQuotes(value)
-    }
-    
-    //
-
-    if (n != undefined && flag == false)
-    {
-
-      updated_tokens[index].value = value
-
-      FinalValue=value
-
-
-    }
-    else if (flag == false)
-    {
-
-      updated_tokens.push(
-      {
-        name: variable,
-
-        value: value,
-
-        identifier: i,
-        type: sourcedata[i + 1].type
-      })
-
-      FinalValue=value
-
-    }
-
-  }
-  else
-  {
-
-    let m = updated_tokens.find((el, i) => el.name == varvalue)
-
-    if (m != undefined)
-    {
-
-      varvalue = m.value
-
-      FinalValue=varvalue
-
-
-    }
-
-    let n = updated_tokens.find((el, i) => el.name == variable)
-
-    if (n == undefined)
-    {
-
-      //to check if the assigned value needs to be calculated. this is futher diveded in two types
-
-      if (isCalculation(varvalue))
-
-      {
-
-        //type 1- Age= 2020-2000 
-        if (isPureEval(varvalue))
-
+        if (Itemvalue.includes("["))
         {
 
-          let value = eval(varvalue)
+            Itemvalue = Itemvalue.toString().split(",");
 
-          //write function for this, so repeatable
-          updated_tokens.push(
-          {
-            name: variable,
+        }
+        else if (Itemvalue.length == 1)
+        {
 
-            value: value,
-
-            identifier: i,
-            type: sourcedata[i + 1].type
-          })
-
-          FinalValue=value
-
+            Itemvalue = Itemvalue;
 
         }
 
-        //type 2- X= ageone+agetwo
         else
         {
 
-          //performing the calculation
+            Itemvalue = Itemvalue.toString();
 
-          let value = CalculateValues(varvalue, i, updated_tokens, global)
-          
+        }
 
-          updated_tokens.push(
-          {
-            name: variable,
+        let ItemvalueLength = Itemvalue.length;
 
-            value: value,
+        FinalValue=ItemvalueLength;
 
-            identifier: i,
-            type: sourcedata[i + 1].type
-          })
+        updated_tokens.push(
+            {
+                name: variable,
 
-          FinalValue=value
+                value: ItemvalueLength,
+
+                identifier: i,
+                type: "CalLength",
+            });
+
+    }
+
+    //this runs only for operations like x=Numbers[a]
+
+    else if (varvalueType == "GetArrayIndexValue")
+
+    {
+
+        let n = updated_tokens.find((el, i) => el.name == variable);
+
+        let index = updated_tokens.indexOf(n);
+
+        //Iterator is used only when we are looping over provided index not for the index that needs to be calculated
+        let element = varvalue.replace("]", "");
+
+        if (element.includes("+"))
+        {
+
+            var Split = element.split("+");
+
+        }
+
+        else if (element.includes("-"))
+        {
+
+            var Split = element.split("-");
+
+        }
+
+        var flag = false;
+
+        //For operations like Name=Name+ Array[i]
+
+        if (element.includes("+") || element.includes("-") && !Split[0].includes("["))
+        {
+
+            flag = true;
+
+            let token = updated_tokens.find(el => el.name == Split[0]);
+            let index = updated_tokens.indexOf(token);
+
+            let ArrayItem = Split[1].split("[");
+
+            let output = CalculateValues(ArrayItem[1], i, updated_tokens);
+
+            let ArrayElement = SplitandJoin(ArrayItem, output, element);
+
+            //Get Numbers[3] value and now set it to our variable x
+            let value = GetArrayorStringElement(ArrayElement, updated_tokens);
+      
+
+            AccumulateValue += value;
+
+            updated_tokens[index].value = AccumulateValue;
+            FinalValue=AccumulateValue;
+
+
+        }
+        else
+        {
+
+            var Split = element.split("[");
+
+        }
+
+        //for operations like x= Array[i+1] etc
+
+        if ((Split[1].includes("-") || Split[1].includes("+")) && !Split[1].includes("["))
+        {
+
+            let output = CalculateValues(Split[1], i, updated_tokens);
+      
+
+            element = SplitandJoin(Split, output, element);
+
+        }
+
+        let token = updated_tokens.find(el => el.name == Split[1]);
+
+        //for operations like Array[Age]. Here index is an already defined variable
+        if (token != undefined && OriginalIterator != Split[1] && token.name != "")
+
+        {
+
+            element = SplitandJoin(Split, token.value, element);
+      
+
+        }
+
+        //for operations like Array[i]: Looping over original index value
+        else if (OriginalIterator == Split[1])
+        {
+
+            element = SplitandJoin(Split, iterator, element);
+
+        }
+
+        let ArrayElement = element;
+
+        //Get Numbers[3] value and now set it to our variable x
+        let value = GetArrayorStringElement(ArrayElement, updated_tokens);
+        //
+        if(value!=undefined)
+        {
+
+            value=RemoveQuotes(value);
+        }
+    
+        //
+
+        if (n != undefined && flag == false)
+        {
+
+            updated_tokens[index].value = value;
+
+            FinalValue=value;
+
+
+        }
+        else if (flag == false)
+        {
+
+            updated_tokens.push(
+                {
+                    name: variable,
+
+                    value: value,
+
+                    identifier: i,
+                    type: sourcedata[i + 1].type,
+                });
+
+            FinalValue=value;
+
+        }
+
+    }
+    else
+    {
+
+        let m = updated_tokens.find((el, i) => el.name == varvalue);
+
+        if (m != undefined)
+        {
+
+            varvalue = m.value;
+
+            FinalValue=varvalue;
 
 
         }
 
-      }
+        let n = updated_tokens.find((el, i) => el.name == variable);
 
-      //if there is no need to calculate, push values as it is
-      else if (!isCalculation(varvalue))
-      {
-
-        updated_tokens.push(
+        if (n == undefined)
         {
-          name: variable,
 
-          value: varvalue,
+            //to check if the assigned value needs to be calculated. this is futher diveded in two types
 
-          identifier: i,
-          type: sourcedata[i + 1].type
-        })
+            if (isCalculation(varvalue))
 
-        FinalValue=varvalue
+            {
 
-      }
+                //type 1- Age= 2020-2000 
+                if (isPureEval(varvalue))
+
+                {
+
+                    let value = eval(varvalue);
+
+                    //write function for this, so repeatable
+                    updated_tokens.push(
+                        {
+                            name: variable,
+
+                            value: value,
+
+                            identifier: i,
+                            type: sourcedata[i + 1].type,
+                        });
+
+                    FinalValue=value;
+
+
+                }
+
+                //type 2- X= ageone+agetwo
+                else
+                {
+
+                    //performing the calculation
+
+                    let value = CalculateValues(varvalue, i, updated_tokens, global);
+          
+
+                    updated_tokens.push(
+                        {
+                            name: variable,
+
+                            value: value,
+
+                            identifier: i,
+                            type: sourcedata[i + 1].type,
+                        });
+
+                    FinalValue=value;
+
+
+                }
+
+            }
+
+            //if there is no need to calculate, push values as it is
+            else if (!isCalculation(varvalue))
+            {
+
+                updated_tokens.push(
+                    {
+                        name: variable,
+
+                        value: varvalue,
+
+                        identifier: i,
+                        type: sourcedata[i + 1].type,
+                    });
+
+                FinalValue=varvalue;
+
+            }
+
+        }
+
+        //if it's already assgined, reassign it with updated value
+        else
+        {
+
+            varvalue = varvalue.toString();
+
+            if (varvalue.includes("-") || varvalue.includes("%") || varvalue.includes("+") || varvalue.includes("/") || varvalue.includes("*"))
+            {
+
+                // 
+
+                let NewValue = CalculateValues(varvalue, i, updated_tokens, global);
+
+                n.value = NewValue;
+
+                FinalValue=NewValue;
+
+
+            }
+            else
+            {
+
+                let index = updated_tokens.indexOf(n);
+                updated_tokens[index].value = varvalue;
+
+                FinalValue=varvalue;
+
+
+            }
+
+        }
 
     }
 
-    //if it's already assgined, reassign it with updated value
-    else
+    let message="";
+
+    if(isCalculation(sourcedata[i+1].value) || sourcedata[i+1].value.includes("संख्या") )
     {
 
-      varvalue = varvalue.toString()
-
-      if (varvalue.includes('-') || varvalue.includes('%') || varvalue.includes('+') || varvalue.includes('/') || varvalue.includes('*'))
-      {
-
-        // 
-
-        let NewValue = CalculateValues(varvalue, i, updated_tokens, global)
-
-        n.value = NewValue
-
-        FinalValue=NewValue
-
-
-      }
-      else
-      {
-
-        let index = updated_tokens.indexOf(n)
-        updated_tokens[index].value = varvalue
-
-        FinalValue=varvalue
-
-
-      }
-
+        message= " Computer सबसे पहले जाँच करता है की क्या, " + "\"" + sourcedata[i+1].value + "\"" + " को सुलझाने(Solve) करने की ज़रुरत है?" +"\n" + " अगर हा, तो Computer "+ "\"" + sourcedata[i+1].value + "\"" +  " को Solve करके, " +"\"" + variable + "\""+ " के नाम से Memory में दर्ज(Store)कर देगा | " +"\n" +  " यहापर , "  +  "\"" + sourcedata[i+1].value + "\"" + " की कीमत (Value) , " + "\"" + FinalValue + "\""  +  " आती है |" +"\n" + " इसलिए, Computer " + "\""  + variable + "\"" + " को " + "\"" + FinalValue + "\"" +  " ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |";
     }
 
-  }
-
-  let message=''
-
-  if(isCalculation(sourcedata[i+1].value) || sourcedata[i+1].value.includes('संख्या') )
-  {
-
-  message= ' Computer सबसे पहले जाँच करता है की क्या, ' + '"' + sourcedata[i+1].value + '"' + ' को सुलझाने(Solve) करने की ज़रुरत है?' +'\n' + ' अगर हा, तो Computer '+ '"' + sourcedata[i+1].value + '"' +  ' को Solve करके, ' +'"' + variable + '"'+ ' के नाम से Memory में दर्ज(Store)कर देगा | ' +'\n' +  ' यहापर , '  +  '"' + sourcedata[i+1].value + '"' + ' की कीमत (Value) , ' + '"' + FinalValue + '"'  +  ' आती है |' +'\n' + ' इसलिए, Computer ' + '"'  + variable + '"' + ' को ' + '"' + FinalValue + '"' +  ' ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |'
-  }
-
-  else{
-    message= ' Computer ने, '+ '"' + variable + '"' +' को, '+  '"' + varvalue + '"' + ' ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |'
+    else{
+        message= " Computer ने, "+ "\"" + variable + "\"" +" को, "+  "\"" + varvalue + "\"" + " ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |";
     
 
 
 
-  }
+    }
 
 
-//This is the experession whcih is getting evaluated. 
+    //This is the experession whcih is getting evaluated. 
 
-let expression=variable+ '='+varvalue
+    let expression=variable+ "="+varvalue;
 
-expression=GetcleanedExpression(expression)
-
-
+    expression=GetcleanedExpression(expression);
 
 
-LinebylineSourcedata.forEach((el,index)=>{
 
 
-  el=el.replace(/ /,'')
+    LinebylineSourcedata.forEach((el,index)=>{
 
-  el=GetcleanedExpression(el)
+
+        el=el.replace(/ /,"");
+
+        el=GetcleanedExpression(el);
   
   
   
 
   
-  if(el==expression )
+        if(el==expression )
   
-  {
+        {
 
 
   
-    AddtoExecutionStack(ExecutionStack,'=', 'किसी VARIABLE को नई VALUE सेट करना   ', variable, varvalue , message, index+1)
+            AddtoExecutionStack(ExecutionStack,"=", "किसी VARIABLE को नई VALUE सेट करना   ", variable, varvalue , message, index+1);
 
         
 
   
-  }
+        }
   
   
  
   
   
-  })
+    });
   
 
 
@@ -1495,91 +1495,91 @@ LinebylineSourcedata.forEach((el,index)=>{
 function GetConditionValue(element, updated_tokens, j)
 {
 
-  var ConditionValue = false
+    var ConditionValue = false;
 
-  if (element.includes('&&') || element.includes('||'))
-  {
-
-    let MultConditionsCount = parseInt(Count('&', element)) + parseInt(Count('|', element))
-    
-
-    //this will be our final values
-    //converted as true&&false&&true||true
-    let BuiltMultConditonWithValues = ''
-    let LastResult = {}
-
-    //running for loop on original condition to calculates each individual condition and adding its value in BuiltMultConditonWithValues
-
-    for (let i = 0; i <= MultConditionsCount; i++)
-
+    if (element.includes("&&") || element.includes("||"))
     {
 
-      if (i == MultConditionsCount)
-      {
+        let MultConditionsCount = parseInt(Count("&", element)) + parseInt(Count("|", element));
+    
 
-        let condition = LastResult.SweepedElement
-        condition = condition.replace(/ /g, '')
+        //this will be our final values
+        //converted as true&&false&&true||true
+        let BuiltMultConditonWithValues = "";
+        let LastResult = {};
 
-        let SplitArray = SplitElementsArray(condition, j)
+        //running for loop on original condition to calculates each individual condition and adding its value in BuiltMultConditonWithValues
 
-        let Values = SetValues(SplitArray, updated_tokens)
+        for (let i = 0; i <= MultConditionsCount; i++)
 
-        ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j)
+        {
 
-        BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue
+            if (i == MultConditionsCount)
+            {
 
-      }
-      else
-      {
+                let condition = LastResult.SweepedElement;
+                condition = condition.replace(/ /g, "");
 
-        let result = handlemultConditions(element)
+                let SplitArray = SplitElementsArray(condition, j);
 
-        LastResult = result
+                let Values = SetValues(SplitArray, updated_tokens);
 
-        element = result.SweepedElement
-        let condition = result.condition
-        condition = condition.replace(/ /g, '')
+                ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j);
 
-        let SplitArray = SplitElementsArray(condition, j)
+                BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue;
 
-        let Values = SetValues(SplitArray, updated_tokens)
+            }
+            else
+            {
 
-        ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j)
+                let result = handlemultConditions(element);
 
-        BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue + result.operator
+                LastResult = result;
 
-      }
+                element = result.SweepedElement;
+                let condition = result.condition;
+                condition = condition.replace(/ /g, "");
+
+                let SplitArray = SplitElementsArray(condition, j);
+
+                let Values = SetValues(SplitArray, updated_tokens);
+
+                ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j);
+
+                BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue + result.operator;
+
+            }
+
+        }
+
+        //setting the final condition value in cases like अगर (ageone==10 && AverageAge<1000 && agetwo>100 || ageone==10) 
+
+        ConditionValue = eval(BuiltMultConditonWithValues);
+
+    }
+    else
+    {
+
+        //let token= updated_tokens.find(el=> el.originalvalue==mutable_tokens[j].value)
+
+        let SplitArray = SplitElementsArray(element, j);
+    
+
+        let Values = SetValues(SplitArray, updated_tokens);
+    
+    
+        Values = Values.filter(function(item)
+        {
+
+            return item !== "" && item !="'" && item !="\"";
+        });
+        //Setting the final condition value in cases like अगर (ageone==10) 
+
+        ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j);
 
     }
 
-    //setting the final condition value in cases like अगर (ageone==10 && AverageAge<1000 && agetwo>100 || ageone==10) 
-
-    ConditionValue = eval(BuiltMultConditonWithValues);
-
-  }
-  else
-  {
-
-    //let token= updated_tokens.find(el=> el.originalvalue==mutable_tokens[j].value)
-
-    let SplitArray = SplitElementsArray(element, j)
-    
-
-    let Values = SetValues(SplitArray, updated_tokens)
-    
-    
-    Values = Values.filter(function(item)
-    {
-
-      return item !== "" && item !="'" && item !='"'
-    })
-    //Setting the final condition value in cases like अगर (ageone==10) 
-
-    ConditionValue = UpdateUpdated_tokenswithValues(Values, updated_tokens, j)
-
-  }
-
-  return ConditionValue
+    return ConditionValue;
 
 }
 
@@ -1588,78 +1588,78 @@ function GetConditionValue(element, updated_tokens, j)
 function ForLoopSetMetadata(tokens, i, updated_tokens)
 {
 
-  var ForLoopMetaData = tokens[i + 1]
+    var ForLoopMetaData = tokens[i + 1];
 
-  //Splitting the ForLoopMetaData values individually
-  var iterator = ForLoopMetaData.iterator
+    //Splitting the ForLoopMetaData values individually
+    var iterator = ForLoopMetaData.iterator;
 
-  var element = ForLoopMetaData.value
-  var IterationStart = parseInt(ForLoopMetaData.iterationStart)
+    var element = ForLoopMetaData.value;
+    var IterationStart = parseInt(ForLoopMetaData.iterationStart);
 
-  var IterationEnd = parseInt(ForLoopMetaData.iterationEnd)
+    var IterationEnd = parseInt(ForLoopMetaData.iterationEnd);
 
-  //pushing index 
+    //pushing index 
 
-  //checking if iteration end is an predefined variable
+    //checking if iteration end is an predefined variable
 
-  let token = updated_tokens.find(el => el.name == ForLoopMetaData.iterationEnd)
+    let token = updated_tokens.find(el => el.name == ForLoopMetaData.iterationEnd);
 
-  if (token != undefined)
-  {
-
-    IterationEnd = parseInt(token.value)
-
-  }
-
-  // var ForLoopSourcedata = ForLoopMetaData.ForLoopSourcedata
-
-  var elementValue = updated_tokens.find(el => el.name == element)
-
-  var elementLength = 0
-
-  var ForLoopSourcedataIndexStart = 0
-
-  var OriginalIterator = ForLoopMetaData.iterator
-
-  // Run if start and end parameters are not given e.g दुहराओ a को  Name मे 
-  // This is ran just to get Start and End parameters as they are not provided
-  if (ForLoopMetaData.iterationEnd == undefined)
-  {
-
-    //run if element is array
-    if (elementValue.type == 'Array')
-
+    if (token != undefined)
     {
-      elementLength = elementValue.value.split(',').length
 
-      IterationStart = 0
-      IterationEnd = elementLength - 1
+        IterationEnd = parseInt(token.value);
 
     }
 
-    //run if element is String
-    else
+    // var ForLoopSourcedata = ForLoopMetaData.ForLoopSourcedata
+
+    var elementValue = updated_tokens.find(el => el.name == element);
+
+    var elementLength = 0;
+
+    var ForLoopSourcedataIndexStart = 0;
+
+    var OriginalIterator = ForLoopMetaData.iterator;
+
+    // Run if start and end parameters are not given e.g दुहराओ a को  Name मे 
+    // This is ran just to get Start and End parameters as they are not provided
+    if (ForLoopMetaData.iterationEnd == undefined)
     {
-      elementLength = elementValue.value.length
-      IterationStart = 0
-      IterationEnd = elementLength - 1
+
+        //run if element is array
+        if (elementValue.type == "Array")
+
+        {
+            elementLength = elementValue.value.split(",").length;
+
+            IterationStart = 0;
+            IterationEnd = elementLength - 1;
+
+        }
+
+        //run if element is String
+        else
+        {
+            elementLength = elementValue.value.length;
+            IterationStart = 0;
+            IterationEnd = elementLength - 1;
+
+        }
 
     }
 
-  }
+    var Cycle = IterationEnd;
 
-  var Cycle = IterationEnd
-
-  return {
-    ForLoopSourcedataIndexStart,
-    Cycle,
-    OriginalIterator,
-    IterationStart,
-    IterationEnd,
-    iterator,
-    element,
-    elementValue
-  }
+    return {
+        ForLoopSourcedataIndexStart,
+        Cycle,
+        OriginalIterator,
+        IterationStart,
+        IterationEnd,
+        iterator,
+        element,
+        elementValue,
+    };
 
 }
 
@@ -1668,166 +1668,166 @@ function ForLoopSetMetadata(tokens, i, updated_tokens)
 function SetArrayIndexValue(SourceData, i, j, CompleteTokenValueList, tokens, OriginalIterator, iterator,ExecutionStack,LinebylineSourcedata)
 {
 
-  let Value = SourceData[i].value
+    let Value = SourceData[i].value;
 
-  let ValueToSet = SourceData[i].ValueToSet
+    let ValueToSet = SourceData[i].ValueToSet;
   
-  let OriginalElement= Value+'='+ValueToSet
+    let OriginalElement= Value+"="+ValueToSet;
   
 
-  let element = RemoveBrackets(Value);
+    let element = RemoveBrackets(Value);
 
-  var ArrayElement = ''
+    var ArrayElement = "";
 
-  //Seprating out index identifier. xyz from Array[xyz]
+    //Seprating out index identifier. xyz from Array[xyz]
 
-  element = element.replace(']', '')
+    element = element.replace("]", "");
 
-  let Split = element.split('[')
+    let Split = element.split("[");
 
-  // run if we need to set direct Array element value. like Array[2]= xyx                    
-  if (isNumber(Split[1]))
-  {
-
-    Split = Split.join('[')
-    //
-
-    Split = Split + ']'
-
-    ArrayElement = Split
-    // 
-
-    NewValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
-    
-
-    SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, false, NewValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
-    
-
-  }
-
-  // run if we need to dynamically set Array element value. like Array[i]= xyx
-  //CreateArrayElement function will create dynamic Array values. like Array[0], Array[1] etc.                    
-  else
-  {
-
-    let index = Split[1]
-
-    // setting iterator as per user input 
-    //for iterator like count=count + 1, Array[count]
-
-    let newInterator = 0
-
-    let token = CompleteTokenValueList.find(el => el.name == index)
-
-    if (token != undefined)
+    // run if we need to set direct Array element value. like Array[2]= xyx                    
+    if (isNumber(Split[1]))
     {
 
-      newInterator = token.value
+        Split = Split.join("[");
+        //
+
+        Split = Split + "]";
+
+        ArrayElement = Split;
+        // 
+
+        NewValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList);
+    
+
+        SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, false, NewValueToSet, tokens,ExecutionStack,LinebylineSourcedata);
+    
 
     }
+
+    // run if we need to dynamically set Array element value. like Array[i]= xyx
+    //CreateArrayElement function will create dynamic Array values. like Array[0], Array[1] etc.                    
     else
     {
 
-      newInterator = iterator
+        let index = Split[1];
+
+        // setting iterator as per user input 
+        //for iterator like count=count + 1, Array[count]
+
+        let newInterator = 0;
+
+        let token = CompleteTokenValueList.find(el => el.name == index);
+
+        if (token != undefined)
+        {
+
+            newInterator = token.value;
+
+        }
+        else
+        {
+
+            newInterator = iterator;
+        }
+
+        ArrayElement = CreateArrayElement(Value, newInterator);
+
     }
 
-    ArrayElement = CreateArrayElement(Value, newInterator)
+    // this code is written to find operations like Array[a]= a*100+age*a. notice a
+    //find a way to simplify this in long term
 
-  }
+    let data = ValueToSet;
 
-  // this code is written to find operations like Array[a]= a*100+age*a. notice a
-  //find a way to simplify this in long term
+    data = data.split("*").toString();
+    data = data.split("+").toString();
+    data = data.split("-").toString();
+    data = data.split("/").toString();
+    data = data.split(",");
 
-  let data = ValueToSet
+    //building a new value to convert a*100+age*a into 5*100+age*a and then sending it to CalculateValues()
+    let NewValueToSet = "";
 
-  data = data.split('*').toString();
-  data = data.split('+').toString();
-  data = data.split('-').toString();
-  data = data.split('/').toString();
-  data = data.split(',')
-
-  //building a new value to convert a*100+age*a into 5*100+age*a and then sending it to CalculateValues()
-  let NewValueToSet = ''
-
-  if (data.includes(Split[1]) && data.length > 1)
-
-  {
-
-    //we have operations like Array[a]= a*100+age*a. notice a
-
-    for (let m = 0; m < ValueToSet.length; m++)
+    if (data.includes(Split[1]) && data.length > 1)
 
     {
 
-      if (ValueToSet[m] == Split[1] && !(/^[a-z]+$/i.test(ValueToSet[m + 1])))
+        //we have operations like Array[a]= a*100+age*a. notice a
 
-      {
+        for (let m = 0; m < ValueToSet.length; m++)
 
-        // value is been set . replacing index value a with iteartor value 0,1,2, etc.   
-        NewValueToSet = NewValueToSet + iterator
+        {
 
-      }
-      else
-      {
+            if (ValueToSet[m] == Split[1] && !(/^[a-z]+$/i.test(ValueToSet[m + 1])))
 
-        NewValueToSet = NewValueToSet + ValueToSet[m]
+            {
 
-      }
+                // value is been set . replacing index value a with iteartor value 0,1,2, etc.   
+                NewValueToSet = NewValueToSet + iterator;
 
-    }
+            }
+            else
+            {
 
-    let iterat = false
-    //gave it a different name so it would not fuck up with for loop iterator
+                NewValueToSet = NewValueToSet + ValueToSet[m];
 
-    NewValueToSet = CalculateValues(NewValueToSet, j, CompleteTokenValueList, )
+            }
+
+        }
+
+        let iterat = false;
+        //gave it a different name so it would not fuck up with for loop iterator
+
+        NewValueToSet = CalculateValues(NewValueToSet, j, CompleteTokenValueList, );
     
 
-    SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterat, NewValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
+        SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterat, NewValueToSet, tokens,ExecutionStack,LinebylineSourcedata);
 
  
 
 
-  }
+    }
 
-  // this condition enables program to only run  Array[a]= xyz when iterator is a. It disallows running Array[blablabla]=xyz
-  if (OriginalIterator == Split[1])
-  {
-
-    if (Split[1] == ValueToSet)
+    // this condition enables program to only run  Array[a]= xyz when iterator is a. It disallows running Array[blablabla]=xyz
+    if (OriginalIterator == Split[1])
     {
 
-      let iterator = true
+        if (Split[1] == ValueToSet)
+        {
 
-      SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
+            let iterator = true;
+
+            SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata);
+
+        }
+
+        // for operations like Array[a]=ageone*100
+
+        if (!data.includes(Split[1]) && OriginalIterator == Split[1])
+        {
+
+            let iterator = false;
+
+            ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList);
+
+            SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata);
+
+        }
 
     }
 
-    // for operations like Array[a]=ageone*100
-
-    if (!data.includes(Split[1]) && OriginalIterator == Split[1])
+    //might have to add more conditions in the future
+    else
     {
 
-      let iterator = false
+        let iterator = false;
 
-      ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
+        ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList);
 
-      SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
+        SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata);
 
     }
-
-  }
-
-  //might have to add more conditions in the future
-  else
-  {
-
-    let iterator = false
-
-    ValueToSet = CalculateValues(ValueToSet, j, CompleteTokenValueList)
-
-    SetArrayorStringElement(OriginalElement,ArrayElement, CompleteTokenValueList, iterator, ValueToSet, tokens,ExecutionStack,LinebylineSourcedata)
-
-  }
 
 
 
@@ -1845,53 +1845,53 @@ function AddtoExecutionStack(stack,keyword, keywordUse, variable, value ,message
 
 
 
-stack.push(
+    stack.push(
   
-  {
-   keyword:keyword,
-   keywordUse:keywordUse,
-   variable:variable,
-   value:value,
-   message:message,
-   Linenumber:Linenumber
+        {
+            keyword:keyword,
+            keywordUse:keywordUse,
+            variable:variable,
+            value:value,
+            message:message,
+            Linenumber:Linenumber,
    
 
 
-  }
+        }
 
   
 
-)
+    );
 
 
 }
 
 export
 {
-  IsReservedKeyword,
-  GetCleanSourcedata,
-  GetcleanedExpression,
-  ForLoopSetMetadata,
-  getLoopIndexStart,
-  AddElementToArray,
-  ResetValue,
-  HandleBlocks,
-  HandleConditions,
-  AssignorUpdateValues,
-  PushGetArrayIndexValue,
-  PushSetArrayIndexValue,
-  isArrayOperation,
-  GetConditionValue,
-  CalculateValues,
-  handlemultConditions,
-  CreateArrayElement,
-  SetArrayorStringElement,
-  ForLoopArrayorStringOutput,
-  GetArrayorStringElement,
-  AcceptInputandSetValue,
-  SplitElementsArray,
-  SetValues,
-  UpdateUpdated_tokenswithValues,
-  SetArrayIndexValue,
-  AddtoExecutionStack
-}
+    IsReservedKeyword,
+    GetCleanSourcedata,
+    GetcleanedExpression,
+    ForLoopSetMetadata,
+    getLoopIndexStart,
+    AddElementToArray,
+    ResetValue,
+    HandleBlocks,
+    HandleConditions,
+    AssignorUpdateValues,
+    PushGetArrayIndexValue,
+    PushSetArrayIndexValue,
+    isArrayOperation,
+    GetConditionValue,
+    CalculateValues,
+    handlemultConditions,
+    CreateArrayElement,
+    SetArrayorStringElement,
+    ForLoopArrayorStringOutput,
+    GetArrayorStringElement,
+    AcceptInputandSetValue,
+    SplitElementsArray,
+    SetValues,
+    UpdateUpdated_tokenswithValues,
+    SetArrayIndexValue,
+    AddtoExecutionStack,
+};
