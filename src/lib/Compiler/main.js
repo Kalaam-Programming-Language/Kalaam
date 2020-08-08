@@ -2416,13 +2416,8 @@ export default function Compile(kalaam) {
     var t1 = performance.now(); // eslint-disable-line
 
 
-<<<<<<< HEAD
     if (kalaam.error.length == 0) {
         kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)";
-=======
-  if (kalaam.error.length == 0) {
-    kalaam.TimeTaken = "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)"
->>>>>>> de943fc25c2763ae61bbc065ac364ee98a9dbef4
 
     }
     else {

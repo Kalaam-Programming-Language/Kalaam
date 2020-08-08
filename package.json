@@ -6,13 +6,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-<<<<<<< HEAD
     "prod": "npm run build && npm run lint",
     "lint": "eslint --ext .js,.vue src",
-    "lint-fix": "eslint --fix src"
-=======
+    "lint-fix": "eslint --fix src",
     "test": "jest"
->>>>>>> de943fc25c2763ae61bbc065ac364ee98a9dbef4
   },
   "dependencies": {
     "codemirror": "^5.54.0",
@@ -33,12 +30,9 @@
     "@vue/cli-plugin-router": "^4.4.1",
     "@vue/cli-plugin-vuex": "^4.1.0",
     "@vue/cli-service": "^4.4.6",
-<<<<<<< HEAD
     "babel-eslint": "^10.1.0",
     "eslint": "^7.6.0",
-=======
     "jest": "^26.2.2",
->>>>>>> de943fc25c2763ae61bbc065ac364ee98a9dbef4
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-vuetify": "^2.0.5",
