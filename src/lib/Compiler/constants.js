@@ -1,4 +1,10 @@
-const ReservedKeywords = {
+let ActiveLangugae = localStorage.getItem('ActiveLangugae')
+
+var ActiveLangugaeKeywords = '';
+
+
+const KalaamKeywords = {
+
 
     Hindi: {
         Print: "दिखाए", //Still have to change this manually where REGEX are implemented
@@ -8,23 +14,52 @@ const ReservedKeywords = {
         While: "जबतक",
         Length: "संख्या",
         Push: "पुश",
-        Function: "रचना"
+        Function: "रचना",
+        Langugae: 'Hindi'
     },
 
     Marathi: {
 
-        Print: "दिखाए", //Still have to change this manually where REGEX are implemented
+        Print: "दाखवा", //Still have to change this manually where REGEX are implemented
         Input: "इनपुट",
         If: "अगर",
         For: "दुहराओ",
         While: "जबतक",
         Length: "संख्या",
         Push: "पुश",
-        Function: "रचना"
+        Function: "रचना",
+        Langugae: 'Marathi'
+
 
 
     }
 
 };
 
-export { ReservedKeywords as Keyword };
+
+if (ActiveLangugae == 'Hindi') {
+
+    ActiveLangugaeKeywords = KalaamKeywords.Hindi
+
+
+}
+
+if (ActiveLangugae == 'Marathi')
+
+{
+
+    ActiveLangugaeKeywords = KalaamKeywords.Marathi
+
+
+
+}
+
+
+console.log('ActiveLangugaeKeywords: ', ActiveLangugaeKeywords);
+
+
+
+
+
+
+export { ActiveLangugaeKeywords, KalaamKeywords };

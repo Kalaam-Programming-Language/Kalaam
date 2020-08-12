@@ -3,7 +3,7 @@ import {
 }
 from "../Scripts/DataCleaning";
 
-import { Keyword, } from "../Compiler/constants";
+import { ActiveLangugaeKeywords } from "../Compiler/constants";
 
 
 import { RemoveQuotes, RemoveBrackets, Count, } from "../Scripts/Helpers";
@@ -40,7 +40,7 @@ function IsReservedKeyword(e)
 {
 
 
-    return e.includes("दुहराओ") || e.includes("रचना") || e.includes("अन्यथा") || e.includes("इनपुट") || e.includes("पुश") || e.includes(Keyword.Print) || e.includes("अगर") || /* cleaned_sourcedata[k + 1] == '='*/ e == "}";
+    return e.includes("दुहराओ") || e.includes("रचना") || e.includes("अन्यथा") || e.includes("इनपुट") || e.includes("पुश") || e.includes(ActiveLangugaeKeywords.Print) || e.includes("अगर") || /* cleaned_sourcedata[k + 1] == '='*/ e == "}";
 }
 
 
@@ -422,7 +422,7 @@ function AcceptInputandSetValue(tokens, index, updated_tokens, ExecutionStack, L
 
     let SetInputValueAs = tokens[index].AcceptAs;
 
-    var value = prompt("आप " + "\"" + SetInputValueAs + "\"" + " को क्या कहना चाहते हो ?"); // eslint-disable-line
+    var value = prompt("आप " + "\"" + SetInputValueAs + "\"" + " को क्या किंमत देना चाहते हो ?"); // eslint-disable-line
 
     updated_tokens.push({
         name: SetInputValueAs,
@@ -1014,7 +1014,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     //if someone accidenlty types Name=इनपुट or any other primary keywords
 
-    if (varvalue.includes("दुहराओ") || varvalue.includes("रचना") || varvalue.includes("अन्यथा") || varvalue.includes("इनपुट") || varvalue.includes("पुश") || varvalue.includes(Keyword.Print) || varvalue.includes("अगर"))
+    if (varvalue.includes("दुहराओ") || varvalue.includes("रचना") || varvalue.includes("अन्यथा") || varvalue.includes("इनपुट") || varvalue.includes("पुश") || varvalue.includes(ActiveLangugaeKeywords.Print) || varvalue.includes("अगर"))
 
     {
 

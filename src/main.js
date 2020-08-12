@@ -4,6 +4,7 @@ import "./registerServiceWorker";
 import store from "./store";
 import VueRouter from "vue-router";
 import router from "./router";
+import './quasar'
 
 
 

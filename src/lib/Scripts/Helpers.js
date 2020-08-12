@@ -21,16 +21,13 @@ function RemoveBrackets(e) {
 
 //handy count function
 
-function Count(item, element)
-{
+function Count(item, element) {
 
     let count = 0;
 
-    for (let i = 0; i < element.length; i++)
-    {
+    for (let i = 0; i < element.length; i++) {
 
-        if (element.charAt(i) == item && element.charAt(i + 1) == item)
-        {
+        if (element.charAt(i) == item && element.charAt(i + 1) == item) {
 
             count += 1;
 

@@ -14,7 +14,6 @@
 
 <div id="MyLogo">
 
-<img src="" alt="">
 <img src="../assets/swanand.png" alt="">
 
 
@@ -63,7 +62,7 @@ Anyone with a smartphone or a computer can start coding in Kalaam. <br>
 
   <div id="faq">
 
-                <h1>FAQ'S</h1>
+                <h3>FAQ'S</h3>
 
                 <button  v-on:click="showStar4 = !showStar4"  type="button" class="collapsible">Why Create Kalaam? </button>
 
@@ -291,9 +290,24 @@ float: initial
 
 }
 
+#KLogo img{
+
+width: 50%;
+float: initial
+
+}
+
+
 #MyLogo{
 
 width: 50%
+
+}
+
+#MyLogo img{
+
+width: 40%;
+
 
 }
 

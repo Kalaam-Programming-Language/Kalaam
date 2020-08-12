@@ -11,8 +11,8 @@
 //To check variable types: Number, String, Array etc.
 import * as TypeCheck from "../TypeCheck/TypeChecking";
 
-import { Keyword } from "../Compiler/constants";
-console.log('Keyword: ', Keyword);
+import { ActiveLangugaeKeywords, KalaamKeywords } from "../Compiler/constants";
+
 
 
 //To check other operations like MultiString, Arithmetic Operation etc.
@@ -88,7 +88,7 @@ from "../Scripts/main.js";
 
 //We will be importing this whole function to practise.vue and it will be executed when user clicks on 'RUN'
 
-export default function Compile(kalaam) {
+export default function Compile(kalaam, ActiveLangugae) {
 
 
 
@@ -405,7 +405,7 @@ export default function Compile(kalaam) {
         }
 
         //printing direct numbers and direct calcultions like print(10), print(10*10)
-        else if (token == Keyword.Print && (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))) {
+        else if (token == ActiveLangugaeKeywords.Print && (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))) {
 
             NextTokenValue = RemoveBrackets(NextTokenValue);
 
@@ -499,7 +499,7 @@ export default function Compile(kalaam) {
             if (el.includes(expression) && flag) {
 
 
-                AddtoExecutionStack(ExecutionStack, Keyword.Print, "किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है।   ", VariableToPrint, "", message, index + 1);
+                AddtoExecutionStack(ExecutionStack, ActiveLangugaeKeywords.Print, "किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है।   ", VariableToPrint, "", message, index + 1);
                 flag = false;
 
             }
@@ -617,7 +617,7 @@ export default function Compile(kalaam) {
 
             //Push keyowrds to tokens. The accepted keywords is दिखाए
 
-            //Format: {type: "keyword", value: Keyword.Print}
+            //Format: {type: "keyword", value: ActiveLangugaeKeywords.Print}
 
         } else if (isPrintOperation(element, cleaned_sourcedata, i)) {
 
@@ -846,7 +846,7 @@ export default function Compile(kalaam) {
 
             calculatedString = calculatedString.replace(/['"]+/g, "");
 
-            if (!(calculatedString.includes(Keyword.Print)))
+            if (!(calculatedString.includes(ActiveLangugaeKeywords.Print)))
 
                 PushString(calculatedString, tokens);
 
@@ -1072,7 +1072,7 @@ export default function Compile(kalaam) {
     console.log("tokens: ", tokens); // eslint-disable-line
 
     variableArray = tokens.filter(el => el.type == "variable")
-    console.log('variableArray: ', variableArray);
+
 
 
 
@@ -1095,6 +1095,7 @@ export default function Compile(kalaam) {
 
         //token value
         var token = mutable_tokens[j].value;
+        console.log('token: ', token);
 
 
         //type of token like variable, array, function, loops etc
@@ -1265,9 +1266,12 @@ export default function Compile(kalaam) {
         //So that we don't print a same value twice. First in global execution context and the in function context
 
         //This one prints the global context values
-        else if (token == Keyword.Print && mutable_tokens[j].context != "function") {
+        else if (token == ActiveLangugaeKeywords.Print && mutable_tokens[j].context != "function") {
+
 
             //for operations like print(array[3])
+
+
             PrintEngine(mutable_tokens, updated_tokens, j); // eslint-disable-line 
 
         }
@@ -1384,7 +1388,7 @@ export default function Compile(kalaam) {
                     }
 
                     //Handling दिखाए statements in while loop
-                    else if (WhileLoopSourcedataTokens[i].value == Keyword.Print) {
+                    else if (WhileLoopSourcedataTokens[i].value == ActiveLangugaeKeywords.Print) {
 
                         PrintEngine(WhileLoopSourcedataTokens, updated_tokens, i, ExecutionStack); // eslint-disable-line
 
@@ -1541,7 +1545,7 @@ export default function Compile(kalaam) {
 
                                     let el = NestedSourcedataTokens[index];
 
-                                    if (el.value == Keyword.Print) {
+                                    if (el.value == ActiveLangugaeKeywords.Print) {
 
                                         PrintEngine(NestedSourcedataTokens, updated_tokens, index, y, NestedOriginalIterator, );
 
@@ -1597,7 +1601,7 @@ export default function Compile(kalaam) {
                     }
 
                     //Handling print statements in for loop
-                    else if (SourcedataTokens[i].value == Keyword.Print && !isNested) {
+                    else if (SourcedataTokens[i].value == ActiveLangugaeKeywords.Print && !isNested) {
 
                         PrintEngine(SourcedataTokens, updated_tokens, i, iterator, OriginalIterator);
 
@@ -1853,7 +1857,7 @@ export default function Compile(kalaam) {
                 //operations like दिखाए(Message)
                 //PrintEngine will take care of every print statement encountered in the program
 
-                if (el.value == Keyword.Print) {
+                if (el.value == ActiveLangugaeKeywords.Print) {
 
                     PrintEngine(functionSourceData, CompleteTokenValueList, i, ExecutionStack);
 
@@ -2036,7 +2040,7 @@ export default function Compile(kalaam) {
 
                                             let el = NestedSourcedataTokens[index];
 
-                                            if (el.value == Keyword.Print) {
+                                            if (el.value == ActiveLangugaeKeywords.Print) {
 
                                                 PrintEngine(NestedSourcedataTokens, CompleteTokenValueList, index, y, NestedOriginalIterator);
 
@@ -2130,7 +2134,7 @@ export default function Compile(kalaam) {
                             }
 
                             //Handling print statements in for loop
-                            else if (SourcedataTokens[i].value == Keyword.Print && !isNested) {
+                            else if (SourcedataTokens[i].value == ActiveLangugaeKeywords.Print && !isNested) {
 
                                 //for operations like print(array[3])
 
@@ -2314,7 +2318,7 @@ export default function Compile(kalaam) {
                                     i = i;
                                 }
 
-                            } else if (WhileLoopSourcedataTokens[i].value == Keyword.Print) {
+                            } else if (WhileLoopSourcedataTokens[i].value == ActiveLangugaeKeywords.Print) {
 
                                 PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i); //for operations like print(array[3])
 

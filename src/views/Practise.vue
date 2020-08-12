@@ -14,13 +14,28 @@
 
 <ul id="headerlist">
 
- 
-   <q-btn @click="doSomething" label="Do something" />
-  <q-icon name="alarm" />
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
+ <li>
+   
+  <q-form id="Select-Language-form" @submit="onSubmit" >
+   <q-select  color="black" outlined v-model="ActiveLanguage" :options="options" >
+     
+        <template   v-slot:append>
+             
 
+          <q-avatar>
+            <img src="data:image/png;base64,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">
+          </q-avatar>
+                 
+
+        </template>
+      </q-select>
+       <q-btn style="color:black" label="Submit" type="submit" color="secondary"/>
+    </q-form>
+      
+</li>
    
    
 </ul>
@@ -29,6 +44,7 @@
 <ul v-if="showMenu==true" id="headerlistMobile">
  <div @click="toggleMenu()"><li><router-link to="/Documentation">Documentation</router-link> </li></div>  
  <div @click="toggleMenu()"> <li><router-link to="/Examples">Examples</router-link> </li></div>  
+
 
 </ul>
 
@@ -213,7 +229,7 @@
 //This is our header file AKA Navigation bar located in components folder. 
 import Header from '../components/Header'
 
-import { Keyword } from "../lib/Compiler/constants";
+import { KalaamKeywords } from "../lib/Compiler/constants";
 
 
 //CodeMirror is an npm package whcih provides rich code editors
@@ -313,7 +329,7 @@ export default
       LastConditionValue: [],
       LineByLineCode: [],
       CurrentLine:0,
-      Keyword:Keyword,
+      Keyword:'',
        showMenu:false,
 
      
@@ -321,6 +337,8 @@ export default
 
       ShowSupport:true,
       ShowAbout:true,
+
+      ActiveLanguage:'',
    
 
       //Configuration for codemirror text edior that we are using
@@ -351,8 +369,10 @@ export default
         model: null,
 
       options: [
-        'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-      ]
+        'Hindi','Marathi'
+      ],
+
+    
 
     };
   },
@@ -373,23 +393,61 @@ computed:{
  }
 ,
 
+
+watch: {
+
+ActiveLanguage:function(newval,oldval)
+
+{
+
+if(newval=='Hindi' )
+
+{
+
+ 
+    localStorage.setItem('ActiveLangugae', this.ActiveLanguage)
+
+    this.Keyword=KalaamKeywords.Hindi
+    
+
+
+}
+
+else if(this.ActiveLanguage=='Marathi')
+{
+
+    localStorage.setItem('ActiveLangugae', this.ActiveLanguage)
+
+    this.Keyword=KalaamKeywords.Marathi
+
+
+}
+
+
+    
+
+
+},
+},
+
+
   created()
   {
 
+        this.ActiveLanguage=localStorage.getItem('ActiveLangugae')
 
-this.checked=true
+    this.checked=true
    
     //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
 
     let m = this.$store.state.CurrentCode.replace(/&lt;/g, '<')
-
+    
     m = m.replace(/&gt;/g, '>')
-      m = m.replace(/&amp;/g, '&')
 
-
-
+    m = m.replace(/&amp;/g, '&')
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
+    
     this.code = m
 
 
@@ -407,6 +465,15 @@ this.checked=true
   methods:
   {
 
+Reload:function()
+{
+
+
+console.log(this.ActiveLanguage);
+
+
+}
+,
 
     Clear:function()
     {
@@ -428,7 +495,7 @@ this.checked=true
 
     },
 
-SwitchMode:function()
+   SwitchMode:function()
 {
 
 
@@ -530,7 +597,7 @@ this.showMenu=false
 //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
 //try  to see what we are sending to our compiler
       
-    Compile(this.$data)
+    Compile(this.$data,this.ActiveLanguage)
 
     },
 
@@ -546,7 +613,7 @@ this.showMenu=false
   if(this.flag==false)
   {
 
-  this.ExecutionStack= Compile(this.$data)
+  this.ExecutionStack= Compile(this.$data,this.ActiveLanguage)
   
   }
 
@@ -581,6 +648,16 @@ this.CurrentLine+=1
 };
 </script>
 <style scoped>
+
+
+#Select-Language-form{
+
+      display: inline-flex;
+}
+#header{
+
+  height: 81px;
+}
 
 #headerlistMobile{
 

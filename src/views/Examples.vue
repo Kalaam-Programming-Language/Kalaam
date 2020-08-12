@@ -2,7 +2,7 @@
     <div>
            <Header/>
 
-        <h1>Examples</h1>
+        <h4>Examples</h4>
 
 
  <carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
@@ -12,10 +12,10 @@
  <slide class="slide">
  <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary"  @click="CopyCode('CodeID1')">Run Code</q-btn>
   <p id="CodePara" >
 
- <h3>#1 दो संख्याओं को जोड़ना (Addition) </h3>
+ <h6>#1 दो संख्याओं को जोड़ना (Addition) </h6>
 
 <pre id="CodeID1" >
 
@@ -37,12 +37,12 @@ c=a+b
   <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID2')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID2')">Run Code</q-btn>
 
 <p id="CodePara" >
 
-<h3>
-#2 आपके दिए गए किसी भी दो संख्याओ को जोड़े  </h3>
+<h6>
+#2 आपके दिए गए किसी भी दो संख्याओ को जोड़े  </h6>
 
 <pre id="CodeID2" >
 
@@ -62,10 +62,10 @@ c=a+b
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID3')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID3')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#3 आपकी जानकारी दिखाए  </h3>
+<h6>#3 आपकी जानकारी दिखाए  </h6>
 
 <pre id="CodeID3" >
 
@@ -101,10 +101,10 @@ c=a+b
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID4')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#4 खुद के बारे में बताये </h3>
+<h6>#4 खुद के बारे में बताये </h6>
 
 <pre id="CodeID4" >
 
@@ -139,10 +139,10 @@ c=a+b
 
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID5')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID5')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#5 आपका नाम दुहराए  </h3>
+<h6>#5 आपका नाम दुहराए  </h6>
 
 <pre id="CodeID5" >
 
@@ -171,10 +171,10 @@ c=a+b
 
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID6')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#5 नाम, अक्षर और उनकी पोजीशन   </h3>
+<h6>#5 नाम, अक्षर और उनकी पोजीशन   </h6>
 
 <pre id="CodeID6" >
 
@@ -201,10 +201,10 @@ c=a+b
    <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID6')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#6 किसी भी नंबर का पहाड़ा (पाढ़ा ) बनाये </h3>
+<h6>#6 किसी भी नंबर का पहाड़ा (पाढ़ा ) बनाये </h6>
 
 
 <pre id="CodeID6" >
@@ -240,10 +240,10 @@ c=a+b
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID7')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#7 सीढ़ी </h3>
+<h6>#7 सीढ़ी </h6>
 
 <pre id="CodeID7" >
 
@@ -278,10 +278,10 @@ c=a+b
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID8')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#8 किसी भी शब्द की लंबाई जाने  </h3>
+<h6>#8 किसी भी शब्द की लंबाई जाने  </h6>
 
 <pre id="CodeID8" >
 
@@ -314,7 +314,7 @@ c=a+b
 
 
 
- <h1>Intermediate Examples</h1>
+ <h4>Intermediate Examples</h4>
                <carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
 
 
@@ -322,10 +322,10 @@ c=a+b
  <slide class="slide">
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID9')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID9')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#1 कैलकुलेटर (Calculator) </h3>
+<h6>#1 कैलकुलेटर (Calculator) </h6>
 
 <pre id="CodeID9" >
 
@@ -386,12 +386,12 @@ c=a+b
   <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID10')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID10')">Run Code</q-btn>
 
 <p id="CodePara" >
 
-<h3>
-#2 नाम की निर्मिति</h3>
+<h6>
+#2 नाम की निर्मिति</h6>
 
 <pre id="CodeID10" >
 
@@ -419,10 +419,10 @@ c=a+b
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID11')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID11')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#3 किसी शब्द का उलटा रूप  </h3>
+<h6>#3 किसी शब्द का उलटा रूप  </h6>
 
 <pre id="CodeID11" >
 
@@ -459,10 +459,10 @@ length=length-1
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID12')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID12')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#4  </h3>
+<h6>#4  </h6>
 
 <pre id="CodeID12" >
 
@@ -485,10 +485,10 @@ length=length-1
 
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID13')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID13')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#5 रचना का उदाहरण  </h3>
+<h6>#5 रचना का उदाहरण  </h6>
 
 <pre id="CodeID13" >
 
@@ -523,10 +523,10 @@ First(FirstName,LastName)
    <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID14')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID14')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#6 रचना का उदाहरण 2 </h3>
+<h6>#6 रचना का उदाहरण 2 </h6>
 
 
 <pre id="CodeID14" >
@@ -568,10 +568,10 @@ printname(10)
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID15')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID15')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#7  </h3>
+<h6>#7  </h6>
 
 <pre id="CodeID15" >
 
@@ -588,7 +588,7 @@ printname(10)
 </carousel>
 
 
- <h1>Advanced Examples</h1>
+ <h4>Advanced Examples</h4>
                
                
                
@@ -601,12 +601,12 @@ printname(10)
   <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID16')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
 
 <p id="CodePara" >
 
-<h3>
-#1 The सफ़र </h3>
+<h6>
+#1 The सफ़र </h6>
 
 <pre id="CodeID16" >
 
@@ -641,10 +641,10 @@ space=space+Extra
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID17')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID17')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#2 Fibonacci अनुक्रम  </h3>
+<h6>#2 Fibonacci अनुक्रम  </h6>
 
 <pre id="CodeID17" >
 
@@ -680,10 +680,10 @@ Fibonacci[a]=x+y
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID18')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID18')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#3   </h3>
+<h6>#3   </h6>
 
 <pre id="CodeID18" >
 
@@ -701,10 +701,10 @@ Fibonacci[a]=x+y
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID19')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID19')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#4 क्या यह एक प्रमुख संख्या है? </h3>
+<h6>#4 क्या यह एक प्रमुख संख्या है? </h6>
 
 <pre id="CodeID19" >
 
@@ -770,10 +770,10 @@ length=prime.संख्या()
 
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID20')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID20')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#5 </h3>
+<h6>#5 </h6>
 
 <pre id="CodeID20" >
 
@@ -788,10 +788,10 @@ length=prime.संख्या()
    <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID21')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID21')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#6 </h3>
+<h6>#6 </h6>
 
 
 <pre id="CodeID21" >
@@ -810,10 +810,10 @@ length=prime.संख्या()
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID15')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID15')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#6 बाइनरी से Decimal ( Binary to Decimal ) </h3>
+<h6>#6 बाइनरी से Decimal ( Binary to Decimal ) </h6>
 
 <pre id="CodeID15" >
 
@@ -855,10 +855,10 @@ DecimalValue=DecimalValue+value
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID16')">Run Code</button>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h3>#7 Fibonacci अनुक्रम  </h3>
+<h6>#7 Fibonacci अनुक्रम  </h6>
 
 <pre id="CodeID16" >
 
@@ -981,11 +981,11 @@ this.$store.state.CurrentCode= copyText.innerHTML
     display: inline-block;
     padding-left: 4%;
     font-size: 105%;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 1px 13px rgba(0, 0, 0, 0.40), 0 1px 11px rgba(0, 0, 0, 0.54);
     overflow: auto;
 }
 
-h3{
+h6{
 
   margin-bottom: 0
 }
@@ -1002,11 +1002,9 @@ margin-top: 8%;
 
 
   width: 36%;
-  height: 28px;
-      cursor: pointer;
-      border: 1px solid rgb(102, 100, 8);
-    background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
-         border-radius: 2em;
+  height: 38px;
+  cursor: pointer;
+     
 
 
   
@@ -1029,7 +1027,7 @@ margin-top: 8%;
     font-size: 100%;
 }
 
-.VueCarousel-navigation-button{
+.VueCarousel-navigation-q-btn{
 
 
   font-size: larger;
@@ -1043,7 +1041,7 @@ margin-top: 8%;
 
 }
 
-button:focus {outline:0;}
+q-btn:focus {outline:0;}
 #carousel{
 
 

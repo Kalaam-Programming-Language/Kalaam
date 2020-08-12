@@ -3,26 +3,27 @@ function SourceDataReplaceforEasyParsing(data)
 {
 
 
-    
+
     data = data.replace(/दिखाए/g, " दिखाए ");
-    data = data.replace(/\( /g, "("); 
+    data = data.replace(/दाखवा/g, " दाखवा ");
+    data = data.replace(/\( /g, "(");
     // data = data.replace(/\)/g, ' )');
     //  data = data.replace(/\+ /g, '+');
     data = data.replace(/\= "/g, "=\"");
     data = data.replace(/\= '/g, "='");
 
-       
 
-        
+
+
     data = data.replace(/\जबतक/g, "जबतक ");
     data = data.replace(/\अन्यथा{/g, "अन्यथा {");
-        
+
     data = data.replace(/\[ /g, "[");
     data = data.replace(/\)}/g, ") }");
     data = data.replace(/\){/g, ") {");
     data = data.replace(/\}}/g, "} }");
     data = data.replace(/\को/g, "को ");
-    data = data.replace(/\मे{/g, "मे {"); 
+    data = data.replace(/\मे{/g, "मे {");
     data = data.replace(/\अगर/g, "अगर ");
     data = data.replace(/(?:\r\n|\r|\n)/g, " ");
     // data = data.replace(/\==/g, ' == ');
@@ -31,15 +32,13 @@ function SourceDataReplaceforEasyParsing(data)
     data = data.replace(/(;|\n|\r|' '| '| ")/gm, "").split(" ");
 
     return data;
-        
-        
+
+
 }
 
 
 
 
-    
-     
-export {SourceDataReplaceforEasyParsing,};
 
 
+export { SourceDataReplaceforEasyParsing, };
