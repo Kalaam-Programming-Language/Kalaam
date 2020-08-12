@@ -1,9 +1,51 @@
 <template>
   <div class="hello">
    
- <Header/>
+    <div>
+      <div id="header">
+<div id="LogoandTitle">
+<!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
 
 
+
+<router-link id="Kalaam" to="/" >कलाम</router-link> 
+</div>
+  <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
+
+<ul id="headerlist">
+
+ 
+   <q-btn @click="doSomething" label="Do something" />
+  <q-icon name="alarm" />
+
+ <li><router-link to="/Documentation">Documentation</router-link> </li>
+  <li><router-link to="/Examples">Examples</router-link> </li>
+
+   
+   
+</ul>
+<transition name="slide-fade">
+
+<ul v-if="showMenu==true" id="headerlistMobile">
+ <div @click="toggleMenu()"><li><router-link to="/Documentation">Documentation</router-link> </li></div>  
+ <div @click="toggleMenu()"> <li><router-link to="/Examples">Examples</router-link> </li></div>  
+
+</ul>
+
+</transition>
+
+   </div>
+   <div id="footer">
+  <p id="licence">Released Under the MIT Licence</p>
+  <p id="created"><a>Created By Swanand Kadam</a></p>
+</div>
+
+
+    <router-view/>
+
+  </div>
+
+<!--
 
 <div id="Modes">
    <span v-if="!this.$store.state.PractiseOn"><li >Practice Mode</li></span>  
@@ -24,7 +66,8 @@
       
       </div>
       
- 
+ -->
+
   <div v-if="this.$store.state.LearningOn"    class="LearningMode" id="compiler">
 
 
@@ -271,6 +314,13 @@ export default
       LineByLineCode: [],
       CurrentLine:0,
       Keyword:Keyword,
+       showMenu:false,
+
+     
+      isRoutePractise:false,
+
+      ShowSupport:true,
+      ShowAbout:true,
    
 
       //Configuration for codemirror text edior that we are using
@@ -296,7 +346,13 @@ export default
           scrollbarStyle:'null',
 
           
-      }
+      },
+
+        model: null,
+
+      options: [
+        'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
+      ]
 
     };
   },
@@ -419,6 +475,28 @@ SwitchMode:function()
       
 
 },
+   toggleMenu:function()
+{
+
+if(this.showMenu==false)
+
+{
+this.showMenu=true
+
+
+}
+
+else if(this.showMenu==true)
+{
+this.showMenu=false
+
+
+}
+
+
+}
+,
+
 
     //Add() is a function used to add clicked keywords on to the code editor. 
     //This keywords are in hindi, provided in the control panel at the bottom of our code editor.
@@ -503,6 +581,141 @@ this.CurrentLine+=1
 };
 </script>
 <style scoped>
+
+#headerlistMobile{
+
+  display: none 
+  }
+
+#headerlist{
+
+      list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 3%;
+    
+    line-height: 40px;
+
+}
+
+#headerlist li{
+
+      display: inline-block;
+    margin: 0 2em;
+    font-size: 110%;
+
+}
+#headerlist a{
+
+  text-decoration: none;
+   cursor:pointer; 
+   color: #2c3e50;
+}
+
+#headerlist a:hover{
+
+ 
+   color: rgb(52, 204, 218)
+}
+
+#footer{
+display: none;
+    background-color: #fff;
+    /* height: 40px; */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #2f3c44;
+    left: 0;
+}
+#stackMenuIcon
+{
+
+
+  display: none
+}
+
+#KalamLogo
+{
+
+      width: 4.5%;
+    float: left;
+    margin-left: 2.4%;
+    margin-top: -0.2%;
+}
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateY(10px);
+  opacity: 0;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(216, 215, 215);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: rgba(0, 0, 0, 0.733);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #e5f321;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
 
 .LearningMode{
 
@@ -749,6 +962,76 @@ p{
 @media only screen
 and (max-width : 480px) {
 
+#headerlistMobile{
+
+       display: inline-grid;
+    position: absolute;
+    left: 0%;
+    width: 100%;
+    background-color: #f3e78b;
+    line-height: 40px;
+    top: 86%;
+    padding: 0%;
+    
+}
+
+
+#headerlistMobile li{
+
+      display: inline-block;
+    font-size: 120%;
+    margin-top: 1%
+
+}
+#headerlistMobile a{
+
+  text-decoration: none;
+   cursor:pointer; 
+   color: rgb(12, 12, 12)
+}
+
+#headerlistMobile a:hover{
+
+ 
+   color: rgb(214, 200, 0)
+}
+::-webkit-input-placeholder {
+text-align: center;
+vertical-align: middle;
+
+line-height: 500px;}
+
+:-moz-placeholder { /* Firefox 18- */
+text-align: center;
+vertical-align: middle;
+
+line-height: 500px;}
+
+::-moz-placeholder {  /* Firefox 19+ */
+text-align: center;
+vertical-align: middle;
+
+line-height: 500px;}
+
+:-ms-input-placeholder {  
+text-align: center;
+vertical-align: middle;
+
+line-height: 500px;}
+
+
+
+#stackMenuIcon
+{
+
+
+  display:block;
+  float: right;
+  font-size: 150%;
+  border: none;
+    background: white;
+    color: black;
+}
 
 ::-webkit-input-placeholder {
    text-align: center;
@@ -845,13 +1128,7 @@ width: 20%;
 
 #headerlist{
 
-    list-style-type: none;
-    padding: 0;
-    display: grid;
-  
-    width: 100%;
-    background-color: #9cffff;
-    line-height: 40px;
+ display: none;
 }
 
 }

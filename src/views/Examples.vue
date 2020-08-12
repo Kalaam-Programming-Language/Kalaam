@@ -4,79 +4,31 @@
 
         <h1>Examples</h1>
 
-               <carousel  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
+
+ <carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
 
 
 
  <slide class="slide">
-<div id="slide">
+ <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
-<p id="CodePara" >
+ <button id="TryCodebtn" @click="CopyCode('CodeID1')">Run Code</button>
+  <p id="CodePara" >
 
-<h3>#1 कैलकुलेटर (Calculator) </h3>
+ <h3>#1 दो संख्याओं को जोड़ना (Addition) </h3>
 
-<pre id="CodeID8" >
+<pre id="CodeID1" >
 
+a=10
+b=5
 
+c=a+b
 
-इनपुट(FirstValue)
-
-इनपुट(SecondValue)
-
-इनपुट(Operation)
-
-
-दिखाए('FirstValue is '+FirstValue)
-दिखाए('SecondValue is '+SecondValue)
-
-
-
-
-अगर(Operation=='+')
-
-{
-
-output=FirstValue+SecondValue
-
-
-}
-
-अगर(Operation=='-')
-
-{
-
-output=FirstValue-SecondValue
-
-
-}
-
-अगर(Operation=='*')
-
-{
-
-output=FirstValue*SecondValue
-
-
-}
-
-अगर(Operation=='/')
-
-{
-
-output=FirstValue/SecondValue
-
-
-}
-
-
-दिखाए("Output is " + output)
-
-
+दिखाए(c)
 
 
 </pre>
-</p>
+ </p>
 
 </div>
 
@@ -90,28 +42,16 @@ output=FirstValue/SecondValue
 <p id="CodePara" >
 
 <h3>
-#2 The सफ़र </h3>
+#2 आपके दिए गए किसी भी दो संख्याओ को जोड़े  </h3>
 
 <pre id="CodeID2" >
 
-इनपुट(YourSign)
-line="|"
-space="  "
-Extra="  "
+इनपुट(a)
+इनपुट(b)
 
+c=a+b
 
-दुहराओ x को (1,15) मे
-{
-
-Road=space+line+space+space+space+YourSign+space+space+space+line+space
-
-space=space+Extra
-
-दिखाए(Road)
-
-}
-
-
+दिखाए(c)
  
 
 </pre>
@@ -125,9 +65,366 @@ space=space+Extra
  <button id="TryCodebtn" @click="CopyCode('CodeID3')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#3 किसी शब्द का उलटा रूप  </h3>
+<h3>#3 आपकी जानकारी दिखाए  </h3>
 
 <pre id="CodeID3" >
+
+नाम="अग्रज"
+
+उम्र="14"
+
+शहर="मुंबई"
+
+राज्य="महाराष्ट्र"
+
+शौक="मुझे क्रिकेट, फुटबॉल और PUBG खेलना पसंद है!"
+
+
+दिखाए(नाम)
+
+दिखाए(उम्र)
+
+दिखाए(शहर)
+
+दिखाए(राज्य)
+
+दिखाए(शौक)
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+          <slide class="slide">
+
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#4 खुद के बारे में बताये </h3>
+
+<pre id="CodeID4" >
+
+नाम="अग्रज"
+
+उम्र="14"
+
+शहर="मुंबई"
+
+राज्य="महाराष्ट्र"
+
+शौक="मुझे क्रिकेट, फुटबॉल और PUBG खेलना पसंद है!"
+
+
+दिखाए("मेरा नाम"+ नाम +"है")
+
+दिखाए("मै"+ उम्र + "साल का हु")
+
+दिखाए("मै "+ शहर +","+ राज्य + "मे रहता हु")
+
+दिखाए(शौक)
+
+दिखाए("Thank You!")
+
+</pre>
+</p>
+
+</div>
+
+  </slide>
+    <slide class="slide">
+
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID5')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#5 आपका नाम दुहराए  </h3>
+
+<pre id="CodeID5" >
+
+इनपुट(नाम)
+
+
+दुहराओ x को (0,10) मे
+
+{
+  
+  दिखाए(नाम)
+  
+  
+  
+}
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+
+  <slide class="slide">
+
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#5 नाम, अक्षर और उनकी पोजीशन   </h3>
+
+<pre id="CodeID6" >
+
+नाम="SWANAND"
+
+दुहराओ x को नाम मे
+
+{
+  
+ अक्षर=नाम[x]
+  
+ दिखाए(x + अक्षर) 
+ 
+  
+}
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+
+   <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#6 किसी भी नंबर का पहाड़ा (पाढ़ा ) बनाये </h3>
+
+
+<pre id="CodeID6" >
+
+इनपुट(नंबर)
+
+गिनती=0
+
+नतीजा=नंबर
+
+जबतक(गिनती<10)
+
+{
+  
+  
+  दिखाए(नतीजा)
+  
+  नतीजा=नतीजा+नंबर
+  
+  गिनती=गिनती+1
+  
+   
+}
+
+</pre>
+
+
+</p>
+
+</div>
+  </slide>
+  
+    <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#7 सीढ़ी </h3>
+
+<pre id="CodeID7" >
+
+सीधा="|"
+
+आड़ा="------"
+
+
+दुहराओ x को (0,10) मे
+
+{
+  
+ 
+  x=सीधा+आड़ा+सीधा
+  
+  दिखाए(x)
+  
+  
+  
+} 
+
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+
+    <slide class="slide">
+
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID8')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#8 किसी भी शब्द की लंबाई जाने  </h3>
+
+<pre id="CodeID8" >
+
+इनपुट(शब्द)
+
+लंबाई = शब्द.संख्या() 
+
+दिखाए(लंबाई)
+ 
+
+ 
+ 
+</pre>
+</p>
+
+</div>
+
+
+  </slide>
+
+</carousel>
+
+
+
+
+
+
+
+
+
+
+
+ <h1>Intermediate Examples</h1>
+               <carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
+
+
+
+ <slide class="slide">
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID9')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#1 कैलकुलेटर (Calculator) </h3>
+
+<pre id="CodeID9" >
+
+
+इनपुट(x)
+
+इनपुट(y)
+
+इनपुट(ऑपरेशन)
+
+अगर(ऑपरेशन=='+')
+
+{
+
+नतीजा=x+y
+
+
+}
+
+अगर(ऑपरेशन=='-')
+
+{
+
+नतीजा=x-y
+
+
+}
+
+अगर(ऑपरेशन=='*')
+
+{
+
+नतीजा=x*y
+
+
+}
+
+अगर(ऑपरेशन=='/')
+
+{
+
+नतीजा=x/y
+
+
+}
+
+
+दिखाए( x + ऑपरेशन + y + '=' + नतीजा)
+
+
+</pre>
+</p>
+
+</div>
+
+  </slide>
+
+  <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID10')">Run Code</button>
+
+<p id="CodePara" >
+
+<h3>
+#2 नाम की निर्मिति</h3>
+
+<pre id="CodeID10" >
+
+इनपुट(नाम)
+
+नतीजा=""
+
+दुहराओ x को नाम मे
+
+{
+  
+ अक्षर=नाम[x]
+
+ नतीजा=नतीजा+अक्षर
+  
+ दिखाए(नतीजा) 
+  
+ 
+}
+</pre>
+</p>
+
+</div>
+  </slide>
+    <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID11')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#3 किसी शब्द का उलटा रूप  </h3>
+
+<pre id="CodeID11" >
 
 इनपुट(Name)
 
@@ -162,12 +459,254 @@ length=length-1
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID7')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID12')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#4  </h3>
+
+<pre id="CodeID12" >
+
+
+
+ 
+
+
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+
+  </slide>
+    <slide class="slide">
+
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID13')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#5 रचना का उदाहरण  </h3>
+
+<pre id="CodeID13" >
+
+
+FirstName='Swanand'
+
+LastName='Kadam'
+
+रचना First(First,Last)
+
+{
+
+दिखाए(First)
+
+दिखाए(Last)
+
+}
+
+First(FirstName,LastName)
+
+
+
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+
+   <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID14')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#6 रचना का उदाहरण 2 </h3>
+
+
+<pre id="CodeID14" >
+
+
+रचना printname(count)
+{
+
+जबतक(count<20)
+
+{
+
+count=count+1
+
+दिखाए(count)
+
+}
+
+
+}
+
+
+
+
+printname(10)
+
+
+
+
+
+</pre>
+
+
+</p>
+
+</div>
+  </slide>
+  
+    <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID15')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#7  </h3>
+
+<pre id="CodeID15" >
+
+
+
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+
+</carousel>
+
+
+ <h1>Advanced Examples</h1>
+               
+               
+               
+<carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
+
+
+
+
+
+  <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID16')">Run Code</button>
+
+<p id="CodePara" >
+
+<h3>
+#1 The सफ़र </h3>
+
+<pre id="CodeID16" >
+
+इनपुट(YourSign)
+line="|"
+space="  "
+Extra="  "
+
+
+दुहराओ x को (1,15) मे
+{
+
+Road=space+line+space+space+space+YourSign+space+space+space+line+space
+
+space=space+Extra
+
+दिखाए(Road)
+
+}
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+
+    <slide class="slide">
+
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID17')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#2 Fibonacci अनुक्रम  </h3>
+
+<pre id="CodeID17" >
+
+
+
+Fibonacci=[]
+दुहराओ a को (0,25) मे
+{
+अगर (a<3)
+{
+Fibonacci[a]=a
+}
+अगर (a>1)
+{
+x=Fibonacci[a-2]
+y=Fibonacci[a-1]
+Fibonacci[a]=x+y
+}
+}
+
+दिखाए(Fibonacci)
+}
+ 
+
+</pre>
+</p>
+
+</div>
+
+
+  </slide>
+
+    <slide class="slide">
+    <div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID18')">Run Code</button>
+<p id="CodePara" >
+
+<h3>#3   </h3>
+
+<pre id="CodeID18" >
+
+
+
+ 
+
+</pre>
+</p>
+
+</div>
+  </slide>
+
+          <slide class="slide">
+
+<div id="slide">
+
+ <button id="TryCodebtn" @click="CopyCode('CodeID19')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#4 क्या यह एक प्रमुख संख्या है? </h3>
 
-<pre id="CodeID7" >
+<pre id="CodeID19" >
 
 
 
@@ -231,32 +770,12 @@ length=prime.संख्या()
 
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID4')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID20')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#5 रचना का उदाहरण  </h3>
+<h3>#5 </h3>
 
-<pre id="CodeID4" >
-
-
-FirstName='Swanand'
-
-LastName='Kadam'
-
-रचना First(First,Last)
-
-{
-
-दिखाए(First)
-
-दिखाए(Last)
-
-}
-
-First(FirstName,LastName)
-
-
-
+<pre id="CodeID20" >
 
 
 </pre>
@@ -265,40 +784,17 @@ First(FirstName,LastName)
 </div>
   </slide>
 
-<!--
+
    <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID5')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID21')">Run Code</button>
 <p id="CodePara" >
 
-<h3>#4 Function Usecase II </h3>
+<h3>#6 </h3>
 
 
-<pre id="CodeID5" >
-
-
-रचना printname(count)
-{
-
-जबतक(count<20)
-
-{
-
-count=count+1
-
-दिखाए(count)
-
-}
-
-
-}
-
-
-
-
-printname(0)
-
+<pre id="CodeID21" >
 
 
 
@@ -310,16 +806,16 @@ printname(0)
 
 </div>
   </slide>
-  -->
+  
     <slide class="slide">
     <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID6')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID15')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#6 बाइनरी से Decimal ( Binary to Decimal ) </h3>
 
-<pre id="CodeID6" >
+<pre id="CodeID15" >
 
 
 
@@ -359,12 +855,12 @@ DecimalValue=DecimalValue+value
 
 <div id="slide">
 
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">Run Code</button>
+ <button id="TryCodebtn" @click="CopyCode('CodeID16')">Run Code</button>
 <p id="CodePara" >
 
 <h3>#7 Fibonacci अनुक्रम  </h3>
 
-<pre id="CodeID1" >
+<pre id="CodeID16" >
 
 
 
@@ -396,6 +892,7 @@ Fibonacci[a]=x+y
   </slide>
 
 </carousel>
+
 
 <p style="text-align:center" >Click on the dots above to scroll through more examples</p>
     </div>
@@ -537,13 +1034,20 @@ margin-top: 8%;
 
   font-size: larger;
     margin-right: 3%;
+
+}
+#carousel-body{
+
+
+    margin-bottom: 5%;
+
 }
 
 button:focus {outline:0;}
 #carousel{
 
 
-  display: block
+  display: block;
 }
 
 @media only screen

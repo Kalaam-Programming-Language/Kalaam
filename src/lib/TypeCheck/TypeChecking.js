@@ -1,6 +1,4 @@
 
-//import HindiRegex from '../Scripts/HindiChars'
-
 
 import { Keyword, } from "../Compiler/constants";
 
@@ -40,8 +38,11 @@ export function isVariable () {
 
     return function(element){
         
-       
-        return (/^[a-z]+$/i.test(element)) && !Keywords.includes(element);
+        var HindiRegex = /(?:^|\s)[\u0900-\u097F]+?(?:\s|$)/g
+ 
+ 
+       return ((/^[a-z]+$/i.test(element)) || HindiRegex.test(element) && ((!Keywords.includes(element))))
+        
 
 
     };
