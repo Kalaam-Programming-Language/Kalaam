@@ -309,7 +309,7 @@ export default {
   computed: {},
   watch: {
     ActiveLanguage: function (newval, oldval) {
-      if (newval == "Hindi") {
+      if (this.ActiveLanguage == "Hindi" ) {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
         this.Keyword = KalaamKeywords.Hindi;
@@ -323,6 +323,14 @@ export default {
 
   created() {
     this.ActiveLanguage = localStorage.getItem("ActiveLangugae");
+    console.log('this.ActiveLanguage: ', this.ActiveLanguage);
+
+    if(this.ActiveLanguage=='null')
+    {
+
+      this.ActiveLanguage='Hindi'
+    }
+    console.log('this.ActiveLanguage: ', this.ActiveLanguage);
 
     this.checked = true;
 
