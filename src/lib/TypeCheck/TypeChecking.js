@@ -1,6 +1,6 @@
 import { ActiveLangugaeKeywords } from "../Compiler/constants";
 
-var Keywords = ["अगर", "दुहराओ", "जबतक", ActiveLangugaeKeywords.Print, "इनपुट", "रचना", ];
+var Keywords = [ActiveLangugaeKeywords.If, "दुहराओ", ActiveLangugaeKeywords.While, ActiveLangugaeKeywords.Print, "इनपुट", "रचना", ];
 
 
 //var PrintKeywordRegex = "^" + "(" + ActiveLangugaeKeywords.Print + ")*$"
@@ -97,7 +97,7 @@ export function isConditionalKeyword() {
 
     return function(element) {
 
-        return (element == "अगर" || element == "जबतक" || element == "अन्यथा");
+        return (element == ActiveLangugaeKeywords.If || element == ActiveLangugaeKeywords.While || element == "अन्यथा");
 
     };
 }
@@ -115,7 +115,7 @@ export function isWhileLoop() {
 
     return function(element) {
 
-        return element == "जबतक";
+        return element == ActiveLangugaeKeywords.While;
 
     };
 }

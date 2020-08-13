@@ -54,9 +54,11 @@
                 "रचना": kw("रचना"),
                 "इनपुट": kw("इनपुट"),
                 "अगर": kw("अगर"),
+                "जर": kw("जर"),
                 "दुहराओ": kw("दुहराओ"),
                 "को": kw("को"),
                 "जबतक": kw("जबतक"),
+                "जोपर्यंत": kw("जोपर्यंत"),
                 "संख्या": kw("संख्या"),
                 "पुश": kw("पुश"),
                 "अन्यथा": kw("अन्यथा"),
@@ -371,12 +373,16 @@
 
         // Combinators
 
-        function Context(prev, vars, block) { this.prev = prev;
+        function Context(prev, vars, block) {
+            this.prev = prev;
             this.vars = vars;
-            this.block = block; }
+            this.block = block;
+        }
 
-        function Var(name, next) { this.name = name;
-            this.next = next; }
+        function Var(name, next) {
+            this.name = name;
+            this.next = next;
+        }
 
         var defaultVars = new Var("this", new Var("arguments", null));
 

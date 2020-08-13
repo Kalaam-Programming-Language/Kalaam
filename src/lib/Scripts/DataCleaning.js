@@ -16,6 +16,7 @@ function SourceDataReplaceforEasyParsing(data)
 
 
     data = data.replace(/\जबतक/g, "जबतक ");
+    data = data.replace(/\जोपर्यंत/g, "जोपर्यंत ");
     data = data.replace(/\अन्यथा{/g, "अन्यथा {");
 
     data = data.replace(/\[ /g, "[");
@@ -25,6 +26,7 @@ function SourceDataReplaceforEasyParsing(data)
     data = data.replace(/\को/g, "को ");
     data = data.replace(/\मे{/g, "मे {");
     data = data.replace(/\अगर/g, "अगर ");
+    data = data.replace(/\जर/g, "जर ");
     data = data.replace(/(?:\r\n|\r|\n)/g, " ");
     // data = data.replace(/\==/g, ' == ');
 

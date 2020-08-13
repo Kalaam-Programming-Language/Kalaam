@@ -22,9 +22,9 @@ const KalaamKeywords = {
 
         Print: "दाखवा", //Still have to change this manually where REGEX are implemented
         Input: "इनपुट",
-        If: "अगर",
+        If: "जर",
         For: "दुहराओ",
-        While: "जबतक",
+        While: "जोपर्यंत",
         Length: "संख्या",
         Push: "पुश",
         Function: "रचना",

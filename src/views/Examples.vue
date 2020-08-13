@@ -201,13 +201,13 @@ c=a+b
    <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID6')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID7')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#6 किसी भी नंबर का पहाड़ा (पाढ़ा ) बनाये </h6>
 
 
-<pre id="CodeID6" >
+<pre id="CodeID7" >
 
 इनपुट(नंबर)
 
@@ -240,12 +240,12 @@ c=a+b
     <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID7')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID8')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#7 सीढ़ी </h6>
 
-<pre id="CodeID7" >
+<pre id="CodeID8" >
 
 सीधा="|"
 
@@ -278,12 +278,12 @@ c=a+b
 
 <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID8')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID9')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#8 किसी भी शब्द की लंबाई जाने  </h6>
 
-<pre id="CodeID8" >
+<pre id="CodeID9" >
 
 इनपुट(शब्द)
 
@@ -322,12 +322,12 @@ c=a+b
  <slide class="slide">
 <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID9')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID10')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#1 कैलकुलेटर (Calculator) </h6>
 
-<pre id="CodeID9" >
+<pre id="CodeID10" >
 
 
 इनपुट(x)
@@ -386,14 +386,14 @@ c=a+b
   <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID10')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID11')">Run Code</q-btn>
 
 <p id="CodePara" >
 
 <h6>
 #2 नाम की निर्मिति</h6>
 
-<pre id="CodeID10" >
+<pre id="CodeID11" >
 
 इनपुट(नाम)
 
@@ -419,12 +419,12 @@ c=a+b
     <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID11')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID12')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#3 किसी शब्द का उलटा रूप  </h6>
 
-<pre id="CodeID11" >
+<pre id="CodeID12" >
 
 इनपुट(Name)
 
@@ -459,12 +459,12 @@ length=length-1
 
 <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID12')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID13')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#4  </h6>
 
-<pre id="CodeID12" >
+<pre id="CodeID13" >
 
 
 
@@ -485,12 +485,12 @@ length=length-1
 
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID13')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID14')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#5 रचना का उदाहरण  </h6>
 
-<pre id="CodeID13" >
+<pre id="CodeID14" >
 
 
 FirstName='Swanand'
@@ -523,13 +523,13 @@ First(FirstName,LastName)
    <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID14')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID15')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#6 रचना का उदाहरण 2 </h6>
 
 
-<pre id="CodeID14" >
+<pre id="CodeID15" >
 
 
 रचना printname(count)
@@ -568,12 +568,12 @@ printname(10)
     <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID15')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#7  </h6>
 
-<pre id="CodeID15" >
+<pre id="CodeID16" >
 
 
 
@@ -601,14 +601,14 @@ printname(10)
   <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID17')">Run Code</q-btn>
 
 <p id="CodePara" >
 
 <h6>
 #1 The सफ़र </h6>
 
-<pre id="CodeID16" >
+<pre id="CodeID17" >
 
 इनपुट(YourSign)
 line="|"
@@ -641,12 +641,12 @@ space=space+Extra
 
 <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID17')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID18')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#2 Fibonacci अनुक्रम  </h6>
 
-<pre id="CodeID17" >
+<pre id="CodeID18" >
 
 
 
@@ -680,12 +680,12 @@ Fibonacci[a]=x+y
     <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID18')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID19')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#3   </h6>
 
-<pre id="CodeID18" >
+<pre id="CodeID19" >
 
 
 
@@ -701,12 +701,12 @@ Fibonacci[a]=x+y
 
 <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID19')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID20')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#4 क्या यह एक प्रमुख संख्या है? </h6>
 
-<pre id="CodeID19" >
+<pre id="CodeID20" >
 
 
 
@@ -770,12 +770,12 @@ length=prime.संख्या()
 
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID20')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID21')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#5 </h6>
 
-<pre id="CodeID20" >
+<pre id="CodeID21" >
 
 
 </pre>
@@ -788,13 +788,13 @@ length=prime.संख्या()
    <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID21')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID22')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#6 </h6>
 
 
-<pre id="CodeID21" >
+<pre id="CodeID22" >
 
 
 
@@ -810,12 +810,12 @@ length=prime.संख्या()
     <slide class="slide">
     <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID15')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID23')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#6 बाइनरी से Decimal ( Binary to Decimal ) </h6>
 
-<pre id="CodeID15" >
+<pre id="CodeID23" >
 
 
 
@@ -855,12 +855,12 @@ DecimalValue=DecimalValue+value
 
 <div id="slide">
 
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
+ <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID24')">Run Code</q-btn>
 <p id="CodePara" >
 
 <h6>#7 Fibonacci अनुक्रम  </h6>
 
-<pre id="CodeID16" >
+<pre id="CodeID24" >
 
 
 

@@ -2425,6 +2425,7 @@ export default function Compile(kalaam, ActiveLangugae) {
 
     //ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
 
-
+    console.log('ExecutionStack: ', ExecutionStack);
     return ExecutionStack;
+
 }

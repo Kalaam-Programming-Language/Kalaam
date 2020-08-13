@@ -40,7 +40,7 @@ function IsReservedKeyword(e)
 {
 
 
-    return e.includes("दुहराओ") || e.includes("रचना") || e.includes("अन्यथा") || e.includes("इनपुट") || e.includes("पुश") || e.includes(ActiveLangugaeKeywords.Print) || e.includes("अगर") || /* cleaned_sourcedata[k + 1] == '='*/ e == "}";
+    return e.includes("दुहराओ") || e.includes("रचना") || e.includes("अन्यथा") || e.includes("इनपुट") || e.includes("पुश") || e.includes(ActiveLangugaeKeywords.Print) || e.includes(ActiveLangugaeKeywords.If) || /* cleaned_sourcedata[k + 1] == '='*/ e == "}";
 }
 
 
@@ -1014,7 +1014,7 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     //if someone accidenlty types Name=इनपुट or any other primary keywords
 
-    if (varvalue.includes("दुहराओ") || varvalue.includes("रचना") || varvalue.includes("अन्यथा") || varvalue.includes("इनपुट") || varvalue.includes("पुश") || varvalue.includes(ActiveLangugaeKeywords.Print) || varvalue.includes("अगर"))
+    if (varvalue.includes("दुहराओ") || varvalue.includes("रचना") || varvalue.includes("अन्यथा") || varvalue.includes("इनपुट") || varvalue.includes("पुश") || varvalue.includes(ActiveLangugaeKeywords.Print) || varvalue.includes(ActiveLangugaeKeywords.If))
 
     {
 
@@ -1321,19 +1321,16 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     // console.log('variable, varvalue : ', variable, FinalValue );
 
-    /*
 
-    let message="";
 
-    if(isCalculation(sourcedata[i+1].value) || sourcedata[i+1].value.includes("संख्या") )
-    {
+    let message = "";
 
-        message= " Computer सबसे पहले जाँच करता है की क्या, " + "\"" + sourcedata[i+1].value + "\"" + " को सुलझाने(Solve) करने की ज़रुरत है?" +"\n" + " अगर हा, तो Computer "+ "\"" + sourcedata[i+1].value + "\"" +  " को Solve करके, " +"\"" + variable + "\""+ " के नाम से Memory में दर्ज(Store)कर देगा | " +"\n" +  " यहापर , "  +  "\"" + sourcedata[i+1].value + "\"" + " की कीमत (Value) , " + "\"" + FinalValue + "\""  +  " आती है |" +"\n" + " इसलिए, Computer " + "\""  + variable + "\"" + " को " + "\"" + FinalValue + "\"" +  " ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |";
-    }
+    if (isCalculation(sourcedata[i + 1].value) || sourcedata[i + 1].value.includes("संख्या")) {
 
-    else{
-        message= " Computer ने, "+ "\"" + variable + "\"" +" को, "+  "\"" + varvalue + "\"" + " ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |";
-    
+        message = " Computer सबसे पहले जाँच करता है की क्या, " + "\"" + sourcedata[i + 1].value + "\"" + " को सुलझाने(Solve) करने की ज़रुरत है?" + "\n" + " अगर हा, तो Computer " + "\"" + sourcedata[i + 1].value + "\"" + " को Solve करके, " + "\"" + variable + "\"" + " के नाम से Memory में दर्ज(Store)कर देगा | " + "\n" + " यहापर , " + "\"" + sourcedata[i + 1].value + "\"" + " की कीमत (Value) , " + "\"" + FinalValue + "\"" + " आती है |" + "\n" + " इसलिए, Computer " + "\"" + variable + "\"" + " को " + "\"" + FinalValue + "\"" + " ये VALUE दे कर अपने Memory में दर्ज(Store) कर देता है |";
+    } else {
+        message = " Computer ने, " + "\"" + variable + "\"" + " को, " + "\"" + varvalue + "\"" + " ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |";
+
 
 
 
@@ -1342,48 +1339,48 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
     //This is the experession whcih is getting evaluated. 
 
-    let expression=variable+ "="+varvalue;
+    let expression = variable + "=" + varvalue;
 
-    expression=GetcleanedExpression(expression);
-    
-
+    expression = GetcleanedExpression(expression);
 
 
 
-    LinebylineSourcedata.forEach((el,index)=>{
 
 
-        el=el.replace(/ /,"");
+    LinebylineSourcedata.forEach((el, index) => {
 
-        el=GetcleanedExpression(el);
-  
-  
-  
 
-  
-        if(el==expression )
-  
+        el = el.replace(/ /, "");
+
+        el = GetcleanedExpression(el);
+
+
+
+
+
+        if (el == expression)
+
         {
 
 
-  
-            AddtoExecutionStack(ExecutionStack,"=", "किसी VARIABLE को नई VALUE सेट करना   ", variable, varvalue , message, index+1);
-            
 
-        
+            AddtoExecutionStack(ExecutionStack, "=", "किसी VARIABLE को नई VALUE सेट करना   ", variable, varvalue, message, index + 1);
 
-  
+
+
+
+
         }
-  
-  
- 
-  
-  
+
+
+
+
+
     });
-  
 
 
-*/
+
+
 
 
 
