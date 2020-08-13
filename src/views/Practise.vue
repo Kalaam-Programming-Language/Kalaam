@@ -88,7 +88,6 @@
             id="codearea"
             ref="myCm"
             :value="code"
-            placeholder="Welcome To Kalaam, This is your Code Editor."
             :options="cmOptions"
             @ready="onCmReady"
             @focus="onCmFocus"
