@@ -1,4 +1,14 @@
-let ActiveLangugae = localStorage.getItem('ActiveLangugae')
+let ActiveLanguage = localStorage.getItem('ActiveLangugae')
+console.log('ActiveLangugae: ', ActiveLanguage);
+
+
+if (ActiveLanguage == null) {
+
+
+    ActiveLanguage = 'Hindi'
+}
+
+console.log('ActiveLangugae: ', ActiveLanguage);
 
 var ActiveLangugaeKeywords = '';
 
@@ -37,14 +47,14 @@ const KalaamKeywords = {
 };
 
 
-if (ActiveLangugae == 'Hindi') {
+if (ActiveLanguage == 'Hindi') {
 
     ActiveLangugaeKeywords = KalaamKeywords.Hindi
 
 
 }
 
-if (ActiveLangugae == 'Marathi')
+if (ActiveLanguage == 'Marathi')
 
 {
 
