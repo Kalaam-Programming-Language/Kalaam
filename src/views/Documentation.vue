@@ -10,22 +10,22 @@
 
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
-<h5> RESULTS को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है। </h5>
+<p> RESULTS को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है। </p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>1.एक घोषित (declared) वेरिएबल को दिखाए करने के लिए ।   </h4>
+<h6>1.एक घोषित (declared) वेरिएबल को दिखाए करने के लिए ।   </h6>
 <p>Name &#61; "Hello World" </p>  
 <p>दिखाए(Name) </p>  
 <p>    </p>
 
-<h4>२. Direct शब्दों दिखाए करने के लिए ।  </h4>
+<h6>२. Direct शब्दों दिखाए करने के लिए ।  </h6>
 <p>दिखाए("Hello World")</p> 
 <p>दिखाए(007)</p> 
 
-<h4>३. Multi/Concatenated शब्दों को दिखाए करने के लिए ।    </h4>
+<h6>३. Multi/Concatenated शब्दों को दिखाए करने के लिए ।    </h6>
 <p>Name &#61; "Kalam" </p> 
 <p>दिखाए("Hello World," + "My Name is" + Name + "!")</p> 
 
@@ -69,19 +69,19 @@ Name="Kalam"
 <div v-if="showStar2" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> किसी नई VALUE को स्वीकार करना।  </h5>
+<p> किसी नई VALUE को स्वीकार करना।  </p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>१: <i> इनपुट() </i> को बताये आपको किस VARIABLE की  VALUE स्वीकार करनी है   </h4>
-<h5>इनपुट(<i> VARIABLE </i>)</h5>  
+<h6>१: <i> इनपुट() </i> को बताये आपको किस VARIABLE की  VALUE स्वीकार करनी है   </h6>
+<p>इनपुट(<i> VARIABLE </i>)</p>  
 
-<h2> उदाहरण</h2>
+<h6> उदाहरण</h6>
 
-<h5>इनपुट(Name)</h5> 
+<p>इनपुट(Name)</p> 
 <p>अगर आपने इनपुट के दौर पर <i>Kalam</i>  डाला होगा तो COMPUTER उसे इस तरह स्वीकार करेगा ।  <b> Name="Kalam".</b> </p> 
 <p>एकबार VARIABLE की Value सेट होनेपर उसे Program में कभी भी use किया जा सकता है ।</p> 
 
@@ -116,19 +116,19 @@ Name="Kalam"
 <div v-if="showStar3" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> एक Certain Conditionके तहत कोड Execution को Allow करता है। 
+<p> एक Certain Conditionके तहत कोड Execution को Allow करता है। 
 इसमें २ Conditions होती है |
 1.True
-2.False  </h5>
+2.False  </p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>१ . Single Condition को मूल्यांकन (Evaluate) करना।   </h4>
-<h5> अगर (Language &#61;&#61; 'kalam') </h5>  
-<h5> अगर (Age &gt; 18) </h5>  
+<h6>१ . Single Condition को मूल्यांकन (Evaluate) करना।   </h6>
+<p> अगर (Language &#61;&#61; 'kalam') </p>  
+<p> अगर (Age &gt; 18) </p>  
 <p><b> स्वीकृत  Comparion operators नीचे दिए गए है : </b>  </p>
 <p><b>&gt;</b> - Greater than</p>
 <p><b>&lt;</b> -  Less than</p>
@@ -137,10 +137,10 @@ Name="Kalam"
 
 
 
-<h4>२: Multiple Conditions को मूल्यांकन (Evaluate) करना। 
- </h4>
-<h5>अगर (Age &gt; 16 &amp;&amp; Education &#61;&#61; 'ssc')</h5> 
-<h5>अगर (Country&#61;&#61;'india' || Language &#61;&#61; 'hindi')</h5> 
+<h6>२: Multiple Conditions को मूल्यांकन (Evaluate) करना। 
+ </h6>
+<p>अगर (Age &gt; 16 &amp;&amp; Education &#61;&#61; 'ssc')</p> 
+<p>अगर (Country&#61;&#61;'india' || Language &#61;&#61; 'hindi')</p> 
 
 
 <p><b>  स्वीकृत comparison Operators नीचे दिए गए है: </b> </p>
@@ -205,15 +205,15 @@ Name="Kalam"
 <div v-if="showStar8" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> अगर कोई भी कंडीशन satisfy ना हो तो एक Block of code  execute करना |</h5>
+<p> अगर कोई भी कंडीशन satisfy ना हो तो एक Block of code  execute करना |</p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>1: Define  </h4>
-<h5>अन्यथा </h5>  
+<h6>1: Define  </h6>
+<p>अन्यथा </p>  
 
 <p> कृपया इस बात की दखल ले की अन्यथा ओपन ब्रैकेट्स होने पर भी कोई पर्याय नहीं लेता। </p>
 
@@ -269,21 +269,21 @@ language='kalaam'
 <div v-if="showStar4" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> एक ही कोड को बार-बार दोहराना। </h5>
+<p> एक ही कोड को बार-बार दोहराना। </p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>१ . लूप को डिफाइन करे।  </h4>
-<h5> <b> दुहराओ x को y मे </b></h5>  
+<h6>१ . लूप को डिफाइन करे।  </h6>
+<p> <b> दुहराओ x को y मे </b></p>  
 
 <p> यहाँ  y एक रेंज है और (०,१० ) , (५,१०० ) आदि की तरह Define की जा सकती है।   </p>
 <p> x एक index या फिर iterator है। . For e.g  १ और १० के बीच में की Values ले सकता है (१ और १० भी )
 (० , १०)  </p>
 
-<h5> <b> दुहराओ x को City मे </b></h5>  
+<p> <b> दुहराओ x को City मे </b></p>  
  <p>Here instead of a custom range we iterate it over the length of variable.</p>  
  <p>Basically, if City='Pusad', the range will be automatically set as (0,5) because length of 'Pusad' is 5. </p>
 <p>    </p>
@@ -346,15 +346,15 @@ value=Name[y]
 <div v-if="showStar5" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5>जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |  </h5>
+<p>जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |  </p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>1: Define </h4>
-<h5>जबतक(<i>YourCondition</i> ) </h5>  
+<h6>1: Define </h6>
+<p>जबतक(<i>YourCondition</i> ) </p>  
 
 <p><b> The accepted comparison operators are: </b>  </p>
 <p><b>&gt;</b> - Greater than</p>
@@ -362,9 +362,9 @@ value=Name[y]
 <p><b>&#61;&#61;</b> - is Equal to</p>
 <p><b>&#33;&#61;</b> - is Not Equal to</p>
 
-<h2> उदाहरण</h2>
+<h6> उदाहरण</h6>
 
-<h5> <b>जबतक(count &lt; 25)</b> </h5> 
+<p> <b>जबतक(count &lt; 25)</b> </p> 
 <p>The code will run until the condition evaluates itself to true. </p> 
 <p>When the value of count reaches 26, code execution will stop. </p> 
 
@@ -412,19 +412,19 @@ count=count+1
 <div v-if="showStar6" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> Directly find out the length of a String or Array</h5>
+<p> Directly find out the length of a String or Array</p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>1: Define</h4>
-<h5> <i>YourVariable</i>.संख्या() </h5>  
+<h6>1: Define</h6>
+<p> <i>YourVariable</i>.संख्या() </p>  
 
-<h2> उदाहरण</h2>
+<h6> उदाहरण</h6>
 
-<h5> <b>City.संख्या()</b> </h5> 
+<p> <b>City.संख्या()</b> </p> 
 <p>If City &#61; 'Banglore' then City.संख्या() will output the value <b>8</b>  </p> 
 <p>If City &#61; ['Pusad','Pune','Mumbai','Delhi'] then City.संख्या() will output the value <b>4</b> </p> 
 
@@ -470,16 +470,16 @@ Citieslength=Cities.संख्या()
 <div v-if="showStar7" class="content">
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> Push values to array</h5>
+<p> Push values to array</p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>1: Push Value to an Array </h4>
-<h5> <i>ArrayName</i> = &nbsp;[ &nbsp; ] </h5>  
-<h5>ArrayName.पुश(<i>YourValue</i>) </h5>  
+<h6>1: Push Value to an Array </h6>
+<p> <i>ArrayName</i> = &nbsp;[ &nbsp; ] </p>  
+<p>ArrayName.पुश(<i>YourValue</i>) </p>  
 
 
 
@@ -545,48 +545,48 @@ Numbers.पुश(type)
 
 <div>
 
-<h2>काम</h2>
+<h6>काम</h6>
 
 
-<h5> कोड जो दोबारा इस्तेमाल किया जा सकता है उसे एक ब्लॉक में wrap किया जाता है, जिसे हम रचना कहते है। </h5>
+<p> कोड जो दोबारा इस्तेमाल किया जा सकता है उसे एक ब्लॉक में wrap किया जाता है, जिसे हम रचना कहते है। </p>
 
-<h2>इसका उपयोग कैसे करे?</h2>
+<h6>इसका उपयोग कैसे करे?</h6>
 
-<h4>।. एक रचना को डिफाइन करने के लिए </h4>
+<h6>।. एक रचना को डिफाइन करने के लिए </h6>
 <h3>रचना <i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3>  
-<h5><b>रचना का नाम:</b></h5>  
+<p><b>रचना का नाम:</b></p>  
 <p>रचना का नाम केस सेंसिटिव होता है और उसमे सिर्फ अक्षरोंका (अल्फाबेट्स का) इस्तेमाल करना चाहिए। </p>  
-<h5> <b>रचना पर्याय:</b>  </h5>  
+<p> <b>रचना पर्याय:</b>  </p>  
 <p>रचना पर्याय का टेम्पररी वैल्यूज स्टोर  करनेमे इस्तेमाल किया जा सकता है। जब किसी रचना को कॉल किया जाता है तभी ये वैल्यूज पास किये जाते है।  </p>  
 <p>पर्याय के नाम भी  केस सेंसिटिव होते है और ये आपकी चॉइस के हिसाब से चेंज किये जा सकते है।  मगर इनमे सिर्फ अक्षरोंका अर्थात अल्फाबेट्स का इस्तेमाल करे। </p> 
 
 
 
 
-<h4>2: रचना को कॉल करना ।  </h4>
+<h6>2: रचना को कॉल करना ।  </h6>
 <h3><i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3> 
-<h5><b>रचना का नाम - PrintFullName</b>  </h5>  
+<p><b>रचना का नाम - PrintFullName</b>  </p>  
 <p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName &ne; printfullname  </p>  
 
-<h2> उदाहरण</h2>
-<h5><b> वेरिएबल्स (Variables) को डिफाइन करे। </b></h5>
-<h5>FirstName &#61; 'Sachin' </h5> 
-<h5>LastName 	&#61; 'Tendulkar' </h5> 
+<h6> उदाहरण</h6>
+<p><b> वेरिएबल्स (Variables) को डिफाइन करे। </b></p>
+<p>FirstName &#61; 'Sachin' </p> 
+<p>LastName 	&#61; 'Tendulkar' </p> 
 
-<h5><b> रचना declaration</b></h5>
- <h5>PrintFullName (x, y) </h5> 
+<p><b> रचना declaration</b></p>
+ <p>PrintFullName (x, y) </p> 
 
- <h5><b> रचना Body</b></h5>
- <h5>{</h5>
- <h5>दिखाए( x 	&#43; y ) </h5> 
- <h5>}</h5>
+ <p><b> रचना Body</b></p>
+ <p>{</p>
+ <p>दिखाए( x 	&#43; y ) </p> 
+ <p>}</p>
 
-<h5><b>रचना call</b>  </h5>  
-<h5>PrintFullName(FirstName,LastName)</h5>
+<p><b>रचना call</b>  </p>  
+<p>PrintFullName(FirstName,LastName)</p>
 
 <p># जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।  <br> For e.g PrintFullName≠printfullname  </p>  
 
-<h5> <b>रचना पर्याय- ('Sachin','Tendulkar')</b>  </h5>  
+<p> <b>रचना पर्याय- ('Sachin','Tendulkar')</b>  </p>  
 <p>इस प्रोग्रामिंग भाषा के  तहत निर्धारित ग्रामर के अनुसार, (x, y) ('Sachin','Tendulkar) बन जाएगा। </p>
 <p>x will take a temporary value of 'Sachin'</p>
 <p>y will take a temporary value of 'Tendulkar'</p>
@@ -825,7 +825,7 @@ pre{
   font-size: 111%;
 }
 
-h2{
+h6{
 
       margin-top: 6%;
     margin-bottom: 6%;
@@ -861,9 +861,10 @@ margin-top: 3%;
     text-align: left;
   
     font-size: 100%;
+    color: white;
 }
 
-h4{
+h6{
 
   color: #acb708;
 }
@@ -878,7 +879,7 @@ h4{
   transform: translateY(10px);
   opacity: 0;
 }
-h5{
+p{
  
     color: black;
     font-family: inherit;

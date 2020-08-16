@@ -1,215 +1,279 @@
+import { ActiveLangugaeKeywords } from "../Compiler/constants";
 
-//import HindiRegex from '../Scripts/HindiChars'
+var Keywords = [ActiveLangugaeKeywords.If, "दुहराओ", ActiveLangugaeKeywords.While, ActiveLangugaeKeywords.Print, "इनपुट", "रचना", ];
 
 
-import { Keyword } from "../Compiler/constants";
+//var PrintKeywordRegex = "^" + "(" + ActiveLangugaeKeywords.Print + ")*$"
+//PrintKeywordRegex = new RegExp(PrintKeywordRegex)
 
-var Keywords=['अगर', 'दुहराओ','जबतक', Keyword.Print, 'इनपुट','रचना']
 
-function RemoveBrackets(element){
+var NativeOperations = ["संख्या", ];
 
-    let a = element.replace('(', '')
-    let b = a.replace(')', '')
-    let c = b.replace('}', '')
-    let d = c.replace('{', '')
+function RemoveBrackets(element) {
 
-    return d
+    let a = element.replace("(", "");
+    let b = a.replace(")", "");
+    let c = b.replace("}", "");
+    let d = c.replace("{", "");
+
+    return d;
 
 }
 
-function isArrayOperation(element){
+function isArrayOperation(element) {
 
 
 
     //To find Patterns like Array[2], Array[index] etc
 
-    element=RemoveBrackets(element)
+    element = RemoveBrackets(element);
 
-    if(element.charAt(element.length-1)==']' && element.includes('[')&& element.charAt(0)!='['){
+    if (element.charAt(element.length - 1) == "]" && element.includes("[") && element.charAt(0) != "[") {
 
 
-        return true
+        return true;
     }
 
 }
 
 
-export function isVariable () {
+export function isVariable() {
 
-    return function(element){
-        
-       
-            return (/^[a-z]+$/i.test(element)) && !Keywords.includes(element)
+    return function(element) {
+
+        var HindiRegex = /(?:^|\s)[\u0900-\u097F]+?(?:\s|$)/g
 
 
-    }
-    
-};
+        return ((/^[a-z]+$/i.test(element)) || HindiRegex.test(element) && ((!Keywords.includes(element))))
+
+
+
+    };
+
+}
 export function isNumber() {
 
-    return function(element){
-   
-        return (/^[0-9]*$/gm.test(element))
-    
+    return function(element) {
+
+        return (/^[0-9]*$/gm.test(element));
+
+    };
 }
-};
 
 
-export function isOperator () {
+export function isOperator() {
 
-    return function(element){
-   
-        return (/^(=|}|{)*$/gm.test(element)) ;
-    
+    return function(element) {
+
+        return (/^(=|}|{)*$/gm.test(element));
+
+    };
 }
-};
 
-export function isInput () {
+export function isInput() {
 
-    return function(element){
-  
-        return element.includes('इनपुट');
+    return function(element) {
 
+        return element.includes("इनपुट");
+
+    };
 }
-};
 
 
 
 
 export function isPrintOperation() {
 
-    return function(element){
-    
-        return (/^(दिखाए)*$/gm.test(element));
-    
+    return function(element) {
+
+        return (element.includes(ActiveLangugaeKeywords.Print));
+
+
+
+    };
 }
-};
 
 export function isConditionalKeyword() {
 
-    return function(element){
-   
-        return (element=="अगर" || element=='जबतक' || element=='अन्यथा');
-    
+    return function(element) {
+
+        return (element == ActiveLangugaeKeywords.If || element == ActiveLangugaeKeywords.While || element == "अन्यथा");
+
+    };
 }
-};
 
 export function isForLoop() {
 
-    return function(element){
-   
-        return element=="दुहराओ";
-    
+    return function(element) {
+
+        return element == "दुहराओ";
+
+    };
 }
-};
 
 export function isWhileLoop() {
 
-    return function(element){
- 
-        return element=="जबतक";
-    
+    return function(element) {
+
+        return element == ActiveLangugaeKeywords.While;
+
+    };
 }
-};
 
 export function isFunction() {
 
-    return function(element){
-  
-        return element=="रचना";
-    
+    return function(element) {
+
+        return element == "रचना";
+
+    };
 }
-};
 
 
 //needs work
 export function isExpression() {
 
-    return function(element){
+    return function(element) {
 
-       
 
-        return (/\(([^)]+)\)/.test(element)) || element.includes('()') 
-    
+
+        return (/\(([^)]+)\)/.test(element)) || element.includes("()");
+
+    };
 }
-};
 
 export function isArray() {
 
-    return function(element){
-    
-        return element.charAt(0)=='[';
-    
+    return function(element) {
+
+        return element.charAt(0) == "[";
+
+    };
 }
-};
 
 export function isSetArrayIndexValue() {
 
-    return function(element,data,i){
+    return function(element, data, i) {
 
-        element=RemoveBrackets(element)
-        
+        element = RemoveBrackets(element);
 
-    if (isArrayOperation(element) && data[i+1]=='=' ) {
 
-        
-        return true;
-    }
+        if (isArrayOperation(element) && data[i + 1] == "=") {
 
-    else if (isArrayOperation(element) && (data[i+1]=='=' || data[i-1]=='=') ) {
 
-        
-        return false;
-    }
+            return true;
+        } else if (isArrayOperation(element) && (data[i + 1] == "=" || data[i - 1] == "=")) {
 
+
+            return false;
+        }
+
+    };
 }
-};
 
 
 export function isEmptyArrayInit() {
 
-    return function(element,data,i){
-    
-        return element=='=' && data[i+1]=='[]';
-    
-}
-};
+    return function(element, data, i) {
 
-export function isEmptyStringorChar(){
+        return element == "=" && data[i + 1] == "[]";
 
-
-     
-    return function(element){
-
-
-
-
-
-return element=='"'|| element=="'" || element=='*'||element=='$'||element=='/'||element=='@'||element=='|'||element=='/'||element=='?'||element=="#"||(element.charAt(0)=="'" &&element.charAt(element.length-1)=="'" )||(element.charAt(0)=='"'&&element.charAt(element.length-1)=='"')
-
-
-    }
-
-
+    };
 }
 
-
-export function isString(){
-
-
-     
-    return function(element){
+export function isEmptyStringorChar() {
 
 
-return element.charAt(0) == "'" || element.charAt(0) == '"' && !(element.includes(Keyword.Print))
+
+    return function(element) {
 
 
-    }
+
+
+
+        return element == "\"" || element == "'" || element == "*" || element == "$" || element == "/" || element == "@" || element == "|" || element == "/" || element == "?" || element == "#" || (element.charAt(0) == "'" && element.charAt(element.length - 1) == "'") || (element.charAt(0) == "\"" && element.charAt(element.length - 1) == "\"");
+
+
+    };
 
 
 }
 
 
+export function isString() {
 
 
 
+    return function(element) {
+
+
+        return element.charAt(0) == "'" || element.charAt(0) == "\"" && !(element.includes(ActiveLangugaeKeywords.Print));
+
+
+    };
+
+
+}
+
+export function isNativeOperation() {
+
+
+
+    return function(element) {
+
+
+
+        let flag = false;
+
+        NativeOperations.forEach(el => {
+
+
+            if (element.includes(el))
+
+            {
+
+                flag = true;
+            }
+        });
+
+        return flag;
+
+
+    };
+
+
+
+}
+
+
+export function isFunctionCall() {
+
+
+
+    return function(element, tokens, cleaned_sourcedata, i) {
+
+
+
+        if (!Keywords.includes(cleaned_sourcedata[i - 1]))
+
+        {
+
+            let CheckFunctionExpression = element.split("(");
+
+
+            var token = tokens.find(el => (el.type == "function" && el.value == CheckFunctionExpression[0]));
+
+
+            return token != undefined ? true : false;
+
+
+
+
+
+
+        }
+
+    };
+
+
+}

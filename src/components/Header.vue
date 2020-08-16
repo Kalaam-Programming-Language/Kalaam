@@ -22,7 +22,7 @@
 
  <li><router-link to="/Documentation">Documentation</router-link> </li>
   <li><router-link to="/Examples">Examples</router-link> </li>
-   <li><router-link  to="/Support">Support</router-link> </li>
+  <!--   <li><router-link  to="/Support">Support</router-link> </li>-->
     <li><router-link  to="/About">About</router-link> </li>
    
    
@@ -33,7 +33,7 @@
  <div @click="toggleMenu()" ><li><router-link  to="/Practice">Practice</router-link> </li></div>  
  <div @click="toggleMenu()"><li><router-link to="/Documentation">Documentation</router-link> </li></div>  
  <div @click="toggleMenu()"> <li><router-link to="/Examples">Examples</router-link> </li></div>  
-  <div @click="toggleMenu()"> <li><router-link to="/Support">Support</router-link> </li></div>  
+ <!--   <div @click="toggleMenu()"> <li><router-link to="/Support">Support</router-link> </li></div> --> 
    <div @click="toggleMenu()"> <li><router-link to="/About">About</router-link> </li></div>  
    
    
@@ -175,7 +175,7 @@ background-color: white;
     margin: 0;
     padding: 0;
     position: absolute;
-    right: 3%;
+    right: 7%;
     
     line-height: 40px;
 
@@ -185,7 +185,7 @@ background-color: white;
 
       display: inline-block;
     margin: 0 2em;
-    font-size: 110%;
+    font-size: 124%;
 
 }
 #headerlist a{
@@ -350,7 +350,7 @@ position: absolute;
     position: absolute;
     left: 0%;
     width: 100%;
-    background-color: #f3e78b;
+    background-color: #FFFC31;
     line-height: 40px;
     top: 86%;
     padding: 0%;

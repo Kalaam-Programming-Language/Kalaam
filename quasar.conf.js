@@ -1,0 +1,3 @@
+framework: {
+    components: ['QBtn', 'QIcon']
+}

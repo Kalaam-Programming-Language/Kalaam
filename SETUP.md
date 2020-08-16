@@ -22,15 +22,22 @@ npm install
 ```
 
 After `node_modules` directory has been created in the root repository directory on the local machine run the commands in **Step 4** and **Step 5**.
- 
+
 ### Step 4:
+
+
+```bash
+npm run test
+```
+ 
+### Step 5:
 
 
 ```bash
 npm run build
 ```
 
-### Step 5:
+### Step 6:
 
 ```bash
 npm run serve
