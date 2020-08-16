@@ -323,14 +323,13 @@ export default {
 
   created() {
     this.ActiveLanguage = localStorage.getItem("ActiveLangugae");
-    console.log('this.ActiveLanguage: ', this.ActiveLanguage);
 
-    if(this.ActiveLanguage=='null')
+    if(this.ActiveLanguage==null)
     {
+
 
       this.ActiveLanguage='Hindi'
     }
-    console.log('this.ActiveLanguage: ', this.ActiveLanguage);
 
     this.checked = true;
 
