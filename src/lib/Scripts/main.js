@@ -20,7 +20,7 @@ function IsSpecialChar(v, i)
 {
 
 
-    return v[i] == "?" || (v[i] == "=" && v[i + 1] != "=" && v[i - 1] != "=") || v[i] == "|" || v[i] == ";" || v[i] == "&" || v[i] == "^" || v[i] == "%" || v[i] == "$" || v[i] == "#" || v[i] == "@" || v[i] == "!" || v[i] == ":" || v[i] == "+" || v[i] == "," || v[i] == "%" || v[i] == "-" || v[i + 1] == ")" || v[i] == "/" || v[i] == "*" || v[i] == ">" || v[i] == "<";
+    return v[i] == "?" || (v[i] == "=" && (v[i + 1] != "=" && v[i - 1] != "=")) || v[i] == "|" || v[i] == ";" || v[i] == "&" || v[i] == "^" || v[i] == "%" || v[i] == "$" || v[i] == "#" || v[i] == "@" || v[i] == "!" || v[i] == ":" || v[i] == "+" || v[i] == "," || v[i] == "%" || v[i] == "-" || v[i + 1] == ")" || v[i] == "/" || v[i] == "*" || v[i] == ">" || v[i] == "<";
 
 
 
@@ -213,6 +213,7 @@ function SplitElementsArray(element)
 
             StrVar = StrVar + element[j]; //keep on pushing for long variable names as strings e.g hello, kalaam
 
+
             flag = true
         }
 
@@ -236,9 +237,16 @@ function SplitElementsArray(element)
         if ((element[j] == "=" && element[j + 1] == "=")) {
 
             StringVar.push(StrVar);
+
             StringVar.push(element[j] + element[j + 1]);
+
+
+
+
             StrVar = "";
-            flag = true
+            flag = true;
+
+            j = j + 1
         }
 
         //for checking !=
@@ -247,6 +255,7 @@ function SplitElementsArray(element)
             StringVar.push(StrVar);
 
             StringVar.push(element[j] + element[j + 1]);
+
             StrVar = "";
             flag = true
 
@@ -258,7 +267,6 @@ function SplitElementsArray(element)
         {
 
             StringVar.push(StrVar); //push whatever string we have got because it's a string now, cant push operators with it
-
 
             //finding the calculations that required brackets and adding them
 
@@ -275,16 +283,21 @@ function SplitElementsArray(element)
         }
 
         //pushing hindi chars here
+        //UPDATED
 
         if (flag == false) {
 
+
             StrVar = StrVar + element[j];
+
             flag = true
 
         }
+
         if (element[j + 1] == null) {
 
             StringVar.push(StrVar); //fixing bias for last element
+
             flag = true
 
         }
@@ -296,7 +309,10 @@ function SplitElementsArray(element)
     }
 
 
+    console.log('StringVar: ', StringVar);
     return StringVar;
+
+
 
 
 
@@ -821,10 +837,13 @@ function UpdateUpdated_tokenswithValues(payload) {
         let a = StringVar[0].toString();
         let b = StringVar[2].toString();
 
-        a = a.replace("\"", "");
-        a = a.replace("'", "");
-        b = b.replace("\"", "");
-        b = b.replace("'", "");
+        a = a.replace(/"/g, "");
+        a = a.replace(/'/g, "");
+
+        b = b.replace(/'/g, "");
+        b = b.replace(/"/g, "");
+
+
 
 
 
@@ -1452,6 +1471,7 @@ function GetConditionValue(element, updated_tokens) {
         //let token= updated_tokens.find(el=> el.originalvalue==mutable_tokens[j].value)
 
         let SplitArray = SplitElementsArray(element);
+        // console.log('SplitArray: ', SplitArray);
 
 
         let Values = SetValues(SplitArray, updated_tokens);
@@ -1460,10 +1480,13 @@ function GetConditionValue(element, updated_tokens) {
 
         Values = Values.filter(function(item) {
 
+
             return item !== "" && item != "'" && item != "='" && item != "\"";
         });
+
         //Setting the final condition value in cases like अगर (ageone==10) 
 
+        //console.log('Values: ', Values);
         ConditionValue = UpdateUpdated_tokenswithValues(Values);
 
 
