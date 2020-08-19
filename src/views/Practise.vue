@@ -92,7 +92,7 @@
         <li style="color:green">Learning Mode</li>
       </span>
 
-      <div style="width: 33%;
+      <div style="width: 41%;
     float: right;
     text-align: end;">
               <button  @click="toggleMenu()" id="stackMenuIcon">☰</button>
@@ -417,7 +417,7 @@ else  {
         this.cm.setSize("100%", 500);
         this.isMobile=true
       } else {
-        this.cm.setSize("100%", 500);
+        this.cm.setSize("100%", 550);
                 this.isMobile=false
 
       }
@@ -750,7 +750,7 @@ button:focus {
   margin-left: -1%;
 }
 #output {
-  height: 600px;
+  height: 650px;
   width: 50%;
   background-color: black;
   color: white;
@@ -783,7 +783,7 @@ a {
 #codearea {
   width: 93%;
   margin-left: 3.5%;
-  height: 500px;
+  height: 550px;
   background-color: whitesmoke;
   font-family: monospace;
   font-size: medium;
@@ -860,7 +860,7 @@ p {
 #Modes {
   float: left;
   display: flex;
-  padding-top: 1%;
+  padding-top: 3%;
   padding-bottom: 4%;
   padding-left: 0.5%;
   
