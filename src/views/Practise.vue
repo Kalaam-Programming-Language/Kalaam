@@ -7,8 +7,21 @@
           <!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
 
           <router-link id="Kalaam" to="/">कलाम</router-link>
+            
+
         </div>
-        <button @click="toggleMenu()" id="stackMenuIcon">☰</button>
+          <q-form style="float:right;padding-right:2%" v-if="isMobile" id="Select-Language-form" @submit="onSubmit">
+              <q-select dense="true" color="black" outlined v-model="ActiveLanguage" :options="options">
+                <template v-slot:append>
+                  <q-avatar>
+                    <img
+                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADDpiTIAAAAUVBMVEVHcEwAAAAAAAAAAAAAAAAAAAAaFQL/0x3/0x0AAAAAAAAAAAAAAAAAAAAAAAAEAwAAAAAGBQD/0x3/0x3/0x3/0x3/0x0AAAD/0x1ANQe/nhYFMqa7AAAAF3RSTlMAgGDPQO8QwEC/IJ8w31CPr3CLYCzvUIcJr3cAAAssSURBVHja7d1rtqK4AoBRQKAaFZXq6s7pO/+B3h91qvrUQ+WRRO3sPQAXy3xCiBirCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAl/bHB1+8HcX5/PbBJ+9Haf58E4DxF4DxF0CJ/n4TQMm+/CUA4y8A4y8A4y+A0vSf3gRg/AVg/AVQoivjL4BCfH4TgPEXgPEXgPEXQGn+fBOA8ReA8RdAib68CaBofwhAAAIQgAAEIAABCEAAAhCAAAQgAAEIQAACEIAABIAAEAACQAAIAAEgAASAABAAAuBB+rZt+5cNoG3bvTFcPuZNfR6GXfjRMAx1fWqfOoBj29T15ZdjHy51a1xnfWKmwxDu6IZzc3y2ANpTfblz5JemN8C3Pven8y7MNyz5TKUMoG/ry8wD7w6uB9dOnfWSwf8ewXR8bAD75rDwuM/OAr86Hcaw1ng+PiiAft1hdycD/uOH6Lx+9N8bmPbZA9hPu9XHezDo/2qGEMPllDOA48Zmdy4D7yfRuguxjDen2BED2E/j5oNVQFVV1f4QourqPn0AzSXKse4Mf+zhv51AnAD28c5YZyf/kEI3pQugjZps2QuDTZrhDyGEsU0TQDtEPs6Sl3t3IaVhHz+AJv4hN8We/c8hsa6OHECSYodSP/5jSG93jBhA7JP/N72Pf8KTwBQrgBR3K+VeA467kMvQRwmgTjddrU3+054E2u0BJL1elTcJOIS8po0B9Je056jSLv+7kNuh3xLAKfH5qrAAjl3I7/uXLssDSPzxLy6A0yPGP4TxuDKANv3xFhVAEx6kO64KIMfd6mD8sxTQLA9gn2W6UtBt4Dk8UrM0gDbP5aqcZwMPITy6gCUBTJkOqzf++QqYH0Cf63CLeTS0Do/XzA4g32pFKU+ENOEZnGcGcBxzHdFg/HP6Z14AGVerjmWMfxteKYCMq1WT9d/nCyDj2aqQGWA/hhcKwPhHN4QXCsD4/8cWABcGkHH8S1kDPoUXCiDfbHUsZQFg371SALkO9tYPGE0AHhfA/wz/f3EF+MkCuJT0IPgxCODjwm9x28RFuADshro+td809XnoXiaA3XCu6/cjP1YF2videneZfvuB6dt6ePIAxkttb9Cq3zKpHuubn5n+dOieNIDxcLL3y8ZnQLpZu74t3loqQwC7yQd/83eA4+zNVBf+ZjN1AGNt9LfPAMdFt0mLEkgbwGDvxwgngG7xEvl+eIoA7P/7s1VfAg9r3sbZT3CkC8Dw/zpDW/PxX/mEzNxf8KUKYDga7xgzgN36j9H0wADs+xxpBnDYcvc867GzJAHY+T3SCWDjAxJzHuVPEEDnP2B+PzVf/E5u/o5sRgHxAxh8/H/vnH3856w8Rg+gNtJXdA8Y//sFRA7A7C/aPWCkZyTuXQXiBtC5+btq4c460X4gc6eAqAHsjP/1cXjYA/K3n0GNGYC/+9i8LJPkrWwzBWD8o10BIl9K6ywBdNb+o10BYv9CdsgQgPlfvHuA6Fsk3JgGRAvA/d+2BZmP4p9Lp+QBWP+5bXzwWtqYOAD/9nbnHLxkBphiMt2mDcAEMOIUIM3JdEgawGSIo00BujR3023KAFwA7tk9+gRw9RCiBOABgHseegtw8yoUI4DBAG9ZjP3pl9LJDqJLFoATwPrb8IzrKYdUATgB3DX/YaAu3UEcUwXQGOC192A5rwBXrgHbA+iMb8R1wJSfpkOaAA7GN+JNQMoVtSZNAL4Fumv/DFOAK4exPQDjG/Eu8JL0OLoUAVyMb8QA0n6pOqQIwPfA99VPsApw7Tg2B2AVKGYAad/NJkUAngSNGUD+S9HWAKwCRF0ITHscxwQBWAeOuRA45l+PEMAzBTC8XgBnw1t2AO4CBYAAEAACwF0AmwLoXi8A6wAz/JeXggUQNYD+5QLwPEjUANJ+Gzj5NvDZA2iyH4fnATLwRJAAnuI+MMkzgWaB93kquHTzfxeQcqstvwt4mPm/DEq51YZfBj3/UmDSK6rfBj7Mgr8KSHdbffLr4IdZsD9Auncz2f4AdgiKeB+Y8N20Q8hL3AYkuw+wR9AjLdgl7JD3EOwSlsWSrYLTbBGQdJ/A0QivO/9mPAWk3SnUFwJrVmFzngIS7xUc/FlAtLXANFsu2C38hSYBCeZU159IiPV/AR4OXbMMd21OFXs5MMc/hlgPvGnZfwbF/jj5z6DHW/a/kXG/Ys30r2EKiHUjGPkfOHL9b2Dn+dBo14CYf8J4zPfPof44Jto1IN69YM7/DnYViHYNiLYg6N/Dn0b3iALujX/kAELnbvCqc8hfwN3xjx2AFaEbqzEhewH3xz9+AGEwFYwzDQwhDNvuBfYzHkOIH0DoPCi+4n78yo3VlklVO2fWkSCAEC5WBJauyCb4NM37SWqSAMwFo50CQjiv+zTtZ9aWJoAQBo+JxTkFhDCueSunuTedqQIwGYx2CgjhsvStbOeXli6AEA7OAlFOAUuvA/slT5+kDCCEwVzgR8e172R3mHsWOC56+ChxACF0Z6vDHx3Wv5WXGTcEfbNb+KqpAwghjBr4MELdlk/T4XR79JcvNeUIIITQHRpTwvfp+ca3cqjb380H9qfzbtXr5QkghBC6oT45FayfB/7wVh7qun13quvLhtfMF8D79WC41PX0fuxF9rDvwjPJHcCvQdSn3kWg3AC+zm+b3kWg5ACW3OaWfieQO4BP2Q72XM5ZoH2lAI7ZCijoOYL6hQJY/DTrlpNAMQVcXiiAnAUU8yRJv3uhAHIWsCulgGP3QgFUTb6jLWbf0eMrBZCz12J2m2leKYCcBRwVkFE3zQugOmabtZSz6+AzFND8MTOAjPPWVgH5xr+aHcCmh1mW3QtWCsg2/ksCyHa4vQKyjf+iAHJNBUv6adkDC/j6W/5FAVR9lm8yi9p3tHns+C8MIM/XGGXtPv6gNcFvPztdGkDVjgKIXMD4iPH/NtFaHEDVnwUQ+Zuh/I8I/bvivjyAqjqNAojrnHn8P/xga00AqU8CBf4DySnnRGD8uNq+KoCqancCiGqf7wGBHx+6WBnAgh+guw2cJ9NjYt1P/026OoCqT7Y0XOgeQ22Ou4Ffdm1YH8D8XUgsBc+8G6hzf/w3BrBoJwpfBs1ZEhgyXv1jBJAkgaJ3mWvSXQd2v/2efWsA8RMo/O+H+jrN7Hq8slnL9gAW7knjeZBHJNBdvbOKEUBV9XW0M5e9huMnME7X59VxAqiq6hTnxy7+h/hrAlO8ucDu5k5d0QKoqn7avpq1s8ls5E/Uvb36IgZQVdV+YwOD8f/4bm6+sO6mu29o3ACqqtpPF9f/eAsD53HD6M/ZcyF6AFVVVet2rBptLPrbBqY1m4xfppk7biQJoKqq/nQeFt6oOP1fX2uphyWDXy/4KKUK4OtxT4fB8Mc6EzTn4d7d4TjUp4V77SQN4OukoK3Pw80r2Z0NMPn4mWrr+jL89H7uhuFQT+t23UsfwPcO2ro+D8Ow+zHZ82T3yEfKFgACQAAIAAEgAASAABAAAkAACAABIAAEgAAQAAJAAAgAASAABIAAEAACQAAIAAEgAASAABAAAkAACAABIAAiBfC3t6joAP70DhUdgPEvO4DP3p+iAzD+ZQdg/MsOwA1g2QF8soF/0QEY/7IDMP5lB/DXF+9MyQEY/7IDMP6FB+ALoLID8AVA2QEY/7IDsABcdgDGv+wAjH/ZARj/4nz5/JEFYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgOfyfxlGbTo76KAGAAAAAElFTkSuQmCC"
+                    />
+                  </q-avatar>
+                </template>
+              </q-select>
+              <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
+            </q-form>
 
         <ul id="headerlist">
           <li>
@@ -43,16 +56,15 @@
               <li>
                 <router-link to="/Examples">Examples</router-link>
               </li>
+              
             </div>
+
           </ul>
+
+              
         </transition>
       </div>
-      <div id="footer">
-        <p id="licence">Released Under the MIT Licence</p>
-        <p id="created">
-          <a>Created By Swanand Kadam</a>
-        </p>
-      </div>
+    
 
       <router-view />
     </div>
@@ -79,7 +91,16 @@
       <span v-if="this.$store.state.LearningOn">
         <li style="color:green">Learning Mode</li>
       </span>
+
+      <div style="width: 33%;
+    float: right;
+    text-align: end;">
+              <button  @click="toggleMenu()" id="stackMenuIcon">☰</button>
+
     </div>
+    </div>
+
+    
 
     <div v-if="this.$store.state.LearningOn" class="LearningMode" id="compiler">
       <div id="textarea">
@@ -96,8 +117,8 @@
         </no-ssr>
 
      
-     <q-btn flat @click="RunLinebyLine()" id="RunlinebylineBtn" icon-right="play_arrow" label="Run" />       
-    <q-btn flat id="Clearbtn" @click="Clear()" icon-right="delete" label="Clear"/>
+     <q-btn flat @click="RunLinebyLine()" id="RunlinebylineBtn"  label="Run" />       
+    <q-btn flat id="Clearbtn" @click="Clear()"  label="Clear"/>
 
           <q-btn flat id="subm" @click="Add(Keyword.Print+'()')">{{Keyword.Print}}</q-btn>
           <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
@@ -113,7 +134,7 @@
 
       <div id="output">
         <div id="bharatDIV">
-          <p id="version">Kalaam v1.0.0 (Learning Mode )</p>
+          <p id="version">Kalaam - Click On Run to Run Your Program Line by Line</p>
           <p id="CodeStatus" v-if="this.isError==false">{{TimeTaken}}</p>
 
           <p id="CodeStatus" v-if="this.isError==true">{{TimeTaken}}</p>
@@ -142,8 +163,8 @@
         </no-ssr>
 
         <div id="ControlPanel">
- <q-btn flat @click="Run()" id="Runbtn" icon-right="play_arrow" label="Run" />       
-    <q-btn flat id="Clearbtn" @click="Clear()" icon-right="delete" label="Clear"/>
+ <q-btn flat @click="Run()" id="Runbtn"  label="Run" />       
+    <q-btn flat id="Clearbtn" @click="Clear()"  label="Clear"/>
 
           <q-btn flat id="subm" @click="Add(Keyword.Print+'()')">{{Keyword.Print}}</q-btn>
           <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
@@ -160,7 +181,7 @@
 
       <div id="output">
         <div id="bharatDIV">
-          <p id="version">Kalaam v1.0.0</p>
+          <p id="version">Kalaam   -   Your output will be shown here</p>
           <p id="CodeStatus" v-if="this.isError==false">{{TimeTaken}}</p>
 
           <p id="CodeStatus" v-if="this.isError==true">{{TimeTaken}}</p>
@@ -268,6 +289,7 @@ export default {
 
       ShowSupport: true,
       ShowAbout: true,
+      isMobile:false,
 
       ActiveLanguage: "",
 
@@ -333,6 +355,8 @@ export default {
 
     this.checked = true;
 
+    
+
     //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
 
     let m = this.$store.state.CurrentCode.replace(/&lt;/g, "<");
@@ -390,9 +414,12 @@ else  {
       this.cm = cm;
 
       if (screen.width < 420) {
-        this.cm.setSize("100%", 340);
+        this.cm.setSize("100%", 440);
+        this.isMobile=true
       } else {
         this.cm.setSize("100%", 500);
+                this.isMobile=false
+
       }
     },
 
@@ -811,6 +838,45 @@ p {
 
 /* Smartphones (portrait) ----------- */
 @media only screen and (max-width: 480px) {
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 2px;
+  background-color: rgba(0, 0, 0, 0.733);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+#Modes {
+  float: left;
+  display: flex;
+  padding-top: 1%;
+  padding-bottom: 4%;
+  padding-left: 0.5%;
+  
+}
+
+#Modes li{
+
+
+  font-size: 80%;
+}
+
+#header {
+  height: 61px;
+}
+
+
   #headerlistMobile {
     display: inline-grid;
     position: absolute;
@@ -927,8 +993,8 @@ p {
     margin: 0%;
   }
   #codearea {
-    height: 340px;
-    width: 99%;
+    height: 440px;
+    width: 100%;
     margin-left: 0;
   }
 
@@ -940,7 +1006,7 @@ p {
 
   #output {
     width: 100%;
-    height: 340px;
+    height: 440px;
 
     margin-top: 5%;
     overflow-y: scroll;
