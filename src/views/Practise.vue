@@ -414,7 +414,7 @@ else  {
       this.cm = cm;
 
       if (screen.width < 420) {
-        this.cm.setSize("100%", 440);
+        this.cm.setSize("100%", 500);
         this.isMobile=true
       } else {
         this.cm.setSize("100%", 500);
@@ -993,7 +993,7 @@ p {
     margin: 0%;
   }
   #codearea {
-    height: 440px;
+    height: 500px;
     width: 100%;
     margin-left: 0;
   }
@@ -1006,7 +1006,7 @@ p {
 
   #output {
     width: 100%;
-    height: 440px;
+    height: 500px;
 
     margin-top: 5%;
     overflow-y: scroll;
