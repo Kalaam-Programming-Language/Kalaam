@@ -70,6 +70,7 @@
     </div>
 
     <div id="Modes">
+      <div style="width:68%;display:flex">
       <span v-if="!this.$store.state.PractiseOn">
         <li>Practice Mode</li>
       </span>
@@ -91,8 +92,8 @@
       <span v-if="this.$store.state.LearningOn">
         <li style="color:green">Learning Mode</li>
       </span>
-
-      <div style="width: 41%;
+</div>
+      <div style="width: 31%;
     float: right;
     text-align: end;">
               <button  @click="toggleMenu()" id="stackMenuIcon">☰</button>
