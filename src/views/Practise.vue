@@ -883,7 +883,7 @@ p {
     position: absolute;
     left: 0%;
     width: 100%;
-    background-color: #f3e78b;
+    background-color: #FFFC31;
     line-height: 40px;
     top: 86%;
     padding: 0%;

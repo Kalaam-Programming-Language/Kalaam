@@ -1051,6 +1051,13 @@ q-btn:focus {outline:0;}
 @media only screen
 and (max-width : 480px) {
 
+  #TryCodebtn {
+    margin-top: 8%;
+    width: 45%;
+    height: 38px;
+    cursor: pointer;
+}
+
 #carousel{
 
 
