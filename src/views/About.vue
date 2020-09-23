@@ -27,7 +27,7 @@
 <div id="Section2">
   <p>
 
-Kalaam is the first-ever programming language in Hindi and has all the basic functionalities of a modern programming language. From for loops to while loops and
+Kalaam is the programming language in Hindi and has all the basic functionalities of a modern programming language. From for loops to while loops and
 from functions to conditional statements.
  </p>
  <p>
