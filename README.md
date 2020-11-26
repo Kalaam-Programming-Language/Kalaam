@@ -8,9 +8,7 @@
 
 Kalaam is the first-ever programming language in Hindi and has all the basic functionalities of a modern programming language. From for loops to while loops and from functions to conditional statements.
 
-Kalaam was created as a part of an educational project to help my students under the age of 18 to understand programming through a different dimension. Anyone with a smartphone or a computer can start coding in.
-
-As the development of Kalaam continues, expect advanced features and major bug fixes in the next version. Thank you to all the amazing developers who showed interest in contributing to the development of Kalaam. 
+Thank you to all the amazing developers who showed interest in contributing to the development of Kalaam. 
 
 ## Where is the compiler code?:
 
@@ -20,11 +18,20 @@ Visit 'src/lib/Compiler/main.js' in repo structure to access Kalaam compile engi
 
 The setups for recreating the project have been given in the [SETUP.md](SETUP.md) file.
 
-## Priority List
+## Contributions
 
-- Better Documentation (Written in Hindi)
-- Building a Core development team
-- Expanding the reach of Kalaam
+- You can work on either Frontend, Backend or Documentation, whatever you think you can be best at with your current level of experiance.
+- This is a complete Kalaam.io application. The compiler is availible as a standalone npm package called Kalaam-core.
+- Fork the repo by selecting the branch you want to work on.
+- Feel absolutely free to play with frontend or backend. Creative ideas are most welcome.
+- Use Kalaam Discord sever to connect with fellow contributers.
+
+## Future plans
+
+- Right now, Kalaam is in it's early stage. Many programming languges took decades of team work to reach their God level
+- Kalaam needs to have a usecase so that people can start building stuff with it like apps, websites, extensions, plugins etc.
+- Sooner or later, we need a faster compilation process. That means Kalaam-compiler will have to be written in low level languages like c/c++.
+
 
 ## Documentation
 
