@@ -44,6 +44,8 @@ To check out documentation visit [Documentation](https://www.kalaam.io/documenta
 
 To check out examples visit [live examples](https://www.kalaam.io/examples).
 
+Feel free to add more examples. We have three categories for examples. Basic, Intermediate and advanced. Add according to conext.
+
 ## Questions
 
 For questions and support please use [the discord server](https://discord.com/invite/EMyA8TA). 
