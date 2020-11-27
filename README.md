@@ -61,6 +61,13 @@ Feel free to add more examples. We have three categories for examples. Basic, In
 
 For questions and support please use [the discord server](https://discord.com/invite/EMyA8TA). 
 
+## NPM
+
+- Kalaam compiler package is availibe at https://www.npmjs.com/package/kalaam-core as "Kalaam-core".
+
+P.S- The package is not setup for named exports yet like import 'Compile' from 'Kalaam-core'.
+Instead, use the node_modules path like import 'Compile' from '../node_modules/src/lib/Compiler/main.js'
+
 ## Where is the compiler code?:
 
 Visit 'src/lib/Compiler/main.js' in repo structure to access Kalaam compile engine and learn about how Kalaam works.
