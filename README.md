@@ -12,13 +12,21 @@ Kalaam has it's own parser, interpretor, Virtual memory stack and executes sourc
 
 Thank you to all the amazing developers who showed interest in contributing to the development of Kalaam. 
 
-## Where is the compiler code?:
+## Branch Guide
 
-Visit 'src/lib/Compiler/main.js' in repo structure to access Kalaam compile engine and learn about how Kalaam works.
+## Compiler
 
-## To test kalaam.io locally
+- All the compiler related work is done here. No frontend pull requests here, this space belongs to backend people.
 
-The setups for recreating the project have been given in the [SETUP.md](SETUP.md) file.
+## Frontend-UI
+
+- All the compiler, UI work is done here. No Compiler/Backend pull requests here, this space belongs to frontend people.
+
+## dev-Kalaam-nextVersion
+
+- As the name suggests, this will contain latest and stable Kalaam code. If everything performs as expected, this will be merged with master.
+- Test,Test,Test!
+
 
 ## Contributions
 
@@ -30,14 +38,17 @@ The setups for recreating the project have been given in the [SETUP.md](SETUP.md
 
 ## Future plans
 
-- Right now, Kalaam is in it's early stage. Many programming languges took decades of team work to reach their God level
-- Kalaam needs to have a usecase so that people can start building stuff with it like apps, websites, extensions, plugins etc.
-- Sooner or later, we need a faster compilation process. That means Kalaam-compiler will have to be written in low level languages like c/c++.
+- Right now, Kalaam is in it's early stage. Many programming languges took decades of team work to reach their God level. We go step by step.
+- Kalaam needs to have a usecase so that people can start building stuff with it like apps, websites, extensions, plugins. The usecase can be unique 
+that suits well to the indian ecosystem. This will help us to move in a straight direction.
+- Conside Kalaam as your own project, explore it and feel free to try out new ideas.
 
 
 ## Documentation
 
 To check out documentation visit [Documentation](https://www.kalaam.io/documentation).
+
+- Documentation needs a lot of work. I think short video tuts will really help insated of just overload of texts.
 
 
 ## Examples
@@ -50,9 +61,19 @@ Feel free to add more examples. We have three categories for examples. Basic, In
 
 For questions and support please use [the discord server](https://discord.com/invite/EMyA8TA). 
 
+## Where is the compiler code?:
+
+Visit 'src/lib/Compiler/main.js' in repo structure to access Kalaam compile engine and learn about how Kalaam works.
+
+## To test kalaam.io locally
+
+The setups for recreating the project have been given in the [SETUP.md](SETUP.md) file.
+
 ## Issues
 
 Found an issue in Kalaam? Please use [submit issue](https://github.com/Kalaam-Programming-Language/Kalaam/issues).
+
+
 
 ## License
 
