@@ -52,7 +52,7 @@ c=a+b
 c=a+b
 
 दिखाए(c)
- 
+
 
 </pre>
 </p>
@@ -152,11 +152,11 @@ c=a+b
 दुहराओ x को (0,10) मे
 
 {
-  
+
   दिखाए(नाम)
-  
-  
-  
+
+
+
 }
 
 
@@ -183,12 +183,12 @@ c=a+b
 दुहराओ x को नाम मे
 
 {
-  
+
  अक्षर=नाम[x]
-  
- दिखाए(x + अक्षर) 
- 
-  
+
+ दिखाए(x + अक्षर)
+
+
 }
 
 </pre>
@@ -218,15 +218,15 @@ c=a+b
 जबतक(गिनती<10)
 
 {
-  
-  
+
+
   दिखाए(नतीजा)
-  
+
   नतीजा=नतीजा+नंबर
-  
+
   गिनती=गिनती+1
-  
-   
+
+
 }
 
 </pre>
@@ -236,7 +236,7 @@ c=a+b
 
 </div>
   </slide>
-  
+
     <slide class="slide">
     <div id="slide">
 
@@ -255,15 +255,15 @@ c=a+b
 दुहराओ x को (0,10) मे
 
 {
-  
- 
+
+
   x=सीधा+आड़ा+सीधा
-  
+
   दिखाए(x)
-  
-  
-  
-} 
+
+
+
+}
 
 
 
@@ -287,13 +287,13 @@ c=a+b
 
 इनपुट(शब्द)
 
-लंबाई = शब्द.संख्या() 
+लंबाई = शब्द.संख्या()
 
 दिखाए(लंबाई)
- 
 
- 
- 
+
+
+
 </pre>
 </p>
 
@@ -301,6 +301,38 @@ c=a+b
 
 
   </slide>
+
+  <slide class="slide">
+
+<div id="slide">
+
+<q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID10')">Run Code</q-btn>
+<p id="CodePara" >
+
+<h6>#9 कैलकुलेट एरिया एंड सिरकमफेरेंस ऑफ़ अ सर्कल </h6>
+
+<pre id="CodeID10" >
+
+इनपुट(Radius)
+
+एरिय=3.14*Radius*Radius
+
+सिरकमफेरेंस=2*3.14*Radius
+
+दिखाए("Area Of Circle is" + एरिय)
+
+दिखाए("Circumference Of Circle is" + सिरकमफेरेंस)
+
+
+
+
+</pre>
+</p>
+
+</div>
+
+
+</slide>
 
 </carousel>
 
@@ -402,14 +434,14 @@ c=a+b
 दुहराओ x को नाम मे
 
 {
-  
+
  अक्षर=नाम[x]
 
  नतीजा=नतीजा+अक्षर
-  
- दिखाए(नतीजा) 
-  
- 
+
+ दिखाए(नतीजा)
+
+
 }
 </pre>
 </p>
@@ -445,9 +477,9 @@ length=length-1
 }
 
 दिखाए ('Reversed String-'+ ReverseString)
-   
 
- 
+
+
 
 </pre>
 </p>
@@ -468,12 +500,11 @@ length=length-1
 
 
 
- 
 
 
 
 
- 
+
 
 </pre>
 </p>
@@ -564,17 +595,31 @@ printname(10)
 
 </div>
   </slide>
-  
+
     <slide class="slide">
     <div id="slide">
 
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#7  </h6>
+<h6>#7 Factorial ऑफ़ अ नंबर  </h6>
 
 <pre id="CodeID16" >
 
+इनपुट(factorialOf)
+f=1
+count=1
+
+अगर(factorialOf == 0 || factorialOf < 0){
+  दिखाए("Invalid Input")
+}
+
+जबतक(count < factorialOf+1){
+  f=f*count
+  count=count+1
+}
+
+दिखाए("Factorial of" + factorialOf + " is " + f)
 
 
 
@@ -589,9 +634,9 @@ printname(10)
 
 
  <h4>Advanced Examples</h4>
-               
-               
-               
+
+
+
 <carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>
 
 
@@ -628,7 +673,7 @@ space=space+Extra
 }
 
 
- 
+
 
 </pre>
 </p>
@@ -667,7 +712,7 @@ Fibonacci[a]=x+y
 
 दिखाए(Fibonacci)
 }
- 
+
 
 </pre>
 </p>
@@ -689,7 +734,7 @@ Fibonacci[a]=x+y
 
 
 
- 
+
 
 </pre>
 </p>
@@ -753,12 +798,12 @@ length=prime.संख्या()
 }
 
 
- 
 
 
 
 
- 
+
+
 
 </pre>
 </p>
@@ -806,7 +851,7 @@ length=prime.संख्या()
 
 </div>
   </slide>
-  
+
     <slide class="slide">
     <div id="slide">
 
@@ -881,7 +926,7 @@ Fibonacci[a]=x+y
 
 दिखाए(Fibonacci)
 }
- 
+
 
 </pre>
 </p>
@@ -932,7 +977,7 @@ if(screen.width<420)
 
 
   methods: {
-      
+
 CopyCode:function(el)
 
 {
@@ -949,7 +994,7 @@ this.$store.state.CurrentCode= copyText.innerHTML
 
 
 }
-      
+
   },
 
 };
@@ -963,7 +1008,7 @@ this.$store.state.CurrentCode= copyText.innerHTML
 
 
      display: none
-   } 
+   }
 
 .slide{
 
@@ -1004,10 +1049,10 @@ margin-top: 8%;
   width: 36%;
   height: 38px;
   cursor: pointer;
-     
 
 
-  
+
+
 }
 
 #TryCodebtn:hover{
@@ -1020,7 +1065,7 @@ margin-top: 8%;
 
 #CodePara{
 
-     
+
     width: 100%;
     text-align: left;
     padding-left: 4%;
@@ -1067,7 +1112,7 @@ and (max-width : 480px) {
 
 
      display: block
-   } 
+   }
 
    .slide{
 
