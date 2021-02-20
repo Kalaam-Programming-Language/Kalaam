@@ -1099,7 +1099,7 @@ and (max-width : 480px) {
   #TryCodebtn {
     margin-top: 8%;
     width: 45%;
-    height: 38px;
+    height: 56px;
     cursor: pointer;
 }
 
