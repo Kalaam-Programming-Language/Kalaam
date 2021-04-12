@@ -1240,6 +1240,8 @@ function AssignorUpdateValues(
 //GetConditionValue is our goto function to evaluate a condition to true or false
 
 function GetConditionValue(element, updated_tokens) {
+  var ConditionValue = false;
+
   if (element.includes("&&") || element.includes("||")) {
     let MultConditionsCount =
       parseInt(Count("&", element)) + parseInt(Count("|", element));
@@ -1291,6 +1293,7 @@ function GetConditionValue(element, updated_tokens) {
     //let token= updated_tokens.find(el=> el.originalvalue==mutable_tokens[j].value)
 
     let SplitArray = SplitElementsArray(element);
+    // console.log('SplitArray: ', SplitArray);
 
     let Values = SetValues(SplitArray, updated_tokens);
 
