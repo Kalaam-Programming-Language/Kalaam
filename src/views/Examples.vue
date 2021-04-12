@@ -788,14 +788,7 @@ length=prime.संख्या()
 
 }
 
-अन्यथा
 
-{
-
-दिखाए(num + "is not a Prime Number")
-
-
-}
 
 
 
