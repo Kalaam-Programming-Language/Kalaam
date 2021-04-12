@@ -470,285 +470,296 @@ export default function Compile(kalaam, ActiveLangugae) {
 
     skipParsing = 0;
 
-    var result = scanner(cleaned_sourcedata, i, tokens);
-    //console.log("result:", result);
+    var nextEl = cleaned_sourcedata.nextElement(i);
 
-    var next_element = cleaned_sourcedata.nextElement(i);
+    var result = scanner(cleaned_sourcedata, i, tokens);
 
     //Push variables to tokens
     //Format: {type: "variable", value: "ReverseString"}
 
-    if (isVariable(element)) {
-      //Here we seperate Message = 'Hello' into following three tokens :
+    switch (result) {
+      case "VARIABLE":
+        //Here we seperate Message = 'Hello' into following three tokens :
 
-      //1: {type: "variable", value: "Message"}
+        //1: {type: "variable", value: "Message"}
 
-      //2: {type: "operator", value: "="}
+        //2: {type: "operator", value: "="}
 
-      //3: {type: "value", value: "Hello"}
+        //3: {type: "value", value: "Hello"}
 
-      if (next_element == "=") {
-        PushVariable(element, tokens, cleaned_sourcedata[i + 2]);
+        if (nextEl == "=") {
+          PushVariable(element, tokens, cleaned_sourcedata[i + 2]);
 
-        //If we already have the variable declared before, push it to ReIntializedVariables array
+          //If we already have the variable declared before, push it to ReIntializedVariables array
 
-        if (variableArray.includes(element)) {
-          //  let x = tokens.find(el => el.value == element);
+          if (variableArray.includes(element)) {
+            //  let x = tokens.find(el => el.value == element);
 
-          //let index = tokens.indexOf(x);
+            //let index = tokens.indexOf(x);
 
-          ReIntializedVariables.push({
-            name: element,
-          });
+            ReIntializedVariables.push({
+              name: element,
+            });
+          }
+
+          variableArray.push(element);
+        } else if (cleaned_sourcedata[i - 1] == "=") {
+          PushVariableValue(element, tokens);
         }
 
-        variableArray.push(element);
-      } else if (cleaned_sourcedata[i - 1] == "=") {
-        PushVariableValue(element, tokens);
-      }
-
+        break;
       //Push variables to tokens
-    } else if (isNumber(element)) {
-      PushNumber(element, tokens);
+      case "NUMBER":
+        PushNumber(element, tokens);
+        break;
 
       //Push EmptyStrings to tokens
-    } else if (isEmptyStringorChar(element)) {
-      //In some cases empty strings will be modified into something like "'" or '"'
-      //We convert it back to " "
-      if (
-        element.length > 1 &&
-        (element.charAt(0) == "'" || element.charAt(0) == '"')
-      ) {
-        element = element.replace(/['"]+/g, "");
-      } else {
-        element = " ";
-      }
+      case "EMPTY_STRING":
+        //In some cases empty strings will be modified into something like "'" or '"'
+        //We convert it back to " "
+        if (
+          element.length > 1 &&
+          (element.charAt(0) == "'" || element.charAt(0) == '"')
+        ) {
+          element = element.replace(/['"]+/g, "");
+        } else {
+          element = " ";
+        }
 
-      PushVariableValue(element, tokens);
+        PushVariableValue(element, tokens);
+        break;
 
       //Push Input to tokens
       //Format: {type: "AcceptInput", value: " ", AcceptAs: "Message"}
-    } else if (isInput(element)) {
-      PushInput(element, tokens, cleaned_sourcedata, i);
-
+      case "INPUT":
+        PushInput(element, tokens, cleaned_sourcedata, i);
+        break;
       //Push operators to tokens. The accepted operators are =,},{
       //Format: {type: "operator", value: "="}
-    } else if (isOperator(element)) {
-      PushOperator(element, tokens);
+      case "OPERATOR":
+        PushOperator(element, tokens);
+        break;
 
       //Push keyowrds to tokens. The accepted keywords is दिखाए
 
       //Format: {type: "keyword", value: ActiveLangugaeKeywords.Print}
-    } else if (isPrintOperation(element, cleaned_sourcedata, i)) {
-      PushKeyword(element, tokens);
+      case "PRINT":
+        PushKeyword(element, tokens);
 
-      let ExpressiontoPrint = next_element;
+        let ExpressiontoPrint = nextEl;
 
-      if (!isRealTimePrintMultipleString(ExpressiontoPrint)) {
-        PushExpression(ExpressiontoPrint, tokens);
-      }
-
+        if (!isRealTimePrintMultipleString(ExpressiontoPrint)) {
+          PushExpression(ExpressiontoPrint, tokens);
+        }
+        break;
       //Push functions to tokens
       //Format: {type: "function", value: "First", arguments: Array(2), FunctionInvocationExists: false, FunctionStack: Array(0), …}
-    } else if (isFunction(element)) {
-      PushFunctionData(element, tokens, cleaned_sourcedata, i);
-    }
+      case "FUNCTION":
+        PushFunctionData(element, tokens, cleaned_sourcedata, i);
+        break;
 
-    // Push array to tokens
-    //Format: {type: "Array", value: "[]"}
-    else if (isArray(element)) {
-      if (element.charAt(element.length - 1) == "]") {
-        PushArray(element, tokens);
-      } else {
-        //To convert '[',1,2,3,4,']'  into [1,2,3,4]
+      // Push array to tokens
+      //Format: {type: "Array", value: "[]"}
+      case "ARRAY":
+        if (element.charAt(element.length - 1) == "]") {
+          PushArray(element, tokens);
+        } else {
+          //To convert '[',1,2,3,4,']'  into [1,2,3,4]
 
-        let BuiltArray = BuildArray(element, i, cleaned_sourcedata);
+          let BuiltArray = BuildArray(element, i, cleaned_sourcedata);
 
-        PushArray(BuiltArray, tokens);
-      }
-    }
+          PushArray(BuiltArray, tokens);
+        }
+        break;
 
-    //For operations like Numbers[a]=a
-    //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
-    else if (isSetArrayIndexValue(element, cleaned_sourcedata, i)) {
-      PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
+      //For operations like Numbers[a]=a
+      //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
+      case "SET_ARRAY_INDEX":
+        PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
 
-      cleaned_sourcedata.splice(i + 1, 1);
-      // cleaned_sourcedata.splice(i+2, 1);
-      //cleaned_sourcedata.splice(i+3, 1);
-    }
+        cleaned_sourcedata.splice(i + 1, 1);
+        // cleaned_sourcedata.splice(i+2, 1);
+        //cleaned_sourcedata.splice(i+3, 1);
+        break;
 
-    //For operations like a=Numbers[a], reverse of above
-    //Format: {type: "GetArrayIndexValue", value: "Fibonacci[a-2]"}
-    else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == false) {
-      PushGetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
-    }
+      //For operations like a=Numbers[a], reverse of above
+      //Format: {type: "GetArrayIndexValue", value: "Fibonacci[a-2]"}
+      case "GET_ARRAY_INDEX":
+        PushGetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
+        break;
 
-    //Push conditions to tokens. The accepted keywords are अगर, जबतक, अन्यथा
-    // Format: {type: "conditionalkeyword", value: "अगर"}
-    else if (isConditionalKeyword(element)) {
+      //Push conditions to tokens. The accepted keywords are अगर, जबतक, अन्यथा
+      // Format: {type: "conditionalkeyword", value: "अगर"}
       //Push while loops to tokens
       //Format: {type: "WhileLoopStart", value: "जबतक"}, {type: "condition", value: "count<25"}
 
-      if (isWhileLoop(element)) {
+      case "WHILE_LOOP":
         PushWhileLoop(element, tokens);
-      } else {
+        break;
+      case "CONDITIONAL_KEYWORD":
         PushConditionalKeyword(element, tokens);
-      }
 
-      //This is how we push conditions encountered in the sourcecode
-      //Format:{type: "condition", value: "a<3"}
-      let foundcondition = BuildCondition(element, i, cleaned_sourcedata);
+        //This is how we push conditions encountered in the sourcecode
+        //Format:{type: "condition", value: "a<3"}
+        let foundcondition = BuildCondition(element, i, cleaned_sourcedata);
 
-      //Push conditions to tokens array
+        //Push conditions to tokens array
 
-      if (foundcondition != "") {
-        PushCondition(foundcondition, tokens);
-      }
-    }
-
-    //Finding operations like Numbers.पुश(x)
-    //Format: {type: "PushToArray", value: "Numbers.पुश(x)"}
-    else if (element.includes("पुश")) {
-      PushToArray(element, tokens);
-    }
-
-    //Push For loop to tokens
-    // Format:
-    // {type: "ForLoopStart", value: "दुहराओ"}
-    // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
-    else if (isForLoop(element)) {
-      PushForLoop(element, tokens);
-      PushForLoopAruguments(element, cleaned_sourcedata, i, tokens);
-
-      updated_tokens.push({
-        name: next_element,
-        value: 0,
-        type: "ForLoopIterator",
-      });
-    }
-
-    //Pushing basic Calculations like 'length-1' to tokens
-    //Format: {type: "Calculation", value: "length-1"}
-    else if (isCalculation(element)) {
-      let element = "";
-
-      if (next_element != undefined) {
-        // self is to perform long calculations like AverageAge=(ageone+agetwo)/2 + (ageone+agetwo)*2
-
-        while (isCalculation(cleaned_sourcedata[i])) {
-          element = element + cleaned_sourcedata[i];
-
-          i++;
-        }
-      }
-
-      //terms = element.split("");
-
-      //removing the "("" and ")"
-
-      var CleanedElement = RemoveBrackets(element);
-
-      // to stop prevention of expressions like is"+ getting added as a calculation
-      if (
-        !CleanedElement.includes('"') &&
-        element.charAt(0) != "/" &&
-        element.charAt(0) != "*" &&
-        element.charAt(0) != "'"
-      ) {
-        PushCalculation(element, tokens, cleaned_sourcedata, i);
-      }
-    }
-
-    //finding operations like print(x + 'y'). The RealTimePrint operations
-
-    //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
-    else if (isRealTimePrintMultipleString(element)) {
-      let foundString = "";
-
-      let k = i;
-
-      let skip = 0;
-
-      // let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2);
-
-      var flag = 0;
-
-      for (k; k < cleaned_sourcedata.length; k++) {
-        let element = cleaned_sourcedata[k];
-        let conditionEnd =
-          element.charAt(element.length - 1) +
-          element.charAt(element.length - 2);
-
-        if (IsReservedKeyword(element)) {
-          break;
+        if (foundcondition != "") {
+          PushCondition(foundcondition, tokens);
         }
 
-        if (conditionEnd == ')"' || element.charAt(element.length - 1) == ")") {
-          foundString = foundString + " " + cleaned_sourcedata[k];
-          break;
-        } else if (flag == 1) {
-          foundString = foundString + " " + cleaned_sourcedata[k];
-        } else if (flag == 0) {
-          foundString = cleaned_sourcedata[k];
+        break;
 
-          flag = 1;
+      //Finding operations like Numbers.पुश(x)
+      //Format: {type: "PushToArray", value: "Numbers.पुश(x)"}
+      case "PUSH_TO_ARRAY":
+        PushToArray(element, tokens);
+        break;
+
+      //Push For loop to tokens
+      // Format:
+      // {type: "ForLoopStart", value: "दुहराओ"}
+      // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
+      case "FOR_LOOP":
+        console.log("for loop");
+        PushForLoop(element, tokens);
+        PushForLoopAruguments(element, cleaned_sourcedata, i, tokens);
+
+        updated_tokens.push({
+          name: nextEl,
+          value: 0,
+          type: "ForLoopIterator",
+        });
+        break;
+
+      //Pushing basic Calculations like 'length-1' to tokens
+      //Format: {type: "Calculation", value: "length-1"}
+      case "CALCULATION":
+        let el = "";
+
+        if (nextEl != undefined) {
+          // self is to perform long calculations like AverageAge=(ageone+agetwo)/2 + (ageone+agetwo)*2
+
+          while (isCalculation(cleaned_sourcedata[i])) {
+            el = el + cleaned_sourcedata[i];
+
+            i++;
+          }
         }
 
-        skip = skip + 1;
-      }
+        //terms = element.split("");
 
-      //if ((!foundString.includes(">")) && (!foundString.includes('/')) && (!foundString.includes('*')) && (!foundString.includes('<')) /*&& (!foundString.includes('==') )*/) {
+        //removing the "("" and ")"
 
-      PushRealTimePrintOperation(foundString, tokens);
+        var CleanedElement = RemoveBrackets(element);
 
-      //  }
-
-      skipParsing = skip;
-    }
-
-    //storing only the string values to tokens ( not the strings in print statements)
-    else if (isString(element)) {
-      let calculatedString = BuildString(element, i, cleaned_sourcedata);
-
-      calculatedString = calculatedString.replace(/['"]+/g, "");
-
-      if (!calculatedString.includes(ActiveLangugaeKeywords.Print))
-        PushString(calculatedString, tokens);
-    }
-
-    //An extension of isPrintOperation() function
-    // Needs improvement
-
-    /*     else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
-            
-
-            PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
-
-            PushExpression(element.slice(6), tokens); //Pushing remaining expression like (a), (Message) etc
+        // to stop prevention of expressions like is"+ getting added as a calculation
+        if (
+          !CleanedElement.includes('"') &&
+          element.charAt(0) != "/" &&
+          element.charAt(0) != "*" &&
+          element.charAt(0) != "'"
+        ) {
+          PushCalculation(element, tokens, cleaned_sourcedata, i);
         }
-        */
 
-    //error prone change made here- Pushing expression in here
-    //Used to push functions and expressions
-    //Unnecessary data is being passed through kalaam.
-    //This was created for a temporary fix
-    else if (isFunctionCall(element, tokens, cleaned_sourcedata, i)) {
-      let CheckFunctionExpression = element.split("(");
+        break;
+      //finding operations like print(x + 'y'). The RealTimePrint operations
 
-      let passedValues = RemoveBrackets(CheckFunctionExpression[1]);
-      passedValues = passedValues.split(",");
+      //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
+      case "REALTIME_PRINT":
+        let foundString = "";
 
-      PushFunctionExecution(
-        element,
-        tokens,
-        cleaned_sourcedata,
-        i,
-        passedValues
-      );
-    } else if (isNativeOperation(element)) {
-      PushNativeOperation(element, tokens);
-    } else if (
+        let k = i;
+
+        let skip = 0;
+
+        // let conditionEnd = element.charAt(element.length - 1) + element.charAt(element.length - 2);
+
+        var flag = 0;
+
+        for (k; k < cleaned_sourcedata.length; k++) {
+          let element = cleaned_sourcedata[k];
+          let conditionEnd =
+            element.charAt(element.length - 1) +
+            element.charAt(element.length - 2);
+
+          if (IsReservedKeyword(element)) {
+            break;
+          }
+
+          if (
+            conditionEnd == ')"' ||
+            element.charAt(element.length - 1) == ")"
+          ) {
+            foundString = foundString + " " + cleaned_sourcedata[k];
+            break;
+          } else if (flag == 1) {
+            foundString = foundString + " " + cleaned_sourcedata[k];
+          } else if (flag == 0) {
+            foundString = cleaned_sourcedata[k];
+
+            flag = 1;
+          }
+
+          skip = skip + 1;
+        }
+
+        //if ((!foundString.includes(">")) && (!foundString.includes('/')) && (!foundString.includes('*')) && (!foundString.includes('<')) /*&& (!foundString.includes('==') )*/) {
+
+        PushRealTimePrintOperation(foundString, tokens);
+
+        //  }
+
+        skipParsing = skip;
+        break;
+
+      //storing only the string values to tokens ( not the strings in print statements)
+      case "STRING":
+        let calculatedString = BuildString(element, i, cleaned_sourcedata);
+
+        calculatedString = calculatedString.replace(/['"]+/g, "");
+
+        if (!calculatedString.includes(ActiveLangugaeKeywords.Print))
+          PushString(calculatedString, tokens);
+        break;
+
+      //An extension of isPrintOperation() function
+      // Needs improvement
+
+      /*     else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
+              
+  
+              PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
+  
+              PushExpression(element.slice(6), tokens); //Pushing remaining expression like (a), (Message) etc
+          }
+          */
+
+      //error prone change made here- Pushing expression in here
+      //Used to push functions and expressions
+      //Unnecessary data is being passed through kalaam.
+      //This was created for a temporary fix
+      case "FUNCTION_CALL":
+        let CheckFunctionExpression = element.split("(");
+
+        let passedValues = RemoveBrackets(CheckFunctionExpression[1]);
+        passedValues = passedValues.split(",");
+
+        PushFunctionExecution(
+          element,
+          tokens,
+          cleaned_sourcedata,
+          i,
+          passedValues
+        );
+        break;
+
+      case "NATIVE_OPERATION":
+        PushNativeOperation(element, tokens);
+        break;
+
       /* 
         else if (isExpression(element)  && !isCalculation(element) && !element.includes("[") && !element.includes("]") && (!isConditionalKeyword(cleaned_sourcedata[i - 1])) && (cleaned_sourcedata[i - 1] != "मे" && cleaned_sourcedata[i - 1] != "रचना")) {
 
@@ -775,103 +786,106 @@ export default function Compile(kalaam, ActiveLangugae) {
         }
 
         */
-      isExpression(element) &&
-      element.includes("[") &&
-      element.includes("]")
-    ) {
-      PushArray(element, tokens);
-    }
 
-    /*This is experimental. For now, you can just neglect this
-     
-        else if (!isPrintOperation(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element)) {
+      case "ARRAY_PUSH":
+        PushArray(element, tokens);
+        break;
 
-            //ANCHOR 
-            /*Hnadling Impurity error-The main problem is figuring out how to solve "=7000" like things
-      instead asking developers to add space manually
-      Handling Alphanumeric strings to solve issues like ' anna=2362934'
+      case "UNKNOWN":
+        console.log("Unknown", element);
+        break;
 
-      let impurity = element.split('=')
-
-      let findString = impurity[1]
-
-
-      //to accept long numbers i.e a=749374593745937
-
-      if (isVariable(impurity[0]) && isNumber(impurity[1])) {
-
-
-          impurity[2] = impurity[1];
-          impurity[1] = '=';
-
-      }
-
-      //to accept a=STRING
-      if (isVariable(impurity[0]) && isVariable(impurity[1])) {
-
-
-          impurity[2] = impurity[1];
-          impurity[1] = '=';
-
-      }
-
-
-
-      impurity.forEach((element, i) => {
-
-          if (isVariable(element) ) {
-
-
-
-              PushVariable(element, tokens)
-
-
-              //continue;
-          }
-
-          // ANCHOR 
-
-          //Issue: Right now, only isNumber is resolved, a=, =23828qw aren't resolved.
-          //Solution: Work on all the modules
-
-
-          if (isNumber(element) ) {
-
-
-              PushNumber(element, tokens)
-
-          }
-
-          //ANCHOR 
-          //You might have to remove self extra filters since you are only working on numbers (Future Issue)
-          if (isOperator(element) ) {
-              PushOperator(element, token)
-
-          }
-
-
-
-          if (isPrintOperation(element) ) {
-
-              PushKeyword(element)
-
-          }
-
-          if (isExpression(element) ) {
-
-
-              PushExpression(element, tokens)
-
-          }
-
-
-
-
-      })
-        
-
+      /*This is experimental. For now, you can just neglect this
+       
+          else if (!isPrintOperation(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element)) {
+  
+              //ANCHOR 
+              /*Hnadling Impurity error-The main problem is figuring out how to solve "=7000" like things
+        instead asking developers to add space manually
+        Handling Alphanumeric strings to solve issues like ' anna=2362934'
+  
+        let impurity = element.split('=')
+  
+        let findString = impurity[1]
+  
+  
+        //to accept long numbers i.e a=749374593745937
+  
+        if (isVariable(impurity[0]) && isNumber(impurity[1])) {
+  
+  
+            impurity[2] = impurity[1];
+            impurity[1] = '=';
+  
         }
- */
+  
+        //to accept a=STRING
+        if (isVariable(impurity[0]) && isVariable(impurity[1])) {
+  
+  
+            impurity[2] = impurity[1];
+            impurity[1] = '=';
+  
+        }
+  
+  
+  
+        impurity.forEach((element, i) => {
+  
+            if (isVariable(element) ) {
+  
+  
+  
+                PushVariable(element, tokens)
+  
+  
+                //continue;
+            }
+  
+            // ANCHOR 
+  
+            //Issue: Right now, only isNumber is resolved, a=, =23828qw aren't resolved.
+            //Solution: Work on all the modules
+  
+  
+            if (isNumber(element) ) {
+  
+  
+                PushNumber(element, tokens)
+  
+            }
+  
+            //ANCHOR 
+            //You might have to remove self extra filters since you are only working on numbers (Future Issue)
+            if (isOperator(element) ) {
+                PushOperator(element, token)
+  
+            }
+  
+  
+  
+            if (isPrintOperation(element) ) {
+  
+                PushKeyword(element)
+  
+            }
+  
+            if (isExpression(element) ) {
+  
+  
+                PushExpression(element, tokens)
+  
+            }
+  
+  
+  
+  
+        })
+          
+  
+          }
+   */
+    }
   }
 
   //The final stage of adding an output to output stack i.e. kalaam.output or kalaam.output
@@ -889,7 +903,7 @@ export default function Compile(kalaam, ActiveLangugae) {
     cleaned_sourcedata,
     mixedimpurity
   );
-  //console.log("cleaned_sourcedata: ", cleaned_sourcedata); // eslint-disable-line
+  console.log("cleaned_sourcedata: ", cleaned_sourcedata); // eslint-disable-line
 
   //#STEP 2- - Checking each token and adding to tokens array
 
@@ -906,6 +920,7 @@ export default function Compile(kalaam, ActiveLangugae) {
       i = i + skipParsing;
     }
   }
+  console.log("cleaned_sourcedata:", updated_tokens, tokens);
 
   //CLEANING UP THE TOKENS ARRAY
   //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
@@ -1181,6 +1196,9 @@ export default function Compile(kalaam, ActiveLangugae) {
       });
 
       //constantly accessing the conditionvalue
+
+      var x = GetConditionValue(element, updated_tokens, j + 1);
+      console.log("x:", x);
 
       while (GetConditionValue(element, updated_tokens, j + 1)) {
         for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
@@ -1662,6 +1680,7 @@ export default function Compile(kalaam, ActiveLangugae) {
       let functionArguments = functionToken.arguments;
 
       functionSourceData = functionToken.SourceData;
+      console.log("functionSourceData:", functionSourceData);
 
       //Creating a seperate execution context and setting fucntion context name:value pair in functionContextupdated_tokens
 
@@ -2441,6 +2460,5 @@ export default function Compile(kalaam, ActiveLangugae) {
 
   //ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
 
-  console.log("ExecutionStack: ", ExecutionStack);
   return ExecutionStack;
 }

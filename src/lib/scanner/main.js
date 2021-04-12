@@ -41,9 +41,9 @@ const isPureEval = AdvancedTypeCheck.isPureEval();
 //buildstring will be applied now to create a string and push it into tokens. Buildstring is used to combine string tokens like
 //['hello', 'Kalaam', 'developers', "!"] into 'hello kalaam developers!'.
 
-//It's becausRc=e cleaned_sourcedata is an array of tokens and each token is an individual word in a program.
+//It's becausRc=e sourcecode is an array of tokens and each token is an individual word in a program.
 
-//It's recommended to look at cleaned_sourcedata of every program to understand how it converts plain text into array of individual words.
+//It's recommended to look at sourcecode of every program to understand how it converts plain text into array of individual words.
 
 const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleString();
 
@@ -51,88 +51,78 @@ const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleS
 
 const isCalculation = AdvancedTypeCheck.isCalculation();
 
-function Scanner(cleaned_sourcedata, i, tokens) {
-  var element = cleaned_sourcedata[i];
-  console.log("scanner element:", element);
+function Scanner(sourcecode, i, tokens) {
+  var el = sourcecode[i];
 
-  if (isVariable(element)) {
-    return "VARIABLE";
-  } else if (isNumber(element)) {
-    return "NUMBER";
-  } else if (isEmptyStringorChar(element)) {
-    return "EMPTY_STRING";
-  } else if (isInput(element)) {
-    return "INPUT";
-  } else if (isOperator(element)) {
-    return "OPERATOR";
-  } else if (isPrintOperation(element, cleaned_sourcedata, i)) {
-    return "PRINT";
-  } else if (isFunction(element)) {
-    return "FUNCTION";
-  } else if (isArray(element)) {
-    return "ARRAY";
-  } else if (isSetArrayIndexValue(element, cleaned_sourcedata, i)) {
-    return "SET_ARRAY_INDEX";
-  } else if (isSetArrayIndexValue(element, cleaned_sourcedata, i) == false) {
-    return "GET_ARRAY_INDEX";
-  } else if (isConditionalKeyword(element)) {
-    if (isWhileLoop(element)) {
-      return "WHILE_LOOP";
-    } else {
-      return "CONDITIONAL_KEYWORD";
-    }
-  } else if (element.includes("पुश")) {
-    return "PUSH_TO_ARRAY";
-  } else if (isForLoop(element)) {
-    return "FOR_LOOP";
-  } else if (isCalculation(element)) {
-    return "CALCULATION";
-  } else if (isRealTimePrintMultipleString(element)) {
-    return "CALCULATION";
-  }
+  var type = isVariable(el)
+    ? "VARIABLE"
+    : isNumber(el)
+    ? "NUMBER"
+    : isEmptyStringorChar(el)
+    ? "EMPTY_STRING"
+    : isInput(el)
+    ? "INPUT"
+    : isOperator(el)
+    ? "OPERATOR"
+    : isPrintOperation(el, sourcecode, i)
+    ? "PRINT"
+    : isFunction(el)
+    ? "FUNCTION"
+    : isArray(el)
+    ? "ARRAY"
+    : isSetArrayIndexValue(el, sourcecode, i)
+    ? "SET_ARRAY_INDEX"
+    : isSetArrayIndexValue(el, sourcecode, i) == false
+    ? "GET_ARRAY_INDEX"
+    : isConditionalKeyword(el)
+    ? isWhileLoop(el)
+      ? "WHILE_LOOP"
+      : "CONDITIONAL_KEYWORD"
+    : el.includes("पुश")
+    ? "PUSH_TO_ARRAY"
+    : isForLoop(el)
+    ? "FOR_LOOP"
+    : isCalculation(el)
+    ? "CALCULATION"
+    : isRealTimePrintMultipleString(el)
+    ? "REALTIME_PRINT"
+    : isString(el)
+    ? "STRING"
+    : isFunctionCall(el, tokens, sourcecode, i)
+    ? "FUNCTION_CALL"
+    : isNativeOperation(el)
+    ? "NATIVE_OPERATION"
+    : isExpression(el) && el.includes("[") && el.includes("]")
+    ? "ARRAY_PUSH"
+    : "UNKNOWN";
 
-  //storing only the string values to tokens ( not the strings in print statements)
-  else if (isString(element)) {
-    return "STRING";
-  } else if (isFunctionCall(element, tokens, cleaned_sourcedata, i)) {
-    return "FUNCTION_CALL";
-  } else if (isNativeOperation(element)) {
-    return "NATIVE_OPERATION";
-  } /* else if (
-  
-        else if (isExpression(element)  && !isCalculation(element) && !element.includes("[") && !element.includes("]") && (!isConditionalKeyword(cleaned_sourcedata[i - 1])) && (cleaned_sourcedata[i - 1] != "मे" && cleaned_sourcedata[i - 1] != "रचना")) {
+  return type;
+}
+
+export default Scanner;
+
+/*\\ 
+        else if isExpression(el)  && !isCalculation(el) && !el.includes("[") && !el.includes("]") && (!isConditionalKeyword(sourcecode[i - 1])) && (sourcecode[i - 1] != "मे" && sourcecode[i - 1] != "रचना")?
 
 
             
-            let CheckFunctionExpression = element.split("(");
+            let CheckFunctionExpression = el.split("(")
 
-            let passedValues = RemoveBrackets(CheckFunctionExpression[1]);
-            passedValues = passedValues.split(",");
-            token = tokens.find(el => el.value == CheckFunctionExpression[0]);
+            let passedValues = RemoveBrackets(CheckFunctionExpression[1])
+            passedValues = passedValues.split(",")
+            token = tokens.find(el => el.value == CheckFunctionExpression[0])
            
 
-            if (token != undefined && cleaned_sourcedata[i-1]!='दिखाए') {
+            if (token != undefined && sourcecode[i-1]!='दिखाए'?
 
-                PushFunctionExecution(element, tokens, cleaned_sourcedata, i, passedValues);
+                PushFunctionExecution(el, tokens, sourcecode, i, passedValues)
 
             }
             else {
 
-                PushExpression(element, tokens);
+                PushExpression(el, tokens)
                 
             }
 
         }
-
-        
-    isExpression(element) &&
-    element.includes("[") &&
-    element.includes("]")
-    
-  ) {
-    PushArray(element, tokens);
-  }
-    */
-}
-
-export default Scanner;
+ */
