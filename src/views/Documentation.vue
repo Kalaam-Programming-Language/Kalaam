@@ -608,9 +608,6 @@ FirstName='Sachin'
 
 LastName='Tendulkar'
 
-NewFirstName='Sunil'
-
-NewLastName='Chetri'
 
 
 रचना PrintFullName(First,Last)
@@ -626,7 +623,6 @@ NewLastName='Chetri'
 
 PrintFullName(FirstName,LastName)
 
-PrintFullName(NewFirstName,NewLastName)
 
 Job='Doctor'
 City='Pune'

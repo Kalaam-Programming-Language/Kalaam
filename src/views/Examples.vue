@@ -302,38 +302,7 @@ c=a+b
 
   </slide>
 
-  <slide class="slide">
-
-<div id="slide">
-
-<q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID10')">Run Code</q-btn>
-<p id="CodePara" >
-
-<h6>#9 कैलकुलेट एरिया एंड सिरकमफेरेंस ऑफ़ अ सर्कल </h6>
-
-<pre id="CodeID10" >
-
-इनपुट(Radius)
-
-एरिय=3.14*Radius*Radius
-
-सिरकमफेरेंस=2*3.14*Radius
-
-दिखाए("Area Of Circle is" + एरिय)
-
-दिखाए("Circumference Of Circle is" + सिरकमफेरेंस)
-
-
-
-
-</pre>
-</p>
-
-</div>
-
-
-</slide>
-
+  
 </carousel>
 
 
@@ -487,31 +456,7 @@ length=length-1
 </div>
   </slide>
 
-          <slide class="slide">
-
-<div id="slide">
-
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID13')">Run Code</q-btn>
-<p id="CodePara" >
-
-<h6>#4  </h6>
-
-<pre id="CodeID13" >
-
-
-
-
-
-
-
-
-
-</pre>
-</p>
-
-</div>
-
-  </slide>
+          
     <slide class="slide">
 
     <div id="slide">
@@ -519,7 +464,7 @@ length=length-1
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID14')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#5 रचना का उदाहरण  </h6>
+<h6>#4 रचना का उदाहरण  </h6>
 
 <pre id="CodeID14" >
 
@@ -557,7 +502,7 @@ First(FirstName,LastName)
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID15')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#6 रचना का उदाहरण 2 </h6>
+<h6>#5 रचना का उदाहरण 2 </h6>
 
 
 <pre id="CodeID15" >
@@ -602,7 +547,7 @@ printname(10)
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID16')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#7 Factorial ऑफ़ अ नंबर  </h6>
+<h6>#6 Factorial ऑफ़ अ नंबर  </h6>
 
 <pre id="CodeID16" >
 
@@ -722,25 +667,7 @@ Fibonacci[a]=x+y
 
   </slide>
 
-    <slide class="slide">
-    <div id="slide">
-
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID19')">Run Code</q-btn>
-<p id="CodePara" >
-
-<h6>#3   </h6>
-
-<pre id="CodeID19" >
-
-
-
-
-
-</pre>
-</p>
-
-</div>
-  </slide>
+   
 
           <slide class="slide">
 
@@ -749,7 +676,7 @@ Fibonacci[a]=x+y
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID20')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#4 क्या यह एक प्रमुख संख्या है? </h6>
+<h6>#3 क्या यह एक प्रमुख संख्या है? </h6>
 
 <pre id="CodeID20" >
 
@@ -804,54 +731,14 @@ length=prime.संख्या()
 </div>
 
   </slide>
-    <slide class="slide">
-
-    <div id="slide">
-
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID21')">Run Code</q-btn>
-<p id="CodePara" >
-
-<h6>#5 </h6>
-
-<pre id="CodeID21" >
-
-
-</pre>
-</p>
-
-</div>
-  </slide>
-
-
-   <slide class="slide">
-    <div id="slide">
-
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID22')">Run Code</q-btn>
-<p id="CodePara" >
-
-<h6>#6 </h6>
-
-
-<pre id="CodeID22" >
-
-
-
-
-</pre>
-
-
-</p>
-
-</div>
-  </slide>
-
+   
     <slide class="slide">
     <div id="slide">
 
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID23')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#6 बाइनरी से Decimal ( Binary to Decimal ) </h6>
+<h6>#4 बाइनरी से Decimal ( Binary to Decimal ) </h6>
 
 <pre id="CodeID23" >
 
@@ -896,7 +783,7 @@ DecimalValue=DecimalValue+value
  <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID24')">Run Code</q-btn>
 <p id="CodePara" >
 
-<h6>#7 Fibonacci अनुक्रम  </h6>
+<h6>#5 Fibonacci अनुक्रम  </h6>
 
 <pre id="CodeID24" >
 
