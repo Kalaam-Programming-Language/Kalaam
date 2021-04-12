@@ -301,7 +301,7 @@ c=a+b
 
 
   </slide>
-
+<!--
   <slide class="slide">
 
 <div id="slide">
@@ -333,18 +333,8 @@ c=a+b
 
 
 </slide>
-
+-->
 </carousel>
-
-
-
-
-
-
-
-
-
-
 
  <h4>Intermediate Examples</h4>
                <carousel id="carousel-body"  :navigationClickTargetSize="1" :paginationPadding="5" :paginationSize="20" paginationActiveColor='green' :navigationEnabled="true" :perPage=this.perPage>

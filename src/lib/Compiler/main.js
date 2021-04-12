@@ -593,11 +593,12 @@ export default function Compile(kalaam, ActiveLangugae) {
       //Push while loops to tokens
       //Format: {type: "WhileLoopStart", value: "जबतक"}, {type: "condition", value: "count<25"}
 
-      case "WHILE_LOOP":
-        PushWhileLoop(element, tokens);
-        break;
       case "CONDITIONAL_KEYWORD":
-        PushConditionalKeyword(element, tokens);
+        if (isWhileLoop(element)) {
+          PushWhileLoop(element, tokens);
+        } else {
+          PushConditionalKeyword(element, tokens);
+        }
 
         //This is how we push conditions encountered in the sourcecode
         //Format:{type: "condition", value: "a<3"}
@@ -622,7 +623,6 @@ export default function Compile(kalaam, ActiveLangugae) {
       // {type: "ForLoopStart", value: "दुहराओ"}
       // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
       case "FOR_LOOP":
-        console.log("for loop");
         PushForLoop(element, tokens);
         PushForLoopAruguments(element, cleaned_sourcedata, i, tokens);
 
@@ -791,10 +791,6 @@ export default function Compile(kalaam, ActiveLangugae) {
         PushArray(element, tokens);
         break;
 
-      case "UNKNOWN":
-        console.log("Unknown", element);
-        break;
-
       /*This is experimental. For now, you can just neglect this
        
           else if (!isPrintOperation(element) && !isNumber(element) && !isVariable(element) && !isExpression(element) && !isOperator(element)) {
@@ -903,7 +899,6 @@ export default function Compile(kalaam, ActiveLangugae) {
     cleaned_sourcedata,
     mixedimpurity
   );
-  console.log("cleaned_sourcedata: ", cleaned_sourcedata); // eslint-disable-line
 
   //#STEP 2- - Checking each token and adding to tokens array
 
@@ -920,7 +915,6 @@ export default function Compile(kalaam, ActiveLangugae) {
       i = i + skipParsing;
     }
   }
-  console.log("cleaned_sourcedata:", updated_tokens, tokens);
 
   //CLEANING UP THE TOKENS ARRAY
   //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
@@ -2319,6 +2313,7 @@ export default function Compile(kalaam, ActiveLangugae) {
             functionSourceData,
             WhileLoopSourcedataTokens
           ).StoreResult;
+
           // console.log("WhileLoopSourcedataTokens: ", WhileLoopSourcedataTokens);
           //constantly evaluating the conditionvalue. for e.g count<25 in जबतक(count<25)
 
@@ -2343,7 +2338,7 @@ export default function Compile(kalaam, ActiveLangugae) {
                 );
               }
 
-              // Handling CONDITIONAL statements in for loop
+              // Handling CONDITIONAL statements in while loop
               else if (WhileLoopSourcedataTokens[i].type == "condition") {
                 let index = HandleConditions(
                   WhileLoopSourcedataTokens,

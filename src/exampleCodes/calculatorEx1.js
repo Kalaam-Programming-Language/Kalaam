@@ -1,4 +1,9 @@
-const tW = (strings) => { return strings.map((s) => s.replace(/\s+/g, '\n')).join("").trim() }
+const tW = (strings) => {
+  return strings
+    .map((s) => s.replace(/\s+/g, "\n"))
+    .join("")
+    .trim();
+};
 
 export const calculator = tW`FirstValue=10
             SecondValue=20
@@ -22,4 +27,4 @@ export const calculator = tW`FirstValue=10
             {
             output=FirstValue/SecondValue
             }
-            दिखाए("Output is " + output)`
+            दिखाए("Output is" + output)`;

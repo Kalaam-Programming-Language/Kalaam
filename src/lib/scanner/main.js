@@ -75,9 +75,7 @@ function Scanner(sourcecode, i, tokens) {
     : isSetArrayIndexValue(el, sourcecode, i) == false
     ? "GET_ARRAY_INDEX"
     : isConditionalKeyword(el)
-    ? isWhileLoop(el)
-      ? "WHILE_LOOP"
-      : "CONDITIONAL_KEYWORD"
+    ? "CONDITIONAL_KEYWORD"
     : el.includes("पुश")
     ? "PUSH_TO_ARRAY"
     : isForLoop(el)
