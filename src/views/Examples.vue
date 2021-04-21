@@ -963,6 +963,14 @@ q-btn:focus {outline:0;}
   display: block;
 }
 
+  button[aria-label="Previous page"] { 
+    margin-left : 44px;
+    }
+      button[aria-label="Next page"] { 
+    margin-right : 44px;
+    }
+
+
 @media only screen
 and (max-width : 480px) {
 
