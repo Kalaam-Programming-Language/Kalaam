@@ -924,24 +924,14 @@ pre{
 {
 
 margin-top: 8%;
-
-
-  width: 36%;
-  height: 38px;
+ width: 36%;
+  height: 56px;
   cursor: pointer;
-
-
-
-
 }
 
 #TryCodebtn:hover{
-
-
-    border: none
+ border: none
 }
-
-
 
 #CodePara{
 
