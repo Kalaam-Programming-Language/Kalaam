@@ -37,9 +37,7 @@ function IsSpecialChar(v, i) {
 }
 
 function IsConditionalOperator(e) {
-  return (
-    e.includes(">") || e.includes("<") || e.includes("==") || e.includes("!=")
-  );
+  return e.includes(">") || e.includes("<") || e.includes("==") || e.includes("!=");
 }
 
 function IsReservedKeyword(e) {
@@ -74,9 +72,7 @@ function isEmptyStringorChar() {
 //Checking if element is a pure evaluation like 1+2, 20*34, 40+6-98 etc
 
 function isPureEval(element) {
-  if (
-    /^([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)*$/gm.test(element)
-  ) {
+  if (/^([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)*$/gm.test(element)) {
     return true;
   }
 }
@@ -91,8 +87,7 @@ function isCalculation(element) {
         element.includes("-") ||
         element.includes("*") ||
         element.includes("/")) &&
-      ((element.includes("(") && element.includes(")")) ||
-        (!element.includes("(") && !element.includes(")"))) &&
+      ((element.includes("(") && element.includes(")")) || (!element.includes("(") && !element.includes(")"))) &&
       element.charAt(element.length - 1) != "+"
     ) {
       return true;
@@ -107,11 +102,7 @@ function isArrayOperation(element) {
 
   element = RemoveBrackets(element);
 
-  if (
-    element.charAt(element.length - 1) == "]" &&
-    element.includes("[") &&
-    element.charAt(0) != "["
-  ) {
+  if (element.charAt(element.length - 1) == "]" && element.includes("[") && element.charAt(0) != "[") {
     return true;
   }
 }
@@ -132,9 +123,7 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities) {
 
     if (
       !element.includes("==") &&
-      (element.indexOf('="') > -1 ||
-        element.indexOf("=") > 0 ||
-        element.charAt(0) == "=") &&
+      (element.indexOf('="') > -1 || element.indexOf("=") > 0 || element.charAt(0) == "=") &&
       element != "=="
     ) {
       impurities.push(element); //push such element as impurity in impurities
@@ -315,13 +304,7 @@ function handlemultConditions(element) {
 
 //For operarions like Numbers.पुश(23)
 
-function AddElementToArray(
-  Sourcedata,
-  index,
-  updated_tokens,
-  ExecutionStack,
-  LinebylineSourcedata
-) {
+function AddElementToArray(Sourcedata, index, updated_tokens, ExecutionStack, LinebylineSourcedata) {
   let token = Sourcedata[index].value;
 
   token = token.replace("पुश", "");
@@ -350,15 +333,7 @@ function AddElementToArray(
   updated_tokens[indexofArray].value = ArrayValue;
 
   let message =
-    "आपने " +
-    '"' +
-    ElementtoPush +
-    '"' +
-    " को " +
-    +'"' +
-    Array +
-    '"' +
-    " इस बकेट(Array) में दर्ज(Store) करवाया है| ";
+    "आपने " + '"' + ElementtoPush + '"' + " को " + +'"' + Array + '"' + " इस बकेट(Array) में दर्ज(Store) करवाया है| ";
 
   let expression = Sourcedata[index].value;
   //
@@ -377,18 +352,10 @@ function AddElementToArray(
   );
 }
 
-function AcceptInputandSetValue(
-  tokens,
-  index,
-  updated_tokens,
-  ExecutionStack,
-  LinebylineSourcedata
-) {
+function AcceptInputandSetValue(tokens, index, updated_tokens, ExecutionStack, LinebylineSourcedata) {
   let SetInputValueAs = tokens[index].AcceptAs;
 
-  var value = prompt(
-    "आप " + '"' + SetInputValueAs + '"' + " को क्या किंमत देना चाहते हो ?"
-  ); // eslint-disable-line
+  var value = prompt("आप " + '"' + SetInputValueAs + '"' + " को क्या किंमत देना चाहते हो ?"); // eslint-disable-line
 
   updated_tokens.push({
     name: SetInputValueAs,
@@ -663,12 +630,7 @@ function GetArrayorStringElement(element, updated_tokens, NewValue) {
 
 //Needs improvement
 
-function ForLoopArrayorStringOutput(
-  elementValue,
-  iterator,
-  updated_tokens,
-  global
-) {
+function ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, global) {
   let CurrentElement = "";
 
   CurrentElement = elementValue.name + "[" + iterator + "]";
@@ -922,14 +884,7 @@ function AssignorUpdateValues(
     varvalue != " " &&
     !isEmptyStringorChar(varvalue)
   ) {
-    global.error.push(
-      "Cannot set " +
-        variable +
-        " to undefined " +
-        ": " +
-        varvalue +
-        " is undefined "
-    );
+    global.error.push("Cannot set " + variable + " to undefined " + ": " + varvalue + " is undefined ");
   }
 
   //to count the length, Numbers.संख्या()
@@ -981,10 +936,7 @@ function AssignorUpdateValues(
 
     //For operations like Name=Name+ Array[i]
 
-    if (
-      element.includes("+") ||
-      (element.includes("-") && !Split[0].includes("["))
-    ) {
+    if (element.includes("+") || (element.includes("-") && !Split[0].includes("["))) {
       flag = true;
 
       let token = updated_tokens.find((el) => el.name == Split[0]);
@@ -1009,10 +961,7 @@ function AssignorUpdateValues(
 
     //for operations like x= Array[i+1] etc
 
-    if (
-      (Split[1].includes("-") || Split[1].includes("+")) &&
-      !Split[1].includes("[")
-    ) {
+    if ((Split[1].includes("-") || Split[1].includes("+")) && !Split[1].includes("[")) {
       let output = CalculateValues(Split[1], i, updated_tokens);
 
       element = SplitandJoin(Split, output, element);
@@ -1021,11 +970,7 @@ function AssignorUpdateValues(
     let token = updated_tokens.find((el) => el.name == Split[1]);
 
     //for operations like Array[Age]. Here index is an already defined variable
-    if (
-      token != undefined &&
-      OriginalIterator != Split[1] &&
-      token.name != ""
-    ) {
+    if (token != undefined && OriginalIterator != Split[1] && token.name != "") {
       element = SplitandJoin(Split, token.value, element);
     }
 
@@ -1159,10 +1104,7 @@ function AssignorUpdateValues(
 
   let message = "";
 
-  if (
-    isCalculation(sourcedata[i + 1].value) ||
-    sourcedata[i + 1].value.includes("संख्या")
-  ) {
+  if (isCalculation(sourcedata[i + 1].value) || sourcedata[i + 1].value.includes("संख्या")) {
     message =
       " Computer सबसे पहले जाँच करता है की क्या, " +
       '"' +
@@ -1243,8 +1185,7 @@ function GetConditionValue(element, updated_tokens) {
   var ConditionValue = false;
 
   if (element.includes("&&") || element.includes("||")) {
-    let MultConditionsCount =
-      parseInt(Count("&", element)) + parseInt(Count("|", element));
+    let MultConditionsCount = parseInt(Count("&", element)) + parseInt(Count("|", element));
 
     //this will be our final values
     //converted as true&&false&&true||true
@@ -1264,8 +1205,7 @@ function GetConditionValue(element, updated_tokens) {
 
         ConditionValue = UpdateUpdated_tokenswithValues(Values);
 
-        BuiltMultConditonWithValues =
-          BuiltMultConditonWithValues + ConditionValue;
+        BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue;
       } else {
         let result = handlemultConditions(element);
 
@@ -1281,8 +1221,7 @@ function GetConditionValue(element, updated_tokens) {
 
         ConditionValue = UpdateUpdated_tokenswithValues(Values);
 
-        BuiltMultConditonWithValues =
-          BuiltMultConditonWithValues + ConditionValue + result.operator;
+        BuiltMultConditonWithValues = BuiltMultConditonWithValues + ConditionValue + result.operator;
       }
     }
 
@@ -1327,9 +1266,7 @@ function ForLoopSetMetadata(tokens, i, updated_tokens) {
 
   //checking if iteration end is an predefined variable
 
-  let token = updated_tokens.find(
-    (el) => el.name == ForLoopMetaData.iterationEnd
-  );
+  let token = updated_tokens.find((el) => el.name == ForLoopMetaData.iterationEnd);
 
   if (token != undefined) {
     IterationEnd = parseInt(token.value);
@@ -1551,15 +1488,7 @@ function SetArrayIndexValue(
   }
 }
 
-function AddtoExecutionStack(
-  stack,
-  keyword,
-  keywordUse,
-  variable,
-  value,
-  message,
-  Linenumber
-) {
+function AddtoExecutionStack(stack, keyword, keywordUse, variable, value, message, Linenumber) {
   stack.push({
     keyword: keyword,
     keywordUse: keywordUse,

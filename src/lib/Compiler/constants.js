@@ -9,7 +9,7 @@ if (ActiveLanguage == null) {
 
 var ActiveLangugaeKeywords = "";
 
-const KalaamKeywords = {
+var KalaamKeywords = {
   Hindi: {
     Print: "दिखाए", //Still have to change this manually where REGEX are implemented
     Input: "इनपुट",
@@ -34,6 +34,7 @@ const KalaamKeywords = {
     Langugae: "Marathi",
   },
 };
+console.log("KalaamKeywords:", KalaamKeywords);
 
 if (ActiveLanguage == "Hindi") {
   ActiveLangugaeKeywords = KalaamKeywords.Hindi;
