@@ -7,19 +7,8 @@
 
           <router-link id="Kalaam" to="/">कलाम</router-link>
         </div>
-        <q-form
-          style="float:right;padding-right:2%"
-          v-if="isMobile"
-          id="Select-Language-form"
-          @submit="onSubmit"
-        >
-          <q-select
-            dense="true"
-            color="black"
-            outlined
-            v-model="ActiveLanguage"
-            :options="options"
-          >
+        <q-form style="float:right;padding-right:2%" v-if="isMobile" id="Select-Language-form" @submit="onSubmit">
+          <q-select dense="true" color="black" outlined v-model="ActiveLanguage" :options="options">
             <template v-slot:append>
               <q-avatar>
                 <img
@@ -28,12 +17,7 @@
               </q-avatar>
             </template>
           </q-select>
-          <q-btn
-            style="color:black"
-            label="Submit"
-            type="submit"
-            color="secondary"
-          />
+          <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
         </q-form>
 
         <ul id="headerlist">
@@ -45,12 +29,7 @@
           </li>
           <li>
             <q-form id="Select-Language-form" @submit="onSubmit">
-              <q-select
-                color="black"
-                outlined
-                v-model="ActiveLanguage"
-                :options="options"
-              >
+              <q-select color="black" outlined v-model="ActiveLanguage" :options="options">
                 <template v-slot:append>
                   <q-avatar>
                     <img
@@ -59,12 +38,7 @@
                   </q-avatar>
                 </template>
               </q-select>
-              <q-btn
-                style="color:black"
-                label="Submit"
-                type="submit"
-                color="secondary"
-              />
+              <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
             </q-form>
           </li>
         </ul>
@@ -98,17 +72,8 @@
 
         <li style="margin:0px">
           <label class="switch">
-            <input
-              @click="SwitchMode()"
-              v-if="this.$store.state.PractiseOn"
-              type="checkbox"
-            />
-            <input
-              @click="SwitchMode()"
-              v-if="this.$store.state.LearningOn"
-              type="checkbox"
-              checked
-            />
+            <input @click="SwitchMode()" v-if="this.$store.state.PractiseOn" type="checkbox" />
+            <input @click="SwitchMode()" v-if="this.$store.state.LearningOn" type="checkbox" checked />
 
             <span class="slider round"></span>
           </label>
@@ -143,27 +108,16 @@
           ></codemirror>
         </no-ssr>
 
-        <q-btn
-          flat
-          @click="RunLinebyLine()"
-          id="RunlinebylineBtn"
-          label="Run"
-        />
+        <q-btn flat @click="RunLinebyLine()" id="RunlinebylineBtn" label="Run" />
         <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
-        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
-          Keyword.Print
-        }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
         <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
 
-        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
-          Keyword.If
-        }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
 
         <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
-          Keyword.While
-        }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
         <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
         <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
         <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -205,19 +159,13 @@
           <q-btn flat @click="Run()" id="Runbtn" label="Run" />
           <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
-          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
-            Keyword.Print
-          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
           <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
 
-          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
-            Keyword.If
-          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
 
           <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
-            Keyword.While
-          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
           <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
           <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
           <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -506,15 +454,13 @@ export default {
 
       if (this.flag == false) {
         this.ExecutionStack = Compile(this.$data, this.ActiveLanguage);
+        console.log("this.ExecutionStack:", this.ExecutionStack);
       }
 
       this.flag = true;
 
       this.ExecutionStackLinebyLine =
-        this.ExecutionStackLinebyLine +
-        this.ExecutionStack[this.CurrentLine].message +
-        "\n" +
-        "\n";
+        this.ExecutionStackLinebyLine + this.ExecutionStack[this.CurrentLine].message + "\n" + "\n";
 
       let Line = this.ExecutionStack[this.CurrentLine].Linenumber;
 

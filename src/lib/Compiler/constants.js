@@ -34,7 +34,6 @@ var KalaamKeywords = {
     Langugae: "Marathi",
   },
 };
-console.log("KalaamKeywords:", KalaamKeywords);
 
 if (ActiveLanguage == "Hindi") {
   ActiveLangugaeKeywords = KalaamKeywords.Hindi;

@@ -1,7 +1,7 @@
 import { RemoveQuotes, RemoveBrackets, operatorType } from "../Scripts/Helpers";
 import { ActiveLangugaeKeywords } from "../Compiler/constants";
 import { IsReservedKeyword } from "../Scripts/main";
-
+import { HandleBlocks } from "../Scripts/main";
 function isNumber(element) {
   return /^[0-9]*$/gm.test(element);
 }
@@ -80,4 +80,27 @@ function handleRealtimePrint(cleaned_sourcedata, i) {
 
   return { foundString, skip };
 }
-export { handleOutput, handleVariable, handleHygiene, handleRealtimePrint };
+
+function prepareFunction(mutable_tokens, j) {
+  //We are preparing the required data to execute a function call later in the prgroam
+
+  //functionsourcedata includes all the tokens from tokens array which belongs to a particular function
+
+  //We find self range or a function block through HandleBlocks function
+
+  let functionSourceData = [];
+
+  let result = HandleBlocks(mutable_tokens, j + 1, functionSourceData);
+
+  functionSourceData = result.StoreResult;
+
+  //To identify function context in tokens array
+
+  functionSourceData.forEach((el) => {
+    el.context = "function";
+  });
+
+  return { functionSourceData };
+}
+
+export { handleOutput, handleVariable, handleHygiene, handleRealtimePrint, prepareFunction };

@@ -79,952 +79,1417 @@ import {
 import scanner from "../scanner/main";
 
 import "../HelperLibrary/main";
-import { handleRealtimePrint, handleVariable, handleOutput } from "../Scripts/Handlers";
+import { handleRealtimePrint, handleVariable, handleOutput, prepareFunction } from "../Scripts/Handlers";
+import { findtokenPositioninCode } from "../Scripts/finders";
 //We will be importing this whole function to practise.vue and it will be executed when user clicks on 'RUN'
 
 export default function Compile(kalaam, ActiveLangugae) {
-  //console.log("kalaam Global Object: ", kalaam);
-  //'kalaam' is our global object and access it's value as 'this.$data' from practise.vue located in views
-  //All the input sourcecode, tokens, output, error handling etc is stored in kalaam object
+  try {
+    //console.log("kalaam Global Object: ", kalaam);
+    //'kalaam' is our global object and access it's value as 'this.$data' from practise.vue located in views
+    //All the input sourcecode, tokens, output, error handling etc is stored in kalaam object
 
-  //t0 along with t1 takes record of Time taken to run the code. t1-t0 gives us the exact time taken.
-  var t0 = performance.now(); // eslint-disable-line
-  var skipParsing = 0;
+    //t0 along with t1 takes record of Time taken to run the code. t1-t0 gives us the exact time taken.
+    var t0 = performance.now(); // eslint-disable-line
+    var skipParsing = 0;
 
-  //If an error is encountered we set the value to true and push the error to errors array.
-  kalaam.isError = false;
+    //If an error is encountered we set the value to true and push the error to errors array.
+    kalaam.isError = false;
 
-  //to stop accumulating output on succesive RUN.
-  //change- make null
-  kalaam.output = "";
+    //to stop accumulating output on succesive RUN.
+    //change- make null
+    kalaam.output = "";
 
-  //kalaam.input = '',
-  //change- make RHS empty
-  kalaam.linebylineOutput = kalaam.output.split("\n");
-  //kalaam.inputIndexes = []
-  kalaam.error = [];
-  kalaam.OperationObjects = [];
+    //kalaam.input = '',
+    //change- make RHS empty
+    kalaam.linebylineOutput = kalaam.output.split("\n");
+    //kalaam.inputIndexes = []
+    kalaam.error = [];
+    kalaam.OperationObjects = [];
 
-  //Sourcedata is the raw code provided by use
-  var sourcedata = kalaam.code;
+    //Sourcedata is the raw code provided by use
+    var sourcedata = kalaam.code;
 
-  var LinebylineSourcedata = sourcedata.replace(/(?:\r\n|\r|\n)/g, "breakpoint").split("breakpoint");
-  //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
+    var LinebylineSourcedata = sourcedata.replace(/(?:\r\n|\r|\n)/g, "breakpoint").split("breakpoint");
+    //LinebylineSourcedata=LinebylineSourcedata.filter(el=>el!='')
 
-  //This is where formatted and cleaned sourcedata will go.
-  var cleaned_sourcedata = [];
-  var ExecutionStack = [];
-  var i = 0;
-  //This is where tokens will be pushed depending upon their types like Variable, function, loops etc.
-  var tokens = [];
+    //This is where formatted and cleaned sourcedata will go.
+    var cleaned_sourcedata = [];
+    var ExecutionStack = [];
+    var i = 0;
+    //This is where tokens will be pushed depending upon their types like Variable, function, loops etc.
+    var tokens = [];
 
-  //Experimental
-  var mixedimpurity = [];
+    //Experimental
+    var mixedimpurity = [];
 
-  //The variables with their calculated values are pushed here. If c=a+b, memory is where you will find the calculated value
-  var memory = [];
+    //The variables with their calculated values are pushed here. If c=a+b, memory is where you will find the calculated value
+    var memory = [];
 
-  //Variable-value pairs similar to memory but limits itself to a user created function.
-  var functionContextmemory = [];
+    //Variable-value pairs similar to memory but limits itself to a user created function.
+    var functionContextmemory = [];
 
-  var variables_array = [];
+    var variables_array = [];
 
-  //Pushing the variables that are assigned to filter out defined and undefined variables. Useful in error handling
-  var assigned_variables = [];
-  // var terms = [];
+    //Pushing the variables that are assigned to filter out defined and undefined variables. Useful in error handling
+    var assigned_variables = [];
+    // var terms = [];
 
-  var ReIntializedVariables = [];
+    var ReIntializedVariables = [];
 
-  //TO REMOVE DUPLICATE VARIABLES,
+    //TO REMOVE DUPLICATE VARIABLES,
 
-  var variableArray = [];
-  //A temporary instance of a global variable. Used because of scoping issue, there are better soultions and we will do that.
+    var variableArray = [];
+    //A temporary instance of a global variable. Used because of scoping issue, there are better soultions and we will do that.
 
-  //emptying accumulated value
-  //See AssignorUpdateValues function for more
-  ResetValue();
+    //emptying accumulated value
+    //See AssignorUpdateValues function for more
+    ResetValue();
 
-  //SECTION - Checking for type of characters. TypeCheck is an object which consists all self functions. Check Line 102
+    //SECTION - Checking for type of characters. TypeCheck is an object which consists all self functions. Check Line 102
 
-  const isVariable = TypeCheck.isVariable();
+    const isVariable = TypeCheck.isVariable();
 
-  const isNumber = TypeCheck.isNumber();
+    const isNumber = TypeCheck.isNumber();
 
-  const isWhileLoop = TypeCheck.isWhileLoop();
+    const isWhileLoop = TypeCheck.isWhileLoop();
 
-  const isPureEval = AdvancedTypeCheck.isPureEval();
+    const isPureEval = AdvancedTypeCheck.isPureEval();
 
-  //if _tokensr encounters anything like (" or (, then that's a realtime print.
+    //if _tokensr encounters anything like (" or (, then that's a realtime print.
 
-  //buildstring will be applied now to create a string and push it into tokens. Buildstring is used to combine string tokens like
-  //['hello', 'Kalaam', 'developers', "!"] into 'hello kalaam developers!'.
+    //buildstring will be applied now to create a string and push it into tokens. Buildstring is used to combine string tokens like
+    //['hello', 'Kalaam', 'developers', "!"] into 'hello kalaam developers!'.
 
-  //It's because cleaned_sourcedata is an array of tokens and each token is an individual word in a program.
+    //It's because cleaned_sourcedata is an array of tokens and each token is an individual word in a program.
 
-  //It's recommended to look at cleaned_sourcedata of every program to understand how it converts plain text into array of individual words.
+    //It's recommended to look at cleaned_sourcedata of every program to understand how it converts plain text into array of individual words.
 
-  const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleString();
+    const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleString();
 
-  //const isStringandValue = AdvancedTypeCheck.isStringandValue()
+    //const isStringandValue = AdvancedTypeCheck.isStringandValue()
 
-  const isCalculation = AdvancedTypeCheck.isCalculation();
+    const isCalculation = AdvancedTypeCheck.isCalculation();
 
-  // const isDirectPrintArithmetic = AdvancedTypeCheck.isDirectPrintArithmetic()
+    // const isDirectPrintArithmetic = AdvancedTypeCheck.isDirectPrintArithmetic()
 
-  //SECTION Build Operations
+    //SECTION Build Operations
 
-  //To convert ['hello', 'Kalaam', 'developers', "!"] into 'hello kalaam developers!'.
+    //To convert ['hello', 'Kalaam', 'developers', "!"] into 'hello kalaam developers!'.
 
-  const BuildString = BuildOperation.BuildString();
+    const BuildString = BuildOperation.BuildString();
 
-  //To convert ['[', 'x','y','z',']'] into ['x','y','z']
+    //To convert ['[', 'x','y','z',']'] into ['x','y','z']
 
-  const BuildArray = BuildOperation.BuildArray();
+    const BuildArray = BuildOperation.BuildArray();
 
-  //self function is the first step to handlle operations like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
+    //self function is the first step to handlle operations like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
 
-  const BuildCondition = BuildOperation.BuildCondition();
+    const BuildCondition = BuildOperation.BuildCondition();
 
-  //This will run for every दिखाए() statement encountered in the program, not just for loops
+    //This will run for every दिखाए() statement encountered in the program, not just for loops
 
-  //ARGUMENTS TO PrintEngine are:
-  //Tokens- Tokens array
-  //memory- Variable-value pairs of variables
-  //j- Index of a token in Tokens array
-  //global- self or self
-  //iterator and OriginalIterator are used to print values in for and while loops.
+    //ARGUMENTS TO PrintEngine are:
+    //Tokens- Tokens array
+    //memory- Variable-value pairs of variables
+    //j- Index of a token in Tokens array
+    //global- self or self
+    //iterator and OriginalIterator are used to print values in for and while loops.
 
-  function PrintEngine(Tokens, memory, j, iterator, OriginalIterator) {
-    //To understand what kind of data is necessary to print a value
+    function PrintEngine(Tokens, memory, j, iterator, OriginalIterator) {
+      //To understand what kind of data is necessary to print a value
 
-    //Getting the current token as token and value to be printed as NextTokenValue
-    //e.g. For दिखाए(Name), Name is the NextTokenValue and it is the one which we will have to print
+      //Getting the current token as token and value to be printed as NextTokenValue
+      //e.g. For दिखाए(Name), Name is the NextTokenValue and it is the one which we will have to print
 
-    var StringVar = [];
+      var StringVar = [];
 
-    var token = Tokens[j].value;
+      var token = Tokens[j].value;
 
-    var NextTokenValue = Tokens.nextElement(j).value;
-    //Removing the brackets, if any.
-    var VariableToPrint = RemoveBrackets(NextTokenValue);
+      var NextTokenValue = Tokens.nextElement(j).value;
+      //Removing the brackets, if any.
+      var VariableToPrint = RemoveBrackets(NextTokenValue);
 
-    //SECTION - Outputting the code
-    // finding the variable value in memory. memory is where our Variable-value pairs exists.
+      //SECTION - Outputting the code
+      // finding the variable value in memory. memory is where our Variable-value pairs exists.
 
-    //This loop is only for printing direct values like print(name), print(array)
-    memory.forEach((el) => {
-      //If we have a variable-value pair sitting in memory
+      //This loop is only for printing direct values like print(name), print(array)
+      memory.forEach((el) => {
+        //If we have a variable-value pair sitting in memory
 
-      if (el.name === VariableToPrint) {
-        //for calculations like x=ageone+agetwo
+        if (el.name === VariableToPrint) {
+          //for calculations like x=ageone+agetwo
 
-        //If we have already calculated value in assigned_variables, use that or else move forward
+          //If we have already calculated value in assigned_variables, use that or else move forward
 
-        if (assigned_variables.includes(el) || assigned_variables.includes(el.name)) {
-          handleOutput(el.value, kalaam);
-        } else {
-          //if the value found is a Number
-
-          if (isNumber(el.value)) {
+          if (assigned_variables.includes(el) || assigned_variables.includes(el.name)) {
             handleOutput(el.value, kalaam);
+          } else {
+            //if the value found is a Number
 
-            assigned_variables.push(el.name);
-          }
+            if (isNumber(el.value)) {
+              handleOutput(el.value, kalaam);
 
-          //if the value found is operations like age=2020-1996
-          else if (isPureEval(el.value)) {
-            //we are using Javascript's eval function to calculate direct arithmetic operations
-            let outputpure = eval(el.value);
+              assigned_variables.push(el.name);
+            }
 
-            el.value = outputpure;
+            //if the value found is operations like age=2020-1996
+            else if (isPureEval(el.value)) {
+              //we are using Javascript's eval function to calculate direct arithmetic operations
+              let outputpure = eval(el.value);
 
-            handleOutput(el.value, kalaam);
-
-            assigned_variables.push(el.name);
-          }
-
-          //We will simplify self conditions as we move forward
-          else if (!isPureEval(el.value) && !isNumber(el.value)) {
-            if (!(el.name.includes("]") && el.name.includes("["))) {
-              if (el.type === "Array") {
-                if (!el.value.includes("[")) {
-                  el.value = "[" + el.value.toString() + "]";
-                }
-              }
+              el.value = outputpure;
 
               handleOutput(el.value, kalaam);
 
               assigned_variables.push(el.name);
             }
+
+            //We will simplify self conditions as we move forward
+            else if (!isPureEval(el.value) && !isNumber(el.value)) {
+              if (!(el.name.includes("]") && el.name.includes("["))) {
+                if (el.type === "Array") {
+                  if (!el.value.includes("[")) {
+                    el.value = "[" + el.value.toString() + "]";
+                  }
+                }
+
+                handleOutput(el.value, kalaam);
+
+                assigned_variables.push(el.name);
+              }
+            }
           }
         }
+      });
+
+      //This is how we print Array in Kalaam
+      if (Tokens[j + 1].type === "Array") {
+        //To run only if iterator is present
+
+        //This runs on for loop - दिखाए(Array[a]) etc
+
+        //self runs only if for(i) and in the loop, array[i], not on array[x]. For loop Iterator and index should be same, in self case 'i'
+
+        if (iterator != undefined && Tokens[j + 1].IndexInput === OriginalIterator) {
+          let Value = NextTokenValue;
+
+          let ArrayElement = CreateArrayElement(Value, iterator);
+
+          let output = GetArrayorStringElement(ArrayElement, memory);
+
+          output = RemoveQuotes(output);
+
+          handleOutput(output, kalaam);
+
+          assigned_variables.push(Tokens[j + 1]);
+        }
+
+        //This runs to Print(Array[2]) like specific array values
+        else if (Tokens[j + 1].IndexInput != OriginalIterator) {
+          let Value = NextTokenValue;
+
+          let IndexToChange = Tokens[j + 1].IndexInput;
+
+          let ArrayElement = CreateArrayElement(Value, IndexToChange);
+
+          let element = ArrayElement.replace("]", "");
+
+          let Split = element.split("[");
+
+          if (Split[1].includes("-") || Split[1].includes("+")) {
+            let output = CalculateValues(Split[1], j, memory);
+
+            Split[1] = output;
+
+            Split = Split.join("[") + "]";
+            ArrayElement = Split;
+          }
+
+          let token = memory.find((el) => el.name === Split[1]);
+
+          if (token != undefined && OriginalIterator != Split[1]) {
+            Split[1] = token.value;
+
+            Split = Split.join("[") + "]";
+            ArrayElement = Split;
+          } else {
+            ArrayElement = ArrayElement;
+            ////
+          }
+
+          let output = GetArrayorStringElement(ArrayElement, memory);
+
+          handleOutput(output, kalaam);
+        }
       }
-    });
 
-    //This is how we print Array in Kalaam
-    if (Tokens[j + 1].type === "Array") {
-      //To run only if iterator is present
+      //printing direct numbers and direct calcultions like print(10), print(10*10)
+      else if (
+        token === ActiveLangugaeKeywords.Print &&
+        (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))
+      ) {
+        NextTokenValue = RemoveBrackets(NextTokenValue);
 
-      //This runs on for loop - दिखाए(Array[a]) etc
+        if (isNumber(NextTokenValue) && Tokens[j + 1].type != "Calculation") {
+          handleOutput(NextTokenValue, kalaam);
+        } else {
+          let a = eval(NextTokenValue);
 
-      //self runs only if for(i) and in the loop, array[i], not on array[x]. For loop Iterator and index should be same, in self case 'i'
+          handleOutput(a, kalaam);
+        }
+      }
 
-      if (iterator != undefined && Tokens[j + 1].IndexInput === OriginalIterator) {
-        let Value = NextTokenValue;
-
-        let ArrayElement = CreateArrayElement(Value, iterator);
-
-        let output = GetArrayorStringElement(ArrayElement, memory);
+      //foroperations like print('you live, you learn')
+      else if (
+        Tokens[j + 1].mode === "RealTimePrint" &&
+        !NextTokenValue.includes("+") /*&& !NextTokenValue.includes('=')*/
+      ) {
+        let output = RemoveBrackets(NextTokenValue);
 
         output = RemoveQuotes(output);
 
-        handleOutput(output, kalaam);
-
-        assigned_variables.push(Tokens[j + 1]);
+        handleOutput(output + "\n", kalaam);
       }
 
-      //This runs to Print(Array[2]) like specific array values
-      else if (Tokens[j + 1].IndexInput != OriginalIterator) {
-        let Value = NextTokenValue;
+      //operations like print(Age + 'is young age') i.e string concatenations
+      else if (Tokens[j + 1].mode === "RealTimePrint" && NextTokenValue.includes("+")) {
+        let x = SplitElementsArray(NextTokenValue);
 
-        let IndexToChange = Tokens[j + 1].IndexInput;
+        x = x.join("").split("+");
 
-        let ArrayElement = CreateArrayElement(Value, IndexToChange);
+        StringVar = SetValues(x, memory);
 
-        let element = ArrayElement.replace("]", "");
+        let output = StringVar.join(" ");
 
-        let Split = element.split("[");
+        output = RemoveBrackets(output);
+        output = RemoveQuotes(output);
 
-        if (Split[1].includes("-") || Split[1].includes("+")) {
-          let output = CalculateValues(Split[1], j, memory);
+        handleOutput(output + "\n", kalaam);
+      } else if (isCalculation(RemoveBrackets(NextTokenValue)) && Tokens[j + 1].mode != "RealTimePrint") {
+        NextTokenValue = RemoveBrackets(NextTokenValue);
 
-          Split[1] = output;
+        let output = CalculateValues(NextTokenValue, j, memory);
 
-          Split = Split.join("[") + "]";
-          ArrayElement = Split;
-        }
-
-        let token = memory.find((el) => el.name === Split[1]);
-
-        if (token != undefined && OriginalIterator != Split[1]) {
-          Split[1] = token.value;
-
-          Split = Split.join("[") + "]";
-          ArrayElement = Split;
-        } else {
-          ArrayElement = ArrayElement;
-          ////
-        }
-
-        let output = GetArrayorStringElement(ArrayElement, memory);
-
-        handleOutput(output, kalaam);
+        handleOutput(output + "\n", kalaam);
       }
-    }
 
-    //printing direct numbers and direct calcultions like print(10), print(10*10)
-    else if (
-      token === ActiveLangugaeKeywords.Print &&
-      (isPureEval(RemoveBrackets(NextTokenValue)) || isNumber(RemoveBrackets(NextTokenValue)))
-    ) {
-      NextTokenValue = RemoveBrackets(NextTokenValue);
+      let message =
+        " Computer ने आपकी दी गयी वैल्यू, " + '"' + RemoveBrackets(NextTokenValue) + '"' + " को दिखाया है |";
 
-      if (isNumber(NextTokenValue) && Tokens[j + 1].type != "Calculation") {
-        handleOutput(NextTokenValue, kalaam);
-      } else {
-        let a = eval(NextTokenValue);
+      //This is the experession whcih is getting evaluated.
 
-        handleOutput(a, kalaam);
-      }
-    }
+      let expression = token + NextTokenValue;
+      let description = "किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है।";
 
-    //foroperations like print('you live, you learn')
-    else if (
-      Tokens[j + 1].mode === "RealTimePrint" &&
-      !NextTokenValue.includes("+") /*&& !NextTokenValue.includes('=')*/
-    ) {
-      let output = RemoveBrackets(NextTokenValue);
+      expression = GetcleanedExpression(expression);
 
-      output = RemoveQuotes(output);
-
-      handleOutput(output + "\n", kalaam);
-    }
-
-    //operations like print(Age + 'is young age') i.e string concatenations
-    else if (Tokens[j + 1].mode === "RealTimePrint" && NextTokenValue.includes("+")) {
-      let x = SplitElementsArray(NextTokenValue);
-
-      x = x.join("").split("+");
-
-      StringVar = SetValues(x, memory);
-
-      let output = StringVar.join(" ");
-
-      output = RemoveBrackets(output);
-      output = RemoveQuotes(output);
-
-      handleOutput(output + "\n", kalaam);
-    } else if (isCalculation(RemoveBrackets(NextTokenValue)) && Tokens[j + 1].mode != "RealTimePrint") {
-      NextTokenValue = RemoveBrackets(NextTokenValue);
-
-      let output = CalculateValues(NextTokenValue, j, memory);
-
-      handleOutput(output + "\n", kalaam);
-    }
-
-    let message = " Computer ने आपकी दी गयी वैल्यू, " + '"' + RemoveBrackets(NextTokenValue) + '"' + " को दिखाया है |";
-
-    //This is the experession whcih is getting evaluated.
-
-    let expression = token + NextTokenValue;
-
-    expression = GetcleanedExpression(expression);
-
-    let flag = true;
-
-    LinebylineSourcedata.forEach((el, index) => {
-      el = GetcleanedExpression(el);
-
-      if (el.includes(expression) && flag) {
+      let position = findtokenPositioninCode(LinebylineSourcedata, expression);
+      if (position != undefined) {
         AddtoExecutionStack(
           ExecutionStack,
           ActiveLangugaeKeywords.Print,
-          "किसी VALUE को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है।   ",
+          description,
           VariableToPrint,
-          "",
+          null,
           message,
-          index + 1
+          position
         );
-        flag = false;
       }
-    });
-  }
+    }
 
-  //END OF Functions and Imported Functions
+    //END OF Functions and Imported Functions
 
-  //Out of all self function, PrintEngine is very important function. It prints variable values by searching their value in memory.
+    //Out of all self function, PrintEngine is very important function. It prints variable values by searching their value in memory.
 
-  //SECTION - Checking each token and adding to tokens array
+    //SECTION - Checking each token and adding to tokens array
 
-  //_tokens takes two arguments. The cleaned_sourcedata array and current index of cleaned_sourcedata array
+    //_tokens takes two arguments. The cleaned_sourcedata array and current index of cleaned_sourcedata array
 
-  //_tokens is used to create a tokens array with each token having it's name, value, type and other metadata
+    //_tokens is used to create a tokens array with each token having it's name, value, type and other metadata
 
-  //It performs operations depending upon whether the element is variable, array, function, loop etc.
+    //It performs operations depending upon whether the element is variable, array, function, loop etc.
 
-  //scanning every single element from cleaned_sourcedata array and pushing it to Tokens depending upon the type pf element
+    //scanning every single element from cleaned_sourcedata array and pushing it to Tokens depending upon the type pf element
 
-  function _tokens(cleaned_sourcedata, i, tokens) {
-    var element = cleaned_sourcedata[i];
+    function _tokens(cleaned_sourcedata, i, tokens) {
+      var element = cleaned_sourcedata[i];
 
-    skipParsing = 0;
+      skipParsing = 0;
 
-    var nextEl = cleaned_sourcedata.nextElement(i);
-    //var prevEl = cleaned_sourcedata.prevElement(i);
+      var nextEl = cleaned_sourcedata.nextElement(i);
+      //var prevEl = cleaned_sourcedata.prevElement(i);
 
-    var token_type = scanner(cleaned_sourcedata, i, tokens);
+      var token_type = scanner(cleaned_sourcedata, i, tokens);
 
-    //Push variables to tokens
-    //Format: {type: "variable", value: "ReverseString"}
-
-    //whenever we need a certain handling, handlers.js is used
-    switch (token_type) {
-      case "VARIABLE":
-        //Here we seperate Message = 'Hello' into following three tokens :
-
-        //1: {type: "variable", value: "Message"}
-
-        //2: {type: "operator", value: "="}
-
-        //3: {type: "value", value: "Hello"}
-
-        let handled_variable = handleVariable(element, tokens, cleaned_sourcedata, i, nextEl);
-        let h = handled_variable;
-        if (h != undefined) {
-          try {
-            h.type === "variable" ? PushVariable(h, tokens) : console.log(`error in setting ${element}`);
-          } catch (e) {
-            console.log(e, `error in setting ${element}`);
-          }
-        }
-        break;
       //Push variables to tokens
-      case "NUMBER":
-        PushNumber(element, tokens);
-        break;
+      //Format: {type: "variable", value: "ReverseString"}
 
-      //Push EmptyStrings to tokens
-      case "EMPTY_STRING":
-        //In some cases empty strings will be modified into something like "'" or '"'
-        //We convert it back to " "
-        try {
-          let e = element;
-          e = e.length > 1 && (e.charAt(0) === "'" || e.charAt(0) === '"') ? (e = e.replace(/['"]+/g, "")) : (e = " ");
+      //whenever we need a certain handling, handlers.js is used
+      switch (token_type) {
+        case "VARIABLE":
+          //Here we seperate Message = 'Hello' into following three tokens :
 
-          PushVariableValue(e, tokens);
-        } catch (e) {
-          console.log(e, `Error in setting Empty string ${element}`);
-        }
-        break;
+          //1: {type: "variable", value: "Message"}
 
-      //Push Input to tokens
-      //Format: {type: "AcceptInput", value: " ", AcceptAs: "Message"}
-      case "INPUT":
-        try {
-          PushInput(element, tokens, cleaned_sourcedata, i);
-        } catch (e) {
-          console.log(e, `Error in setting Input ${element}`);
-        }
-        break;
-      //Push operators to tokens. The accepted operators are =,},{
-      //Format: {type: "operator", value: "="}
-      case "OPERATOR":
-        try {
-          PushOperator(element, tokens);
-        } catch (e) {
-          console.log(e, `Error in setting operator ${element}`);
-        }
-        break;
+          //2: {type: "operator", value: "="}
 
-      //Push keyowrds to tokens. The accepted keywords is दिखाए
+          //3: {type: "value", value: "Hello"}
 
-      //Format: {type: "keyword", value: ActiveLangugaeKeywords.Print}
-      case "PRINT":
-        try {
-          PushKeyword(element, tokens);
-
-          let ExpressiontoPrint = nextEl;
-
-          if (!isRealTimePrintMultipleString(ExpressiontoPrint)) {
-            PushExpression(ExpressiontoPrint, tokens);
+          let handled_variable = handleVariable(element, tokens, cleaned_sourcedata, i, nextEl);
+          let h = handled_variable;
+          if (h != undefined) {
+            try {
+              h.type === "variable" ? PushVariable(h, tokens) : console.log(`error in setting ${element}`);
+            } catch (e) {
+              console.log(e, `error in setting ${element}`);
+            }
           }
-        } catch (e) {
-          console.log(e, `Error in printing ${element}`);
-        }
-        break;
-      //Push functions to tokens
-      //Format: {type: "function", value: "First", arguments: Array(2), FunctionInvocationExists: false, FunctionStack: Array(0), …}
-      case "FUNCTION":
-        try {
-          PushFunctionData(element, tokens, cleaned_sourcedata, i);
-        } catch (e) {
-          console.log(e, `Error in handling function ${element}`);
-        }
-        break;
+          break;
+        //Push variables to tokens
+        case "NUMBER":
+          PushNumber(element, tokens);
+          break;
 
-      // Push array to tokens
+        //Push EmptyStrings to tokens
+        case "EMPTY_STRING":
+          //In some cases empty strings will be modified into something like "'" or '"'
+          //We convert it back to " "
+          try {
+            let e = element;
+            e =
+              e.length > 1 && (e.charAt(0) === "'" || e.charAt(0) === '"') ? (e = e.replace(/['"]+/g, "")) : (e = " ");
 
-      case "ARRAY":
-        //Format: {type: "Array", value: "[]"}
-        //if empty array else build the array (To convert '[',1,2,3,4,']'  into [1,2,3,4]
-        try {
-          let e = element;
-          e.charAt(e.length - 1) === "]"
-            ? PushArray(e, tokens)
-            : function() {
-                let BuiltArray = BuildArray(e, i, cleaned_sourcedata);
-
-                PushArray(BuiltArray, tokens);
-              };
-        } catch (e) {
-          console.log(e, `Error in handling Array ${element}`);
-        }
-
-        break;
-
-      //For operations like Numbers[a]=a
-      //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
-      case "SET_ARRAY_INDEX":
-        try {
-          PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
-
-          cleaned_sourcedata.splice(i + 1, 1);
-        } catch (e) {
-          console.log(e, `Error in setting array index value ${element}`);
-        }
-
-        break;
-
-      //For operations like a=Numbers[a], reverse of above
-      //Format: {type: "GetArrayIndexValue", value: "Fibonacci[a-2]"}
-      case "GET_ARRAY_INDEX":
-        try {
-          PushGetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
-        } catch (e) {
-          console.log(e, `Error in getting array index value ${element}`);
-        }
-        break;
-
-      //Push conditions to tokens. The accepted keywords are अगर, जबतक, अन्यथा
-      // Format: {type: "conditionalkeyword", value: "अगर"}
-      //Push while loops to tokens
-      //Format: {type: "WhileLoopStart", value: "जबतक"}, {type: "condition", value: "count<25"}
-
-      case "CONDITIONAL_KEYWORD":
-        try {
-          isWhileLoop(element) ? PushWhileLoop(element, tokens) : PushConditionalKeyword(element, tokens);
-
-          //This is how we push conditions encountered in the sourcecode
-          //Format:{type: "condition", value: "a<3"}
-          let foundcondition = BuildCondition(element, i, cleaned_sourcedata);
-
-          //Push conditions to tokens array
-
-          if (foundcondition != "") {
-            PushCondition(foundcondition, tokens);
+            PushVariableValue(e, tokens);
+          } catch (e) {
+            console.log(e, `Error in setting Empty string ${element}`);
           }
-        } catch (e) {
-          console.log(e, `Error in operating on conditionals ${element}`);
-        }
+          break;
 
-        break;
-
-      //Finding operations like Numbers.पुश(x)
-      //Format: {type: "PushToArray", value: "Numbers.पुश(x)"}
-      case "PUSH_TO_ARRAY":
-        try {
-          PushToArray(element, tokens);
-        } catch (e) {
-          console.log(e, `Error in pushing the values to array ${element}`);
-        }
-        break;
-
-      //Push For loop to tokens
-      // Format:
-      // {type: "ForLoopStart", value: "दुहराओ"}
-      // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
-      case "FOR_LOOP":
-        try {
-          PushForLoop(element, tokens);
-          PushForLoopAruguments(element, cleaned_sourcedata, i, tokens);
-
-          memory.push({
-            name: nextEl,
-            value: 0,
-            type: "ForLoopIterator",
-          });
-        } catch (e) {
-          console.log(e, `Error in operating on for loop ${element}`);
-        }
-        break;
-
-      //Pushing basic Calculations like 'length-1' to tokens
-      //Format: {type: "Calculation", value: "length-1"}
-      case "CALCULATION":
-        /* red zone
-
-        if (nextEl != undefined) {
-          // this is to perform long calculations like AverageAge=(ageone+agetwo)/2 + (ageone+agetwo)*2
-
-          while (isCalculation(cleaned_sourcedata[i])) {
-            el = el + cleaned_sourcedata[i];
-
-            i++;
+        //Push Input to tokens
+        //Format: {type: "AcceptInput", value: " ", AcceptAs: "Message"}
+        case "INPUT":
+          try {
+            PushInput(element, tokens, cleaned_sourcedata, i);
+          } catch (e) {
+            console.log(e, `Error in setting Input ${element}`);
           }
-        }
+          break;
+        //Push operators to tokens. The accepted operators are =,},{
+        //Format: {type: "operator", value: "="}
+        case "OPERATOR":
+          try {
+            PushOperator(element, tokens);
+          } catch (e) {
+            console.log(e, `Error in setting operator ${element}`);
+          }
+          break;
 
-        console.log("el:", el);
-*/
-        /*error prone*/
+        //Push keyowrds to tokens. The accepted keywords is दिखाए
 
-        try {
-          let el = element;
+        //Format: {type: "keyword", value: ActiveLangugaeKeywords.Print}
+        case "PRINT":
+          try {
+            PushKeyword(element, tokens);
 
-          let c_el = RemoveBrackets(el);
+            let ExpressiontoPrint = nextEl;
 
-          // to stop prevention of expressions like is"+ getting added as a calculation
-          !c_el.includes('"') && !["/", "*", "'", '"'].includes(el.charAt(0))
-            ? PushCalculation(el, tokens, cleaned_sourcedata, i)
-            : console.log(`impure calculation terms ${el}`);
-        } catch (e) {
-          console.log(e, `Error in completing calculation ${element}`);
-        }
-        break;
+            if (!isRealTimePrintMultipleString(ExpressiontoPrint)) {
+              PushExpression(ExpressiontoPrint, tokens);
+            }
+          } catch (e) {
+            console.log(e, `Error in printing ${element}`);
+          }
+          break;
+        //Push functions to tokens
+        //Format: {type: "function", value: "First", arguments: Array(2), FunctionInvocationExists: false, FunctionStack: Array(0), …}
+        case "FUNCTION":
+          try {
+            PushFunctionData(element, tokens, cleaned_sourcedata, i);
+          } catch (e) {
+            console.log(e, `Error in handling function ${element}`);
+          }
+          break;
 
-      case "REALTIME_PRINT":
-        //finding operations like print(x + 'y'). The RealTimePrint operations
+        // Push array to tokens
 
-        //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
-        try {
-          let { foundString, skip } = handleRealtimePrint(cleaned_sourcedata, i);
+        case "ARRAY":
+          //Format: {type: "Array", value: "[]"}
+          //if empty array else build the array (To convert '[',1,2,3,4,']'  into [1,2,3,4]
+          try {
+            let e = element;
+            e.charAt(e.length - 1) === "]"
+              ? PushArray(e, tokens)
+              : function() {
+                  let BuiltArray = BuildArray(e, i, cleaned_sourcedata);
 
-          PushRealTimePrintOperation(foundString, tokens);
+                  PushArray(BuiltArray, tokens);
+                };
+          } catch (e) {
+            console.log(e, `Error in handling Array ${element}`);
+          }
 
-          skipParsing = skip;
-        } catch (e) {
-          console.log(e, `Error in real time print ${element}`);
-        }
+          break;
 
-        break;
+        //For operations like Numbers[a]=a
+        //Format: {type: "SetArrayIndexValue", value: "Fibonacci[a]", ValueToSet: "a"}
+        case "SET_ARRAY_INDEX":
+          try {
+            PushSetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
 
-      case "STRING":
-        //storing only the string values to tokens ( not the strings in print statements)
-        try {
-          let s = BuildString(element, i, cleaned_sourcedata);
+            cleaned_sourcedata.splice(i + 1, 1);
+          } catch (e) {
+            console.log(e, `Error in setting array index value ${element}`);
+          }
 
-          s = s.replace(/['"]+/g, "");
+          break;
 
-          !s.includes(ActiveLangugaeKeywords.Print)
-            ? PushString(s, tokens)
-            : console.log(`error in pushing string ${(s, element)}`);
-        } catch (e) {
-          console.log(e, `error in operating on string ${element}`);
-        }
-        break;
+        //For operations like a=Numbers[a], reverse of above
+        //Format: {type: "GetArrayIndexValue", value: "Fibonacci[a-2]"}
+        case "GET_ARRAY_INDEX":
+          try {
+            PushGetArrayIndexValue(element, tokens, cleaned_sourcedata, i);
+          } catch (e) {
+            console.log(e, `Error in getting array index value ${element}`);
+          }
+          break;
 
-      //An extension of isPrintOperation() function
-      // Needs improvement
+        //Push conditions to tokens. The accepted keywords are अगर, जबतक, अन्यथा
+        // Format: {type: "conditionalkeyword", value: "अगर"}
+        //Push while loops to tokens
+        //Format: {type: "WhileLoopStart", value: "जबतक"}, {type: "condition", value: "count<25"}
 
-      /*     else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
-              
+        case "CONDITIONAL_KEYWORD":
+          try {
+            isWhileLoop(element) ? PushWhileLoop(element, tokens) : PushConditionalKeyword(element, tokens);
+
+            //This is how we push conditions encountered in the sourcecode
+            //Format:{type: "condition", value: "a<3"}
+            let foundcondition = BuildCondition(element, i, cleaned_sourcedata);
+
+            //Push conditions to tokens array
+
+            if (foundcondition != "") {
+              PushCondition(foundcondition, tokens);
+            }
+          } catch (e) {
+            console.log(e, `Error in operating on conditionals ${element}`);
+          }
+
+          break;
+
+        //Finding operations like Numbers.पुश(x)
+        //Format: {type: "PushToArray", value: "Numbers.पुश(x)"}
+        case "PUSH_TO_ARRAY":
+          try {
+            PushToArray(element, tokens);
+          } catch (e) {
+            console.log(e, `Error in pushing the values to array ${element}`);
+          }
+          break;
+
+        //Push For loop to tokens
+        // Format:
+        // {type: "ForLoopStart", value: "दुहराओ"}
+        // {type: "ForLoopArguments", iterator: "a", value: "(0,25)", iterationStart: "0", iterationEnd: "25"}
+        case "FOR_LOOP":
+          try {
+            PushForLoop(element, tokens);
+            PushForLoopAruguments(element, cleaned_sourcedata, i, tokens);
+
+            memory.push({
+              name: nextEl,
+              value: 0,
+              type: "ForLoopIterator",
+            });
+          } catch (e) {
+            console.log(e, `Error in operating on for loop ${element}`);
+          }
+          break;
+
+        //Pushing basic Calculations like 'length-1' to tokens
+        //Format: {type: "Calculation", value: "length-1"}
+        case "CALCULATION":
+          /* red zone
   
-              PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
+          if (nextEl != undefined) {
+            // this is to perform long calculations like AverageAge=(ageone+agetwo)/2 + (ageone+agetwo)*2
   
-              PushExpression(element.slice(6), tokens); //Pushing remaining expression like (a), (Message) etc
+            while (isCalculation(cleaned_sourcedata[i])) {
+              el = el + cleaned_sourcedata[i];
+  
+              i++;
+            }
           }
-          */
+  
+          console.log("el:", el);
+  */
+          /*error prone*/
 
-      //error prone change made here- Pushing expression in here
-      //Used to push functions and expressions
-      //Unnecessary data is being passed through kalaam.
-      //This was created for a temporary fix
-      case "FUNCTION_CALL":
-        try {
-          let CheckFunctionExpression = element.split("(");
+          try {
+            let el = element;
 
-          let passedValues = RemoveBrackets(CheckFunctionExpression[1]);
-          passedValues = passedValues.split(",");
+            let c_el = RemoveBrackets(el);
 
-          PushFunctionExecution(element, tokens, cleaned_sourcedata, i, passedValues);
-        } catch (e) {
-          console.log(e, `error in pushing function execution ${element}`);
-        }
-        break;
+            // to stop prevention of expressions like is"+ getting added as a calculation
+            !c_el.includes('"') && !["/", "*", "'", '"'].includes(el.charAt(0))
+              ? PushCalculation(el, tokens, cleaned_sourcedata, i)
+              : console.log(`impure calculation terms ${el}`);
+          } catch (e) {
+            console.log(e, `Error in completing calculation ${element}`);
+          }
+          break;
 
-      case "NATIVE_OPERATION":
-        try {
-          PushNativeOperation(element, tokens);
-        } catch (e) {
-          console.log(e, `error in pushing native operaion ${element}`);
-        }
-        break;
+        case "REALTIME_PRINT":
+          //finding operations like print(x + 'y'). The RealTimePrint operations
 
-      case "ARRAY_PUSH":
-        try {
-          PushArray(element, tokens);
-        } catch (e) {
-          console.log(e, `error in array push ${element}`);
-        }
-        break;
-    }
-  }
+          //Format: {type: "value", value: "('Reversed String-'+ ReverseString)", mode: "RealTimePrint"}
+          try {
+            let { foundString, skip } = handleRealtimePrint(cleaned_sourcedata, i);
 
-  //#STEP 1- Cleaning the sourcedata and setting the 'result' to 'cleaned_sourcedata'
+            PushRealTimePrintOperation(foundString, tokens);
 
-  //If a code is not working, it is probably because it's not cleaned properly.
+            skipParsing = skip;
+          } catch (e) {
+            console.log(e, `Error in real time print ${element}`);
+          }
 
-  cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity);
+          break;
 
-  //#STEP 2- - Checking each token and adding to tokens array
+        case "STRING":
+          //storing only the string values to tokens ( not the strings in print statements)
+          try {
+            let s = BuildString(element, i, cleaned_sourcedata);
 
-  // PARSING INITIATION
-  (function _parse() {
-    for (i; i < cleaned_sourcedata.length; i++) {
-      _tokens(cleaned_sourcedata, i, tokens);
+            s = s.replace(/['"]+/g, "");
 
-      //Code to skip improve a particular part of cleaned_sourcedata if it's being operated by two different functions.
+            !s.includes(ActiveLangugaeKeywords.Print)
+              ? PushString(s, tokens)
+              : console.log(`error in pushing string ${(s, element)}`);
+          } catch (e) {
+            console.log(e, `error in operating on string ${element}`);
+          }
+          break;
 
-      if (skipParsing != 0) {
-        i = i + skipParsing;
+        //An extension of isPrintOperation() function
+        // Needs improvement
+
+        /*     else if (/^(?=.*?दिखाए)(?=.*[a-z])/.test(element)) {
+                
+    
+                PushKeyword(element.slice(0, 6), tokens); //Pushing print keyword only
+    
+                PushExpression(element.slice(6), tokens); //Pushing remaining expression like (a), (Message) etc
+            }
+            */
+
+        //error prone change made here- Pushing expression in here
+        //Used to push functions and expressions
+        //Unnecessary data is being passed through kalaam.
+        //This was created for a temporary fix
+        case "FUNCTION_CALL":
+          try {
+            let CheckFunctionExpression = element.split("(");
+
+            let passedValues = RemoveBrackets(CheckFunctionExpression[1]);
+            passedValues = passedValues.split(",");
+
+            PushFunctionExecution(element, tokens, cleaned_sourcedata, i, passedValues);
+          } catch (e) {
+            console.log(e, `error in pushing function execution ${element}`);
+          }
+          break;
+
+        case "NATIVE_OPERATION":
+          try {
+            PushNativeOperation(element, tokens);
+          } catch (e) {
+            console.log(e, `error in pushing native operaion ${element}`);
+          }
+          break;
+
+        case "ARRAY_PUSH":
+          try {
+            PushArray(element, tokens);
+          } catch (e) {
+            console.log(e, `error in array push ${element}`);
+          }
+          break;
       }
     }
-  })();
 
-  //CLEANING UP THE TOKENS ARRAY
-  //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
+    //#STEP 1- Cleaning the sourcedata and setting the 'result' to 'cleaned_sourcedata'
 
-  //Filtering seemed unnecessary, removed for now.
-  //tokens = tokens.filter(el => el.value != '')
-  //console.log("tokens: ", tokens); // eslint-disable-line
+    //If a code is not working, it is probably because it's not cleaned properly.
 
-  variableArray = tokens.filter((el) => el.type === "variable");
+    cleaned_sourcedata = GetCleanSourcedata(sourcedata, cleaned_sourcedata, mixedimpurity);
 
-  //#STEP 3 - evaluating conditions, finding values in memory and printing outputs
+    //#STEP 2- - Checking each token and adding to tokens array
 
-  //As of now, this is how the timeline looks
+    // PARSING INITIATION
+    (function _parse() {
+      for (i; i < cleaned_sourcedata.length; i++) {
+        _tokens(cleaned_sourcedata, i, tokens);
 
-  //raw sourcecode -> cleaned_sourcedata -> tokens
+        //Code to skip improve a particular part of cleaned_sourcedata if it's being operated by two different functions.
 
-  //This is the final section
-  //console.log("tokens:", tokens);
-
-  (function _interpretor() {
-    for (var j = 0; j < tokens.length; j++) {
-      //We will be having a copy of tokens as mutable_tokens
-
-      let mutable_tokens = tokens;
-
-      //token value
-      let token = mutable_tokens[j].value;
-
-      //type of token like variable, array, function, loops etc
-      let token_type = mutable_tokens[j].type;
-      let token_subtype = mutable_tokens[j].subtype;
-
-      let type = token === "दिखाए" || token_type === "operator" ? token_subtype : token_type;
-
-      // var StringVar = [];
-      /*
-      let VarWithoutbrackets = RemoveBrackets(token);
-  
-      VarWithoutbrackets = VarWithoutbrackets.replace(/ /g, "");
-      */
-
-      if (token_type === "SetArrayIndexValue") {
-        SetArrayIndexValue(
-          mutable_tokens,
-          j,
-          j,
-          memory,
-          tokens,
-          OriginalIterator,
-          iterator,
-          ExecutionStack,
-          LinebylineSourcedata
-        );
-      } else if (token === "=" && mutable_tokens[j].context != "function") {
-        AssignorUpdateValues(
-          mutable_tokens,
-          j,
-          memory,
-          iterator,
-          OriginalIterator,
-          self,
-          ExecutionStack,
-          LinebylineSourcedata
-        ); // eslint-disable-line
-      } else if (token_type === "PushToArray") {
-        AddElementToArray(mutable_tokens, j, memory, ExecutionStack, LinebylineSourcedata);
-      } else if (token_type === "AcceptInput") {
-        AcceptInputandSetValue(mutable_tokens, j, memory, ExecutionStack, LinebylineSourcedata);
+        if (skipParsing != 0) {
+          i = i + skipParsing;
+        }
       }
+    })();
 
-      //Whenever we encounter a function, we create a seperate execution context
-      else if (token_type === "function") {
-        //We are preparing the required data to execute a function call later in the prgroam
+    //CLEANING UP THE TOKENS ARRAY
+    //Removing tokens with value = '', It was generated due to " cleaned_sourcedata = cleaned_sourcedata.replace(/(;|\n|\r)/gm, " ").split(' ')"
 
-        //functionsourcedata includes all the tokens from tokens array which belongs to a particular function
+    //Filtering seemed unnecessary, removed for now.
+    //tokens = tokens.filter(el => el.value != '')
+    //console.log("tokens: ", tokens); // eslint-disable-line
 
-        //We find self range or a function block through HandleBlocks function
+    variableArray = tokens.filter((el) => el.type === "variable");
 
-        let functionSourceData = [];
+    //#STEP 3 - evaluating conditions, finding values in memory and printing outputs
 
-        let result = HandleBlocks(mutable_tokens, j + 1, functionSourceData);
+    //As of now, this is how the timeline looks
 
-        functionSourceData = result.StoreResult;
+    //raw sourcecode -> cleaned_sourcedata -> tokens
 
-        //To identify function context in tokens array
+    //This is the final section
+    //console.log("tokens:", tokens);
 
-        functionSourceData.forEach((el) => {
-          el.context = "function";
-        });
+    (function _interpretor() {
+      for (var j = 0; j < tokens.length; j++) {
+        //We will be having a copy of tokens as mutable_tokens
 
-        mutable_tokens[j].SourceData = functionSourceData;
+        let mutable_tokens = tokens;
 
-        let message = `इस ${ActiveLangugaeKeywords.Function} का नाम ${token} है जिसे हम कोड में बाद में NEW VALUES पास करके उपयोग कर सकते है|`;
+        //token value
+        let token = mutable_tokens[j].value;
 
-        let expression = `${ActiveLangugaeKeywords.Function}  ${token}`;
-        let Linenumber = "";
-        //
+        //type of token like variable, array, function, loops etc
+        let token_type = mutable_tokens[j].type;
+        let token_subtype = mutable_tokens[j].subtype;
 
-        LinebylineSourcedata.forEach((el, i) => {
-          if (el.includes(expression)) {
-            Linenumber = i + 1;
+        let type = token === "दिखाए" || token_type === "operator" ? token_subtype : token_type;
 
+        // var StringVar = [];
+        /*
+        let VarWithoutbrackets = RemoveBrackets(token);
+    
+        VarWithoutbrackets = VarWithoutbrackets.replace(/ /g, "");
+        */
+
+        if (token_type === "SetArrayIndexValue") {
+          SetArrayIndexValue(
+            mutable_tokens,
+            j,
+            j,
+            memory,
+            tokens,
+            OriginalIterator,
+            iterator,
+            ExecutionStack,
+            LinebylineSourcedata
+          );
+        } else if (token === "=" && mutable_tokens[j].context != "function") {
+          AssignorUpdateValues(
+            mutable_tokens,
+            j,
+            memory,
+            iterator,
+            OriginalIterator,
+            self,
+            ExecutionStack,
+            LinebylineSourcedata
+          ); // eslint-disable-line
+        } else if (token_type === "PushToArray") {
+          AddElementToArray(mutable_tokens, j, memory, ExecutionStack, LinebylineSourcedata);
+        } else if (token_type === "AcceptInput") {
+          AcceptInputandSetValue(mutable_tokens, j, memory, ExecutionStack, LinebylineSourcedata);
+        }
+
+        //Whenever we encounter a function, we create a seperate execution context
+        else if (token_type === "function") {
+          //We are preparing the required data to execute a function call later in the prgroam
+
+          //functionsourcedata includes all the tokens from tokens array which belongs to a particular function
+
+          //We find self range or a function block through HandleBlocks function
+          let { functionSourceData } = prepareFunction(mutable_tokens, j);
+
+          mutable_tokens[j].SourceData = functionSourceData;
+
+          let message = `इस ${ActiveLangugaeKeywords.Function} का नाम ${token} है जिसे हम कोड में बाद में NEW VALUES पास करके उपयोग कर सकते है|`;
+
+          let expression = `${ActiveLangugaeKeywords.Function} ${token}`;
+          let description = " एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ";
+
+          let position = findtokenPositioninCode(LinebylineSourcedata, expression);
+          if (position != undefined) {
             AddtoExecutionStack(
               ExecutionStack,
               ActiveLangugaeKeywords.Function,
-              " एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ",
-              result,
+              description,
+              mutable_tokens[j].value,
               functionSourceData,
               message,
-              Linenumber
+              position
             );
           }
-        });
-      }
-
-      //We are out of the fucntion execution context and back to global execution context
-      else if (token_type === "condition") {
-        let element = token;
-
-        var message;
-
-        //this function is the first step to calculate value of operations like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
-
-        let ConditionValue = GetConditionValue(element, memory, j);
-
-        kalaam.LastConditionValue.push(ConditionValue);
-
-        //if value is false, just skip the if loop context, if not it will be ran in final print module
-
-        if (!ConditionValue) {
-          //  let InitializeLoop = tokens.indexOf(mutable_tokens[j]);
-
-          //Handle Blocks is a function which takes care of nested block by taking care of nested { and } brackets
-          //it uses the stack to push and pop brackets to accurately identify start and the end of the block
-          let Returnvalue = HandleBlocks(mutable_tokens, j);
-
-          //amount to skip if condition is false
-          j = Returnvalue.j;
-
-          message = `कंडीशन  ${element}  , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा `;
-        } else {
-          message = `कंडीशन ${element}  , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा `;
         }
 
-        let expression = element;
+        //We are out of the fucntion execution context and back to global execution context
+        else if (token_type === "condition") {
+          let element = token;
 
-        expression = GetcleanedExpression(expression);
+          var message;
 
-        LinebylineSourcedata.forEach((el, index) => {
-          el = GetcleanedExpression(el);
+          //this function is the first step to calculate value of operations like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
 
-          if (el.includes(expression)) {
+          let ConditionValue = GetConditionValue(element, memory, j);
+
+          kalaam.LastConditionValue.push(ConditionValue);
+
+          //if value is false, just skip the if loop context, if not it will be ran in final print module
+
+          if (!ConditionValue) {
+            //  let InitializeLoop = tokens.indexOf(mutable_tokens[j]);
+
+            //Handle Blocks is a function which takes care of nested block by taking care of nested { and } brackets
+            //it uses the stack to push and pop brackets to accurately identify start and the end of the block
+            let Returnvalue = HandleBlocks(mutable_tokens, j);
+
+            //amount to skip if condition is false
+            j = Returnvalue.j;
+
+            message = `कंडीशन  ${element}  , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा `;
+          } else {
+            message = `कंडीशन ${element}  , TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा `;
+          }
+
+          let expression = element;
+          let description = "एक Certain Condition के तहत कोड Execution को Allow करता है। ";
+
+          expression = GetcleanedExpression(expression);
+
+          let position = findtokenPositioninCode(LinebylineSourcedata, expression);
+          if (position != undefined) {
             AddtoExecutionStack(
               ExecutionStack,
-              "अगर",
-              "एक Certain Condition के तहत कोड Execution को Allow करता है। ",
+              ActiveLangugaeKeywords.If,
+              description,
               element,
               ConditionValue,
               message,
-              index + 1
+              position
             );
           }
-        });
-      }
-
-      //So that we don't print a same value twice. First in global execution context and the in function context
-
-      //This one prints the global context values
-      else if (token === ActiveLangugaeKeywords.Print && mutable_tokens[j].context != "function") {
-        //for operations like print(array[3])
-
-        PrintEngine(mutable_tokens, memory, j); // eslint-disable-line
-      }
-
-      //This runs our while loop .i.e जबतक
-      else if (token_type === "WhileLoopStart" && mutable_tokens[j].context != "function") {
-        // let TokensCurrentIndex = j + 3;
-
-        // let ConditionValue = false;
-
-        let element = mutable_tokens[j + 1].value;
-
-        let ExtratcedVariable = [];
-
-        let variable = "";
-        let WhileLoopSourcedataIndexStart = 0;
-        let WhileLoopSourcedataTokens = [];
-
-        for (let i = 0; i < element.length; i++) {
-          let x = element.charAt(i);
-
-          if (isVariable(x)) {
-            variable = variable + x;
-          }
-          if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
-            let token = memory.find((el) => el.name === variable);
-
-            ExtratcedVariable.push({
-              variable: variable,
-              value: token.value,
-            });
-
-            variable = "";
-          }
         }
 
-        function getWhileLoopSourcedata(startIndex, mutable_tokens, StoreResult) {
-          StoreResult = HandleBlocks(mutable_tokens, startIndex, StoreResult);
+        //So that we don't print a same value twice. First in global execution context and the in function context
 
-          return StoreResult;
+        //This one prints the global context values
+        else if (token === ActiveLangugaeKeywords.Print && mutable_tokens[j].context != "function") {
+          //for operations like print(array[3])
+
+          PrintEngine(mutable_tokens, memory, j); // eslint-disable-line
         }
 
-        WhileLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, "{", WhileLoopSourcedataIndexStart);
+        //This runs our while loop .i.e जबतक
+        else if (token_type === "WhileLoopStart" && mutable_tokens[j].context != "function") {
+          // let TokensCurrentIndex = j + 3;
 
-        WhileLoopSourcedataTokens = getWhileLoopSourcedata(
-          WhileLoopSourcedataIndexStart,
-          mutable_tokens,
-          WhileLoopSourcedataTokens
-        ).StoreResult;
+          // let ConditionValue = false;
 
-        let message = "जबतक " + element + " सही होगा तब तक आगे का कोड रन किया जायेगा ";
+          let element = mutable_tokens[j + 1].value;
 
-        // let Linenumber = "";
+          let ExtratcedVariable = [];
 
-        LinebylineSourcedata.forEach((el, i) => {
-          if (el.includes(element)) {
+          let variable = "";
+          let WhileLoopSourcedataIndexStart = 0;
+          let WhileLoopSourcedataTokens = [];
+
+          for (let i = 0; i < element.length; i++) {
+            let x = element.charAt(i);
+
+            if (isVariable(x)) {
+              variable = variable + x;
+            }
+            if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
+              let token = memory.find((el) => el.name === variable);
+
+              ExtratcedVariable.push({
+                variable: variable,
+                value: token.value,
+              });
+
+              variable = "";
+            }
+          }
+
+          function getWhileLoopSourcedata(startIndex, mutable_tokens, StoreResult) {
+            StoreResult = HandleBlocks(mutable_tokens, startIndex, StoreResult);
+
+            return StoreResult;
+          }
+
+          WhileLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, "{", WhileLoopSourcedataIndexStart);
+
+          WhileLoopSourcedataTokens = getWhileLoopSourcedata(
+            WhileLoopSourcedataIndexStart,
+            mutable_tokens,
+            WhileLoopSourcedataTokens
+          ).StoreResult;
+
+          let message = "जबतक " + element + " सही होगा तब तक आगे का कोड रन किया जायेगा ";
+
+          let description = "जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |";
+
+          let expression = GetcleanedExpression(element);
+
+          let position = findtokenPositioninCode(LinebylineSourcedata, expression);
+          if (position != undefined) {
             AddtoExecutionStack(
               ExecutionStack,
-              "जबतक",
-              "जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |",
+              ActiveLangugaeKeywords.While,
+              description,
               element,
               WhileLoopSourcedataTokens,
               message,
-              i + 1
+              position
             );
           }
-        });
 
-        //constantly accessing the conditionvalue
+          //constantly accessing the conditionvalue
 
-        var x = GetConditionValue(element, memory, j + 1);
+          var x = GetConditionValue(element, memory, j + 1);
 
-        while (GetConditionValue(element, memory, j + 1)) {
-          for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
-            //SECTION while loop context
+          while (GetConditionValue(element, memory, j + 1)) {
+            for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
+              //SECTION while loop context
 
-            if (WhileLoopSourcedataTokens[i].value === "=") {
-              AssignorUpdateValues(
-                WhileLoopSourcedataTokens,
-                i,
-                memory,
-                "",
-                "",
-                "",
-                ExecutionStack,
-                LinebylineSourcedata
-              );
-            } else if (WhileLoopSourcedataTokens[i].type === "AcceptInput") {
-              AcceptInputandSetValue(WhileLoopSourcedataTokens, i, memory, ExecutionStack);
+              if (WhileLoopSourcedataTokens[i].value === "=") {
+                AssignorUpdateValues(
+                  WhileLoopSourcedataTokens,
+                  i,
+                  memory,
+                  "",
+                  "",
+                  "",
+                  ExecutionStack,
+                  LinebylineSourcedata
+                );
+              } else if (WhileLoopSourcedataTokens[i].type === "AcceptInput") {
+                AcceptInputandSetValue(WhileLoopSourcedataTokens, i, memory, ExecutionStack);
+              }
+
+              // Handling CONDITIONAL statements in While loop
+              else if (WhileLoopSourcedataTokens[i].type === "condition") {
+                //if index returns a value, it means condition is false and skip the execution
+
+                let index = HandleConditions(WhileLoopSourcedataTokens, i, memory);
+
+                if (index != undefined) {
+                  i = index;
+                } else {
+                  i = i;
+                }
+              }
+
+              //Handling दिखाए statements in while loop
+              else if (WhileLoopSourcedataTokens[i].value === ActiveLangugaeKeywords.Print) {
+                PrintEngine(WhileLoopSourcedataTokens, memory, i, ExecutionStack); // eslint-disable-line
+              }
+
+              //operations like Numbers[a]='xyz'
+              else if (WhileLoopSourcedataTokens[i].type === "SetArrayIndexValue") {
+                SetArrayIndexValue(
+                  WhileLoopSourcedataTokens,
+                  i,
+                  j,
+                  memory,
+                  tokens,
+                  OriginalIterator,
+                  iterator,
+                  ExecutionStack,
+                  LinebylineSourcedata
+                );
+              }
+            }
+          }
+
+          //End of While loop execution
+
+          //Handling For loops
+        } else if (token_type === "ForLoopStart") {
+          var FlagPrimalLoop = 0; // eslint-disable-line
+
+          var SourcedataTokens = [];
+
+          let ForLoopMetaData = ForLoopSetMetadata(mutable_tokens, j, memory);
+
+          var ForLoopSourcedataIndexStart = ForLoopMetaData.ForLoopSourcedataIndexStart;
+          var Cycle = ForLoopMetaData.Cycle;
+
+          var OriginalIterator = ForLoopMetaData.OriginalIterator;
+          var IterationStart = ForLoopMetaData.IterationStart;
+          var IterationEnd = ForLoopMetaData.IterationEnd;
+
+          var iterator = ForLoopMetaData.iterator;
+          var element = ForLoopMetaData.element;
+          var elementValue = ForLoopMetaData.elementValue;
+
+          function getSourcedata(startIndex, mutable_tokens, StoreResult) {
+            let Returnvalue = HandleBlocks(mutable_tokens, startIndex, StoreResult);
+            StoreResult = Returnvalue.StoreResult;
+
+            return StoreResult;
+          }
+
+          ForLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, "{", ForLoopSourcedataIndexStart);
+
+          SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, mutable_tokens, SourcedataTokens);
+
+          SourcedataTokens.forEach((el) => {
+            el.isNestedLoop = false;
+          });
+
+          //Checking if the for loop has one more for loop inside it
+          let FindNestedLoop = SourcedataTokens.find((el) => el.type === "ForLoopStart");
+
+          if (FindNestedLoop != undefined) {
+            let NestedLoopindex = SourcedataTokens.indexOf(FindNestedLoop) + 3;
+            let NestedLooplength =
+              SourcedataTokens[NestedLoopindex].EndIndex - SourcedataTokens[NestedLoopindex].startIndex + 2;
+
+            //if we have a nested loop, set isNesteLoop to TRUE
+
+            for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++) {
+              SourcedataTokens[x].isNestedLoop = true;
+            }
+          }
+
+          if (element.includes("(") && element.includes(",")) {
+            FlagPrimalLoop = 1;
+          }
+
+          //Iterating over forloop sourcedata
+          //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
+
+          let message =
+            "दुहराओ के अंदर लिखे गए कोड को " +
+            IterationStart +
+            " से " +
+            IterationEnd +
+            " तक, मतलब " +
+            eval(IterationEnd - IterationStart + 1) +
+            " बार RUN(रन) किया जायेगा |" +
+            "\n" +
+            " इसमें Computer, " +
+            '"' +
+            iterator +
+            '"' +
+            " को Memory में, " +
+            IterationStart +
+            " से " +
+            IterationEnd +
+            " तक क़ीमत(Values) सेट करता जाएगा|";
+
+          //This is the experession whcih is getting evaluated.
+          let expression = "दुहराओ " + iterator + " को " + mutable_tokens[j + 1].value + " मे";
+          let description = "एक ही कोड को बार-बार दोहराना। ";
+          let Linenumber = LinebylineSourcedata.indexOf(expression);
+          Linenumber += 1;
+
+          AddtoExecutionStack(
+            ExecutionStack,
+            ActiveLangugaeKeywords.For,
+            description,
+            SourcedataTokens,
+            "",
+            message,
+            Linenumber
+          );
+
+          for (iterator = IterationStart; iterator <= Cycle; iterator++) {
+            let forloopindex = memory.find((el) => el.name === OriginalIterator);
+
+            forloopindex.value = iterator;
+
+            //flag to avoid running this code if loop is primal because the payload needs to be compeltely different
+            if (FlagPrimalLoop === 0) {
+              ForLoopArrayorStringOutput(elementValue, iterator, memory, self); // eslint-disable-line
             }
 
-            // Handling CONDITIONAL statements in While loop
-            else if (WhileLoopSourcedataTokens[i].type === "condition") {
-              //if index returns a value, it means condition is false and skip the execution
+            for (let i = 0; i < SourcedataTokens.length; i++) {
+              let isNested = SourcedataTokens[i].isNestedLoop;
 
-              let index = HandleConditions(WhileLoopSourcedataTokens, i, memory);
+              //This code runs only if we have a nested loop situation
 
-              if (index != undefined) {
-                i = index;
-              } else {
-                i = i;
+              if (SourcedataTokens[i].type === "ForLoopStart") {
+                var NestedSourcedataTokens = [];
+
+                let NestedForLoopMetaData = ForLoopSetMetadata(SourcedataTokens, i, memory);
+                var NestedForLoopSourcedataIndexStart = NestedForLoopMetaData.ForLoopSourcedataIndexStart;
+                var NestedCycle = NestedForLoopMetaData.Cycle + 1;
+                var NestedOriginalIterator = NestedForLoopMetaData.OriginalIterator;
+                // var NestedIterationStart = NestedForLoopMetaData.IterationStart;
+                var Nestediterator = NestedForLoopMetaData.IterationStart;
+                //var Nestedelement = NestedForLoopMetaData.element;
+                //var NestedelementValue = NestedForLoopMetaData.elementValue;
+
+                function getSourcedata(startIndex, SourcedataTokens, StoreResult) {
+                  let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult);
+                  StoreResult = Returnvalue.StoreResult;
+
+                  return StoreResult;
+                }
+
+                NestedForLoopSourcedataIndexStart = getLoopIndexStart(
+                  SourcedataTokens,
+                  i,
+                  "{",
+                  NestedForLoopSourcedataIndexStart
+                );
+
+                NestedSourcedataTokens = getSourcedata(
+                  NestedForLoopSourcedataIndexStart,
+                  SourcedataTokens,
+                  NestedSourcedataTokens
+                );
+
+                for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
+                  {
+                    let y = Nestediterator;
+
+                    let Nestedforloopindex = memory.find((el) => el.name === NestedOriginalIterator);
+
+                    Nestedforloopindex.value = y;
+
+                    for (let index = 0; index < NestedSourcedataTokens.length; index++) {
+                      let el = NestedSourcedataTokens[index];
+
+                      if (el.value === ActiveLangugaeKeywords.Print) {
+                        PrintEngine(NestedSourcedataTokens, memory, index, y, NestedOriginalIterator);
+                      } else if (el.value === "=" && el.isNestedLoop) {
+                        AssignorUpdateValues(NestedSourcedataTokens, index, memory, y, NestedOriginalIterator);
+                      } else if (el.type === "condition" && el.isNestedLoop) {
+                        let condition = NestedSourcedataTokens[index].value;
+                        //HandleConditions evaluates condition and return the index of from where printing should resume
+
+                        //value of i depends on the conditions
+
+                        let value = GetConditionValue(condition, memory, index);
+
+                        kalaam.LastConditionValue.push(value);
+
+                        if (!value) {
+                          break;
+                        }
+                      } else if (el.type === "SetArrayIndexValue" && el.isNestedLoop) {
+                        SetArrayIndexValue(
+                          NestedSourcedataTokens,
+                          i,
+                          j,
+                          memory,
+                          tokens,
+                          OriginalIterator,
+                          iterator,
+                          ExecutionStack,
+                          LinebylineSourcedata
+                        );
+                      }
+                    }
+                  }
+                }
+              } else if (SourcedataTokens[i].value === "=" && !isNested) {
+                //assigning values to variables in a for loop
+
+                AssignorUpdateValues(
+                  SourcedataTokens,
+                  i,
+                  memory,
+                  iterator,
+                  OriginalIterator,
+                  global,
+                  ExecutionStack,
+                  LinebylineSourcedata
+                ); // eslint-disable-line
+              } else if (SourcedataTokens[i].type === "PushToArray") {
+                AddElementToArray(SourcedataTokens, i, memory, ExecutionStack, LinebylineSourcedata);
+              } else if (SourcedataTokens[i].type === "AcceptInput") {
+                AcceptInputandSetValue(SourcedataTokens, i, memory);
+              }
+
+              //Handling print statements in for loop
+              else if (SourcedataTokens[i].value === ActiveLangugaeKeywords.Print && !isNested) {
+                PrintEngine(SourcedataTokens, memory, i, iterator, OriginalIterator);
+              }
+
+              //Handling set array element statements in for loop
+              else if (SourcedataTokens[i].type === "SetArrayIndexValue") {
+                SetArrayIndexValue(
+                  SourcedataTokens,
+                  i,
+                  j,
+                  memory,
+                  tokens,
+                  OriginalIterator,
+                  iterator,
+                  ExecutionStack,
+                  LinebylineSourcedata
+                );
+              }
+
+              // Handling CONDITIONAL statements in for loop
+              else if (SourcedataTokens[i].type === "condition") {
+                let ConditionStartIndex = i;
+                let condition = SourcedataTokens[i].value;
+
+                //HandleConditions evaluates condition and return the index of from where printing should resume
+                //value of i depends on the conditions
+
+                if (condition.includes("||") || condition.includes("&&")) {
+                  let value = GetConditionValue(condition, memory, i);
+
+                  //Experimental
+                  kalaam.LastConditionValue.push(value);
+
+                  if (!value) {
+                    let BlockLength = 0;
+
+                    while (SourcedataTokens[i].value != "{") {
+                      if (SourcedataTokens[i + 1].value === "{") {
+                        BlockLength = SourcedataTokens[i + 1].EndIndex - SourcedataTokens[i + 1].startIndex;
+
+                        i = BlockLength + i + 1;
+
+                        break;
+                      }
+
+                      i++;
+                    }
+                  } else {
+                    i = i;
+                  }
+                } else {
+                  i = HandleConditions(SourcedataTokens, i, memory);
+
+                  let expression = GetcleanedExpression(condition);
+                  let description = "एक Certain Condition के तहत कोड Execution को Allow करता है। ";
+
+                  let position = findtokenPositioninCode(LinebylineSourcedata, expression);
+
+                  let message = "";
+
+                  if (i != undefined) {
+                    i = i;
+                    message =
+                      "कंडीशन " + condition + " , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा ";
+                  } else {
+                    i = ConditionStartIndex;
+
+                    message = "कंडीशन " + condition + " TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा ";
+                  }
+
+                  if (position != undefined) {
+                    AddtoExecutionStack(
+                      ExecutionStack,
+                      ActiveLangugaeKeywords.If,
+                      description,
+                      condition,
+                      "",
+                      message,
+                      position
+                    );
+                  }
+                }
+              }
+            }
+          }
+
+          j = j + SourcedataTokens.length;
+        }
+
+        //END FOR LOOP EXECUTION
+        else if (token_type === "functionExecution") {
+          //checking if function is invoked somewhere later in the program
+
+          //If we see a function execution call, for e.g Add(x,y), we prepare for execution
+
+          let functionSourceData = [];
+
+          let functionName = token;
+
+          let passedValues = mutable_tokens[j].passedValues;
+
+          let functionToken = mutable_tokens.find((el) => el.value === functionName);
+
+          let functionArguments = functionToken.arguments;
+
+          functionSourceData = functionToken.SourceData;
+
+          //Creating a seperate execution context and setting fucntion context name:value pair in functionContextmemory
+
+          //for e.g x=3, y=4 is already defined and then we execute add(x,y)
+
+          // This is an memory form limited to function context
+
+          //Operating on function arguments and setting their values. For e.g the function add(x,y) might be called as add(3,4)
+
+          //so we set x=3, y=4 and set self variable-value pair in functionContextmemory
+
+          functionArguments.forEach((el, index) => {
+            let val = passedValues[index];
+
+            val = val.replace(/"/g, "");
+            val = val.replace(/'/g, "");
+
+            passedValues[index] = val;
+
+            //in self code we are filtering out arguments passed based on whether they already exist in updated tokens or not
+
+            let FindInUpdatedTokens = memory.find((el) => el.name === val);
+
+            //For passing same argument and same value to function  e.g function foo (fibonacci) and fibonacci is already declared with some value
+            if (FindInUpdatedTokens === undefined) {
+              functionContextmemory.push({
+                name: el,
+
+                value: val,
+
+                identifier: j + index,
+                type: "value",
+                context: "FunctionExecutionContext",
+              });
+            }
+
+            //For passing different argument and value to function  e.g function foo (arr) and arr doesn't exist anywhere in tokens.
+            else if (el != FindInUpdatedTokens.name && FindInUpdatedTokens != undefined) {
+              functionContextmemory.push({
+                name: el,
+
+                value: FindInUpdatedTokens.value,
+
+                identifier: j + index,
+                type: FindInUpdatedTokens.type,
+                context: "FunctionExecutionContext",
+                IntheEndSetValueto: val,
+              });
+            } else {
+              functionContextmemory.push({
+                name: el,
+
+                value: val,
+
+                identifier: j + index,
+                type: FindInUpdatedTokens.type,
+                context: "FunctionExecutionContext",
+                IntheEndSetValueto: val,
+              });
+            }
+          });
+
+          //Building a complete variable-value pair dataset
+
+          var CompleteTokenValueList = [...memory, ...functionContextmemory];
+
+          let message =
+            "Computer " +
+            '"' +
+            functionName +
+            '"' +
+            " नाम की रचना को कॉल (Call) करता है | आपने " +
+            '"()"' +
+            " के अंदर दिए गए New Values का रचना " +
+            functionName +
+            " में उपयोग करके, रचना " +
+            functionName +
+            " में लिखे गए कोड को रन करता है |";
+
+          let expression = functionName + "(";
+          expression = GetcleanedExpression(expression);
+
+          //
+          let description = " एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ";
+
+          let position = findtokenPositioninCode(LinebylineSourcedata, expression);
+
+          if (position != undefined) {
+            AddtoExecutionStack(
+              ExecutionStack,
+              ActiveLangugaeKeywords.Function,
+              description,
+              functionName,
+              functionSourceData,
+              message,
+              position
+            );
+          }
+
+          //Now we start digging into the function execution
+
+          for (let i = 1; i < functionSourceData.length; i++) {
+            let el = functionSourceData[i];
+
+            //operations like दिखाए(Message)
+            //PrintEngine will take care of every print statement encountered in the program
+
+            if (el.value === ActiveLangugaeKeywords.Print) {
+              PrintEngine(functionSourceData, CompleteTokenValueList, i, ExecutionStack);
+            }
+
+            //operations like Message='Hello World'
+
+            //AssignorUpdateValues function will take care of every assignment encountered in the program
+            else if (el.value === "=") {
+              AssignorUpdateValues(
+                functionSourceData,
+                i,
+                CompleteTokenValueList,
+                iterator,
+                OriginalIterator,
+                self,
+                ExecutionStack,
+                LinebylineSourcedata
+              ); // eslint-disable-line
+            }
+
+            //operations like इनपुट(Message)
+            else if (el.type === "AcceptInput") {
+              AcceptInputandSetValue(functionSourceData, i, memory, ExecutionStack);
+            }
+
+            //operations like x<24, y!=5, Message==='HellO World"
+            else if (el.type === "condition") {
+              let element = functionSourceData[i].value;
+
+              //self function is the first step to calculate value of  mulitiple conditions like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
+
+              //GetConditionValue is our goto function to evaluate a condition to true or false
+              let ConditionValue = GetConditionValue(element, CompleteTokenValueList, i);
+
+              kalaam.LastConditionValue.push(ConditionValue);
+
+              //if value is false, just skip the if loop context, if not it will be ran in final print module
+
+              if (!ConditionValue) {
+                //Handle Blocks is a function which takes care of nested block by taking care of nested { and } brackets
+                //it uses the stack to push and pop brackets to accurately identify start and the end of the block
+                let Returnvalue = HandleBlocks(functionSourceData, i);
+
+                i = Returnvalue.i;
               }
             }
 
-            //Handling दिखाए statements in while loop
-            else if (WhileLoopSourcedataTokens[i].value === ActiveLangugaeKeywords.Print) {
-              PrintEngine(WhileLoopSourcedataTokens, memory, i, ExecutionStack); // eslint-disable-line
-            }
-
-            //operations like Numbers[a]='xyz'
-            else if (WhileLoopSourcedataTokens[i].type === "SetArrayIndexValue") {
+            //Handling set array element statements in for loop
+            // for e.g Numbers[2]=28
+            else if (functionSourceData[i].type === "SetArrayIndexValue") {
               SetArrayIndexValue(
-                WhileLoopSourcedataTokens,
+                functionSourceData,
                 i,
                 j,
-                memory,
+                CompleteTokenValueList,
                 tokens,
                 OriginalIterator,
                 iterator,
@@ -1032,224 +1497,294 @@ export default function Compile(kalaam, ActiveLangugae) {
                 LinebylineSourcedata
               );
             }
-          }
-        }
 
-        //End of While loop execution
+            //Opearting on for loop encountered in program
+            else if (functionSourceData[i].type === "ForLoopStart") {
+              var FlagPrimalLoop = 0; // eslint-disable-line
 
-        //Handling For loops
-      } else if (token_type === "ForLoopStart") {
-        var FlagPrimalLoop = 0; // eslint-disable-line
+              var SourcedataTokens = [];
 
-        var SourcedataTokens = [];
+              let ForLoopMetaData = ForLoopSetMetadata(functionSourceData, i, CompleteTokenValueList);
 
-        let ForLoopMetaData = ForLoopSetMetadata(mutable_tokens, j, memory);
+              var ForLoopSourcedataIndexStart = ForLoopMetaData.ForLoopSourcedataIndexStart;
+              var Cycle = ForLoopMetaData.Cycle;
+              var OriginalIterator = ForLoopMetaData.OriginalIterator;
+              var IterationStart = ForLoopMetaData.IterationStart;
+              var iterator = ForLoopMetaData.iterator;
+              var element = ForLoopMetaData.element;
+              var elementValue = ForLoopMetaData.elementValue;
 
-        var ForLoopSourcedataIndexStart = ForLoopMetaData.ForLoopSourcedataIndexStart;
-        var Cycle = ForLoopMetaData.Cycle;
-
-        var OriginalIterator = ForLoopMetaData.OriginalIterator;
-        var IterationStart = ForLoopMetaData.IterationStart;
-        var IterationEnd = ForLoopMetaData.IterationEnd;
-
-        var iterator = ForLoopMetaData.iterator;
-        var element = ForLoopMetaData.element;
-        var elementValue = ForLoopMetaData.elementValue;
-
-        function getSourcedata(startIndex, mutable_tokens, StoreResult) {
-          let Returnvalue = HandleBlocks(mutable_tokens, startIndex, StoreResult);
-          StoreResult = Returnvalue.StoreResult;
-
-          return StoreResult;
-        }
-
-        ForLoopSourcedataIndexStart = getLoopIndexStart(mutable_tokens, j, "{", ForLoopSourcedataIndexStart);
-
-        SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, mutable_tokens, SourcedataTokens);
-
-        SourcedataTokens.forEach((el) => {
-          el.isNestedLoop = false;
-        });
-
-        //Checking if the for loop has one more for loop inside it
-        let FindNestedLoop = SourcedataTokens.find((el) => el.type === "ForLoopStart");
-
-        if (FindNestedLoop != undefined) {
-          let NestedLoopindex = SourcedataTokens.indexOf(FindNestedLoop) + 3;
-          let NestedLooplength =
-            SourcedataTokens[NestedLoopindex].EndIndex - SourcedataTokens[NestedLoopindex].startIndex + 2;
-
-          //if we have a nested loop, set isNesteLoop to TRUE
-
-          for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++) {
-            SourcedataTokens[x].isNestedLoop = true;
-          }
-        }
-
-        if (element.includes("(") && element.includes(",")) {
-          FlagPrimalLoop = 1;
-        }
-
-        //Iterating over forloop sourcedata
-        //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
-
-        let message =
-          "दुहराओ के अंदर लिखे गए कोड को " +
-          IterationStart +
-          " से " +
-          IterationEnd +
-          " तक, मतलब " +
-          eval(IterationEnd - IterationStart + 1) +
-          " बार RUN(रन) किया जायेगा |" +
-          "\n" +
-          " इसमें Computer, " +
-          '"' +
-          iterator +
-          '"' +
-          " को Memory में, " +
-          IterationStart +
-          " से " +
-          IterationEnd +
-          " तक क़ीमत(Values) सेट करता जाएगा|";
-
-        //This is the experession whcih is getting evaluated.
-        let expression = "दुहराओ " + iterator + " को " + mutable_tokens[j + 1].value + " मे";
-
-        let Linenumber = LinebylineSourcedata.indexOf(expression);
-        Linenumber = Linenumber + 1;
-
-        AddtoExecutionStack(
-          ExecutionStack,
-          "दुहराओ",
-          "एक ही कोड को बार-बार दोहराना। ",
-          SourcedataTokens,
-          "",
-          message,
-          Linenumber
-        );
-
-        for (iterator = IterationStart; iterator <= Cycle; iterator++) {
-          let forloopindex = memory.find((el) => el.name === OriginalIterator);
-
-          forloopindex.value = iterator;
-
-          //flag to avoid running this code if loop is primal because the payload needs to be compeltely different
-          if (FlagPrimalLoop === 0) {
-            ForLoopArrayorStringOutput(elementValue, iterator, memory, self); // eslint-disable-line
-          }
-
-          for (let i = 0; i < SourcedataTokens.length; i++) {
-            let isNested = SourcedataTokens[i].isNestedLoop;
-
-            //This code runs only if we have a nested loop situation
-
-            if (SourcedataTokens[i].type === "ForLoopStart") {
-              var NestedSourcedataTokens = [];
-
-              let NestedForLoopMetaData = ForLoopSetMetadata(SourcedataTokens, i, memory);
-              var NestedForLoopSourcedataIndexStart = NestedForLoopMetaData.ForLoopSourcedataIndexStart;
-              var NestedCycle = NestedForLoopMetaData.Cycle + 1;
-              var NestedOriginalIterator = NestedForLoopMetaData.OriginalIterator;
-              // var NestedIterationStart = NestedForLoopMetaData.IterationStart;
-              var Nestediterator = NestedForLoopMetaData.IterationStart;
-              //var Nestedelement = NestedForLoopMetaData.element;
-              //var NestedelementValue = NestedForLoopMetaData.elementValue;
-
-              function getSourcedata(startIndex, SourcedataTokens, StoreResult) {
-                let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult);
+              function getSourcedata(startIndex, functionSourceData, StoreResult) {
+                let Returnvalue = HandleBlocks(functionSourceData, startIndex, StoreResult);
                 StoreResult = Returnvalue.StoreResult;
 
                 return StoreResult;
               }
 
-              NestedForLoopSourcedataIndexStart = getLoopIndexStart(
-                SourcedataTokens,
-                i,
-                "{",
-                NestedForLoopSourcedataIndexStart
-              );
+              ForLoopSourcedataIndexStart = getLoopIndexStart(functionSourceData, i, "{", ForLoopSourcedataIndexStart);
 
-              NestedSourcedataTokens = getSourcedata(
-                NestedForLoopSourcedataIndexStart,
-                SourcedataTokens,
-                NestedSourcedataTokens
-              );
+              //
 
-              for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
-                {
-                  let y = Nestediterator;
+              SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, functionSourceData, SourcedataTokens);
 
-                  let Nestedforloopindex = memory.find((el) => el.name === NestedOriginalIterator);
+              SourcedataTokens.forEach((el) => {
+                el.isNestedLoop = false;
+              });
 
-                  Nestedforloopindex.value = y;
+              let FindNestedLoop = SourcedataTokens.find((el) => el.type === "ForLoopStart");
+              if (FindNestedLoop != undefined) {
+                let NestedLoopindex = SourcedataTokens.indexOf(FindNestedLoop) + 2;
+                let NestedLooplength =
+                  SourcedataTokens[NestedLoopindex].EndIndex - SourcedataTokens[NestedLoopindex].startIndex + 1;
 
-                  for (let index = 0; index < NestedSourcedataTokens.length; index++) {
-                    let el = NestedSourcedataTokens[index];
+                for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++) {
+                  SourcedataTokens[x].isNestedLoop = true;
+                }
+              }
 
-                    if (el.value === ActiveLangugaeKeywords.Print) {
-                      PrintEngine(NestedSourcedataTokens, memory, index, y, NestedOriginalIterator);
-                    } else if (el.value === "=" && el.isNestedLoop) {
-                      AssignorUpdateValues(NestedSourcedataTokens, index, memory, y, NestedOriginalIterator);
-                    } else if (el.type === "condition" && el.isNestedLoop) {
-                      let condition = NestedSourcedataTokens[index].value;
-                      //HandleConditions evaluates condition and return the index of from where printing should resume
+              //Primal loop is the one where user gives us the range directly like (1,20) etc.
 
-                      //value of i depends on the conditions
+              if (element.includes("(") && element.includes(",")) {
+                FlagPrimalLoop = 1;
+              }
 
-                      let value = GetConditionValue(condition, memory, index);
+              //Iterating over forloop sourcedata
+              //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
 
+              for (iterator = IterationStart; iterator <= Cycle; iterator++) {
+                let forloopindex = CompleteTokenValueList.find((el) => el.name === OriginalIterator);
+
+                forloopindex.value = iterator;
+
+                //flag to avoid running self code if loop is primal because the payload needs to be compeltely different
+                if (FlagPrimalLoop === 0) {
+                  ForLoopArrayorStringOutput(elementValue, iterator, CompleteTokenValueList, self); // eslint-disable-line
+                }
+
+                for (let i = 0; i < SourcedataTokens.length; i++) {
+                  let isNested = SourcedataTokens[i].isNestedLoop;
+
+                  //This is nested loop
+                  //Works but needs improvements on various parts
+
+                  //NESTED FOR LOOP START
+
+                  if (SourcedataTokens[i].type === "ForLoopStart") {
+                    var NestedSourcedataTokens = [];
+
+                    let NestedForLoopMetaData = ForLoopSetMetadata(SourcedataTokens, i, CompleteTokenValueList);
+
+                    var NestedForLoopSourcedataIndexStart = NestedForLoopMetaData.ForLoopSourcedataIndexStart;
+                    var NestedCycle = NestedForLoopMetaData.Cycle + 1;
+                    var NestedOriginalIterator = NestedForLoopMetaData.OriginalIterator;
+                    var Nestediterator = NestedForLoopMetaData.IterationStart;
+
+                    function getSourcedata(startIndex, SourcedataTokens, StoreResult) {
+                      ////
+
+                      let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult);
+                      StoreResult = Returnvalue.StoreResult;
+
+                      return StoreResult;
+                    }
+
+                    NestedForLoopSourcedataIndexStart = getLoopIndexStart(
+                      SourcedataTokens,
+                      i,
+                      "{",
+                      NestedForLoopSourcedataIndexStart
+                    );
+
+                    NestedSourcedataTokens = getSourcedata(
+                      NestedForLoopSourcedataIndexStart,
+                      SourcedataTokens,
+                      NestedSourcedataTokens
+                    );
+                    ////
+
+                    for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
+                      {
+                        let y = Nestediterator;
+
+                        let Nestedforloopindex = CompleteTokenValueList.find(
+                          (el) => el.name === NestedOriginalIterator
+                        );
+                        ////
+
+                        Nestedforloopindex.value = y;
+
+                        for (let index = 0; index < NestedSourcedataTokens.length; index++) {
+                          let el = NestedSourcedataTokens[index];
+
+                          if (el.value === ActiveLangugaeKeywords.Print) {
+                            PrintEngine(
+                              NestedSourcedataTokens,
+                              CompleteTokenValueList,
+                              index,
+                              y,
+                              NestedOriginalIterator
+                            );
+                          } else if (el.value === "=" && el.isNestedLoop) {
+                            //assigning values to variables
+
+                            AssignorUpdateValues(
+                              NestedSourcedataTokens,
+                              index,
+                              CompleteTokenValueList,
+                              y,
+                              NestedOriginalIterator,
+                              self
+                            ); // eslint-disable-line
+                          } else if (el.type === "condition" && el.isNestedLoop) {
+                            ////
+
+                            let ConditionStartIndex = index;
+                            let condition = NestedSourcedataTokens[index].value;
+                            //HandleConditions evaluates condition and return the index of from where printing should resume
+                            //value of i depends on the conditions
+
+                            if (condition.includes("||") || condition.includes("&&")) {
+                              let value = GetConditionValue(condition, CompleteTokenValueList, index);
+                              kalaam.LastConditionValue.push(value);
+
+                              if (!value) {
+                                let BlockLength = 0;
+
+                                while (NestedSourcedataTokens[index].value != "{") {
+                                  if (NestedSourcedataTokens[index + 1].value === "{") {
+                                    BlockLength =
+                                      NestedSourcedataTokens[index + 1].EndIndex -
+                                      NestedSourcedataTokens[index + 1].startIndex;
+
+                                    index = BlockLength + index + 1;
+
+                                    break;
+                                  }
+
+                                  index++;
+                                }
+                              } else {
+                                index = index;
+                              }
+                            } else {
+                              let x = HandleConditions(NestedSourcedataTokens, index, CompleteTokenValueList);
+
+                              if (x != undefined) {
+                                index = x;
+                              } else {
+                                index = ConditionStartIndex;
+                                ////
+                              }
+                            }
+                          }
+
+                          ////
+
+                          // i = i + NestedSourcedataTokens.length
+                          ////
+                          else if (el.type === "SetArrayIndexValue" && el.isNestedLoop) {
+                            SetArrayIndexValue(
+                              NestedSourcedataTokens,
+                              i,
+                              j,
+                              CompleteTokenValueList,
+                              tokens,
+                              OriginalIterator,
+                              iterator,
+                              ExecutionStack,
+                              LinebylineSourcedata
+                            );
+                          }
+                        }
+                      }
+                    }
+                  } else if (SourcedataTokens[i].type === "AcceptInput" && !isNested) {
+                    AcceptInputandSetValue(SourcedataTokens, i, memory);
+                  } else if (SourcedataTokens[i].value === "=" && !isNested) {
+                    //assigning values to variables
+
+                    AssignorUpdateValues(SourcedataTokens, i, CompleteTokenValueList, iterator, OriginalIterator, self); // eslint-disable-line
+                  }
+
+                  //Handling print statements in for loop
+                  else if (SourcedataTokens[i].value === ActiveLangugaeKeywords.Print && !isNested) {
+                    //for operations like print(array[3])
+
+                    // //
+
+                    PrintEngine(SourcedataTokens, CompleteTokenValueList, i, iterator, OriginalIterator);
+
+                    //
+                  }
+
+                  //Handling set array element statements in for loop
+                  else if (SourcedataTokens[i].type === "SetArrayIndexValue") {
+                    SetArrayIndexValue(
+                      SourcedataTokens,
+                      i,
+                      j,
+                      CompleteTokenValueList,
+                      tokens,
+                      OriginalIterator,
+                      iterator,
+                      ExecutionStack,
+                      LinebylineSourcedata
+                    );
+                  }
+
+                  // Handling CONDITIONAL statements in for loop
+                  else if (SourcedataTokens[i].type === "condition") {
+                    ////
+
+                    let ConditionStartIndex = i;
+                    let condition = SourcedataTokens[i].value;
+                    //HandleConditions evaluates condition and return the index of from where printing should resume
+                    //value of i depends on the conditions
+
+                    if (condition.includes("||") || condition.includes("&&")) {
+                      let value = GetConditionValue(condition, memory, i);
                       kalaam.LastConditionValue.push(value);
 
                       if (!value) {
-                        break;
+                        let BlockLength = 0;
+
+                        while (SourcedataTokens[i].value != "{") {
+                          if (SourcedataTokens[i + 1].value === "{") {
+                            BlockLength = SourcedataTokens[i + 1].EndIndex - SourcedataTokens[i + 1].startIndex;
+
+                            i = BlockLength + i + 1;
+
+                            break;
+                          }
+
+                          i++;
+                        }
+                      } else {
+                        i = i;
                       }
-                    } else if (el.type === "SetArrayIndexValue" && el.isNestedLoop) {
-                      SetArrayIndexValue(
-                        NestedSourcedataTokens,
-                        i,
-                        j,
-                        memory,
-                        tokens,
-                        OriginalIterator,
-                        iterator,
-                        ExecutionStack,
-                        LinebylineSourcedata
-                      );
+                    } else {
+                      i = HandleConditions(SourcedataTokens, i, CompleteTokenValueList);
+
+                      if (i != undefined) {
+                        i = i;
+                      } else {
+                        i = ConditionStartIndex;
+                        ////
+                      }
                     }
                   }
                 }
               }
-            } else if (SourcedataTokens[i].value === "=" && !isNested) {
-              //assigning values to variables in a for loop
 
-              AssignorUpdateValues(
-                SourcedataTokens,
-                i,
-                memory,
-                iterator,
-                OriginalIterator,
-                global,
-                ExecutionStack,
-                LinebylineSourcedata
-              ); // eslint-disable-line
-            } else if (SourcedataTokens[i].type === "PushToArray") {
-              AddElementToArray(SourcedataTokens, i, memory, ExecutionStack, LinebylineSourcedata);
-            } else if (SourcedataTokens[i].type === "AcceptInput") {
-              AcceptInputandSetValue(SourcedataTokens, i, memory);
-            }
+              i = i + SourcedataTokens.length;
 
-            //Handling print statements in for loop
-            else if (SourcedataTokens[i].value === ActiveLangugaeKeywords.Print && !isNested) {
-              PrintEngine(SourcedataTokens, memory, i, iterator, OriginalIterator);
-            }
-
-            //Handling set array element statements in for loop
-            else if (SourcedataTokens[i].type === "SetArrayIndexValue") {
+              //END NESTED FOR LOOP
+            } else if (functionSourceData[i].type === "SetArrayIndexValue") {
               SetArrayIndexValue(
                 SourcedataTokens,
                 i,
                 j,
-                memory,
+                CompleteTokenValueList,
                 tokens,
                 OriginalIterator,
                 iterator,
@@ -1258,727 +1793,175 @@ export default function Compile(kalaam, ActiveLangugae) {
               );
             }
 
-            // Handling CONDITIONAL statements in for loop
-            else if (SourcedataTokens[i].type === "condition") {
-              let ConditionStartIndex = i;
-              let condition = SourcedataTokens[i].value;
+            //Handling While loop in function
+            else if (functionSourceData[i].type === "WhileLoopStart") {
+              let element = functionSourceData[i + 1].value;
 
-              //HandleConditions evaluates condition and return the index of from where printing should resume
-              //value of i depends on the conditions
+              let ExtratcedVariable = [];
 
-              if (condition.includes("||") || condition.includes("&&")) {
-                let value = GetConditionValue(condition, memory, i);
+              let variable = "";
+              let WhileLoopSourcedataIndexStart = 0;
+              let WhileLoopSourcedataTokens = [];
 
-                //Experimental
-                kalaam.LastConditionValue.push(value);
+              for (let i = 0; i < element.length; i++) {
+                let x = element.charAt(i);
 
-                if (!value) {
-                  let BlockLength = 0;
-
-                  while (SourcedataTokens[i].value != "{") {
-                    if (SourcedataTokens[i + 1].value === "{") {
-                      BlockLength = SourcedataTokens[i + 1].EndIndex - SourcedataTokens[i + 1].startIndex;
-
-                      i = BlockLength + i + 1;
-
-                      break;
-                    }
-
-                    i++;
-                  }
-                } else {
-                  i = i;
+                if (isVariable(x)) {
+                  variable = variable + x;
                 }
-              } else {
-                i = HandleConditions(SourcedataTokens, i, memory);
+                if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
+                  let token = CompleteTokenValueList.find((el) => el.name === variable);
 
-                let expression = condition;
-                let Linenumber = "";
+                  ExtratcedVariable.push({
+                    variable: variable,
+                    value: token.value,
+                  });
 
-                expression = GetcleanedExpression(expression);
-
-                LinebylineSourcedata.forEach((el, index) => {
-                  el = GetcleanedExpression(el);
-                  if (el.includes(expression)) {
-                    Linenumber = index;
-                  }
-                });
-                if (i != undefined) {
-                  i = i;
-                  let message =
-                    "कंडीशन " + condition + " , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा ";
-                  AddtoExecutionStack(
-                    ExecutionStack,
-                    "अगर",
-                    "एक Certain Condition के तहत कोड Execution को Allow करता है। ",
-                    condition,
-                    "",
-                    message,
-                    Linenumber + 1
-                  );
-                } else {
-                  i = ConditionStartIndex;
-
-                  let message = "कंडीशन " + condition + " TRUE(सत्य) होने के कारन COMPUTER आगे के कोड को रन करेगा ";
-                  AddtoExecutionStack(
-                    ExecutionStack,
-                    "अगर",
-                    "एक Certain Condition के तहत कोड Execution को Allow करता है। ",
-                    condition,
-                    "",
-                    message,
-                    Linenumber + 1
-                  );
+                  variable = "";
                 }
               }
-            }
-          }
-        }
 
-        j = j + SourcedataTokens.length;
-      }
+              function getWhileLoopSourcedata(startIndex, functionSourceData, StoreResult) {
+                StoreResult = HandleBlocks(functionSourceData, startIndex, StoreResult);
 
-      //END FOR LOOP EXECUTION
-      else if (token_type === "functionExecution") {
-        //checking if function is invoked somewhere later in the program
-
-        //If we see a function execution call, for e.g Add(x,y), we prepare for execution
-
-        let functionSourceData = [];
-
-        let functionName = token;
-
-        let passedValues = mutable_tokens[j].passedValues;
-
-        let functionToken = mutable_tokens.find((el) => el.value === functionName);
-
-        let functionArguments = functionToken.arguments;
-
-        functionSourceData = functionToken.SourceData;
-
-        //Creating a seperate execution context and setting fucntion context name:value pair in functionContextmemory
-
-        //for e.g x=3, y=4 is already defined and then we execute add(x,y)
-
-        // This is an memory form limited to function context
-
-        //Operating on function arguments and setting their values. For e.g the function add(x,y) might be called as add(3,4)
-
-        //so we set x=3, y=4 and set self variable-value pair in functionContextmemory
-
-        functionArguments.forEach((el, index) => {
-          let val = passedValues[index];
-
-          val = val.replace(/"/g, "");
-          val = val.replace(/'/g, "");
-
-          passedValues[index] = val;
-
-          //in self code we are filtering out arguments passed based on whether they already exist in updated tokens or not
-
-          let FindInUpdatedTokens = memory.find((el) => el.name === val);
-
-          //For passing same argument and same value to function  e.g function foo (fibonacci) and fibonacci is already declared with some value
-          if (FindInUpdatedTokens === undefined) {
-            functionContextmemory.push({
-              name: el,
-
-              value: val,
-
-              identifier: j + index,
-              type: "value",
-              context: "FunctionExecutionContext",
-            });
-          }
-
-          //For passing different argument and value to function  e.g function foo (arr) and arr doesn't exist anywhere in tokens.
-          else if (el != FindInUpdatedTokens.name && FindInUpdatedTokens != undefined) {
-            functionContextmemory.push({
-              name: el,
-
-              value: FindInUpdatedTokens.value,
-
-              identifier: j + index,
-              type: FindInUpdatedTokens.type,
-              context: "FunctionExecutionContext",
-              IntheEndSetValueto: val,
-            });
-          } else {
-            functionContextmemory.push({
-              name: el,
-
-              value: val,
-
-              identifier: j + index,
-              type: FindInUpdatedTokens.type,
-              context: "FunctionExecutionContext",
-              IntheEndSetValueto: val,
-            });
-          }
-        });
-
-        //Building a complete variable-value pair dataset
-
-        var CompleteTokenValueList = [...memory, ...functionContextmemory];
-
-        let message =
-          "Computer " +
-          '"' +
-          functionName +
-          '"' +
-          " नाम की रचना को कॉल (Call) करता है | आपने " +
-          '"()"' +
-          " के अंदर दिए गए New Values का रचना " +
-          functionName +
-          " में उपयोग करके, रचना " +
-          functionName +
-          " में लिखे गए कोड को रन करता है |";
-
-        let expression = functionName + "(";
-
-        let Linenumber = "";
-        //
-
-        LinebylineSourcedata.forEach((el, i) => {
-          if (el.includes(expression) && !el.includes("रचना")) {
-            Linenumber = i + 1;
-
-            AddtoExecutionStack(
-              ExecutionStack,
-              "रचना",
-              " एक विशिष्ट रूप से लिखा गया कोड जिसका हम बार बार उपयोग कर सकते है | ",
-              functionName,
-              functionSourceData,
-              message,
-              Linenumber
-            );
-          }
-        });
-
-        //Now we start digging into the function execution
-
-        for (let i = 1; i < functionSourceData.length; i++) {
-          let el = functionSourceData[i];
-
-          //operations like दिखाए(Message)
-          //PrintEngine will take care of every print statement encountered in the program
-
-          if (el.value === ActiveLangugaeKeywords.Print) {
-            PrintEngine(functionSourceData, CompleteTokenValueList, i, ExecutionStack);
-          }
-
-          //operations like Message='Hello World'
-
-          //AssignorUpdateValues function will take care of every assignment encountered in the program
-          else if (el.value === "=") {
-            AssignorUpdateValues(
-              functionSourceData,
-              i,
-              CompleteTokenValueList,
-              iterator,
-              OriginalIterator,
-              self,
-              ExecutionStack,
-              LinebylineSourcedata
-            ); // eslint-disable-line
-          }
-
-          //operations like इनपुट(Message)
-          else if (el.type === "AcceptInput") {
-            AcceptInputandSetValue(functionSourceData, i, memory, ExecutionStack);
-          }
-
-          //operations like x<24, y!=5, Message==='HellO World"
-          else if (el.type === "condition") {
-            let element = functionSourceData[i].value;
-
-            //self function is the first step to calculate value of  mulitiple conditions like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
-
-            //GetConditionValue is our goto function to evaluate a condition to true or false
-            let ConditionValue = GetConditionValue(element, CompleteTokenValueList, i);
-
-            kalaam.LastConditionValue.push(ConditionValue);
-
-            //if value is false, just skip the if loop context, if not it will be ran in final print module
-
-            if (!ConditionValue) {
-              //Handle Blocks is a function which takes care of nested block by taking care of nested { and } brackets
-              //it uses the stack to push and pop brackets to accurately identify start and the end of the block
-              let Returnvalue = HandleBlocks(functionSourceData, i);
-
-              i = Returnvalue.i;
-            }
-          }
-
-          //Handling set array element statements in for loop
-          // for e.g Numbers[2]=28
-          else if (functionSourceData[i].type === "SetArrayIndexValue") {
-            SetArrayIndexValue(
-              functionSourceData,
-              i,
-              j,
-              CompleteTokenValueList,
-              tokens,
-              OriginalIterator,
-              iterator,
-              ExecutionStack,
-              LinebylineSourcedata
-            );
-          }
-
-          //Opearting on for loop encountered in program
-          else if (functionSourceData[i].type === "ForLoopStart") {
-            var FlagPrimalLoop = 0; // eslint-disable-line
-
-            var SourcedataTokens = [];
-
-            let ForLoopMetaData = ForLoopSetMetadata(functionSourceData, i, CompleteTokenValueList);
-
-            var ForLoopSourcedataIndexStart = ForLoopMetaData.ForLoopSourcedataIndexStart;
-            var Cycle = ForLoopMetaData.Cycle;
-            var OriginalIterator = ForLoopMetaData.OriginalIterator;
-            var IterationStart = ForLoopMetaData.IterationStart;
-            var iterator = ForLoopMetaData.iterator;
-            var element = ForLoopMetaData.element;
-            var elementValue = ForLoopMetaData.elementValue;
-
-            function getSourcedata(startIndex, functionSourceData, StoreResult) {
-              let Returnvalue = HandleBlocks(functionSourceData, startIndex, StoreResult);
-              StoreResult = Returnvalue.StoreResult;
-
-              return StoreResult;
-            }
-
-            ForLoopSourcedataIndexStart = getLoopIndexStart(functionSourceData, i, "{", ForLoopSourcedataIndexStart);
-
-            //
-
-            SourcedataTokens = getSourcedata(ForLoopSourcedataIndexStart, functionSourceData, SourcedataTokens);
-
-            SourcedataTokens.forEach((el) => {
-              el.isNestedLoop = false;
-            });
-
-            let FindNestedLoop = SourcedataTokens.find((el) => el.type === "ForLoopStart");
-            if (FindNestedLoop != undefined) {
-              let NestedLoopindex = SourcedataTokens.indexOf(FindNestedLoop) + 2;
-              let NestedLooplength =
-                SourcedataTokens[NestedLoopindex].EndIndex - SourcedataTokens[NestedLoopindex].startIndex + 1;
-
-              for (let x = NestedLoopindex; x < NestedLoopindex + NestedLooplength; x++) {
-                SourcedataTokens[x].isNestedLoop = true;
-              }
-            }
-
-            //Primal loop is the one where user gives us the range directly like (1,20) etc.
-
-            if (element.includes("(") && element.includes(",")) {
-              FlagPrimalLoop = 1;
-            }
-
-            //Iterating over forloop sourcedata
-            //self line 'iterator <= Cycle' determines start of the loop and the duration of the loop
-
-            for (iterator = IterationStart; iterator <= Cycle; iterator++) {
-              let forloopindex = CompleteTokenValueList.find((el) => el.name === OriginalIterator);
-
-              forloopindex.value = iterator;
-
-              //flag to avoid running self code if loop is primal because the payload needs to be compeltely different
-              if (FlagPrimalLoop === 0) {
-                ForLoopArrayorStringOutput(elementValue, iterator, CompleteTokenValueList, self); // eslint-disable-line
+                return StoreResult;
               }
 
-              for (let i = 0; i < SourcedataTokens.length; i++) {
-                let isNested = SourcedataTokens[i].isNestedLoop;
+              WhileLoopSourcedataIndexStart = getLoopIndexStart(
+                functionSourceData,
+                i,
+                "{",
+                WhileLoopSourcedataIndexStart
+              );
+              //
+              WhileLoopSourcedataTokens = getWhileLoopSourcedata(
+                WhileLoopSourcedataIndexStart,
+                functionSourceData,
+                WhileLoopSourcedataTokens
+              ).StoreResult;
 
-                //This is nested loop
-                //Works but needs improvements on various parts
+              // console.log("WhileLoopSourcedataTokens: ", WhileLoopSourcedataTokens);
+              //constantly evaluating the conditionvalue. for e.g count<25 in जबतक(count<25)
 
-                //NESTED FOR LOOP START
+              // let message='जबतक' +
+              //AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे', WhileLoopSourcedataTokens, ''  , message)
 
-                if (SourcedataTokens[i].type === "ForLoopStart") {
-                  var NestedSourcedataTokens = [];
+              while (GetConditionValue(element, CompleteTokenValueList, j + 1)) {
+                for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
+                  //SECTION while loop context
 
-                  let NestedForLoopMetaData = ForLoopSetMetadata(SourcedataTokens, i, CompleteTokenValueList);
-
-                  var NestedForLoopSourcedataIndexStart = NestedForLoopMetaData.ForLoopSourcedataIndexStart;
-                  var NestedCycle = NestedForLoopMetaData.Cycle + 1;
-                  var NestedOriginalIterator = NestedForLoopMetaData.OriginalIterator;
-                  var Nestediterator = NestedForLoopMetaData.IterationStart;
-
-                  function getSourcedata(startIndex, SourcedataTokens, StoreResult) {
-                    ////
-
-                    let Returnvalue = HandleBlocks(SourcedataTokens, startIndex, StoreResult);
-                    StoreResult = Returnvalue.StoreResult;
-
-                    return StoreResult;
+                  if (WhileLoopSourcedataTokens[i].value === "=") {
+                    AssignorUpdateValues(WhileLoopSourcedataTokens, i, CompleteTokenValueList);
+                  } else if (WhileLoopSourcedataTokens[i].type === "AcceptInput") {
+                    AcceptInputandSetValue(WhileLoopSourcedataTokens, i, memory);
                   }
 
-                  NestedForLoopSourcedataIndexStart = getLoopIndexStart(
-                    SourcedataTokens,
-                    i,
-                    "{",
-                    NestedForLoopSourcedataIndexStart
-                  );
+                  // Handling CONDITIONAL statements in while loop
+                  else if (WhileLoopSourcedataTokens[i].type === "condition") {
+                    let index = HandleConditions(WhileLoopSourcedataTokens, i, CompleteTokenValueList);
 
-                  NestedSourcedataTokens = getSourcedata(
-                    NestedForLoopSourcedataIndexStart,
-                    SourcedataTokens,
-                    NestedSourcedataTokens
-                  );
-                  ////
-
-                  for (Nestediterator; Nestediterator < NestedCycle; Nestediterator++) {
-                    {
-                      let y = Nestediterator;
-
-                      let Nestedforloopindex = CompleteTokenValueList.find((el) => el.name === NestedOriginalIterator);
-                      ////
-
-                      Nestedforloopindex.value = y;
-
-                      for (let index = 0; index < NestedSourcedataTokens.length; index++) {
-                        let el = NestedSourcedataTokens[index];
-
-                        if (el.value === ActiveLangugaeKeywords.Print) {
-                          PrintEngine(NestedSourcedataTokens, CompleteTokenValueList, index, y, NestedOriginalIterator);
-                        } else if (el.value === "=" && el.isNestedLoop) {
-                          //assigning values to variables
-
-                          AssignorUpdateValues(
-                            NestedSourcedataTokens,
-                            index,
-                            CompleteTokenValueList,
-                            y,
-                            NestedOriginalIterator,
-                            self
-                          ); // eslint-disable-line
-                        } else if (el.type === "condition" && el.isNestedLoop) {
-                          ////
-
-                          let ConditionStartIndex = index;
-                          let condition = NestedSourcedataTokens[index].value;
-                          //HandleConditions evaluates condition and return the index of from where printing should resume
-                          //value of i depends on the conditions
-
-                          if (condition.includes("||") || condition.includes("&&")) {
-                            let value = GetConditionValue(condition, CompleteTokenValueList, index);
-                            kalaam.LastConditionValue.push(value);
-
-                            if (!value) {
-                              let BlockLength = 0;
-
-                              while (NestedSourcedataTokens[index].value != "{") {
-                                if (NestedSourcedataTokens[index + 1].value === "{") {
-                                  BlockLength =
-                                    NestedSourcedataTokens[index + 1].EndIndex -
-                                    NestedSourcedataTokens[index + 1].startIndex;
-
-                                  index = BlockLength + index + 1;
-
-                                  break;
-                                }
-
-                                index++;
-                              }
-                            } else {
-                              index = index;
-                            }
-                          } else {
-                            let x = HandleConditions(NestedSourcedataTokens, index, CompleteTokenValueList);
-
-                            if (x != undefined) {
-                              index = x;
-                            } else {
-                              index = ConditionStartIndex;
-                              ////
-                            }
-                          }
-                        }
-
-                        ////
-
-                        // i = i + NestedSourcedataTokens.length
-                        ////
-                        else if (el.type === "SetArrayIndexValue" && el.isNestedLoop) {
-                          SetArrayIndexValue(
-                            NestedSourcedataTokens,
-                            i,
-                            j,
-                            CompleteTokenValueList,
-                            tokens,
-                            OriginalIterator,
-                            iterator,
-                            ExecutionStack,
-                            LinebylineSourcedata
-                          );
-                        }
-                      }
-                    }
-                  }
-                } else if (SourcedataTokens[i].type === "AcceptInput" && !isNested) {
-                  AcceptInputandSetValue(SourcedataTokens, i, memory);
-                } else if (SourcedataTokens[i].value === "=" && !isNested) {
-                  //assigning values to variables
-
-                  AssignorUpdateValues(SourcedataTokens, i, CompleteTokenValueList, iterator, OriginalIterator, self); // eslint-disable-line
-                }
-
-                //Handling print statements in for loop
-                else if (SourcedataTokens[i].value === ActiveLangugaeKeywords.Print && !isNested) {
-                  //for operations like print(array[3])
-
-                  // //
-
-                  PrintEngine(SourcedataTokens, CompleteTokenValueList, i, iterator, OriginalIterator);
-
-                  //
-                }
-
-                //Handling set array element statements in for loop
-                else if (SourcedataTokens[i].type === "SetArrayIndexValue") {
-                  SetArrayIndexValue(
-                    SourcedataTokens,
-                    i,
-                    j,
-                    CompleteTokenValueList,
-                    tokens,
-                    OriginalIterator,
-                    iterator,
-                    ExecutionStack,
-                    LinebylineSourcedata
-                  );
-                }
-
-                // Handling CONDITIONAL statements in for loop
-                else if (SourcedataTokens[i].type === "condition") {
-                  ////
-
-                  let ConditionStartIndex = i;
-                  let condition = SourcedataTokens[i].value;
-                  //HandleConditions evaluates condition and return the index of from where printing should resume
-                  //value of i depends on the conditions
-
-                  if (condition.includes("||") || condition.includes("&&")) {
-                    let value = GetConditionValue(condition, memory, i);
-                    kalaam.LastConditionValue.push(value);
-
-                    if (!value) {
-                      let BlockLength = 0;
-
-                      while (SourcedataTokens[i].value != "{") {
-                        if (SourcedataTokens[i + 1].value === "{") {
-                          BlockLength = SourcedataTokens[i + 1].EndIndex - SourcedataTokens[i + 1].startIndex;
-
-                          i = BlockLength + i + 1;
-
-                          break;
-                        }
-
-                        i++;
-                      }
+                    if (index != undefined) {
+                      i = index;
                     } else {
                       i = i;
                     }
-                  } else {
-                    i = HandleConditions(SourcedataTokens, i, CompleteTokenValueList);
-
-                    if (i != undefined) {
-                      i = i;
-                    } else {
-                      i = ConditionStartIndex;
-                      ////
-                    }
+                  } else if (WhileLoopSourcedataTokens[i].value === ActiveLangugaeKeywords.Print) {
+                    PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i); //for operations like print(array[3])
+                  } else if (WhileLoopSourcedataTokens[i].type === "SetArrayIndexValue") {
+                    SetArrayIndexValue(
+                      WhileLoopSourcedataTokens,
+                      i,
+                      j,
+                      CompleteTokenValueList,
+                      tokens,
+                      OriginalIterator,
+                      iterator,
+                      ExecutionStack,
+                      LinebylineSourcedata
+                    );
                   }
                 }
               }
+
+              i = i + 1 + WhileLoopSourcedataTokens.length + 1;
             }
-
-            i = i + SourcedataTokens.length;
-
-            //END NESTED FOR LOOP
-          } else if (functionSourceData[i].type === "SetArrayIndexValue") {
-            SetArrayIndexValue(
-              SourcedataTokens,
-              i,
-              j,
-              CompleteTokenValueList,
-              tokens,
-              OriginalIterator,
-              iterator,
-              ExecutionStack,
-              LinebylineSourcedata
-            );
           }
 
-          //Handling While loop in function
-          else if (functionSourceData[i].type === "WhileLoopStart") {
-            let element = functionSourceData[i + 1].value;
+          //skipping parsing index so that function context is run by single entity and global execution doesn't run self code too
+          //  j = mutable_tokens[j + 1].EndIndex
 
-            let ExtratcedVariable = [];
-
-            let variable = "";
-            let WhileLoopSourcedataIndexStart = 0;
-            let WhileLoopSourcedataTokens = [];
-
-            for (let i = 0; i < element.length; i++) {
-              let x = element.charAt(i);
-
-              if (isVariable(x)) {
-                variable = variable + x;
-              }
-              if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
-                let token = CompleteTokenValueList.find((el) => el.name === variable);
-
-                ExtratcedVariable.push({
-                  variable: variable,
-                  value: token.value,
-                });
-
-                variable = "";
-              }
-            }
-
-            function getWhileLoopSourcedata(startIndex, functionSourceData, StoreResult) {
-              StoreResult = HandleBlocks(functionSourceData, startIndex, StoreResult);
-
-              return StoreResult;
-            }
-
-            WhileLoopSourcedataIndexStart = getLoopIndexStart(
-              functionSourceData,
-              i,
-              "{",
-              WhileLoopSourcedataIndexStart
-            );
-            //
-            WhileLoopSourcedataTokens = getWhileLoopSourcedata(
-              WhileLoopSourcedataIndexStart,
-              functionSourceData,
-              WhileLoopSourcedataTokens
-            ).StoreResult;
-
-            // console.log("WhileLoopSourcedataTokens: ", WhileLoopSourcedataTokens);
-            //constantly evaluating the conditionvalue. for e.g count<25 in जबतक(count<25)
-
-            // let message='जबतक' +
-            //AddtoExecutionStack(ExecutionStack,'=', 'जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे', WhileLoopSourcedataTokens, ''  , message)
-
-            while (GetConditionValue(element, CompleteTokenValueList, j + 1)) {
-              for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
-                //SECTION while loop context
-
-                if (WhileLoopSourcedataTokens[i].value === "=") {
-                  AssignorUpdateValues(WhileLoopSourcedataTokens, i, CompleteTokenValueList);
-                } else if (WhileLoopSourcedataTokens[i].type === "AcceptInput") {
-                  AcceptInputandSetValue(WhileLoopSourcedataTokens, i, memory);
-                }
-
-                // Handling CONDITIONAL statements in while loop
-                else if (WhileLoopSourcedataTokens[i].type === "condition") {
-                  let index = HandleConditions(WhileLoopSourcedataTokens, i, CompleteTokenValueList);
-
-                  if (index != undefined) {
-                    i = index;
-                  } else {
-                    i = i;
-                  }
-                } else if (WhileLoopSourcedataTokens[i].value === ActiveLangugaeKeywords.Print) {
-                  PrintEngine(WhileLoopSourcedataTokens, CompleteTokenValueList, i); //for operations like print(array[3])
-                } else if (WhileLoopSourcedataTokens[i].type === "SetArrayIndexValue") {
-                  SetArrayIndexValue(
-                    WhileLoopSourcedataTokens,
-                    i,
-                    j,
-                    CompleteTokenValueList,
-                    tokens,
-                    OriginalIterator,
-                    iterator,
-                    ExecutionStack,
-                    LinebylineSourcedata
-                  );
-                }
-              }
-            }
-
-            i = i + 1 + WhileLoopSourcedataTokens.length + 1;
-          }
+          //If we pass function foo(arr) where arr is (suppose) fibonacci=[] declared in the global exe context(memory). But operation will be performed on
+          //arr in functionContextmemory. so at the end of fucntion execution we set the value to it's right owner.
+          /*
+                let token = functionContextmemory.find(el => el.IntheEndSetValueto != "");
+                console.log('token: ', token);
+                let GivePowersTo = memory.find(el => el.name === token.IntheEndSetValueto);
+                
+    
+                GivePowersTo.value = token.value;
+    
+                //I have to empty it because function context has to remain empty other wise function arguments will keep on accepting new values with the same key
+                //for e.g= PrintFullName(FirstName,LastName) and PrintFullName(FirstNam,LastNam) needs two different execution context hence first one needs to make space for later
+    
+                functionContextmemory = [];
+    
+                */
         }
-
-        //skipping parsing index so that function context is run by single entity and global execution doesn't run self code too
-        //  j = mutable_tokens[j + 1].EndIndex
-
-        //If we pass function foo(arr) where arr is (suppose) fibonacci=[] declared in the global exe context(memory). But operation will be performed on
-        //arr in functionContextmemory. so at the end of fucntion execution we set the value to it's right owner.
-        /*
-              let token = functionContextmemory.find(el => el.IntheEndSetValueto != "");
-              console.log('token: ', token);
-              let GivePowersTo = memory.find(el => el.name === token.IntheEndSetValueto);
-              
-  
-              GivePowersTo.value = token.value;
-  
-              //I have to empty it because function context has to remain empty other wise function arguments will keep on accepting new values with the same key
-              //for e.g= PrintFullName(FirstName,LastName) and PrintFullName(FirstNam,LastNam) needs two different execution context hence first one needs to make space for later
-  
-              functionContextmemory = [];
-  
-              */
+        /* else if (token === "अन्यथा") {
+          let result = HandleBlocks(mutable_tokens, j, result);
+          // let StartofBlock = mutable_tokens[j + 1].startIndex;
+          let EndofBlock = mutable_tokens[j + 1].EndIndex;
+    
+          let lastValue = kalaam.LastConditionValue.pop();
+    
+          if (lastValue) {
+            j = EndofBlock;
+          }*/
       }
-      /* else if (token === "अन्यथा") {
-        let result = HandleBlocks(mutable_tokens, j, result);
-        // let StartofBlock = mutable_tokens[j + 1].startIndex;
-        let EndofBlock = mutable_tokens[j + 1].EndIndex;
-  
-        let lastValue = kalaam.LastConditionValue.pop();
-  
-        if (lastValue) {
-          j = EndofBlock;
-        }*/
+    })();
+
+    //This is where error handling kicks in
+
+    //To find undefined variables
+
+    function onlyUnique(value, index, arr) {
+      return arr.indexOf(value) === index;
     }
-  })();
 
-  //This is where error handling kicks in
+    var assigned_variables = assigned_variables.filter(onlyUnique);
 
-  //To find undefined variables
+    let difference = variables_array.filter((x) => !assigned_variables.includes(x));
 
-  function onlyUnique(value, index, arr) {
-    return arr.indexOf(value) === index;
-  }
+    if (difference.length > 0) {
+      difference.forEach((el) => {
+        kalaam.error.push("Variable " + el + " is undefined ");
+      });
+    }
 
-  var assigned_variables = assigned_variables.filter(onlyUnique);
+    kalaam.linebylineOutput = kalaam.error.length > 0 ? kalaam.error : kalaam.output.split("\n");
 
-  let difference = variables_array.filter((x) => !assigned_variables.includes(x));
+    //time taken to transpile the code is t1-t0
+    var t1 = performance.now(); // eslint-disable-line
 
-  if (difference.length > 0) {
-    difference.forEach((el) => {
-      kalaam.error.push("Variable " + el + " is undefined ");
+    if (kalaam.error.length === 0) {
+      kalaam.TimeTaken =
+        "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)";
+    } else {
+      kalaam.isError = true;
+
+      kalaam.TimeTaken = "Compilation Error: Check for assignement and declaration mistyping";
+    }
+
+    //kalaam.linebylineoutput is what you will finally see on output screen
+
+    kalaam.linebylineOutput = kalaam.linebylineOutput.filter(function(item) {
+      return item !== "";
     });
+
+    //ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
+
+    return ExecutionStack;
+  } catch (e) {
+    console.log(e);
   }
-
-  kalaam.linebylineOutput = kalaam.error.length > 0 ? kalaam.error : kalaam.output.split("\n");
-
-  //time taken to transpile the code is t1-t0
-  var t1 = performance.now(); // eslint-disable-line
-
-  if (kalaam.error.length === 0) {
-    kalaam.TimeTaken =
-      "अभिनंदन, आप का प्रोग्राम काम कर रहा है |( Speed =  " + ((t1 - t0) / 1000).toPrecision(3) + " Seconds)";
-  } else {
-    kalaam.isError = true;
-
-    kalaam.TimeTaken = "Compilation Error: Check for assignement and declaration mistyping";
-  }
-
-  //kalaam.linebylineoutput is what you will finally see on output screen
-
-  kalaam.linebylineOutput = kalaam.linebylineOutput.filter(function(item) {
-    return item !== "";
-  });
-
-  //ExecutionStack=ExecutionStack.sort((a,b)=> a.Linenumber-b.Linenumber)
-
-  return ExecutionStack;
 }
