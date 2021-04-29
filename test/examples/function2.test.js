@@ -1,11 +1,10 @@
 import Compile from "../../src/lib/Compiler/main";
-import { function1 } from "../../src/exampleCodes/function1";
-import Data from "../../src/exampleCodes/kalaamData";
+import { function2 } from "../../src/exampleCodes/function2";
 
 test("function testing", () => {
-  const expected = ["Sachin Tendulkar"];
+  const expected = ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
   var {
     kalaam: { linebylineOutput },
-  } = Compile(function1);
+  } = Compile(function2);
   expect(linebylineOutput).toStrictEqual(expected);
 });

@@ -121,7 +121,7 @@ export function isEmptyArrayInit() {
   };
 }
 
-export function isEmptyStringorChar() {
+export function isinvalidString() {
   return function(element) {
     return (
       element == '"' ||

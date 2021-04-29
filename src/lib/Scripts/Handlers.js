@@ -27,23 +27,19 @@ function handleHygiene(el) {
 }
 
 function handleVariable(element, tokens, cleaned_sourcedata, i, nextEl, prevEl) {
-  if (handleHygiene({ nextEl }) === "pass") {
-    let variable_value = cleaned_sourcedata[i + 2];
-    let token;
+  let token;
+  element = RemoveQuotes(element);
 
-    if (nextEl === "=") {
-      variable_value = RemoveQuotes(variable_value);
+  let Datatype = isNumber(element) && element != "" ? "Number" : "String";
 
-      let Datatype = isNumber(variable_value) && variable_value != "" ? "Number" : "String";
+  if (nextEl === "=" || prevEl === "=") {
+    token = {
+      type: "variable",
+      value: element,
+      Datatype: Datatype,
+    };
 
-      token = {
-        type: "variable",
-        value: element,
-        Datatype: Datatype,
-      };
-
-      return token;
-    }
+    return token;
   }
 }
 

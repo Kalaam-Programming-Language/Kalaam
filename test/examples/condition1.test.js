@@ -4,8 +4,8 @@ import Data from "../../src/exampleCodes/kalaamData";
 
 test("Testing For loop", () => {
   const expected = ["That works too."];
-  const condition1data = Data(condition1);
-  Compile(condition1data);
-  const result = condition1data.linebylineOutput;
-  expect(result).toStrictEqual(expected);
+  var {
+    kalaam: { linebylineOutput },
+  } = Compile(condition1);
+  expect(linebylineOutput).toStrictEqual(expected);
 });

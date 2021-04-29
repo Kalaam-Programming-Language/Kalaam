@@ -53,7 +53,7 @@ function IsReservedKeyword(e) {
   );
 }
 
-function isEmptyStringorChar() {
+function isinvalidString(element) {
   return function(element) {
     if (
       element == '"' ||
@@ -65,6 +65,8 @@ function isEmptyStringorChar() {
       element.charAt(0) == '"'
     ) {
       return true;
+    } else {
+      return false;
     }
   };
 }
@@ -399,27 +401,35 @@ function AcceptInputandSetValue(tokens, index, updated_tokens, ExecutionStack, L
 //If you are not getting the values right, this is where you should start debugging
 
 function CalculateValues(calculation, j, updated_tokens) {
-  var calculationArray = SplitElementsArray(calculation);
+  var result;
+  try {
+    var calculationArray = SplitElementsArray(calculation);
 
-  var StringVar = SetValues(calculationArray, updated_tokens);
+    var StringVar = SetValues(calculationArray, updated_tokens);
 
-  let joinStringVar = StringVar.join("");
+    let joinStringVar = StringVar.join("");
 
-  let NewStringVar = "";
-  if (isNumber(joinStringVar.charAt(0)) == true) {
-    NewStringVar = eval(joinStringVar);
-  } else if (isNumber(joinStringVar.charAt(0)) == undefined) {
-    StringVar.forEach((el) => {
-      if (el != "+") {
-        el = el.toString();
-        NewStringVar = NewStringVar + el;
-      }
-    });
-  } else {
-    StringVar = StringVar;
+    let NewStringVar = "";
+    if (isNumber(joinStringVar.charAt(0)) == true) {
+      NewStringVar = eval(joinStringVar);
+    } else if (isNumber(joinStringVar.charAt(0)) == undefined) {
+      StringVar.forEach((el) => {
+        if (el != "+") {
+          el = el.toString();
+          NewStringVar = NewStringVar + el;
+        }
+      });
+    } else {
+      StringVar = StringVar;
+    }
+
+    result = StringVar.length > 1 ? NewStringVar : StringVar;
+  } catch (e) {
+    //if c=a+b, and either b,a is undefined
+    result = e;
   }
 
-  return StringVar.length > 1 ? NewStringVar : StringVar;
+  return result;
 }
 
 //Have to move this two functions to Pushfunctions.js
@@ -632,13 +642,14 @@ function GetArrayorStringElement(element, updated_tokens, NewValue) {
 
 function ForLoopArrayorStringOutput(elementValue, iterator, updated_tokens, global) {
   let CurrentElement = "";
-
   CurrentElement = elementValue.name + "[" + iterator + "]";
   //Foundvalue is decided in the function depending upon the type.
   //if it's array run array[2], if its string run string.charAt(2)
   let FoundValue = GetArrayorStringElement(CurrentElement, updated_tokens);
 
   global.output = global.output + FoundValue + "\n";
+  console.log("global.output:", global.output);
+  return;
 }
 
 //Move it to typechecking.js
@@ -857,15 +868,23 @@ function AssignorUpdateValues(
 
   //if someone accidenlty types Name=इनपुट or any other primary keywords
 
-  if (
-    varvalue.includes("दुहराओ") ||
-    varvalue.includes("रचना") ||
-    varvalue.includes("अन्यथा") ||
-    varvalue.includes("इनपुट") ||
-    varvalue.includes("पुश") ||
-    varvalue.includes(ActiveLangugaeKeywords.Print) ||
-    varvalue.includes(ActiveLangugaeKeywords.If)
-  ) {
+  function AssignmentError(value, keywords) {
+    if (value != "") {
+      for (let x in keywords) {
+        if (keywords[x].includes(value)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+
+  //checkAssignmentError(varvalue, ActiveLangugaeKeywords);
+
+  var error = AssignmentError(varvalue, ActiveLangugaeKeywords);
+
+  if (error) {
     let error = "Assignment error in " + '"' + variable + " = " + '"';
 
     global.error.push(error);
@@ -873,21 +892,31 @@ function AssignorUpdateValues(
 
   let varvalueType = sourcedata[i + 1].type;
 
-  let x = updated_tokens.find((el) => el.name == varvalue);
-
-  //if a=b and user haven't defined b yet
-
-  if (
-    !isNumber(varvalue) &&
-    varvalueType == "value" &&
-    x == undefined &&
-    varvalue != " " &&
-    !isEmptyStringorChar(varvalue)
-  ) {
-    global.error.push("Cannot set " + variable + " to undefined " + ": " + varvalue + " is undefined ");
+  function findvalueinMemory(v) {
+    return updated_tokens.find((el) => el.name == v);
   }
 
-  //to count the length, Numbers.संख्या()
+  let memory_value = findvalueinMemory(varvalue);
+
+  //if a=b and user haven't defined b yet
+  //doesn't work on a=b+c, where b is undefined, calculateValues function takes care of that
+
+  function checkifUndefined(v, mv, type) {
+    if (type == "variable" && !isNumber(v) && mv == undefined) {
+      return `Cannot set ${variable} to undefined : ${v} is undefined `;
+    } else {
+      return false;
+    }
+  }
+
+  let undefined_error = checkifUndefined(varvalue, memory_value, varvalueType);
+
+  //if we have any undefined variables
+  if (undefined_error != false) {
+    global.error.push(undefined_error);
+  }
+
+  //to count the length, Numbers.संख्या()s
   else if (varvalue.includes("संख्या")) {
     let Split = varvalue.split(".");
 
@@ -1023,6 +1052,7 @@ function AssignorUpdateValues(
 
       if (isCalculation(varvalue)) {
         //type 1- Age= 2020-2000
+
         if (isPureEval(varvalue)) {
           let value = eval(varvalue);
 
@@ -1157,7 +1187,7 @@ function AssignorUpdateValues(
   //This is the experession whcih is getting evaluated.
 
   let expression = variable + "=" + varvalue;
-
+  // console.log(updated_tokens);
   expression = GetcleanedExpression(expression);
 
   LinebylineSourcedata.forEach((el, index) => {

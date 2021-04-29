@@ -1,12 +1,13 @@
 import { GetcleanedExpression } from "../Scripts/main";
 
-function findtokenPositioninCode(source, mycode) {
-  mycode = GetcleanedExpression(mycode);
+function findtokenPositioninCode(source, mycode, shoudlclean) {
+  mycode = shoudlclean ? GetcleanedExpression(mycode) : mycode;
 
-  for (let i = 0; i < source.length; i++) {
-    source[i] = GetcleanedExpression(source[i]);
-    if (source[i].includes(mycode)) {
-      return i + 1;
+  for (let x = 0; x < source.length; x++) {
+    source[x] = shoudlclean ? GetcleanedExpression(source[x]) : source[x];
+
+    if (source[x].includes(mycode)) {
+      return x + 1;
     }
   }
 }

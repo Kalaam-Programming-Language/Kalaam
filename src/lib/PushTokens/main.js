@@ -1,5 +1,5 @@
 import { RemoveQuotes, RemoveBrackets, operatorType } from "../Scripts/Helpers";
-
+import { ActiveLangugaeKeywords } from "../Compiler/constants";
 //ANCHOR - Functions to push token with type and value into tokens array for further parsing
 
 function isNumber(element) {
@@ -43,7 +43,7 @@ function PushOperator(value, tokens) {
 
 function PushKeyword(value, tokens) {
   value = value.replace("+", " + ");
-  let subtype = value === "दिखाए" ? "print" : "default";
+  let subtype = value === ActiveLangugaeKeywords.Print ? "print" : "default";
 
   tokens.push({
     type: "keyword",
@@ -183,7 +183,7 @@ function PushFunctionData(value, tokens, sourcedata, i) {
     type: "function",
     value: functionNameSplit[0],
     arguments: functionArguments,
-    FunctionInvocationExists: false,
+    FunctionInvocation: false,
     FunctionStack: [],
   });
 }
@@ -199,7 +199,7 @@ function PushFunctionExecution(value, tokens, sourcedata, i, passedValues) {
     type: "functionExecution",
     value: functionNameSplit[0],
     arguments: functionArguments,
-    FunctionInvocationExists: true,
+    FunctionInvocation: true,
     passedValues: passedValues,
   });
 }
@@ -231,8 +231,8 @@ function PushArray(value, tokens) {
 
 function PushCalculation(value, tokens, cleaned_sourcedata, i) {
   //not allowing values like Numbers[a]
-
-  if (!(!/\d+/.test(cleaned_sourcedata[i - 3]) && cleaned_sourcedata[i - 3].includes("["))) {
+  //revisit this
+  if (!(!/\d+/.test(cleaned_sourcedata[i - 2]) && cleaned_sourcedata[i - 2].includes("["))) {
     //
 
     tokens.push({

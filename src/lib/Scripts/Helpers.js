@@ -4,7 +4,16 @@ function RemoveQuotes(e) {
 
   return e;
 }
+function earlyCleaning(c) {
+  //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
 
+  c = c.replace(/&lt;/g, "<");
+
+  c = c.replace(/&gt;/g, ">");
+
+  c = c.replace(/&amp;/g, "&");
+  return c;
+}
 function RemoveBrackets(e) {
   let a = e.replace("(", "");
   let b = a.replace(")", "");
@@ -16,7 +25,7 @@ function RemoveBrackets(e) {
 
 function operatorType(t) {
   return t === "="
-    ? "assignmnet"
+    ? "assignment"
     : t === "+"
     ? "addition"
     : t === "-"
@@ -46,4 +55,4 @@ function Count(item, element) {
   return count;
 }
 
-export { RemoveQuotes, RemoveBrackets, Count, operatorType };
+export { earlyCleaning, RemoveQuotes, RemoveBrackets, Count, operatorType };

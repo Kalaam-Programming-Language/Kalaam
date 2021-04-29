@@ -16,11 +16,10 @@ test("checks execution stack", () => {
     "कंडीशन  ऑपरेशन=='*'  , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा ",
     "कंडीशन  ऑपरेशन=='/'  , FALSE(गलत) होने के कारन COMPUTER आगे के कोड को रन नहीं करेगा ",
   ];
-  const executionstack1data = Data(executionstack1);
-
-  const result = Compile(executionstack1data);
+  var { ExecutionStack } = Compile(executionstack1);
   let stack = [];
-  result.forEach((el) => {
+
+  ExecutionStack.forEach((el) => {
     stack.push(el.message);
   });
 

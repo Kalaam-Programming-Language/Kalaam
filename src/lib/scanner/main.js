@@ -32,7 +32,7 @@ const isSetArrayIndexValue = TypeCheck.isSetArrayIndexValue();
 // const isEmptyArrayInit = TypeCheck.isEmptyArrayInit()
 
 const isString = TypeCheck.isString();
-const isEmptyStringorChar = TypeCheck.isEmptyStringorChar();
+const isinvalidString = TypeCheck.isinvalidString();
 
 const isPureEval = AdvancedTypeCheck.isPureEval();
 
@@ -58,7 +58,7 @@ function Scanner(sourcecode, i, tokens) {
     ? "VARIABLE"
     : isNumber(el)
     ? "NUMBER"
-    : isEmptyStringorChar(el)
+    : isinvalidString(el)
     ? "EMPTY_STRING"
     : isInput(el)
     ? "INPUT"

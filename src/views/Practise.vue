@@ -346,16 +346,12 @@ export default {
 
     this.checked = true;
 
-    //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
-
+    //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     let m = this.$store.state.CurrentCode.replace(/&lt;/g, "<");
 
     m = m.replace(/&gt;/g, ">");
 
     m = m.replace(/&amp;/g, "&");
-
-    //Setting the formatted code to this.code. this.code is how you can access the code written by user.
-
     this.code = m;
 
     if (this.code == "") {
@@ -443,8 +439,17 @@ export default {
       //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
       //try  to see what we are sending to our compiler
 
-      Compile(this.$data, this.ActiveLanguage);
-      console.log("User Input Code: ", this.$data);
+      var {
+        ExecutionStack,
+        kalaam: { linebylineOutput, TimeTaken, isError, output, error },
+      } = Compile(this.code, this.ActiveLanguage);
+
+      this.linebylineOutput = linebylineOutput;
+      this.TimeTaken = TimeTaken;
+      this.isError = isError;
+      this.error = error;
+      this.output = output;
+      this.ExecutionStack = ExecutionStack;
     },
 
     RunLinebyLine: function() {
@@ -453,8 +458,8 @@ export default {
       //try  to see what we are sending to our compiler
 
       if (this.flag == false) {
-        this.ExecutionStack = Compile(this.$data, this.ActiveLanguage);
-        console.log("this.ExecutionStack:", this.ExecutionStack);
+        let { ExecutionStack } = Compile(this.code, this.ActiveLanguage);
+        this.ExecutionStack = ExecutionStack;
       }
 
       this.flag = true;
