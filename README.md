@@ -33,7 +33,7 @@ Thank you to all the amazing developers who showed interest in contributing to t
 - Feel free to play with frontend or backend. Creative ideas are most welcome.
 - Use Kalaam Discord sever to connect with fellow contributors.
 
-## NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'dev-Kalaam-nextVersion' and NOT DIRECTLY ON THE MASTER BRANCH.
+#` NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'dev-Kalaam-nextVersion' and NOT DIRECTLY ON THE MASTER BRANCH.`#
 
 
 ## Future plans
