@@ -4,8 +4,6 @@ import Data from "../../src/exampleCodes/kalaamData";
 
 test("compiles reverse sample code from examples", () => {
   const expected = ["Input String- TestString", "Reversed String- gnirtStseT"];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(reverse);
+  var { linebylineOutput } = Compile(reverse);
   expect(linebylineOutput).toStrictEqual(expected);
 });

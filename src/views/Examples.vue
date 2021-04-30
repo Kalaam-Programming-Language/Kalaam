@@ -773,48 +773,7 @@ DecimalValue=DecimalValue+value
 </p>
 
 </div>
-  </slide>
-
-
-    <slide class="slide">
-
-<div id="slide">
-
- <q-btn id="TryCodebtn" color="secondary" @click="CopyCode('CodeID24')">Run Code</q-btn>
-<p id="CodePara" >
-
-<h6>#5 Fibonacci अनुक्रम  </h6>
-
-<pre id="CodeID24" >
-
-
-
-Fibonacci=[]
-दुहराओ a को (0,25) मे
-{
-अगर (a<3)
-{
-Fibonacci[a]=a
-}
-अगर (a>1)
-{
-x=Fibonacci[a-2]
-y=Fibonacci[a-1]
-Fibonacci[a]=x+y
-}
-}
-
-दिखाए(Fibonacci)
-}
-
-
-</pre>
-</p>
-
-</div>
-
-
-  </slide>
+    </slide>
 
 </carousel>
 

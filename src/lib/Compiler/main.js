@@ -128,6 +128,7 @@ export default function Compile(sourcecode, ActiveLangugae) {
 
     kalaam.output = "";
     kalaam.LastConditionValue = [];
+    kalaam.ExecutionStack = [];
 
     kalaam.linebylineOutput = kalaam.output.split("\n");
     kalaam.error = [];
@@ -233,7 +234,7 @@ export default function Compile(sourcecode, ActiveLangugae) {
               assigned_variables.push(el.name);
             }
 
-            //We will simplify self conditions as we move forward
+            //We will simplify this conditions as we move forward
             else if (!isPureEval(el.value) && !isNumber(el.value)) {
               if (!(el.name.includes("]") && el.name.includes("["))) {
                 if (el.type === "Array") {
@@ -616,12 +617,48 @@ export default function Compile(sourcecode, ActiveLangugae) {
 
           try {
             let el = element;
+            let cal = "";
+            let count = 0;
+            //   function findCalculation(cleaned_sourcedata, i) {
+            let x = i;
+            let d = 0;
 
-            let c_el = RemoveBrackets(el);
+            while (isCalculation(cleaned_sourcedata[x]) || cleaned_sourcedata[x] == "+") {
+              cal = cal + cleaned_sourcedata[x];
+              count += 1;
+              x++;
+            }
+
+            function isMultiCalculation(c, op = "*+/-") {
+              if (c.includes("(") && c.includes(")")) {
+                let s = c.split("");
+                s.forEach((el) => {
+                  if (op.includes(el)) {
+                    d = d + 1;
+                  }
+                });
+
+                if (d > 1) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            }
+
+            let multiCal = isMultiCalculation(cal);
+
+            //  console.log("x", x, i);
+            skipParsing = count - 1;
+            // cal = RemoveBrackets(cal);
+
+            //let c_el = RemoveBrackets(cal);
+
+            //  let cal = findCalculation();
 
             // to stop prevention of expressions like is"+ getting added as a calculation
-            !c_el.includes('"') && !["/", "*", "'", '"'].includes(el.charAt(0))
-              ? PushCalculation(el, tokens, cleaned_sourcedata, i)
+            !cal.includes('"') && !["/", "*", "'", '"'].includes(el.charAt(0))
+              ? PushCalculation(cal, tokens, cleaned_sourcedata, i, multiCal)
               : console.log(`impure calculation terms ${el}`);
           } catch (e) {
             console.log(e, `Error in completing calculation ${element}`);
@@ -1269,7 +1306,6 @@ export default function Compile(sourcecode, ActiveLangugae) {
         _analyzeToken(cleaned_sourcedata, i, tokens);
 
         //Code to skip improve a particular part of cleaned_sourcedata if it's being operated by two different functions.
-
         if (skipParsing != 0) {
           i = i + skipParsing;
         }
@@ -1340,7 +1376,8 @@ export default function Compile(sourcecode, ActiveLangugae) {
       return item !== "";
     });
 
-    return { ExecutionStack, kalaam };
+    kalaam.ExecutionStack = ExecutionStack;
+    return kalaam;
   } catch (e) {
     console.log(e);
   }

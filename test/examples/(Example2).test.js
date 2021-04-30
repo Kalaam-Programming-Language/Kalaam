@@ -20,8 +20,6 @@ test("compiles example2 sample code from examples", () => {
     "              |                                          Test Sign                                          |              ",
     "               |                                             Test Sign                                             |               ",
   ];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(example2);
+  var { linebylineOutput } = Compile(example2);
   expect(linebylineOutput).toStrictEqual(expected);
 });

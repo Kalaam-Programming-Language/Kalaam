@@ -362,7 +362,7 @@ export default {
   //This is the start of our functions.
   methods: {
     Reload: function() {
-      console.log(this.ActiveLanguage);
+      //console.log(this.ActiveLanguage);
     },
     Clear: function() {
       if (this.$store.state.PractiseOn) {
@@ -439,10 +439,10 @@ export default {
       //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
       //try  to see what we are sending to our compiler
 
-      var {
-        ExecutionStack,
-        kalaam: { linebylineOutput, TimeTaken, isError, output, error },
-      } = Compile(this.code, this.ActiveLanguage);
+      var { linebylineOutput, TimeTaken, isError, output, error, ExecutionStack } = Compile(
+        this.code,
+        this.ActiveLanguage
+      );
 
       this.linebylineOutput = linebylineOutput;
       this.TimeTaken = TimeTaken;

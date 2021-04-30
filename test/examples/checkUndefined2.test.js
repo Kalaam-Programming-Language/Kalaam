@@ -3,8 +3,6 @@ import { undefined2 } from "../../src/exampleCodes/checkundefined2";
 
 test("Checks Undefined error", () => {
   const expected = ["Cannot set c to undefined : b is undefined "];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(undefined2);
+  var { linebylineOutput } = Compile(undefined2);
   expect(linebylineOutput).toStrictEqual(expected);
 });

@@ -4,8 +4,6 @@ import Data from "../../src/exampleCodes/kalaamData";
 
 test("compiles calculator sample code from examples", () => {
   const expected = ["FirstValue is 10", "SecondValue is 20", "Output is  30"];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(calculator);
+  var { linebylineOutput } = Compile(calculator);
   expect(linebylineOutput).toStrictEqual(expected);
 });

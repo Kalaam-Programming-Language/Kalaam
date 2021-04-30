@@ -1,7 +1,6 @@
-import { RemoveQuotes, RemoveBrackets, operatorType } from "../Scripts/Helpers";
+import { RemoveBrackets, operatorType } from "../Scripts/Helpers";
 import { ActiveLangugaeKeywords } from "../Compiler/constants";
 //ANCHOR - Functions to push token with type and value into tokens array for further parsing
-
 function isNumber(element) {
   return /^[0-9]*$/gm.test(element);
 }
@@ -229,15 +228,17 @@ function PushArray(value, tokens) {
   }
 }
 
-function PushCalculation(value, tokens, cleaned_sourcedata, i) {
+function PushCalculation(value, tokens, cleaned_sourcedata, i, multiCal) {
   //not allowing values like Numbers[a]
   //revisit this
+
   if (!(!/\d+/.test(cleaned_sourcedata[i - 2]) && cleaned_sourcedata[i - 2].includes("["))) {
     //
 
     tokens.push({
       type: "Calculation",
       value: value,
+      multiCal,
     });
   }
 }

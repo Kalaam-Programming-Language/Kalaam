@@ -4,8 +4,6 @@ import Data from "../../src/exampleCodes/kalaamData";
 
 test("function testing", () => {
   const expected = ["Sachin Tendulkar"];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(function1);
+  var { linebylineOutput } = Compile(function1);
   expect(linebylineOutput).toStrictEqual(expected);
 });

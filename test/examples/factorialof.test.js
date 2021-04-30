@@ -3,8 +3,6 @@ import { factorialOf } from "../../src/exampleCodes/factorialOf";
 
 test("Checks factorial", () => {
   const expected = ["Factorial of  5  is  120"];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(factorialOf);
+  var { linebylineOutput } = Compile(factorialOf);
   expect(linebylineOutput).toStrictEqual(expected);
 });

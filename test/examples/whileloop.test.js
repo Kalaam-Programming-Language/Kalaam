@@ -4,8 +4,6 @@ import Data from "../../src/exampleCodes/kalaamData";
 
 test("Testing while loop", () => {
   const expected = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(whileloop);
+  var { linebylineOutput } = Compile(whileloop);
   expect(linebylineOutput).toStrictEqual(expected);
 });

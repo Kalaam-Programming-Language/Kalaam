@@ -3,8 +3,6 @@ import { undefined1 } from "../../src/exampleCodes/checkUndefined1";
 
 test("Checks Undefined error", () => {
   const expected = ["ReferenceError: b is not defined"];
-  var {
-    kalaam: { linebylineOutput },
-  } = Compile(undefined1);
+  var { linebylineOutput } = Compile(undefined1);
   expect(linebylineOutput).toStrictEqual(expected);
 });

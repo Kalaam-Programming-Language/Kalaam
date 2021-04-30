@@ -168,8 +168,8 @@ function GetcleanedExpression(expression) {
 
 //To convert 'a+b-c*d' into ['a','+','-','c','*','d']
 
-function SplitElementsArray(element) {
-  element = RemoveBrackets(element);
+function SplitElementsArray(element, multiCal) {
+  element = multiCal ? element : RemoveBrackets(element);
 
   if (IsConditionalOperator(element)) {
     element = element.replace(/' '/g, "");
@@ -400,19 +400,25 @@ function AcceptInputandSetValue(tokens, index, updated_tokens, ExecutionStack, L
 
 //If you are not getting the values right, this is where you should start debugging
 
-function CalculateValues(calculation, j, updated_tokens) {
+function CalculateValues(calculation, j, updated_tokens, multiCal) {
   var result;
   try {
-    var calculationArray = SplitElementsArray(calculation);
+    var calculationArray = SplitElementsArray(calculation, multiCal);
 
     var StringVar = SetValues(calculationArray, updated_tokens);
 
     let joinStringVar = StringVar.join("");
 
     let NewStringVar = "";
-    if (isNumber(joinStringVar.charAt(0)) == true) {
+    //evaluate the exepression as it is when multical is true
+    //for expressions like c=(ageone+agetwo)/2 + (ageone+agetwo)*2
+
+    if (isNumber(joinStringVar.charAt(0)) || multiCal) {
       NewStringVar = eval(joinStringVar);
-    } else if (isNumber(joinStringVar.charAt(0)) == undefined) {
+    }
+
+    //Not realted to numbers at all but strings
+    else if (!isNumber(joinStringVar.charAt(0))) {
       StringVar.forEach((el) => {
         if (el != "+") {
           el = el.toString();
@@ -1072,8 +1078,8 @@ function AssignorUpdateValues(
         //type 2- X= ageone+agetwo
         else {
           //performing the calculation
-
-          let value = CalculateValues(varvalue, i, updated_tokens);
+          let multiCal = sourcedata[i + 1].multiCal;
+          let value = CalculateValues(varvalue, i, updated_tokens, multiCal);
 
           updated_tokens.push({
             name: variable,

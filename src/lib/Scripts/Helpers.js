@@ -15,8 +15,8 @@ function earlyCleaning(c) {
   return c;
 }
 function RemoveBrackets(e) {
-  let a = e.replace("(", "");
-  let b = a.replace(")", "");
+  let a = e.replace(/\(/g, "");
+  let b = a.replace(/\)/g, "");
   let c = b.replace("}", "");
   let d = c.replace("{", "");
 
