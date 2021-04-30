@@ -126,7 +126,7 @@
       <div id="output">
         <div id="bharatDIV">
           <p id="version">
-            Kalaam - Click On Run to Run Your Program Line by Line
+            Kalaam - Run Your Program Line by Line
           </p>
           <p id="CodeStatus" v-if="this.isError == false">{{ TimeTaken }}</p>
 
@@ -174,7 +174,7 @@
 
       <div id="output">
         <div id="bharatDIV">
-          <p id="version">Kalaam - Your output will be shown here</p>
+          <p id="version">Kalaam - Code output will be shown here</p>
           <p id="CodeStatus" v-if="this.isError == false">{{ TimeTaken }}</p>
 
           <p id="CodeStatus" v-if="this.isError == true">{{ TimeTaken }}</p>
@@ -706,7 +706,7 @@ button:focus {
 #version {
   margin: 0;
   float: left;
-  color: #92924c;
+  color: #afaf70;
   font-size: 90%;
 }
 

@@ -7,8 +7,6 @@
         <div id="KLogo">
           <img src="../assets/Logo.png" alt="" />
         </div>
-
-        <div id="MyLogo"></div>
       </div>
 
       <div id="Section2">
@@ -16,13 +14,7 @@
           Kalaam is the programming language in Hindi and has all the basic functionalities of a modern programming
           language. From for loops to while loops and from functions to conditional statements.
         </p>
-        <p>
-          Programming needs to reach every part of India if we have to produce more number of quality startups and
-          technically sound ecosystem. Language and unfamiliarity should not become barriers to these students to learn
-          to code. Familiarity can make anything more connected, and learning does not seem shallow. What could be more
-          familiar than the language we used for communication. The language between friends and families is now a
-          language between human and computer .
-        </p>
+
         <p>
           Anyone with a smartphone or a computer can start coding in Kalaam. <br />
 
@@ -34,7 +26,9 @@
           <a href="https://www.linkedin.com/in/swanandkadam/"
             ><img id="Linkedin" src="../assets/Linkedin.png" alt=""
           /></a>
-          <a href="https://www.youtube.com/c/swanandkadam"><img id="youtube" src="../assets/youtube.webp" alt=""/></a>
+          <a href="https://github.com/Kalaam-Programming-Language/Kalaam"
+            ><img id="github" src="../assets/git.png" alt=""
+          /></a>
 
           <!--<a href="https://www.instagram.com/swanand_kdm/"><img id="instagram" src="../assets/instagram.png" alt=""></a> -->
         </div>
@@ -44,64 +38,17 @@
     <div id="faq">
       <h3>FAQ'S</h3>
 
-      <button v-on:click="showStar4 = !showStar4" type="button" class="collapsible">Why Create Kalaam?</button>
-
-      <transition name="slide-fade">
-        <div v-if="showStar4" class="content">
-          <div>
-            <p>
-              Technology is the next big thing for the growth of India, and programming is how we can make it happen.
-              India has massive untapped talent in Tier-2 and Tier-3 cities. Most of the students and parents are aware
-              of how technology is going to shape lives in the future, but they are not even aware of this concept
-              called computer programming.
-
-              <br />
-              <br />
-
-              I have talked to directors of numerous coaching classes in Tier-2 and Tier-3 cities. All shared a similar
-              concern over programming penetration in such parts of India. We are missing out on the talented ecosystem
-              of these students just because they believe programming is an out of bound thing for them. Even if they
-              know about it, it sounds alien to them because of syntax, courses, and unfamiliarity with the learning
-              process. Since it's completely new territory for them, they either get confused and lose interest or
-              postpone learning it.
-
-              <br />
-              <br />
-
-              Programming needs to reach every part of India if we have to produce more number of quality startups and
-              technically sound ecosystem. Language and unfamiliarity should not become barriers to these students to
-              learn to code. Familiarity can make anything more connected, and learning does not seem shallow. What
-              could be more familiar than the language we used for communication. The language between friends and
-              families is now a language between human and computer
-
-              <br />
-              <br />
-              Kalam, a programming language in Hindi, dedicated to Dr. APJ Abdul Kalam, will solve this problem of
-              improving coding literacy in remote parts of India. Kalaam is the first-ever online programming language
-              in Hindi and has all the basic functionalities of a modern programming language. Anyone with a smartphone
-              or a computer can start coding in Kalaam. The syntax and grammar of Kalaam are developed in such a way
-              that students will find flexibility in adopting other languages too.
-
-              <br />
-              <br />
-              Kalaam coding environment can also be made offline and installable on the user device. Students can code
-              for a lifetime on Kalaam without a need for the internet in the next version.
-            </p>
-          </div>
-        </div>
-      </transition>
-
       <button v-on:click="showStar0 = !showStar0" type="button" class="collapsible">
-        When will Kalaam become an open source project?
+        How can I contribute to Kalaam?
       </button>
 
       <transition name="slide-fade">
         <div v-if="showStar0" class="content">
           <div>
             <p>
-              Before going open source, I need to make sure that the code is friendly to read and understand. Most of
-              this work will include detailed comments for almost every line of code. You can stay updated with the
-              project on Discord server of the Kalaam or my social media handles.
+              Kalaam is an open source project and anyone can start contrubuting to it. We have created a
+              <a href="https://github.com/Kalaam-Programming-Language/Kalaam#readme"> Readme document</a>
+              on Github repo of kalaam, you will find all the details about contributions there.
             </p>
           </div>
         </div>
@@ -130,9 +77,8 @@
         <div v-if="showStar2" class="content">
           <div>
             <p>
-              I will be sharing my journey on my Youtube and if you want to get more access to underlying logic, you can
-              do that when language will be made opens source. Alternatively, you can also join Kalaam discord server
-              and my instagram handle for real time updates.
+              Visit <a href="https://github.com/Kalaam-Programming-Language/Kalaam">Github repo</a> of Kalaam to explore
+              the project. The project is well commented at each step and will help you to understand how it works
             </p>
           </div>
         </div>
@@ -189,7 +135,7 @@ export default {
   margin-top: 6%;
 }
 #Section1 {
-  width: 40%;
+  width: 50%;
   display: flex;
 }
 
@@ -201,6 +147,7 @@ export default {
   text-align: left;
   width: 90%;
   margin-left: 5%;
+  margin-top: 2%;
 }
 
 .content p {
@@ -212,12 +159,12 @@ export default {
 }
 
 #KLogo {
-  width: 50%;
+  width: 100%;
   float: initial;
 }
 
 #KLogo img {
-  width: 50%;
+  width: 25%;
   float: initial;
 }
 
@@ -268,14 +215,14 @@ export default {
 }
 
 #sociallinks {
-  float: left;
+  align-items: center;
   display: flex;
   margin-top: 3%;
 }
 
-#youtube {
-  width: 46%;
-  height: 50px;
+#github {
+  width: 80%;
+  height: 70px;
   cursor: pointer;
 }
 #instagram {
@@ -338,7 +285,7 @@ a {
     z-index: 1;
   }
 
-  #youtube {
+  #github {
     width: 130%;
     height: 50px;
     cursor: pointer;
