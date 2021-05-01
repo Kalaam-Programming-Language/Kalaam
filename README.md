@@ -20,7 +20,7 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 
 - The latest version of Kalaam with improvments over v1.0.O. 
 - contains latest stable Kalaam code. 
-- No new functionality added but more flexible code, error handling and functional programming.
+- No new functionality added but more flexible code, testcases, error handling and a lot of functional programming.
 
 ## v1.2.0-dev
 
@@ -33,7 +33,7 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 - This is a complete Kalaam.io application. The compiler will be made available as a standalone npm package called Kalaam-core.
 - Fork the repo and create PR's on current dev branch. For now, it is #`v1.2.0-dev`#.
 - Feel free to play with project. Creative ideas are most welcome.
-- Use Kalaam Discord sever to connect with fellow contributors.
+- Use Kalaam Discord sever to connect with fellow contributors. (https://discord.gg/vpezZjQQSQ)
 
 #` NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`#
 
