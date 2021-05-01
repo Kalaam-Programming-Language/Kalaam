@@ -35,7 +35,19 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 - Feel free to play with project. Creative ideas are most welcome.
 - Use Kalaam Discord sever to connect with fellow contributors.
 
-#` NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'dev-Kalaam-nextVersion' and NOT DIRECTLY ON THE MASTER BRANCH.`#
+#` NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`#
+
+
+## Steps to follow 
+
+1. Fork the repo
+2. create branch with the name of issue you want to fix. for e.g ```fixes whitespace issue while cleaning sourcecode```
+3. Run necessary tests using ```npm run test```. Add more test cases if you need to.
+4. Make sure your code is not breaking anything.
+5. Comment each line of your code. Write down why you are doing it instead of how you are doing it. Tell a story!
+6. Once you are ready, create a PR on current dev branch. DO NOT CREATE PR'S DIRECTLY ON MASTER BRANCH.
+7. Your code will be reviewed and if good, PR will be merged.
+8. Happy Contributing ⚙️
 
 
 ## Future plans
