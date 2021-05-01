@@ -7,19 +7,8 @@
 
           <router-link id="Kalaam" to="/">कलाम</router-link>
         </div>
-        <q-form
-          style="float:right;padding-right:2%"
-          v-if="isMobile"
-          id="Select-Language-form"
-          @submit="onSubmit"
-        >
-          <q-select
-            dense="true"
-            color="black"
-            outlined
-            v-model="ActiveLanguage"
-            :options="options"
-          >
+        <q-form style="float:right;padding-right:2%" v-if="isMobile" id="Select-Language-form" @submit="onSubmit">
+          <q-select dense="true" color="black" outlined v-model="ActiveLanguage" :options="options">
             <template v-slot:append>
               <q-avatar>
                 <img
@@ -28,12 +17,7 @@
               </q-avatar>
             </template>
           </q-select>
-          <q-btn
-            style="color:black"
-            label="Submit"
-            type="submit"
-            color="secondary"
-          />
+          <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
         </q-form>
 
         <ul id="headerlist">
@@ -45,12 +29,7 @@
           </li>
           <li>
             <q-form id="Select-Language-form" @submit="onSubmit">
-              <q-select
-                color="black"
-                outlined
-                v-model="ActiveLanguage"
-                :options="options"
-              >
+              <q-select color="black" outlined v-model="ActiveLanguage" :options="options">
                 <template v-slot:append>
                   <q-avatar>
                     <img
@@ -59,12 +38,7 @@
                   </q-avatar>
                 </template>
               </q-select>
-              <q-btn
-                style="color:black"
-                label="Submit"
-                type="submit"
-                color="secondary"
-              />
+              <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
             </q-form>
           </li>
         </ul>
@@ -98,17 +72,8 @@
 
         <li style="margin:0px">
           <label class="switch">
-            <input
-              @click="SwitchMode()"
-              v-if="this.$store.state.PractiseOn"
-              type="checkbox"
-            />
-            <input
-              @click="SwitchMode()"
-              v-if="this.$store.state.LearningOn"
-              type="checkbox"
-              checked
-            />
+            <input @click="SwitchMode()" v-if="this.$store.state.PractiseOn" type="checkbox" />
+            <input @click="SwitchMode()" v-if="this.$store.state.LearningOn" type="checkbox" checked />
 
             <span class="slider round"></span>
           </label>
@@ -143,27 +108,16 @@
           ></codemirror>
         </no-ssr>
 
-        <q-btn
-          flat
-          @click="RunLinebyLine()"
-          id="RunlinebylineBtn"
-          label="Run"
-        />
+        <q-btn flat @click="RunLinebyLine()" id="RunlinebylineBtn" label="Run" />
         <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
-        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
-          Keyword.Print
-        }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
         <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
 
-        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
-          Keyword.If
-        }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
 
         <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
-          Keyword.While
-        }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
         <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
         <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
         <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -172,7 +126,7 @@
       <div id="output">
         <div id="bharatDIV">
           <p id="version">
-            Kalaam - Click On Run to Run Your Program Line by Line
+            Kalaam - Run Your Program Line by Line
           </p>
           <p id="CodeStatus" v-if="this.isError == false">{{ TimeTaken }}</p>
 
@@ -205,19 +159,13 @@
           <q-btn flat @click="Run()" id="Runbtn" label="Run" />
           <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
-          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
-            Keyword.Print
-          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
           <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
 
-          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
-            Keyword.If
-          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
 
           <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
-            Keyword.While
-          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
           <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
           <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
           <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -226,7 +174,7 @@
 
       <div id="output">
         <div id="bharatDIV">
-          <p id="version">Kalaam - Your output will be shown here</p>
+          <p id="version">Kalaam - Code output will be shown here</p>
           <p id="CodeStatus" v-if="this.isError == false">{{ TimeTaken }}</p>
 
           <p id="CodeStatus" v-if="this.isError == true">{{ TimeTaken }}</p>
@@ -398,16 +346,12 @@ export default {
 
     this.checked = true;
 
-    //Since html reads '>' and '<' as '&gt' and '&lt' respectively, we need to replace it back to the desired way.
-
+    //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     let m = this.$store.state.CurrentCode.replace(/&lt;/g, "<");
 
     m = m.replace(/&gt;/g, ">");
 
     m = m.replace(/&amp;/g, "&");
-
-    //Setting the formatted code to this.code. this.code is how you can access the code written by user.
-
     this.code = m;
 
     if (this.code == "") {
@@ -418,7 +362,7 @@ export default {
   //This is the start of our functions.
   methods: {
     Reload: function() {
-      console.log(this.ActiveLanguage);
+      //console.log(this.ActiveLanguage);
     },
     Clear: function() {
       if (this.$store.state.PractiseOn) {
@@ -495,8 +439,17 @@ export default {
       //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
       //try  to see what we are sending to our compiler
 
-      Compile(this.$data, this.ActiveLanguage);
-      console.log("User Input Code: ", this.$data);
+      var { linebylineOutput, TimeTaken, isError, output, error, ExecutionStack } = Compile(
+        this.code,
+        this.ActiveLanguage
+      );
+
+      this.linebylineOutput = linebylineOutput;
+      this.TimeTaken = TimeTaken;
+      this.isError = isError;
+      this.error = error;
+      this.output = output;
+      this.ExecutionStack = ExecutionStack;
     },
 
     RunLinebyLine: function() {
@@ -505,16 +458,14 @@ export default {
       //try  to see what we are sending to our compiler
 
       if (this.flag == false) {
-        this.ExecutionStack = Compile(this.$data, this.ActiveLanguage);
+        let { ExecutionStack } = Compile(this.code, this.ActiveLanguage);
+        this.ExecutionStack = ExecutionStack;
       }
 
       this.flag = true;
 
       this.ExecutionStackLinebyLine =
-        this.ExecutionStackLinebyLine +
-        this.ExecutionStack[this.CurrentLine].message +
-        "\n" +
-        "\n";
+        this.ExecutionStackLinebyLine + this.ExecutionStack[this.CurrentLine].message + "\n" + "\n";
 
       let Line = this.ExecutionStack[this.CurrentLine].Linenumber;
 
@@ -755,7 +706,7 @@ button:focus {
 #version {
   margin: 0;
   float: left;
-  color: #92924c;
+  color: #afaf70;
   font-size: 90%;
 }
 

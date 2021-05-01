@@ -9,7 +9,7 @@ if (ActiveLanguage == null) {
 
 var ActiveLangugaeKeywords = "";
 
-const KalaamKeywords = {
+var KalaamKeywords = {
   Hindi: {
     Print: "दिखाए", //Still have to change this manually where REGEX are implemented
     Input: "इनपुट",
