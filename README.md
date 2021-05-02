@@ -43,7 +43,7 @@ Goals
 - [] IDesigning an E2E package
 - [] Separate repo for npm package and frontend
 - [] Standalone Documentation
-- [] guidelines on further contrubutions
+- [] guidelines on further contributions
 
 
 
