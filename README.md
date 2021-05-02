@@ -11,13 +11,13 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 
 ## Branch Guide
 
-`![#f1dd0e] v1.0.0`
+`v1.0.0`
 
 - The first version of Kalaam. You can explore it to see how first version came out to be. 
 - No development work happens here anymore.
 
 
-`![#f1dd0e] v1.1.0`
+`v1.1.0`
 
 - The latest version of Kalaam with improvments over v1.0.O. 
 - contains latest stable Kalaam code. 
@@ -32,7 +32,7 @@ Goals
 - [x] 15+ testcases
 
 
-`![#f1dd0e] v1.2.0-dev` 
+`v1.2.0-dev` 
 
 - As the name suggests, this is where devlopment work happens for next version of Kalaam. 
 - If you want to contrubute, submit PR's to this branch only.
@@ -55,7 +55,7 @@ Goals
 - Feel free to play with project. Creative ideas are most welcome.
 - Use Kalaam Discord sever to connect with fellow contributors. (https://discord.gg/vpezZjQQSQ)
 
-`![#f03c15]  NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`
+`NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`
 
 
 ## Steps to follow 
