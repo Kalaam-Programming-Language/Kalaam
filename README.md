@@ -16,16 +16,36 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 - The first version of Kalaam. You can explore it to see how first version came out to be. 
 - No development work happens here anymore.
 
+
 ## v1.1.0
 
 - The latest version of Kalaam with improvments over v1.0.O. 
 - contains latest stable Kalaam code. 
 - No new functionality added but more flexible code, testcases, error handling and a lot of functional programming.
 
+Goals
+
+- [x] Refactoring, Better Code structure and Improved code readability
+- [x] Improve primitive Datatypes parsing
+- [x] Commenting majority of codebase
+- [x] modularise codebase as per functionalities
+- [x] 15+ testcases
+
+
 ## v1.2.0-dev
 
 - As the name suggests, this is where devlopment work happens for next version of Kalaam. 
 - If you want to contrubute, submit PR's to this branch only.
+
+Goals
+
+- [] NPM package initialization
+- [] IDesigning an E2E package
+- [] Separate repo for npm package and frontend
+- [] Standalone Documentation
+- [] guidelines on further contrubutions
+
+
 
 ## Contributions
 
