@@ -11,7 +11,7 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 
 ## Branch Guide
 
-#`v1.0.0`#
+#` v1.0.0` #
 
 - The first version of Kalaam. You can explore it to see how first version came out to be. 
 - No development work happens here anymore.
