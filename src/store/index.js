@@ -1,15 +1,15 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
 
-        CurrentCode: "",
+        CurrentCode: '',
         LearningOn: false,
         PractiseOn: true,
-        ActiveLanguage: ''
+        ActiveLanguage: '',
     },
     mutations: {
 
@@ -36,7 +36,7 @@ export default new Vuex.Store({
         changeActiveLanguage(state, payload) {
 
 
-            state.ActiveLanguage = payload
+            state.ActiveLanguage = payload;
 
 
         },

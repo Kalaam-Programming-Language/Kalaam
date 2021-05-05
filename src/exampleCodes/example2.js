@@ -1,4 +1,4 @@
-const tW = (strings) => { return strings.map((s) => s.replace(/\s+/g, '\n')).join("").trim() }
+const tW = (strings) => { return strings.map((s) => s.replace(/\s+/g, '\n')).join('').trim(); };
 
 export const example2 = tW`YourSign='Test Sign' 
                 line="|"
@@ -9,4 +9,4 @@ export const example2 = tW`YourSign='Test Sign'
                 Road=space+line+space+space+space+YourSign+space+space+space+line+space
                 space=space+Extra
                 दिखाए(Road)
-                }`
+                }`;

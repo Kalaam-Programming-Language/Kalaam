@@ -34,7 +34,7 @@ export function isRealTimePrintMultipleString (){
                     
         //THE Principle condition to proceed building a string after identifyting it as a potential realtimestring   
     
-        if(((conditionStart=="(" && lastChar!=")") || (element.includes("(\"") || element.includes("('") )))
+        if(((conditionStart=='(' && lastChar!=')') || (element.includes('("') || element.includes('(\'') )))
         {
     
     
@@ -55,7 +55,7 @@ export function isStringandValue (){
     
     
     
-        if(x.includes("\"")&&x.includes("+"))
+        if(x.includes('"')&&x.includes('+'))
         {
     
     
@@ -73,7 +73,7 @@ export function isCalculation() {
 
     return function(element){
 
-        if ((element.includes("+")  || element.includes("%") || element.includes("-") || element.includes("*") || element.includes("/")) && !element.includes("[") && ((element.includes("(")&& element.includes(")")) || (!element.includes("(")&& !element.includes(")")) ) &&  element.charAt(element.length-1)!="+" && (element.charAt(0)!="/" || element.charAt(0)!="*" )) {
+        if ((element.includes('+')  || element.includes('%') || element.includes('-') || element.includes('*') || element.includes('/')) && !element.includes('[') && ((element.includes('(')&& element.includes(')')) || (!element.includes('(')&& !element.includes(')')) ) &&  element.charAt(element.length-1)!='+' && (element.charAt(0)!='/' || element.charAt(0)!='*' )) {
 
             return true;
         }
@@ -84,7 +84,7 @@ export function isCalculation() {
 export function isDirectPrintArithmetic(){
 
     return function(token){
-        if( ( token.includes("+") || token.includes("-") || token.includes("*") || token.includes("/") )  )
+        if( ( token.includes('+') || token.includes('-') || token.includes('*') || token.includes('/') )  )
         {
 
             return true;

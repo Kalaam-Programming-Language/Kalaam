@@ -1,10 +1,10 @@
 
 function RemoveBrackets(element){
 
-    let a = element.replace("(", "");
-    let b = a.replace(")", "");
-    let c = b.replace("}", "");
-    let d = c.replace("{", "");
+    let a = element.replace('(', '');
+    let b = a.replace(')', '');
+    let c = b.replace('}', '');
+    let d = c.replace('{', '');
 
     return d;
 
@@ -25,7 +25,7 @@ export function BuildString() {
     return function(element,i,cleaned_sourcedata){
 
 
-        var foundString = "";
+        var foundString = '';
 
         //the flag is introduced to remove spaces introduced in strings. e.g " swanand kadam"
         var flag=0;
@@ -39,14 +39,14 @@ export function BuildString() {
             let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
          
 
-            if (item == "\"" || item == "'")
+            if (item == '"' || item == '\'')
 
             {
                 break;
             } 
             if(flag==1){
 
-                foundString = foundString + " " + cleaned_sourcedata[k];
+                foundString = foundString + ' ' + cleaned_sourcedata[k];
 
             }
          
@@ -72,7 +72,7 @@ export function BuildArray() {
 
     return function(element,i,cleaned_sourcedata){
 
-        var foundArray = "";
+        var foundArray = '';
 
         //the flag is introduced to remove spaces introduced in Arrays. e.g " swanand kadam"
         var flag=0;
@@ -87,14 +87,14 @@ export function BuildArray() {
        
 
 
-            if (item == "]")
+            if (item == ']')
 
             {
                 break;
             } 
             if(flag==1){
 
-                foundArray = foundArray + " " + cleaned_sourcedata[k];
+                foundArray = foundArray + ' ' + cleaned_sourcedata[k];
         
 
             }
@@ -125,7 +125,7 @@ export function BuildCondition() {
 
     return function(element,i,cleaned_sourcedata){
 
-        var foundString = "";
+        var foundString = '';
 
         let k = i+1; // +1 to skip if, else etc and acquire condition
      
@@ -136,13 +136,13 @@ export function BuildCondition() {
             // let item = cleaned_sourcedata[k - 1].charAt(cleaned_sourcedata[k - 1].length - 1);
 
 
-            if (cleaned_sourcedata[k] == "{" || cleaned_sourcedata[k] == "){" || cleaned_sourcedata[k] == ") {" )
+            if (cleaned_sourcedata[k] == '{' || cleaned_sourcedata[k] == '){' || cleaned_sourcedata[k] == ') {' )
 
             {
                 break;
             } else {
 
-                foundString = foundString + " " + cleaned_sourcedata[k];
+                foundString = foundString + ' ' + cleaned_sourcedata[k];
 
             }
 
@@ -151,7 +151,7 @@ export function BuildCondition() {
 
         foundString=RemoveBrackets(foundString);
 
-        foundString=foundString.replace(" ", "");
+        foundString=foundString.replace(' ', '');
 
         return foundString;
    

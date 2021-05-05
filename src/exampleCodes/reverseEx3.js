@@ -1,4 +1,4 @@
-const tW = (strings) => { return strings.map((s) => s.replace(/\s+/g, '\n')).join("").trim() }
+const tW = (strings) => { return strings.map((s) => s.replace(/\s+/g, '\n')).join('').trim(); };
 
 export const reverse = tW`
                 Name='TestString'
@@ -10,4 +10,4 @@ export const reverse = tW`
                 ReverseString=ReverseString+Name[length-1]
                 length=length-1
                 }
-                दिखाए ('Reversed String-'+ ReverseString)`
+                दिखाए ('Reversed String-'+ ReverseString)`;
