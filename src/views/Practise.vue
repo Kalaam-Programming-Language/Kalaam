@@ -4,11 +4,21 @@
       <div id="header">
         <div id="LogoandTitle">
           <!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
-
           <router-link id="Kalaam" to="/">कलाम</router-link>
         </div>
-        <q-form style="float:right;padding-right:2%" v-if="isMobile" id="Select-Language-form" @submit="onSubmit">
-          <q-select dense="true" color="black" outlined v-model="ActiveLanguage" :options="options">
+        <q-form
+          style="float:right;padding-right:2%"
+          v-if="isMobile"
+          id="Select-Language-form"
+          @submit="onSubmit"
+        >
+          <q-select
+            dense="true"
+            color="black"
+            outlined
+            v-model="ActiveLanguage"
+            :options="options"
+          >
             <template v-slot:append>
               <q-avatar>
                 <img
@@ -17,7 +27,12 @@
               </q-avatar>
             </template>
           </q-select>
-          <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
+          <q-btn
+            style="color:black"
+            label="Submit"
+            type="submit"
+            color="secondary"
+          />
         </q-form>
 
         <ul id="headerlist">
@@ -29,7 +44,12 @@
           </li>
           <li>
             <q-form id="Select-Language-form" @submit="onSubmit">
-              <q-select color="black" outlined v-model="ActiveLanguage" :options="options">
+              <q-select
+                color="black"
+                outlined
+                v-model="ActiveLanguage"
+                :options="options"
+              >
                 <template v-slot:append>
                   <q-avatar>
                     <img
@@ -38,7 +58,12 @@
                   </q-avatar>
                 </template>
               </q-select>
-              <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
+              <q-btn
+                style="color:black"
+                label="Submit"
+                type="submit"
+                color="secondary"
+              />
             </q-form>
           </li>
         </ul>
@@ -57,7 +82,6 @@
           </ul>
         </transition>
       </div>
-
       <router-view />
     </div>
 
@@ -69,12 +93,19 @@
         <span v-if="this.$store.state.PractiseOn">
           <li style="color:green">Practice Mode</li>
         </span>
-
         <li style="margin:0px">
           <label class="switch">
-            <input @click="SwitchMode()" v-if="this.$store.state.PractiseOn" type="checkbox" />
-            <input @click="SwitchMode()" v-if="this.$store.state.LearningOn" type="checkbox" checked />
-
+            <input
+              @click="SwitchMode()"
+              v-if="this.$store.state.PractiseOn"
+              type="checkbox"
+            />
+            <input
+              @click="SwitchMode()"
+              v-if="this.$store.state.LearningOn"
+              type="checkbox"
+              checked
+            />
             <span class="slider round"></span>
           </label>
         </li>
@@ -108,16 +139,24 @@
           ></codemirror>
         </no-ssr>
 
-        <q-btn flat @click="RunLinebyLine()" id="RunlinebylineBtn" label="Run" />
+        <q-btn
+          flat
+          @click="RunLinebyLine()"
+          id="RunlinebylineBtn"
+          label="Run"
+        />
         <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
-
-        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
+          Keyword.Print
+        }}</q-btn>
         <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
-
-        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
-
+        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
+          Keyword.If
+        }}</q-btn>
         <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
+          Keyword.While
+        }}</q-btn>
         <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
         <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
         <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -158,14 +197,17 @@
         <div id="ControlPanel">
           <q-btn flat @click="Run()" id="Runbtn" label="Run" />
           <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
-
-          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
+            Keyword.Print
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
-
-          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
-
+          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
+            Keyword.If
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
+            Keyword.While
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
           <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
           <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -176,9 +218,7 @@
         <div id="bharatDIV">
           <p id="version">Kalaam - Code output will be shown here</p>
           <p id="CodeStatus" v-if="this.isError == false">{{ TimeTaken }}</p>
-
           <p id="CodeStatus" v-if="this.isError == true">{{ TimeTaken }}</p>
-
           <div id="printOutput">
             <p
               style="white-space: pre; "
@@ -272,19 +312,15 @@ export default {
       isError: "",
       ExecutionStack: [],
       ExecutionStackLinebyLine: "",
-
       LastConditionValue: [],
       LineByLineCode: [],
       CurrentLine: 0,
       Keyword: "",
       showMenu: false,
-
       isRoutePractise: false,
-
       ShowSupport: true,
       ShowAbout: true,
       isMobile: false,
-
       ActiveLanguage: "",
 
       //Configuration for codemirror text edior that we are using
@@ -308,9 +344,7 @@ export default {
         theme: "monokai",
         scrollbarStyle: "null",
       },
-
       model: null,
-
       options: ["Hindi", "Marathi"],
     };
   },
@@ -331,7 +365,6 @@ export default {
         this.Keyword = KalaamKeywords.Hindi;
       } else if (this.ActiveLanguage == "Marathi") {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
-
         this.Keyword = KalaamKeywords.Marathi;
       }
     },
@@ -339,7 +372,6 @@ export default {
 
   created() {
     this.ActiveLanguage = localStorage.getItem("ActiveLangugae");
-
     if (this.ActiveLanguage == null) {
       this.ActiveLanguage = "Hindi";
     }
@@ -348,9 +380,7 @@ export default {
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     let m = this.$store.state.CurrentCode.replace(/&lt;/g, "<");
-
     m = m.replace(/&gt;/g, ">");
-
     m = m.replace(/&amp;/g, "&");
     this.code = m;
 
@@ -372,13 +402,10 @@ export default {
         this.ExecutionStackLinebyLine = [];
         this.output = "";
         this.linebylineOutput = "";
-
         this.LineByLineCode = [];
-
         this.flag = false;
         this.CurrentLine = 0;
         var doc = this.cm.getDoc();
-
         doc.setCursor({ line: this.CurrentLine });
       }
     },
@@ -400,12 +427,9 @@ export default {
     },
 
     onCmFocus(cm) {},
-
     onCmCodeChange(newCode) {
       this.code = newCode;
-
       localStorage.setItem("Code", newCode);
-
       this.$store.state.CurrentCode = newCode;
     },
     toggleMenu: function() {
@@ -422,12 +446,9 @@ export default {
       var doc = this.cm.getDoc();
       //Getting the current position of cursor on Code editor
       var cursor = doc.getCursor();
-
       //Adding the clikced element (insert)
       doc.replaceRange(insert, cursor);
-
       //getting the active element
-
       //setting as active line
     },
 
@@ -439,10 +460,14 @@ export default {
       //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
       //try  to see what we are sending to our compiler
 
-      var { linebylineOutput, TimeTaken, isError, output, error, ExecutionStack } = Compile(
-        this.code,
-        this.ActiveLanguage
-      );
+      var {
+        linebylineOutput,
+        TimeTaken,
+        isError,
+        output,
+        error,
+        ExecutionStack,
+      } = Compile(this.code, this.ActiveLanguage);
 
       this.linebylineOutput = linebylineOutput;
       this.TimeTaken = TimeTaken;
@@ -461,20 +486,18 @@ export default {
         let { ExecutionStack } = Compile(this.code, this.ActiveLanguage);
         this.ExecutionStack = ExecutionStack;
       }
-
       this.flag = true;
-
       this.ExecutionStackLinebyLine =
-        this.ExecutionStackLinebyLine + this.ExecutionStack[this.CurrentLine].message + "\n" + "\n";
+        this.ExecutionStackLinebyLine +
+        this.ExecutionStack[this.CurrentLine].message +
+        "\n" +
+        "\n";
 
       let Line = this.ExecutionStack[this.CurrentLine].Linenumber;
 
       //this.cm.state.activeLines
-
       var doc = this.cm.getDoc();
-
       doc.setCursor({ line: Line - 1 });
-
       this.CurrentLine += 1;
     },
   },
@@ -498,7 +521,6 @@ export default {
   padding: 0;
   position: absolute;
   right: 3%;
-
   line-height: 40px;
 }
 

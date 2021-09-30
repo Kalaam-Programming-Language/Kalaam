@@ -11,15 +11,17 @@
 
       <div id="Section2">
         <p>
-          Kalaam is the programming language in Hindi and has all the basic functionalities of a modern programming
-          language. From for loops to while loops and from functions to conditional statements.
+          Kalaam is the programming language in Hindi and has all the basic
+          functionalities of a modern programming language. From for loops to
+          while loops and from functions to conditional statements.
         </p>
 
         <p>
-          Anyone with a smartphone or a computer can start coding in Kalaam. <br />
+          Anyone with a smartphone or a computer can start coding in Kalaam.
+          <br />
 
-          To stay updated with the project, share your ideas and suggestions, you can connect with me on the following
-          platforms:
+          To stay updated with the project, share your ideas and suggestions,
+          you can connect with me on the following platforms:
         </p>
 
         <div id="sociallinks">
@@ -38,7 +40,11 @@
     <div id="faq">
       <h3>FAQ'S</h3>
 
-      <button v-on:click="showStar0 = !showStar0" type="button" class="collapsible">
+      <button
+        v-on:click="showStar0 = !showStar0"
+        type="button"
+        class="collapsible"
+      >
         How can I contribute to Kalaam?
       </button>
 
@@ -46,15 +52,25 @@
         <div v-if="showStar0" class="content">
           <div>
             <p>
-              Kalaam is an open source project and anyone can start contrubuting to it. We have created a
-              <a href="https://github.com/Kalaam-Programming-Language/Kalaam#readme"> Readme document</a>
-              on Github repo of kalaam, you will find all the details about contributions there.
+              Kalaam is an open source project and anyone can start contrubuting
+              to it. We have created a
+              <a
+                href="https://github.com/Kalaam-Programming-Language/Kalaam#readme"
+              >
+                Readme document</a
+              >
+              on Github repo of kalaam, you will find all the details about
+              contributions there.
             </p>
           </div>
         </div>
       </transition>
 
-      <button v-on:click="showStar1 = !showStar1" type="button" class="collapsible">
+      <button
+        v-on:click="showStar1 = !showStar1"
+        type="button"
+        class="collapsible"
+      >
         How can I add comments to my code in Kalaam?
       </button>
 
@@ -62,14 +78,20 @@
         <div v-if="showStar1" class="content">
           <div>
             <p>
-              Comments is an experimental feature for now and might introduce some issues. You can still go on and use
-              <b> <i>"#This is a comment"</i></b> like format with mandatory '#' at the beginning of every comment.
+              Comments is an experimental feature for now and might introduce
+              some issues. You can still go on and use
+              <b> <i>"#This is a comment"</i></b> like format with mandatory '#'
+              at the beginning of every comment.
             </p>
           </div>
         </div>
       </transition>
 
-      <button v-on:click="showStar2 = !showStar2" type="button" class="collapsible">
+      <button
+        v-on:click="showStar2 = !showStar2"
+        type="button"
+        class="collapsible"
+      >
         Where can I learn more about how Kalaam was built?
       </button>
 
@@ -77,14 +99,22 @@
         <div v-if="showStar2" class="content">
           <div>
             <p>
-              Visit <a href="https://github.com/Kalaam-Programming-Language/Kalaam">Github repo</a> of Kalaam to explore
-              the project. The project is well commented at each step and will help you to understand how it works
+              Visit
+              <a href="https://github.com/Kalaam-Programming-Language/Kalaam"
+                >Github repo</a
+              >
+              of Kalaam to explore the project. The project is well commented at
+              each step and will help you to understand how it works
             </p>
           </div>
         </div>
       </transition>
 
-      <button v-on:click="showStar3 = !showStar3" type="button" class="collapsible">
+      <button
+        v-on:click="showStar3 = !showStar3"
+        type="button"
+        class="collapsible"
+      >
         What if I am having a issue with my code execution?
       </button>
 
@@ -92,10 +122,12 @@
         <div v-if="showStar3" class="content">
           <div>
             <p>
-              Kalaam is still in it's first stage and have been tested by handful of people. The issue that you might
-              face will be very minor and can be fixed in a day or two. Please make sure to share your feedback and
-              faced issues on Kalaam discord server or my instagram handle so that Kalaam community can keep on
-              improving the language.
+              Kalaam is still in it's first stage and have been tested by
+              handful of people. The issue that you might face will be very
+              minor and can be fixed in a day or two. Please make sure to share
+              your feedback and faced issues on Kalaam discord server or my
+              instagram handle so that Kalaam community can keep on improving
+              the language.
             </p>
           </div>
         </div>
