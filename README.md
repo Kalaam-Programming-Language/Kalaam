@@ -1,6 +1,6 @@
 <p align="center"><a href="kalaam.io" target="_blank" rel="noopener noreferrer"><img width="300" src="https://i.ibb.co/Dg3jzC5/Logo.png" alt="Kalaam logo"></a></p>
 
-<h2 align="center">Supporting Kalaam</h2>
+<h2 align="center">Contribute to Kalaam</h2>
 
 ## Introduction
 
@@ -11,21 +11,45 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 
 ## Branch Guide
 
-## v1.0.0
+`v1.0.0`
 
 - The first version of Kalaam. You can explore it to see how first version came out to be. 
 - No development work happens here anymore.
 
-## v1.1.0
+
+
+
+`v1.1.0`
 
 - The latest version of Kalaam with improvments over v1.0.O. 
 - contains latest stable Kalaam code. 
-- No new functionality added but more flexible code, error handling and functional programming.
+- No new functionality added but more flexible code, testcases, error handling and a lot of functional programming.
 
-## v1.2.0-dev
+Goals
+
+- [x] Refactoring, Better Code structure and Improved code readability
+- [x] Improve primitive Datatypes parsing
+- [x] Commenting majority of codebase
+- [x] modularise codebase as per functionalities
+- [x] 15+ testcases
+
+
+
+
+`v1.2.0-dev` 
 
 - As the name suggests, this is where devlopment work happens for next version of Kalaam. 
 - If you want to contrubute, submit PR's to this branch only.
+
+Goals
+
+- [] NPM package initialization
+- [] IDesigning an E2E package
+- [] Separate repo for npm package and frontend
+- [] Standalone Documentation
+- [] guidelines on further contributions
+
+
 
 ## Contributions
 
@@ -33,9 +57,9 @@ Kalaam has it's own parser, interpreter and executes source code from parse tree
 - This is a complete Kalaam.io application. The compiler will be made available as a standalone npm package called Kalaam-core.
 - Fork the repo and create PR's on current dev branch. For now, it is #`v1.2.0-dev`#.
 - Feel free to play with project. Creative ideas are most welcome.
-- Use Kalaam Discord sever to connect with fellow contributors.
+- Use Kalaam Discord sever to connect with fellow contributors. (https://discord.gg/vpezZjQQSQ)
 
-#` NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`#
+`NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`
 
 
 ## Steps to follow 
