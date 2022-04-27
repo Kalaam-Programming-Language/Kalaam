@@ -198,7 +198,9 @@
 <script>
 //This is our header file AKA Navigation bar located in components folder.
 
-import { KalaamKeywords } from "../lib/Compiler/constants";
+// import { KalaamKeywords } from "../lib/Compiler/constants";
+
+import { KalaamKeywords } from "kalaam";
 
 //CodeMirror is an npm package whcih provides rich code editors
 import { codemirror } from "vue-codemirror";
@@ -232,12 +234,13 @@ import "codemirror/addon/fold/indent-fold.js";
 import "codemirror/addon/fold/markdown-fold.js";
 import "codemirror/addon/fold/xml-fold.js";
 // Importing our Compile Engine
-//We need a name for our compiler, any suggestions?
+//this should come from npm package.
+// import Compile from "../lib/Compiler/main";
 
-import Compile from "../lib/Compiler/main";
+import { Compile } from "kalaam";
 
-//Central data storage of Kalaam
-import { mapState } from "vuex";
+// //Central data storage of Kalaam
+// import { mapState } from "vuex";
 
 export default {
   name: "HelloWorld",
