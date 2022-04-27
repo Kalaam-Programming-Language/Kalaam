@@ -1,5 +1,5 @@
 import { RemoveQuotes, } from '../Scripts/Helpers';
-import { ActiveLangugaeKeywords, } from '../Compiler/constants';
+import { ActiveLangugaeKeywords, } from '../../constants';
 import { IsReservedKeyword, } from '../Scripts/main';
 import { HandleBlocks, } from '../Scripts/main';
 function isNumber(element) {

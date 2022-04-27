@@ -1,4 +1,4 @@
-import { ActiveLangugaeKeywords, } from '../Compiler/constants';
+import { ActiveLangugaeKeywords, } from '../../constants';
 
 const Keywords = [
     ActiveLangugaeKeywords.If,

@@ -1,5 +1,5 @@
 import { RemoveBrackets, operatorType, } from '../Scripts/Helpers';
-import { ActiveLangugaeKeywords, } from '../Compiler/constants';
+import { ActiveLangugaeKeywords, } from '../../constants';
 //ANCHOR - Functions to push token with type and value into tokens array for further parsing
 
 function PushVariable(v, tokens) {

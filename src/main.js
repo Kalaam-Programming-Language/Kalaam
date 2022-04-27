@@ -1,10 +1,10 @@
-import Vue from "vue";
-import App from "./App.vue";
-import "./registerServiceWorker";
-import store from "./store";
-import VueRouter from "vue-router";
-import router from "./router";
-import './quasar'
+import Vue from 'vue';
+import App from './App.vue';
+import './registerServiceWorker';
+import store from './store';
+import VueRouter from 'vue-router';
+import router from './router';
+import './quasar';
 
 
 
@@ -16,4 +16,4 @@ new Vue({
     VueRouter,
     router,
     render: h => h(App),
-}).$mount("#app");
+}).$mount('#app');

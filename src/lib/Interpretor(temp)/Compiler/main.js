@@ -9,7 +9,7 @@
 //To check variable types: Number, String, Array etc.
 import * as TypeCheck from '../TypeCheck/TypeChecking';
 
-import { ActiveLangugaeKeywords, } from '../Compiler/constants';
+import { ActiveLangugaeKeywords, } from '../../constants';
 
 //To check other operations like MultiString, Arithmetic Operation etc.
 import * as AdvancedTypeCheck from '../TypeCheck/AdvancedTypeChecking';

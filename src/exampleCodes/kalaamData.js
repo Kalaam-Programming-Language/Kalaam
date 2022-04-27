@@ -1,4 +1,4 @@
-import Keyword from '../../src/lib/Compiler/constants'
+import Keyword from '../../src/lib/Compiler/constants';
 
 export default function Data(code) { 
     return {

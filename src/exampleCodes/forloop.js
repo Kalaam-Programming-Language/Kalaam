@@ -1,8 +1,8 @@
 const tW = (strings) => {
-  return strings
-    .map((s) => s.replace(/\s+/g, "\n"))
-    .join("")
-    .trim();
+    return strings
+        .map((s) => s.replace(/\s+/g, '\n'))
+        .join('')
+        .trim();
 };
 
 export const forloop = tW`

@@ -1,6 +1,6 @@
 import { SourceDataReplaceforEasyParsing, } from '../Scripts/DataCleaning';
 
-import { ActiveLangugaeKeywords, } from '../Compiler/constants';
+import { ActiveLangugaeKeywords, } from '../../constants';
 
 import { RemoveQuotes, RemoveBrackets, Count, } from '../Scripts/Helpers';
 

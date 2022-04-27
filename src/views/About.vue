@@ -30,7 +30,6 @@
             ><img id="github" src="../assets/git.png" alt=""
           /></a>
 
-          <!--<a href="https://www.instagram.com/swanand_kdm/"><img id="instagram" src="../assets/instagram.png" alt=""></a> -->
         </div>
       </div>
     </div>
