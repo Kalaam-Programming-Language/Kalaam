@@ -57,7 +57,6 @@ Goals
 - This is a complete Kalaam.io application. The compiler will be made available as a standalone npm package called Kalaam-core.
 - Fork the repo and create PR's on current dev branch. For now, it is #`v1.2.0-dev`#.
 - Feel free to play with project. Creative ideas are most welcome.
-- Use Kalaam Discord sever to connect with fellow contributors. (https://discord.gg/vpezZjQQSQ)
 
 `NOTE: MAKE SURE TO CREATE A PULL REQUEST ON 'v1.2.0-dev' and NOT DIRECTLY ON THE MASTER BRANCH.`
 
@@ -76,9 +75,8 @@ Goals
 
 ## Future plans
 
-- Right now, Kalaam is in it's early stage. Many programming languages took decades of team work to reach their God level. We go step by step.
+- Right now, Kalaam is in it's early stage. Many programming languages took decades of team work to reach their goals. We go step by step.
 - Kalaam needs to have a usecase so that people can start building stuff with it. The use-case can be unique that suits well to the Indian ecosystem. This will help us to move in a straight direction. Right now it's best for learning purposes.
-- Consider Kalaam as your project, explore it and feel free to try out new ideas.
 
 ## Documentation
 
