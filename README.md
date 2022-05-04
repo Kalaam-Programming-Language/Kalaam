@@ -94,12 +94,7 @@ Feel free to add more examples. We have three categories for examples. Basic, In
 
 For questions and support please use [the discord server](https://discord.com/invite/EMyA8TA).
 
-## NPM
 
-- Kalaam compiler package is available at https://www.npmjs.com/package/kalaam-core as "Kalaam-core".
-
-P.S- The package is not setup for named exports yet like import 'Compile' from 'Kalaam-core'.
-Instead, use the node_modules path like import 'Compile' from '../node_modules/src/lib/Compiler/main.js'
 
 ## Where is the compiler code?:
 
@@ -196,7 +191,7 @@ Copyright (c) 2020-present, Swanand Kadam
 
 
 ## भविष्य की योजनाएं
-- कलाम अभी शुरुआती दौर में हैं। कई प्रोग्रामिंग भाषाओं को अपने ईश्वर के स्तर तक पहुंचने में दशकों का टीम वर्क लगा। हम कदम दर कदम चलते हैं। 
+- कलाम अभी शुरुआती दौर में हैं। कई प्रोग्रामिंग भाषाओं को अपने स्तर तक पहुंचने में दशकों का टीम वर्क लगा। हम कदम दर कदम चलते हैं। 
 - कलाम के पास एक यूजकेस होना चाहिए ताकि लोग उससे सामान बनाना शुरू कर सकें। उपयोग-मामला अद्वितीय हो सकता है जो भारतीय पारिस्थितिकी तंत्र के लिए उपयुक्त है। यह हमें एक सीधी दिशा में आगे बढ़ने में मदद करेगा। अभी यह सीखने के उद्देश्यों के लिए सबसे अच्छा है।
 - कलाम को अपना प्रोजेक्ट मानें, इसे एक्सप्लोर करें और बेझिझक नए आइडिया आज़माएँ।
 
@@ -214,13 +209,7 @@ Copyright (c) 2020-present, Swanand Kadam
 अधिक उदाहरण जोड़ने के लिए स्वतंत्र महसूस करें। उदाहरण के लिए हमारे पास तीन श्रेणियां हैं। बेसिक, इंटरमीडिएट और एडवांस। संदर्भ के अनुसार जोड़ें। 
 ## प्रशन 
 
-प्रश्नों और समर्थन के लिए कृपया डिसॉर्डर सर्वर का उपयोग करें।  [the discord server](https://discord.com/invite/EMyA8TA).
 
-## NPM
-
-- कलाम कंपाइलर पैकेज https://www.npmjs.com/package/kalaam-core पर "कलाम-कोर" के रूप में उपलब्ध है।
-
-P.S- पैकेज नामित निर्यात के लिए अभी तक सेटअप नहीं है जैसे 'कलाम-कोर' से आयात 'संकलन'। इसके बजाय, '../node_modules/src/lib/Compiler/main.js' से 'संकलित' आयात करें जैसे नोड_मॉड्यूल पथ का उपयोग करें। 
  
 ## कंपाइलर कोड कहां है ?:
 
