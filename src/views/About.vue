@@ -12,7 +12,8 @@
       <div id="Section2">
         <p>
           Kalaam is the programming language in Hindi and has all the basic functionalities of a modern programming
-          language. From for loops to while loops and from functions to conditional statements.
+          language. From for loops to while loops and from functions to conditional statements. Kalaam also has a beta
+          framework to build web apps.
         </p>
 
         <p>
@@ -29,7 +30,6 @@
           <a href="https://github.com/Kalaam-Programming-Language/Kalaam"
             ><img id="github" src="../assets/git.png" alt=""
           /></a>
-
         </div>
       </div>
     </div>
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import Header from "../components/Header";
+import Header from '../components/Header';
 
 export default {
   data() {

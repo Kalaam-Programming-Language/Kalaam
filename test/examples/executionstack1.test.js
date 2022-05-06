@@ -1,8 +1,8 @@
-import Compile from "../../src/lib/Compiler/main";
-import { executionstack1 } from "../../src/exampleCodes/executionstack1";
-import Data from "../../src/exampleCodes/kalaamData";
+import Compile from '../../src/lib/Compiler/main';
+import { executionstack1 } from '../../src/exampleCodes/executionstack1';
+import Data from '../../src/exampleCodes/kalaamData';
 
-test("checks execution stack", () => {
+test('checks execution stack', () => {
   const expected = [
     ' Computer ने, "x" को, "11" ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |',
     ' Computer ने, "y" को, "11" ये VALUE दे कर अपने Memory में दर्ज(Store) करवाया है |',
