@@ -13,7 +13,8 @@
         <p>
           Kalaam is the programming language in Hindi and has all the basic functionalities of a modern programming
           language. From for loops to while loops and from functions to conditional statements. Kalaam also has a beta
-          framework to build web apps.
+          framework to build web apps. You can code HTML, CSS, JS and all the browser functionalities in Hindi. For now,
+          a basic todo app is possible, we are working on improvements.
         </p>
 
         <p>
