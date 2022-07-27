@@ -7,8 +7,19 @@
 
           <router-link id="Kalaam" to="/">कलाम</router-link>
         </div>
-        <q-form style="float:right;padding-right:2%" v-if="isMobile" id="Select-Language-form" @submit="onSubmit">
-          <q-select dense="true" color="black" outlined v-model="ActiveLanguage" :options="options">
+        <q-form
+          style="float: right; padding-right: 2%"
+          v-if="isMobile"
+          id="Select-Language-form"
+          @submit="onSubmit"
+        >
+          <q-select
+            dense="true"
+            color="black"
+            outlined
+            v-model="ActiveLanguage"
+            :options="options"
+          >
             <template v-slot:append>
               <q-avatar>
                 <img
@@ -17,7 +28,12 @@
               </q-avatar>
             </template>
           </q-select>
-          <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
+          <q-btn
+            style="color: black"
+            label="Submit"
+            type="submit"
+            color="secondary"
+          />
         </q-form>
 
         <ul id="headerlist">
@@ -29,7 +45,12 @@
           </li>
           <li>
             <q-form id="Select-Language-form" @submit="onSubmit">
-              <q-select color="black" outlined v-model="ActiveLanguage" :options="options">
+              <q-select
+                color="black"
+                outlined
+                v-model="ActiveLanguage"
+                :options="options"
+              >
                 <template v-slot:append>
                   <q-avatar>
                     <img
@@ -38,7 +59,12 @@
                   </q-avatar>
                 </template>
               </q-select>
-              <q-btn style="color:black" label="Submit" type="submit" color="secondary" />
+              <q-btn
+                style="color: black"
+                label="Submit"
+                type="submit"
+                color="secondary"
+              />
             </q-form>
           </li>
         </ul>
@@ -62,18 +88,27 @@
     </div>
 
     <div id="Modes">
-      <div style="width:68%;display:flex">
+      <div style="width: 68%; display: flex">
         <span v-if="!this.$store.state.PractiseOn">
           <li>Practice Mode</li>
         </span>
         <span v-if="this.$store.state.PractiseOn">
-          <li style="color:green">Practice Mode</li>
+          <li style="color: green">Practice Mode</li>
         </span>
 
-        <li style="margin:0px">
+        <li style="margin: 0px">
           <label class="switch">
-            <input @click="SwitchMode()" v-if="this.$store.state.PractiseOn" type="checkbox" />
-            <input @click="SwitchMode()" v-if="this.$store.state.LearningOn" type="checkbox" checked />
+            <input
+              @click="SwitchMode()"
+              v-if="this.$store.state.PractiseOn"
+              type="checkbox"
+            />
+            <input
+              @click="SwitchMode()"
+              v-if="this.$store.state.LearningOn"
+              type="checkbox"
+              checked
+            />
 
             <span class="slider round"></span>
           </label>
@@ -82,14 +117,10 @@
           <li>Learning Mode</li>
         </span>
         <span v-if="this.$store.state.LearningOn">
-          <li style="color:green">Learning Mode</li>
+          <li style="color: green">Learning Mode</li>
         </span>
       </div>
-      <div
-        style="width: 31%;
-    float: right;
-    text-align: end;"
-      >
+      <div style="width: 31%; float: right; text-align: end">
         <button @click="toggleMenu()" id="stackMenuIcon">☰</button>
       </div>
     </div>
@@ -108,16 +139,27 @@
           ></codemirror>
         </no-ssr>
 
-        <q-btn flat @click="RunLinebyLine()" id="RunlinebylineBtn" label="Run" />
+        <q-btn
+          flat
+          @click="RunLinebyLine()"
+          id="RunlinebylineBtn"
+          label="Run"
+        />
         <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
-        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
+          Keyword.Print
+        }}</q-btn>
         <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
 
-        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
+          Keyword.If
+        }}</q-btn>
 
         <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
+        <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
+          Keyword.While
+        }}</q-btn>
         <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
         <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
         <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -125,9 +167,7 @@
 
       <div id="output">
         <div id="bharatDIV">
-          <p id="version">
-            Kalaam - Run Your Program Line by Line
-          </p>
+          <p id="version">Kalaam - Run Your Program Line by Line</p>
           <p id="CodeStatus" v-if="this.isError == false">{{ TimeTaken }}</p>
 
           <p id="CodeStatus" v-if="this.isError == true">{{ TimeTaken }}</p>
@@ -144,7 +184,7 @@
         <no-ssr placeholder="...">
           <codemirror
             id="codearea"
-            style="text-align:left;"
+            style="text-align: left"
             ref="myCm"
             :value="code"
             placeholder="Welcome To Kalaam, This is your Code Editor."
@@ -159,13 +199,19 @@
           <q-btn flat @click="Run()" id="Runbtn" label="Run" />
           <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
-          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
+            Keyword.Print
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
 
-          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
+            Keyword.If
+          }}</q-btn>
 
           <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
+            Keyword.While
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
           <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
           <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
@@ -181,7 +227,7 @@
 
           <div id="printOutput">
             <p
-              style="white-space: pre; "
+              style="white-space: pre"
               id="linebylineOutput"
               v-for="(output, index) in this.linebylineOutput"
               :key="index"
@@ -198,9 +244,9 @@
 <script>
 //This is our header file AKA Navigation bar located in components folder.
 
-// import { KalaamKeywords } from "../lib/Compiler/constants";
+import { KalaamKeywords } from "../lib/Compiler/constants";
 
-import { KalaamKeywords } from "kalaam";
+// import { KalaamKeywords } from "kalaam";
 
 //CodeMirror is an npm package whcih provides rich code editors
 import { codemirror } from "vue-codemirror";
@@ -235,7 +281,7 @@ import "codemirror/addon/fold/markdown-fold.js";
 import "codemirror/addon/fold/xml-fold.js";
 // Importing our Compile Engine
 //this should come from npm package.
-// import Compile from "../lib/Compiler/main";
+// import Compile from '../lib/Compiler/main';
 
 import { Compile } from "kalaam";
 
@@ -327,7 +373,7 @@ export default {
 
   computed: {},
   watch: {
-    ActiveLanguage: function(newval, oldval) {
+    ActiveLanguage: function (newval, oldval) {
       if (this.ActiveLanguage == "Hindi") {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
@@ -364,10 +410,10 @@ export default {
 
   //This is the start of our functions.
   methods: {
-    Reload: function() {
+    Reload: function () {
       //console.log(this.ActiveLanguage);
     },
-    Clear: function() {
+    Clear: function () {
       if (this.$store.state.PractiseOn) {
         this.code = "";
       } else {
@@ -386,7 +432,7 @@ export default {
       }
     },
 
-    SwitchMode: function() {
+    SwitchMode: function () {
       this.$store.commit("changeMode");
     },
     // Below 3 are the fucntions provided by Codemirror code editor out of the box. We dynamically change it's height for different devices and make it responsive.
@@ -411,7 +457,7 @@ export default {
 
       this.$store.state.CurrentCode = newCode;
     },
-    toggleMenu: function() {
+    toggleMenu: function () {
       if (this.showMenu == false) {
         this.showMenu = true;
       } else if (this.showMenu == true) {
@@ -420,7 +466,7 @@ export default {
     },
     //Add() is a function used to add clicked keywords on to the code editor.
     //This keywords are in hindi, provided in the control panel at the bottom of our code editor.
-    Add: function(insert) {
+    Add: function (insert) {
       //Getting a codemirror instance
       var doc = this.cm.getDoc();
       //Getting the current position of cursor on Code editor
@@ -437,15 +483,19 @@ export default {
     //This is the start of Compiler. RUN() is the function executed when a user wants to run the code and see the output.
     //This is our main guy consisting of different functions to parse, generate token array, compile code and print output.
 
-    Run: function() {
+    Run: function () {
       //Compile is our #1 function located in /lib/compiler/main.js
       //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
       //try  to see what we are sending to our compiler
 
-      var { linebylineOutput, TimeTaken, isError, output, error, ExecutionStack } = Compile(
-        this.code,
-        this.ActiveLanguage
-      );
+      var {
+        linebylineOutput,
+        TimeTaken,
+        isError,
+        output,
+        error,
+        ExecutionStack,
+      } = Compile(this.code, this.ActiveLanguage);
 
       this.linebylineOutput = linebylineOutput;
       this.TimeTaken = TimeTaken;
@@ -455,7 +505,7 @@ export default {
       this.ExecutionStack = ExecutionStack;
     },
 
-    RunLinebyLine: function() {
+    RunLinebyLine: function () {
       //Compile is our #1 function located in /lib/compiler/main.js
       //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
       //try  to see what we are sending to our compiler
@@ -468,7 +518,10 @@ export default {
       this.flag = true;
 
       this.ExecutionStackLinebyLine =
-        this.ExecutionStackLinebyLine + this.ExecutionStack[this.CurrentLine].message + "\n" + "\n";
+        this.ExecutionStackLinebyLine +
+        this.ExecutionStack[this.CurrentLine].message +
+        "\n" +
+        "\n";
 
       let Line = this.ExecutionStack[this.CurrentLine].Linenumber;
 

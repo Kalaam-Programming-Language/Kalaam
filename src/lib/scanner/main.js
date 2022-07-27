@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 //To check variable types: Number, String, Array etc.
 
 import * as TypeCheck from '../TypeCheck/TypeChecking';
@@ -33,7 +34,6 @@ const isSetArrayIndexValue = TypeCheck.isSetArrayIndexValue();
 const isString = TypeCheck.isString();
 const isinvalidString = TypeCheck.isinvalidString();
 
-
 //if parser encounters anything like (" or (, then that's a realtime print.
 
 //buildstring will be applied now to create a string and push it into tokens. Buildstring is used to combine string tokens like
@@ -50,49 +50,49 @@ const isRealTimePrintMultipleString = AdvancedTypeCheck.isRealTimePrintMultipleS
 const isCalculation = AdvancedTypeCheck.isCalculation();
 
 function Scanner(sourcecode, i, tokens) {
-    var el = sourcecode[i];
+  var el = sourcecode[i];
 
-    var type = isVariable(el)
-        ? 'VARIABLE'
-        : isNumber(el)
-            ? 'NUMBER'
-            : isinvalidString(el)
-                ? 'EMPTY_STRING'
-                : isInput(el)
-                    ? 'INPUT'
-                    : isOperator(el)
-                        ? 'OPERATOR'
-                        : isPrintOperation(el, sourcecode, i)
-                            ? 'PRINT'
-                            : isFunction(el)
-                                ? 'FUNCTION'
-                                : isArray(el)
-                                    ? 'ARRAY'
-                                    : isSetArrayIndexValue(el, sourcecode, i)
-                                        ? 'SET_ARRAY_INDEX'
-                                        : isSetArrayIndexValue(el, sourcecode, i) == false
-                                            ? 'GET_ARRAY_INDEX'
-                                            : isConditionalKeyword(el)
-                                                ? 'CONDITIONAL_KEYWORD'
-                                                : el.includes('पुश')
-                                                    ? 'PUSH_TO_ARRAY'
-                                                    : isForLoop(el)
-                                                        ? 'FOR_LOOP'
-                                                        : isCalculation(el)
-                                                            ? 'CALCULATION'
-                                                            : isRealTimePrintMultipleString(el)
-                                                                ? 'REALTIME_PRINT'
-                                                                : isString(el)
-                                                                    ? 'STRING'
-                                                                    : isFunctionCall(el, tokens, sourcecode, i)
-                                                                        ? 'FUNCTION_CALL'
-                                                                        : isNativeOperation(el)
-                                                                            ? 'NATIVE_OPERATION'
-                                                                            : isExpression(el) && el.includes('[') && el.includes(']')
-                                                                                ? 'ARRAY_PUSH'
-                                                                                : 'UNKNOWN';
+  var type = isVariable(el)
+    ? 'VARIABLE'
+    : isNumber(el)
+    ? 'NUMBER'
+    : isinvalidString(el)
+    ? 'EMPTY_STRING'
+    : isInput(el)
+    ? 'INPUT'
+    : isOperator(el)
+    ? 'OPERATOR'
+    : isPrintOperation(el, sourcecode, i)
+    ? 'PRINT'
+    : isFunction(el)
+    ? 'FUNCTION'
+    : isArray(el)
+    ? 'ARRAY'
+    : isSetArrayIndexValue(el, sourcecode, i)
+    ? 'SET_ARRAY_INDEX'
+    : isSetArrayIndexValue(el, sourcecode, i) == false
+    ? 'GET_ARRAY_INDEX'
+    : isConditionalKeyword(el)
+    ? 'CONDITIONAL_KEYWORD'
+    : el.includes('पुश')
+    ? 'PUSH_TO_ARRAY'
+    : isForLoop(el)
+    ? 'FOR_LOOP'
+    : isCalculation(el)
+    ? 'CALCULATION'
+    : isRealTimePrintMultipleString(el)
+    ? 'REALTIME_PRINT'
+    : isString(el)
+    ? 'STRING'
+    : isFunctionCall(el, tokens, sourcecode, i)
+    ? 'FUNCTION_CALL'
+    : isNativeOperation(el)
+    ? 'NATIVE_OPERATION'
+    : isExpression(el) && el.includes('[') && el.includes(']')
+    ? 'ARRAY_PUSH'
+    : 'UNKNOWN';
 
-    return type;
+  return type;
 }
 
 export default Scanner;
