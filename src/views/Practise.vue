@@ -202,19 +202,29 @@
           <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
             Keyword.Print
           }}</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.Input + '()')">{{Keyword.Input}}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Input + '()')">{{
+            Keyword.Input
+          }}</q-btn>
 
           <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
             Keyword.If
           }}</q-btn>
 
-          <q-btn flat id="subm" @click="Add(Keyword.For)">{{Keyword.For}}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.For)">{{
+            Keyword.For
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
             Keyword.While
           }}</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.Length + '()')">{{Keyword.Length}}</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.Push)">{{Keyword.Push}}</q-btn>
-          <q-btn flat id="subm" @click="Add(Keyword.Function)">{{Keyword.Function}}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Length + '()')">{{
+            Keyword.Length
+          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Push)">{{
+            Keyword.Push
+          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Function)">{{
+            Keyword.Function
+          }}</q-btn>
         </div>
       </div>
 
@@ -281,7 +291,7 @@ import "codemirror/addon/fold/markdown-fold.js";
 import "codemirror/addon/fold/xml-fold.js";
 // Importing our Compile Engine
 //this should come from npm package.
-// import Compile from '../lib/Compiler/main';
+//import Compile from "../lib/Compiler/main";
 
 import { Compile } from "kalaam";
 
@@ -360,7 +370,7 @@ export default {
 
       model: null,
 
-      options: ["Hindi", "Marathi","Bengali"],
+      options: ["Hindi", "Marathi", "Bengali"],
     };
   },
 
@@ -382,8 +392,7 @@ export default {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
         this.Keyword = KalaamKeywords.Marathi;
-      }
-      else if (this.ActiveLanguage == "Bengali") {
+      } else if (this.ActiveLanguage == "Bengali") {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
         this.Keyword = KalaamKeywords.Bengali;
@@ -508,6 +517,7 @@ export default {
       this.error = error;
       this.output = output;
       this.ExecutionStack = ExecutionStack;
+      console.log("this:", this);
     },
 
     RunLinebyLine: function () {
