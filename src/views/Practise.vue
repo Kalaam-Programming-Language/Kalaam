@@ -360,7 +360,7 @@ export default {
 
       model: null,
 
-      options: ["Hindi", "Marathi","Bengali"],
+      options: ["Hindi", "Marathi","Bengali","Telugu"],
     };
   },
 
@@ -387,6 +387,10 @@ export default {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
         this.Keyword = KalaamKeywords.Bengali;
+      } else if (this.ActiveLanguage == "Telugu") {
+        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+        this.Keyword = KalaamKeywords.Telugu;
       }
     },
   },
