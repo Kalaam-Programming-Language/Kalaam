@@ -396,6 +396,10 @@ export default {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
         this.Keyword = KalaamKeywords.Bengali;
+      } else if (this.ActiveLanguage == "Telugu") {
+        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+        this.Keyword = KalaamKeywords.Telugu;
       }
     },
   },
