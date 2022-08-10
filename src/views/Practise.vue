@@ -248,6 +248,9 @@
 
 import { KalaamKeywords } from "kalaam";
 
+const langs = Object.keys(KalaamKeywords)
+console.log("SDFsfsdfsf",langs)
+
 //CodeMirror is an npm package whcih provides rich code editors
 import { codemirror } from "vue-codemirror";
 
@@ -284,7 +287,7 @@ import "codemirror/addon/fold/xml-fold.js";
 // import Compile from '../lib/Compiler/main';
 
 import { Compile } from "kalaam";
-
+console.log("ankitedfg",Compile)
 // //Central data storage of Kalaam
 // import { mapState } from "vuex";
 
@@ -360,7 +363,8 @@ export default {
 
       model: null,
 
-      options: ["Hindi", "Marathi","Bengali","Telugu"],
+      // options: ["Hindi", "Marathi","Bengali","Telugu"],
+      options: langs,
     };
   },
 
@@ -374,24 +378,31 @@ export default {
   computed: {},
   watch: {
     ActiveLanguage: function (newval, oldval) {
-      if (this.ActiveLanguage == "Hindi") {
-        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
-
-        this.Keyword = KalaamKeywords.Hindi;
-      } else if (this.ActiveLanguage == "Marathi") {
-        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
-
-        this.Keyword = KalaamKeywords.Marathi;
+      if(this.ActiveLanguage && langs.includes(this.ActiveLanguage)){
+        localStorage.setItem("ActiveLangugae", this.ActiveLanguage)
+        this.Keyword = KalaamKeywords[this.ActiveLanguage];
+      }else{
+        localStorage.setItem("ActiveLangugae", "Hindi")
+        this.Keyword = KalaamKeywords["Hindi"];
       }
-      else if (this.ActiveLanguage == "Bengali") {
-        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+      // if (this.ActiveLanguage == "Hindi") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
-        this.Keyword = KalaamKeywords.Bengali;
-      } else if (this.ActiveLanguage == "Telugu") {
-        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+      //   this.Keyword = KalaamKeywords.Hindi;
+      // } else if (this.ActiveLanguage == "Marathi") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
 
-        this.Keyword = KalaamKeywords.Telugu;
-      }
+      //   this.Keyword = KalaamKeywords.Marathi;
+      // }
+      // else if (this.ActiveLanguage == "Bengali") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+      //   this.Keyword = KalaamKeywords.Bengali;
+      // } else if (this.ActiveLanguage == "Telugu") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+      //   this.Keyword = KalaamKeywords.Telugu;
+      // }
     },
   },
 
