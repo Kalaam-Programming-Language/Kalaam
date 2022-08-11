@@ -202,19 +202,29 @@
           <q-btn flat id="subm" @click="Add(Keyword.Print + '()')">{{
             Keyword.Print
           }}</q-btn>
-          <q-btn flat id="subm" @click="Add('इनपुट()')">इनपुट</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Input + '()')">{{
+            Keyword.Input
+          }}</q-btn>
 
           <q-btn flat id="subm" @click="Add(Keyword.If + '()')">{{
             Keyword.If
           }}</q-btn>
 
-          <q-btn flat id="subm" @click="Add('दुहराओ x को y मे')">दुहराओ</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.For)">{{
+            Keyword.For
+          }}</q-btn>
           <q-btn flat id="subm" @click="Add(Keyword.While + '()')">{{
             Keyword.While
           }}</q-btn>
-          <q-btn flat id="subm" @click="Add('.संख्या()')">.संख्या</q-btn>
-          <q-btn flat id="subm" @click="Add('.पुश()')">.पुश</q-btn>
-          <q-btn flat id="subm" @click="Add('रचना')">रचना</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Length + '()')">{{
+            Keyword.Length
+          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Push)">{{
+            Keyword.Push
+          }}</q-btn>
+          <q-btn flat id="subm" @click="Add(Keyword.Function)">{{
+            Keyword.Function
+          }}</q-btn>
         </div>
       </div>
 
@@ -244,9 +254,12 @@
 <script>
 //This is our header file AKA Navigation bar located in components folder.
 
-import { KalaamKeywords } from "../lib/Compiler/constants";
+// import { KalaamKeywords } from "../lib/Compiler/constants";
 
-// import { KalaamKeywords } from "kalaam";
+import { KalaamKeywords } from "kalaam";
+
+const langs = Object.keys(KalaamKeywords);
+console.log("SDFsfsdfsf", langs);
 
 //CodeMirror is an npm package whcih provides rich code editors
 import { codemirror } from "vue-codemirror";
@@ -281,10 +294,10 @@ import "codemirror/addon/fold/markdown-fold.js";
 import "codemirror/addon/fold/xml-fold.js";
 // Importing our Compile Engine
 //this should come from npm package.
-// import Compile from '../lib/Compiler/main';
+//import Compile from "../lib/Compiler/main";
 
 import { Compile } from "kalaam";
-
+console.log("ankitedfg", Compile);
 // //Central data storage of Kalaam
 // import { mapState } from "vuex";
 
@@ -360,7 +373,8 @@ export default {
 
       model: null,
 
-      options: ["Hindi", "Marathi"],
+      // options: ["Hindi", "Marathi","Bengali","Telugu"],
+      options: langs,
     };
   },
 
@@ -374,15 +388,31 @@ export default {
   computed: {},
   watch: {
     ActiveLanguage: function (newval, oldval) {
-      if (this.ActiveLanguage == "Hindi") {
+      if (this.ActiveLanguage && langs.includes(this.ActiveLanguage)) {
         localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
-
-        this.Keyword = KalaamKeywords.Hindi;
-      } else if (this.ActiveLanguage == "Marathi") {
-        localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
-
-        this.Keyword = KalaamKeywords.Marathi;
+        this.Keyword = KalaamKeywords[this.ActiveLanguage];
+      } else {
+        localStorage.setItem("ActiveLangugae", "Hindi");
+        this.Keyword = KalaamKeywords["Hindi"];
       }
+      // if (this.ActiveLanguage == "Hindi") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+      //   this.Keyword = KalaamKeywords.Hindi;
+      // } else if (this.ActiveLanguage == "Marathi") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+      //   this.Keyword = KalaamKeywords.Marathi;
+      // }
+      // else if (this.ActiveLanguage == "Bengali") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+      //   this.Keyword = KalaamKeywords.Bengali;
+      // } else if (this.ActiveLanguage == "Telugu") {
+      //   localStorage.setItem("ActiveLangugae", this.ActiveLanguage);
+
+      //   this.Keyword = KalaamKeywords.Telugu;
+      // }
     },
   },
 
@@ -495,7 +525,7 @@ export default {
         output,
         error,
         ExecutionStack,
-      } = Compile(this.code, this.ActiveLanguage);
+      } = Compile(this.code, this.Keyword);
 
       this.linebylineOutput = linebylineOutput;
       this.TimeTaken = TimeTaken;
@@ -503,6 +533,7 @@ export default {
       this.error = error;
       this.output = output;
       this.ExecutionStack = ExecutionStack;
+      console.log("this:", this);
     },
 
     RunLinebyLine: function () {
