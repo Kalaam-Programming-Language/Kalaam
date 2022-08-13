@@ -143,7 +143,7 @@
           flat
           @click="RunLinebyLine()"
           id="RunlinebylineBtn"
-          label="Run"
+          label="Next"
         />
         <q-btn flat id="Clearbtn" @click="Clear()" label="Clear" />
 
