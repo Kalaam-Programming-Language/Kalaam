@@ -1,0 +1,182 @@
+/*
+ * Kalaam design tokens and shared building blocks.
+ *
+ * The visual idea comes from the Devanagari shirorekha, the bar every letter
+ * hangs from: sections hang from a heavy ink bar, code lines hang from ruled
+ * lines. Keep pages quiet; the code and the Indic type are the hero.
+ */
+
+:root {
+  --k-paper: #f5f6f8;
+  --k-sheet: #ffffff;
+  --k-ink: #1f2766;
+  --k-ink-hover: #2c378a;
+  --k-text: #24262d;
+  --k-muted: #5b6070;
+  --k-rule: #cfd4e2;
+  --k-bar: #1f2766;
+  --k-error: #a3261c;
+
+  --k-serif: 'Tiro Devanagari Hindi', 'Tiro Bangla', 'Tiro Telugu', 'Noto Serif Oriya',
+    'Noto Serif Devanagari', serif;
+  --k-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+
+  --k-max: 1200px;
+  --k-gutter: 16px;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --k-gutter: 32px;
+  }
+}
+
+/* Page shell: every view's root element gets this class. */
+.k-page {
+  min-height: 100vh;
+  background: var(--k-paper);
+  color: var(--k-text);
+  font-family: var(--k-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.k-page *,
+.k-page *::before,
+.k-page *::after {
+  box-sizing: border-box;
+}
+
+.k-main {
+  max-width: var(--k-max);
+  margin: 0 auto;
+  padding: 0 var(--k-gutter);
+}
+
+/* Headings. Hindi headings use the serif; Latin section titles use the sans. */
+.k-title {
+  font-family: var(--k-serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--k-ink);
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+
+.k-heading {
+  font-family: var(--k-sans);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--k-ink);
+  margin: 0 0 12px;
+}
+
+@media (min-width: 720px) {
+  .k-title {
+    font-size: 52px;
+  }
+}
+
+/* A section that hangs from a heavy bar. */
+.k-band {
+  border-top: 3px solid var(--k-bar);
+  padding: 20px 0 48px;
+}
+
+@media (min-width: 720px) {
+  .k-band {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 32px;
+  }
+}
+
+/* A white sheet for code and output, hanging from a thicker bar. */
+.k-sheet {
+  background: var(--k-sheet);
+  border-top: 6px solid var(--k-bar);
+  box-shadow: 0 1px 0 var(--k-rule);
+  padding: 16px;
+}
+
+/* Inline code and code blocks in prose. */
+.k-code {
+  font-family: var(--k-serif);
+  color: var(--k-ink);
+}
+
+pre.k-code {
+  margin: 0;
+  padding: 12px 16px;
+  background: var(--k-sheet);
+  border-left: 2px solid var(--k-bar);
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.9;
+  font-size: 18px;
+}
+
+/* Controls */
+.k-button {
+  display: inline-block;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #fff;
+  background: var(--k-ink);
+  border: 0;
+  border-radius: 4px;
+  padding: 12px 20px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.k-button:hover {
+  background: var(--k-ink-hover);
+  color: #fff;
+}
+
+.k-button-quiet {
+  display: inline-block;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--k-ink);
+  background: transparent;
+  border: 1px solid var(--k-rule);
+  border-radius: 4px;
+  padding: 11px 18px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.k-button-quiet:hover {
+  border-color: var(--k-ink);
+}
+
+.k-link {
+  color: var(--k-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.k-muted {
+  color: var(--k-muted);
+}
+
+.k-error {
+  color: var(--k-error);
+}
+
+.k-page a:focus-visible,
+.k-page button:focus-visible,
+.k-page select:focus-visible {
+  outline: 2px solid var(--k-ink);
+  outline-offset: 3px;
+}

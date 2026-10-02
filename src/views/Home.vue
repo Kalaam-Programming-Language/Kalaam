@@ -1,41 +1,23 @@
 <template>
-  <div class="page">
-    <header class="masthead">
-      <router-link to="/" class="wordmark" aria-label="Kalaam home">कलाम</router-link>
+  <div class="page k-page">
+    <SiteHeader />
 
-      <button
-        class="menu-toggle"
-        :aria-expanded="showMenu ? 'true' : 'false'"
-        aria-controls="site-nav"
-        @click="showMenu = !showMenu"
-      >
-        {{ showMenu ? 'Close' : 'Menu' }}
-      </button>
-
-      <nav id="site-nav" class="nav" :class="{ open: showMenu }">
-        <router-link to="/Practice">Practice</router-link>
-        <router-link to="/Documentation">Documentation</router-link>
-        <router-link to="/Examples">Examples</router-link>
-        <router-link to="/About">About</router-link>
-      </nav>
-    </header>
-
-    <main>
+    <main class="k-main">
       <section class="hero">
         <div class="hero-text">
-          <h1 lang="hi">अपनी भाषा में कोड लिखो</h1>
+          <h1 class="k-title" lang="hi">अपनी भाषा में कोड लिखो</h1>
           <p class="lede">
             Kalaam is a programming language with keywords in Hindi, Marathi, Bengali,
             Telugu and Odia. Write a program on your phone and run it in the browser,
             even without internet.
           </p>
           <div class="actions">
-            <router-link to="/Practice" class="button">Start coding</router-link>
-            <router-link to="/Documentation" class="link">Read the documentation</router-link>
+            <router-link to="/Practice" class="k-button">Start coding</router-link>
+            <router-link to="/Documentation" class="k-link">Read the documentation</router-link>
           </div>
         </div>
 
-        <div class="sheet">
+        <div class="sheet k-sheet">
           <div class="sheet-head">
             <span lang="hi">7 का पहाड़ा</span>
             <span class="hint">Change 7 to any number, then run it.</span>
@@ -59,7 +41,7 @@
           </div>
 
           <div class="run-row">
-            <button class="button" @click="run">Run program</button>
+            <button class="k-button" @click="run">Run program</button>
             <span v-if="timeTaken !== null" class="timing">Ran in {{ timeTaken }} ms</span>
           </div>
 
@@ -77,8 +59,8 @@
         </div>
       </section>
 
-      <section class="band">
-        <h2>Keywords</h2>
+      <section class="k-band">
+        <h2 class="k-heading">Keywords</h2>
         <div class="band-body">
           <p class="band-intro">
             Everyday Hindi words do the work of <i>if</i>, <i>for</i> and <i>print</i>.
@@ -97,8 +79,8 @@
         </div>
       </section>
 
-      <section class="band">
-        <h2>Five languages</h2>
+      <section class="k-band">
+        <h2 class="k-heading">Five languages</h2>
         <div class="band-body">
           <p class="band-intro">
             Pick your language in the editor. Here is the word for <i>print</i> in each.
@@ -113,18 +95,14 @@
       </section>
     </main>
 
-    <footer class="colophon">
-      <p>
-        Open source under the MIT licence.
-        <a href="https://github.com/Kalaam-Programming-Language/Kalaam">Source on GitHub</a>.
-      </p>
-      <p>Made by Swanand Kadam.</p>
-    </footer>
+    <SiteFooter />
   </div>
 </template>
 
 <script>
 import { Compile, KalaamKeywords } from 'kalaam';
+import SiteHeader from '../components/SiteHeader.vue';
+import SiteFooter from '../components/SiteFooter.vue';
 
 // The interpreter reads `a*b` but not `a * b`, and ranges include both ends.
 const SAMPLE = `अंक=7
@@ -137,9 +115,10 @@ const SAMPLE = `अंक=7
 export default {
   name: 'Home',
 
+  components: { SiteHeader, SiteFooter },
+
   data() {
     return {
-      showMenu: false,
       code: SAMPLE,
       output: [],
       error: '',
@@ -185,101 +164,14 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .page {
-  --paper: #f5f6f8;
-  --sheet: #ffffff;
-  --ink: #1f2766;
-  --ink-hover: #2c378a;
-  --text: #24262d;
-  --muted: #5b6070;
-  --rule: #cfd4e2;
-  --bar: #1f2766;
-  --error: #a3261c;
-
-  --serif: 'Tiro Devanagari Hindi', 'Tiro Bangla', 'Tiro Telugu', 'Noto Serif Oriya',
-    'Noto Serif Devanagari', serif;
-  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
-
   --code-size: 22px;
   --code-line: 44px;
-
-  min-height: 100vh;
-  background: var(--paper);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.6;
-  text-align: left;
-}
-
-.page *,
-.page *::before,
-.page *::after {
-  box-sizing: border-box;
-}
-
-/* Masthead */
-
-.masthead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
-  border-bottom: 3px solid var(--bar);
-}
-
-.wordmark {
-  font-family: var(--serif);
-  font-size: 30px;
-  line-height: 1;
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.menu-toggle {
-  font: inherit;
-  font-size: 15px;
-  color: var(--ink);
-  background: none;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: 6px 14px;
-  cursor: pointer;
-}
-
-.nav {
-  display: none;
-  flex-basis: 100%;
-  flex-direction: column;
-  padding-top: 8px;
-}
-
-.nav.open {
-  display: flex;
-}
-
-.nav a {
-  color: var(--text);
-  text-decoration: none;
-  padding: 10px 0;
-  border-top: 1px solid var(--rule);
-}
-
-.nav a:hover {
-  color: var(--ink);
 }
 
 /* Hero */
-
-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
 
 .hero {
   display: grid;
@@ -287,21 +179,13 @@ main {
   padding: 40px 0 56px;
 }
 
-h1 {
-  font-family: var(--serif);
-  font-weight: 400;
+.hero .k-title {
   font-size: 44px;
-  line-height: 1.3;
-  letter-spacing: 0;
-  color: var(--ink);
-  margin: 0 0 16px;
-  text-wrap: balance;
 }
 
 .lede {
   max-width: 34em;
   margin: 0 0 28px;
-  color: var(--text);
 }
 
 .actions {
@@ -311,38 +195,7 @@ h1 {
   gap: 12px 24px;
 }
 
-.button {
-  display: inline-block;
-  font: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  background: var(--ink);
-  border: 0;
-  border-radius: 4px;
-  padding: 12px 20px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.button:hover {
-  background: var(--ink-hover);
-}
-
-.link {
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 /* The sheet: code hangs from ruled lines the way Devanagari hangs from its shirorekha */
-
-.sheet {
-  background: var(--sheet);
-  border-top: 6px solid var(--bar);
-  padding: 16px 16px 20px;
-  box-shadow: 0 1px 0 var(--rule);
-}
 
 .sheet-head {
   display: flex;
@@ -354,19 +207,20 @@ h1 {
 }
 
 .sheet-head [lang='hi'] {
-  font-family: var(--serif);
+  font-family: var(--k-serif);
   font-size: 19px;
-  color: var(--ink);
+  color: var(--k-ink);
 }
 
 .hint {
-  color: var(--muted);
+  color: var(--k-muted);
 }
 
 .editor {
+  --hang: 17px;
   display: grid;
   grid-template-columns: 2.2em 1fr;
-  font-family: var(--serif);
+  font-family: var(--k-serif);
   font-size: var(--code-size);
   line-height: var(--code-line);
   /* one rule per line, sitting where the shirorekha of each line falls */
@@ -374,25 +228,23 @@ h1 {
     to bottom,
     transparent 0,
     transparent var(--hang),
-    var(--rule) var(--hang),
-    var(--rule) calc(var(--hang) + 1px),
+    var(--k-rule) var(--hang),
+    var(--k-rule) calc(var(--hang) + 1px),
     transparent calc(var(--hang) + 1px),
     transparent var(--code-line)
   );
-  --hang: 17px;
 }
 
 .gutter {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 12px 0 0;
   font-size: 14px;
   line-height: var(--code-line);
-  color: var(--muted);
+  color: var(--k-muted);
   font-variant-numeric: tabular-nums;
   text-align: right;
-  padding-right: 12px;
-  border-right: 2px solid var(--bar);
+  border-right: 2px solid var(--k-bar);
   user-select: none;
 }
 
@@ -408,14 +260,14 @@ h1 {
   overflow-y: hidden;
   white-space: pre;
   background: transparent;
-  color: var(--ink);
+  color: var(--k-ink);
   font: inherit;
   line-height: var(--code-line);
   tab-size: 2;
 }
 
 .editor:focus-within {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--k-ink);
   outline-offset: 4px;
 }
 
@@ -429,25 +281,25 @@ h1 {
 
 .timing {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--k-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .output {
   margin-top: 20px;
   padding-top: 12px;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--k-rule);
   min-height: 3.5em;
 }
 
 .output-empty {
   margin: 0;
-  color: var(--muted);
+  color: var(--k-muted);
 }
 
 .output-error {
   margin: 0;
-  color: var(--error);
+  color: var(--k-error);
 }
 
 .output-lines {
@@ -457,9 +309,8 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 20px;
-  font-family: var(--serif);
+  font-family: var(--k-serif);
   font-size: var(--code-size);
-  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -480,20 +331,6 @@ h1 {
 
 /* Bands below the hero */
 
-.band {
-  border-top: 3px solid var(--bar);
-  padding: 20px 0 48px;
-}
-
-h2 {
-  font-family: var(--sans);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--ink);
-  margin: 0 0 12px;
-}
-
 .band-intro {
   max-width: 38em;
   margin: 0 0 24px;
@@ -501,8 +338,6 @@ h2 {
 
 .glossary {
   margin: 0;
-  display: grid;
-  gap: 0;
 }
 
 .entry {
@@ -510,14 +345,14 @@ h2 {
   grid-template-columns: 6.5em 1fr;
   gap: 16px;
   padding: 12px 0;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--k-rule);
 }
 
 .entry dt {
-  font-family: var(--serif);
+  font-family: var(--k-serif);
   font-size: 22px;
   line-height: 1.4;
-  color: var(--ink);
+  color: var(--k-ink);
 }
 
 .entry dd {
@@ -543,84 +378,24 @@ h2 {
   display: flex;
   flex-direction: column;
   padding: 12px 0;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--k-rule);
 }
 
 .script-word {
-  font-family: var(--serif);
+  font-family: var(--k-serif);
   font-size: 30px;
   line-height: 1.5;
-  color: var(--ink);
+  color: var(--k-ink);
 }
 
 .script-name {
   font-size: 15px;
-  color: var(--muted);
+  color: var(--k-muted);
 }
-
-/* Footer */
-
-.colophon {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
-  border-top: 1px solid var(--rule);
-  font-size: 15px;
-  color: var(--muted);
-}
-
-.colophon p {
-  margin: 0 0 4px;
-}
-
-.colophon a {
-  color: var(--ink);
-}
-
-/* Focus */
-
-.page a:focus-visible,
-.page button:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-/* Wider screens */
 
 @media (min-width: 720px) {
-  .menu-toggle {
-    display: none;
-  }
-
-  .nav,
-  .nav.open {
-    display: flex;
-    flex-direction: row;
-    flex-basis: auto;
-    gap: 28px;
-    padding-top: 0;
-  }
-
-  .nav a {
-    border-top: 0;
-    padding: 4px 0;
-  }
-
-  .masthead,
-  main,
-  .colophon {
-    padding-left: 32px;
-    padding-right: 32px;
-  }
-
-  h1 {
+  .hero .k-title {
     font-size: 60px;
-  }
-
-  .band {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    gap: 32px;
   }
 
   .entry {
@@ -645,11 +420,11 @@ h2 {
     padding: 72px 0 88px;
   }
 
-  h1 {
+  .hero .k-title {
     font-size: 64px;
   }
 
-  .sheet {
+  .k-sheet {
     padding: 20px 28px 28px;
   }
 }
