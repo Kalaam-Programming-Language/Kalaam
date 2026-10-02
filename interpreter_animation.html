@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalaam — Code Transformation Pipeline</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1f2e;
+      --border: #2a3045;
+      --green: #10b981;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --indigo: #6366f1;
+      --amber: #f59e0b;
+      --red: #e63946;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 22px 24px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+    .header h1 span { color: var(--green); }
+    .header p { margin-top: 4px; color: var(--muted); font-size: 0.85rem; }
+
+    /* ── Tech Stack Badges ── */
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .tech-badge {
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .badge-vue     { color: #4ade80; border-color: rgba(74,222,128,0.3);  background: rgba(74,222,128,0.07); }
+    .badge-quasar  { color: var(--blue); border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.07); }
+    .badge-js      { color: var(--amber); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.07); }
+    .badge-cm      { color: var(--indigo); border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.07); }
+    .badge-npm     { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.07); }
+    .badge-jest    { color: var(--purple); border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.07); }
+    .badge-pwa     { color: var(--green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.07); }
+    .badge-sw      { color: var(--amber); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.07); }
+
+    /* ── Pipeline Track ── */
+    .pipeline-track {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      overflow-x: auto;
+    }
+    .pipe-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .pipe-node:not(.active):not(.done) { opacity: 0.35; }
+    .pipe-node.done { opacity: 0.65; }
+    .node-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--bg);
+      transition: all 0.3s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pipe-node.done  .node-circle { border-color: var(--green); color: var(--green); background: rgba(16,185,129,0.08); }
+    .pipe-node.active .node-circle { border-color: var(--green); color: var(--bg); background: var(--green); box-shadow: 0 0 14px rgba(16,185,129,0.5); }
+    .node-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .pipe-node.active .node-label { color: var(--green); }
+    .pipe-node.done  .node-label  { color: var(--text); }
+    .pipe-connector {
+      display: flex;
+      align-items: center;
+      padding: 0 5px;
+      padding-bottom: 18px;
+      color: var(--border);
+      font-size: 0.9rem;
+    }
+    .pipe-connector.done { color: var(--green); opacity: 0.5; }
+
+    /* ── Stage Info ── */
+    .stage-info {
+      text-align: center;
+      padding: 16px 32px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stage-num {
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 5px;
+    }
+    .stage-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .stage-subtitle {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    /* ── Transform Area ── */
+    .transform-area {
+      display: flex;
+      flex: 1;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    /* ── Data Panel ── */
+    .data-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .data-panel.input-panel  { border-right: 1px solid var(--border); }
+    .data-panel.output-panel { border-left: 1px solid var(--border); }
+
+    .panel-tag {
+      padding: 9px 22px;
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .input-panel  .panel-tag { color: var(--muted); }
+    .output-panel .panel-tag { color: var(--green); }
+    .panel-tag-label { font-size: 0.75rem; font-weight: 500; color: var(--muted); font-style: italic; font-family: 'JetBrains Mono', monospace; }
+
+    .panel-code {
+      flex: 1;
+      padding: 22px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.85;
+      overflow-y: auto;
+      color: #94a3b8;
+      white-space: pre;
+    }
+
+    /* ── Transform Center Column ── */
+    .transform-center {
+      width: 210px;
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 14px;
+      gap: 12px;
+    }
+    .tx-fn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--green);
+      text-align: center;
+      line-height: 1.6;
+      width: 100%;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .tx-arrow {
+      font-size: 1.6rem;
+      color: var(--green);
+      opacity: 0.6;
+      line-height: 1;
+    }
+    .tx-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .tx-why {
+      background: rgba(16,185,129,0.06);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 8px;
+      padding: 9px 11px;
+      width: 100%;
+    }
+    .tx-why-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+    .tx-why-text {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    /* ── Syntax colors ── */
+    .kw  { color: var(--green); }
+    .val { color: var(--amber); }
+    .str { color: #f87171; }
+    .cm  { color: var(--muted); }
+    .hl  { color: var(--green); font-weight: 600; }
+    .del { color: var(--red);   text-decoration: line-through; opacity: 0.6; }
+    .new { color: var(--green); font-weight: 600; }
+    .dim { color: #374151; }
+    .typ { color: var(--purple); }
+    .key { color: var(--indigo); }
+
+    /* ── Changes row ── */
+    .changes-row {
+      border-top: 1px solid var(--border);
+      padding: 10px 24px;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: var(--surface);
+    }
+    .changes-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .change-tag {
+      font-size: 0.7rem;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Nav Bar ── */
+    .nav-bar {
+      border-top: 1px solid var(--border);
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: var(--surface);
+    }
+    .btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 20px;
+      font-size: 0.82rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn:hover   { background: #252d40; border-color: #3a4560; }
+    .btn:disabled { opacity: 0.25; cursor: default; }
+    .stage-counter {
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      min-width: 60px;
+      text-align: center;
+    }
+    .kb-hint {
+      font-size: 0.65rem;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Kalaam — <span>Code Transformation Pipeline</span></h1>
+    <div class="tech-stack">
+      <span class="tech-badge badge-vue">Vue 2</span>
+      <span class="tech-badge badge-quasar">Quasar</span>
+      <span class="tech-badge badge-js">JavaScript</span>
+      <span class="tech-badge badge-cm">CodeMirror</span>
+      <span class="tech-badge badge-npm">npm · kalaam v2.3.3</span>
+      <span class="tech-badge badge-jest">Jest</span>
+      <span class="tech-badge badge-pwa">PWA</span>
+      <span class="tech-badge badge-sw">Service Worker</span>
+    </div>
+    <p>How 11 lines of Hindi code become output on a student's phone — no server, no internet required</p>
+  </div>
+
+  <!-- Pipeline Track -->
+  <div class="pipeline-track" id="pipelineTrack">
+    <div class="pipe-node" data-idx="0"><div class="node-circle">01</div><div class="node-label">Browser</div></div>
+    <div class="pipe-connector" id="conn0">→</div>
+    <div class="pipe-node" data-idx="1"><div class="node-circle">02</div><div class="node-label">Source</div></div>
+    <div class="pipe-connector" id="conn1">→</div>
+    <div class="pipe-node" data-idx="2"><div class="node-circle">03</div><div class="node-label">Lang Map</div></div>
+    <div class="pipe-connector" id="conn2">→</div>
+    <div class="pipe-node" data-idx="3"><div class="node-circle">04</div><div class="node-label">Cleaning</div></div>
+    <div class="pipe-connector" id="conn3">→</div>
+    <div class="pipe-node" data-idx="4"><div class="node-circle">05</div><div class="node-label">Keywords</div></div>
+    <div class="pipe-connector" id="conn4">→</div>
+    <div class="pipe-node" data-idx="5"><div class="node-circle">06</div><div class="node-label">Scanning</div></div>
+    <div class="pipe-connector" id="conn5">→</div>
+    <div class="pipe-node" data-idx="6"><div class="node-circle">07</div><div class="node-label">Tokenizing</div></div>
+    <div class="pipe-connector" id="conn6">→</div>
+    <div class="pipe-node" data-idx="7"><div class="node-circle">08</div><div class="node-label">Ctrl Flow</div></div>
+    <div class="pipe-connector" id="conn7">→</div>
+    <div class="pipe-node" data-idx="8"><div class="node-circle">09</div><div class="node-label">Memory</div></div>
+    <div class="pipe-connector" id="conn8">→</div>
+    <div class="pipe-node" data-idx="9"><div class="node-circle">10</div><div class="node-label">Output</div></div>
+  </div>
+
+  <!-- Stage Info -->
+  <div class="stage-info">
+    <div class="stage-num" id="stageNum">Stage 1 of 10</div>
+    <div class="stage-title" id="stageTitle">—</div>
+    <div class="stage-subtitle" id="stageSubtitle">—</div>
+  </div>
+
+  <!-- Transform Area -->
+  <div class="transform-area">
+
+    <!-- Input Panel -->
+    <div class="data-panel input-panel">
+      <div class="panel-tag">
+        <span>Input</span>
+        <span class="panel-tag-label" id="inputLabel">—</span>
+      </div>
+      <div class="panel-code" id="inputCode"></div>
+    </div>
+
+    <!-- Center: transform info -->
+    <div class="transform-center">
+      <div class="tx-fn" id="txFn">—</div>
+      <div class="tx-arrow">↓</div>
+      <div class="tx-desc" id="txDesc">—</div>
+      <div class="tx-why">
+        <div class="tx-why-label">Why</div>
+        <div class="tx-why-text" id="txWhy">—</div>
+      </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="data-panel output-panel">
+      <div class="panel-tag">
+        <span>Output</span>
+        <span class="panel-tag-label" id="outputLabel">—</span>
+      </div>
+      <div class="panel-code" id="outputCode"></div>
+    </div>
+
+  </div>
+
+  <!-- Changes Row -->
+  <div class="changes-row" id="changesRow">
+    <span class="changes-label">What changed</span>
+  </div>
+
+  <!-- Nav Bar -->
+  <div class="nav-bar">
+    <button class="btn" id="btnPrev">← Prev</button>
+    <div class="stage-counter" id="stageCounter">1 / 10</div>
+    <button class="btn" id="btnNext">Next →</button>
+    <div class="kb-hint">or use ← → arrow keys</div>
+  </div>
+
+  <script>
+    const STAGES = [
+
+      // ── 1. Browser Opens ────────────────────────────────────────────────────
+      {
+        title: 'Browser Opens',
+        subtitle: 'Student opens kalaamlang.in on their phone — Service Worker serves everything from cache',
+        fn: 'Service Worker\ncache.match(request)\nQuasar PWA build',
+        desc: 'The student has no laptop, possibly no internet. After the first load, the Service Worker intercepts every fetch and returns the app from the browser cache. Vue 2 + Quasar mounts. No CDN. No API call. Zero network dependency.',
+        why: 'Mobile-first and offline-first from day one. The constraint: tier-3 city students on 2G/3G with shared phones. Kalaam had to work completely offline after the first visit — that requirement drove every architectural decision.',
+        inputLabel: 'network request — or nothing (offline)',
+        inputHTML: `<span class="cm">// Student context:</span>
+<span class="cm">// — Mobile phone (no laptop)</span>
+<span class="cm">// — Possibly offline (2G/3G dropped)</span>
+<span class="cm">// — First visit already cached the app</span>
+
+<span class="cm">// What happens when they open the URL:</span>
+Browser → fetch(<span class="str">"https://kalaamlang.in/"</span>)
+  ↓
+Service Worker intercepts
+  ↓
+cache.match(request)
+  ↓
+<span class="cm">// Cache HIT → app loads instantly</span>
+<span class="cm">// Cache MISS → network fetch + cache store</span>`,
+
+        outputLabel: 'Vue 2 + Quasar PWA — fully mounted',
+        outputHTML: `<span class="cm">// App is live. No server required.</span>
+
+Vue app mounted
+  ├── <span class="kw">router</span>         (/, /practice, /examples, /docs)
+  ├── <span class="kw">Practise.vue</span>   (code editor view)
+  │     ├── CodeMirror editor (ready for input)
+  │     └── Language toggle  (Hindi / Marathi / ...)
+  └── <span class="kw">Service Worker</span> (caching all assets)
+
+<span class="cm">// All interpreter code is bundled in the app.</span>
+<span class="cm">// Compile() lives in the browser — no server call.</span>
+<span class="cm">// student.phone.hasInternet = false  ← doesn't matter</span>
+
+Status: <span class="new">READY</span> — offline-capable, zero API calls`,
+
+        changes: ['PWA loaded offline', 'Service Worker active', 'Vue 2 mounted', 'No server hit']
+      },
+
+      // ── 2. Source Code Typed ─────────────────────────────────────────────────
+      {
+        title: 'Source Code',
+        subtitle: 'Student picks Hindi and types a Fibonacci generator — CodeMirror highlights every keyword',
+        fn: 'CodeMirror\nkalaam syntax mode\n/[\\w$\\xa1-\\uffff]/',
+        desc: 'Practise.vue renders a CodeMirror instance with a custom "kalaam" mode — a fork of the JS mode with Hindi/Marathi keywords added to the token table. The word regex /[\\w$\\xa1-\\uffff]/ covers U+00A1–U+FFFF, which includes all Indian scripts (Devanagari U+0900–U+097F) with no special Unicode handling.',
+        why: 'The student doesn\'t need to know English to start. दुहराओ lights up the same colour as "for" would in any other IDE. That moment of recognition — "the computer understands my language" — is the entire point of Kalaam.',
+        inputLabel: 'blank editor — student starts typing',
+        inputHTML: `<span class="cm">// CodeMirror kalaam mode keyword table (Kalaam.js):</span>
+var KEYWORDS = {
+  <span class="str">"दिखाए"</span>:  kw(<span class="str">"दिखाए"</span>),   <span class="cm">// print</span>
+  <span class="str">"दुहराओ"</span>: kw(<span class="str">"दुहराओ"</span>),  <span class="cm">// for</span>
+  <span class="str">"को"</span>:      kw(<span class="str">"को"</span>),      <span class="cm">// to</span>
+  <span class="str">"मे"</span>:      kw(<span class="str">"मे"</span>),      <span class="cm">// in</span>
+  <span class="str">"अगर"</span>:    kw(<span class="str">"अगर"</span>),    <span class="cm">// if</span>
+  <span class="cm">// + 9 more keywords (Marathi variants, etc.)</span>
+}
+
+<span class="cm">// Word boundary regex — covers ALL Indian scripts:</span>
+var wordRE = <span class="kw">/[\w$\xa1-￿]/</span>
+<span class="cm">//  \xa1-￿ = U+00A1 to U+FFFF</span>
+<span class="cm">//  Devanagari  U+0900–U+097F  ✓ included</span>
+<span class="cm">//  Bengali     U+0980–U+09FF  ✓ included</span>
+<span class="cm">//  Telugu      U+0C00–U+0C7F  ✓ included</span>`,
+
+        outputLabel: 'raw source — as typed, with syntax highlighting',
+        outputHTML: `<span class="val">Fibonacci</span>=[]
+<span class="kw">दुहराओ</span> <span class="val">a</span> <span class="kw">को</span> (0,25) <span class="kw">मे</span>
+{
+  <span class="kw">अगर</span> (a&lt;3)
+  {
+    <span class="val">Fibonacci</span>[a]=a
+  }
+  <span class="kw">अगर</span> (a&gt;1)
+  {
+    x=<span class="val">Fibonacci</span>[a-2]
+    y=<span class="val">Fibonacci</span>[a-1]
+    <span class="val">Fibonacci</span>[a]=x+y
+  }
+}
+<span class="kw">दिखाए</span>(<span class="val">Fibonacci</span>)
+
+<span class="cm">// 5 Hindi keywords: दुहराओ को मे अगर दिखाए</span>
+<span class="cm">// CodeMirror colours them — student sees a real IDE</span>`,
+
+        changes: ['Hindi keywords highlighted', 'Devanagari via \\xa1-\\uffff', '5 keywords in program', 'No special Unicode code']
+      },
+
+      // ── 3. Language Map Loaded ───────────────────────────────────────────────
+      {
+        title: 'Language Map',
+        subtitle: 'Compile() receives the source and the Hindi keyword map — same API for all 5 languages',
+        fn: 'Compile(\n  sourcecode,\n  ActiveLanguageKeywords\n)',
+        desc: 'The student presses Run. Practise.vue calls Compile(source, HindiKeywords). The second argument is a plain JS object — the entire language definition. The interpreter never hardcodes a single keyword. To add a new language, you add one map. Zero parser changes.',
+        why: 'Separation of language data from parsing logic. The keyword map IS the language. This is why Kalaam supports Hindi, Marathi, Bengali, Telugu, and Odia from a single codebase — each is just a different map passed into the same Compile() call.',
+        inputLabel: 'source string + language selection (Hindi)',
+        inputHTML: `<span class="cm">// Practise.vue — when student clicks Run:</span>
+const result = Compile(
+  sourceCode,           <span class="cm">// raw string as typed</span>
+  ActiveLanguageKeywords <span class="cm">// selected language map</span>
+)
+
+<span class="cm">// ActiveLanguageKeywords for Hindi:</span>
+{
+  <span class="str">"दिखाए"</span>:  <span class="str">"[PRINT]"</span>,
+  <span class="str">"दुहराओ"</span>: <span class="str">"[FOR]"</span>,
+  <span class="str">"को"</span>:      <span class="str">"[TO]"</span>,
+  <span class="str">"मे"</span>:      <span class="str">"[IN]"</span>,
+  <span class="str">"अगर"</span>:    <span class="str">"[IF]"</span>,
+  <span class="str">"अन्यथा"</span>: <span class="str">"[ELSE]"</span>,
+  <span class="str">"जबतक"</span>:  <span class="str">"[WHILE]"</span>,
+  <span class="str">"रचना"</span>:   <span class="str">"[FUNCTION]"</span>,
+}`,
+
+        outputLabel: 'same map — Marathi, Bengali, Telugu, Odia',
+        outputHTML: `<span class="cm">// Switch to Marathi? Same Compile(), different map:</span>
+{
+  <span class="str">"दाखवा"</span>:   <span class="str">"[PRINT]"</span>,
+  <span class="str">"दुहराओ"</span>:  <span class="str">"[FOR]"</span>,   <span class="cm">← shared with Hindi</span>
+  <span class="str">"जर"</span>:       <span class="str">"[IF]"</span>,
+  <span class="cm">// ...</span>
+}
+
+<span class="cm">// Bengali:</span>
+{ <span class="str">"দেখাও"</span>: <span class="str">"[PRINT]"</span>, <span class="str">"যদি"</span>: <span class="str">"[IF]"</span>, <span class="cm">...</span> }
+
+<span class="cm">// Telugu:</span>
+{ <span class="str">"చూపించు"</span>: <span class="str">"[PRINT]"</span>, <span class="str">"ఉంటే"</span>: <span class="str">"[IF]"</span>, <span class="cm">...</span> }
+
+<span class="cm">// Odia:</span>
+{ <span class="str">"ଦେଖାଅ"</span>: <span class="str">"[PRINT]"</span>, <span class="str">"ଯଦି"</span>: <span class="str">"[IF]"</span>, <span class="cm">...</span> }
+
+<span class="cm">// The tokenizer sees [FOR], [IF], [PRINT] — always.</span>
+<span class="cm">// It never sees a Hindi or Bengali character.</span>`,
+
+        changes: ['Compile() called', '5 languages, 1 parser', 'Map = language definition', 'Zero parser changes']
+      },
+
+      // ── 4. Early Cleaning ────────────────────────────────────────────────────
+      {
+        title: 'Early Cleaning',
+        subtitle: 'earlyCleaning() strips extra whitespace and normalizes line endings before keyword substitution',
+        fn: 'DataCleaning.js\nearlyCleaning()',
+        desc: 'The raw source from CodeMirror may have Windows (\\r\\n) or Mac (\\r) line endings, inconsistent indentation, trailing spaces, and empty lines. earlyCleaning() normalizes everything to single \\n, strips redundant whitespace, and compacts the source into a predictable form before the keyword scan runs.',
+        why: 'The keyword scanner does a simple string.replace() — it doesn\'t understand whitespace variants. Cleaning first means the keyword scan always operates on consistent input. The alternative (handling whitespace in the scanner) would make every subsequent step harder.',
+        inputLabel: 'raw source — possible whitespace inconsistencies',
+        inputHTML: `<span class="cm">// What CodeMirror delivers (whitespace visualized):</span>
+
+<span class="val">Fibonacci</span>=[]<span class="del">·</span><span class="del">·</span>          <span class="cm">← trailing spaces</span>
+<span class="kw">दुहराओ</span>·a·<span class="kw">को</span>·(0,25)·<span class="kw">मे</span>   <span class="cm">← mixed spacing</span>
+{<span class="del">\r\n</span>                     <span class="cm">← Windows line ending</span>
+··<span class="kw">अगर</span>·(a&lt;3)<span class="del">\r\n</span>
+··{<span class="del">\r\n</span>
+····<span class="val">Fibonacci</span>[a]=a<span class="del">\r\n</span>
+··}<span class="del">\r\n</span>
+<span class="del">\r\n</span>                       <span class="cm">← blank line</span>
+··<span class="kw">अगर</span>·(a&gt;1)<span class="del">\r\n</span>
+<span class="cm">// ... rest of source</span>`,
+
+        outputLabel: 'cleaned source — normalized whitespace',
+        outputHTML: `<span class="cm">// After earlyCleaning():</span>
+<span class="cm">// ✓ All \r\n and \r → \n</span>
+<span class="cm">// ✓ Trailing spaces removed</span>
+<span class="cm">// ✓ Multiple blank lines collapsed</span>
+<span class="cm">// ✓ Source is now predictable</span>
+
+<span class="new">Fibonacci</span>=[]
+<span class="new">दुहराओ</span> a <span class="new">को</span> (0,25) <span class="new">मे</span>
+{
+  <span class="new">अगर</span> (a&lt;3)
+  {
+    Fibonacci[a]=a
+  }
+  <span class="new">अगर</span> (a&gt;1)
+  {
+    x=Fibonacci[a-2]
+    y=Fibonacci[a-1]
+    Fibonacci[a]=x+y
+  }
+}
+<span class="new">दिखाए</span>(Fibonacci)`,
+
+        changes: ['\\r\\n → \\n', 'Trailing spaces gone', 'Blank lines collapsed', 'Source predictable']
+      },
+
+      // ── 5. Keyword Substitution ──────────────────────────────────────────────
+      {
+        title: 'Keyword Substitution',
+        subtitle: 'Every Hindi keyword is replaced with its internal token — source becomes language-agnostic',
+        fn: 'DataCleaning.js\nSourceDataReplace\nforEasyParsing()',
+        desc: 'Walks the ActiveLanguageKeywords map and runs a string replace for each entry. दुहराओ becomes [FOR], अगर becomes [IF], दिखाए becomes [PRINT]. After this single pass, the source is completely language-neutral. The tokenizer downstream never sees a Hindi character.',
+        why: 'This is the heart of the multi-language architecture. One substitution pass = infinite languages. The tokenizer is hardcoded to [FOR], [IF], [PRINT] — it\'s written once. Every language maps its keywords to these internal tokens. Adding Odia took one afternoon.',
+        inputLabel: 'normalized source — Hindi keywords highlighted',
+        inputHTML: `<span class="val">Fibonacci</span>=[]
+<span class="hl">दुहराओ</span> a <span class="hl">को</span> (0,25) <span class="hl">मे</span>   <span class="cm">← for / to / in</span>
+{
+  <span class="hl">अगर</span> (a&lt;3)                  <span class="cm">← if</span>
+  {
+    Fibonacci[a]=a
+  }
+  <span class="hl">अगर</span> (a&gt;1)                  <span class="cm">← if</span>
+  {
+    x=Fibonacci[a-2]
+    y=Fibonacci[a-1]
+    Fibonacci[a]=x+y
+  }
+}
+<span class="hl">दिखाए</span>(Fibonacci)             <span class="cm">← print</span>
+
+<span class="cm">// 5 language keywords, 8 occurrences total</span>`,
+
+        outputLabel: 'substituted source — language-agnostic tokens',
+        outputHTML: `<span class="val">Fibonacci</span>=[]
+<span class="new">[FOR]</span> a <span class="new">[TO]</span> (0,25) <span class="new">[IN]</span>
+{
+  <span class="new">[IF]</span> (a&lt;3)
+  {
+    Fibonacci[a]=a
+  }
+  <span class="new">[IF]</span> (a&gt;1)
+  {
+    x=Fibonacci[a-2]
+    y=Fibonacci[a-1]
+    Fibonacci[a]=x+y
+  }
+}
+<span class="new">[PRINT]</span>(Fibonacci)
+
+<span class="cm">// The tokenizer only ever sees: [FOR] [TO] [IN]</span>
+<span class="cm">// [IF] [ELSE] [WHILE] [FUNCTION] [PRINT]</span>
+<span class="cm">// Marathi/Bengali/Telugu produce identical output.</span>`,
+
+        changes: ['दुहराओ → [FOR]', 'को → [TO], मे → [IN]', 'अगर → [IF]', 'दिखाए → [PRINT]']
+      },
+
+      // ── 6. Character Scanning ────────────────────────────────────────────────
+      {
+        title: 'Scanning',
+        subtitle: 'scanner/main.js walks every character and splits the source into a flat string array',
+        fn: 'scanner/main.js\nIsSpecialChar()\n→ cleaned_sourcedata[]',
+        desc: 'Iterates every character. IsSpecialChar() recognizes = + - * / < > ( ) { } [ ] , as boundaries. Between boundaries, characters accumulate into a token string. The result is cleaned_sourcedata[] — a flat array of ~42 raw strings with no type information.',
+        why: 'No regex backtracking. No lookahead. The scanner\'s only job is to find boundaries. It produces no type information — that\'s deliberately left for the tokenizer. Single responsibility: split. The flat array is the handoff contract between scanner and tokenizer.',
+        inputLabel: 'flat string — language-agnostic',
+        inputHTML: `<span class="str">"Fibonacci=[]\n[FOR]a[TO](0,25)[IN]{\n[IF](a&lt;3){\nFibonacci[a]=a\n}\n[IF](a&gt;1){\nx=Fibonacci[a-2]\n..."</span>
+
+<span class="cm">// IsSpecialChar() boundary set:</span>
+<span class="cm">// = + - * / &lt; &gt; ( ) { } [ ] , ; : ?</span>
+
+<span class="cm">// Walk example:</span>
+<span class="cm">// 'F' → start accumulating → "Fibonacci"</span>
+<span class="cm">// '=' → boundary → push "Fibonacci", push "="</span>
+<span class="cm">// '[' → boundary → push "["</span>
+<span class="cm">// ']' → boundary → push "]"</span>
+<span class="cm">// '[' → boundary → push "["</span>
+<span class="cm">// 'F','O','R',']' → "[FOR]" token accumulated</span>
+<span class="cm">// ' ' → skip (whitespace)</span>`,
+
+        outputLabel: 'cleaned_sourcedata[ ] — ~42 string elements',
+        outputHTML: `[
+  <span class="new">"Fibonacci"</span>, <span class="new">"="</span>,  <span class="new">"[]"</span>,
+  <span class="new">"[FOR]"</span>, <span class="new">"a"</span>, <span class="new">"[TO]"</span>,
+  <span class="new">"("</span>, <span class="new">"0"</span>, <span class="new">","</span>, <span class="new">"25"</span>, <span class="new">")"</span>, <span class="new">"[IN]"</span>,
+  <span class="new">"{"</span>,
+  <span class="new">"[IF]"</span>, <span class="new">"("</span>, <span class="new">"a"</span>, <span class="new">"&lt;"</span>, <span class="new">"3"</span>, <span class="new">")"</span>,
+  <span class="new">"{"</span>,
+  <span class="new">"Fibonacci"</span>, <span class="new">"["</span>, <span class="new">"a"</span>, <span class="new">"]"</span>, <span class="new">"="</span>, <span class="new">"a"</span>,
+  <span class="new">"}"</span>,
+  <span class="new">"[IF]"</span>, <span class="new">"("</span>, <span class="new">"a"</span>, <span class="new">"&gt;"</span>, <span class="new">"1"</span>, <span class="new">")"</span>,
+  <span class="new">"{"</span>,
+  <span class="new">"x"</span>, <span class="new">"="</span>, <span class="new">"Fibonacci"</span>, <span class="new">"["</span>, <span class="new">"a-2"</span>, <span class="new">"]"</span>,
+  <span class="new">"y"</span>, <span class="new">"="</span>, <span class="new">"Fibonacci"</span>, <span class="new">"["</span>, <span class="new">"a-1"</span>, <span class="new">"]"</span>,
+  <span class="new">"Fibonacci"</span>, <span class="new">"["</span>, <span class="new">"a"</span>, <span class="new">"]"</span>, <span class="new">"="</span>, <span class="new">"x"</span>, <span class="new">"+"</span>, <span class="new">"y"</span>,
+  <span class="new">"}"</span>, <span class="new">"}"</span>,
+  <span class="new">"[PRINT]"</span>, <span class="new">"("</span>, <span class="new">"Fibonacci"</span>, <span class="new">")"</span>
+]
+<span class="cm">// ~42 strings. All whitespace: gone. Types: none yet.</span>`,
+
+        changes: ['String → string[]', 'Whitespace stripped', 'Boundaries isolated', '~42 elements']
+      },
+
+      // ── 7. Tokenizing ────────────────────────────────────────────────────────
+      {
+        title: 'Tokenizing',
+        subtitle: '20 Push* functions convert raw strings into typed token objects — flat array, not a tree',
+        fn: 'Compiler/main.js\nIsReservedKeyword()\nPushForLoop · PushArray\nPushConditional\nTypeChecking/',
+        desc: 'Walk cleaned_sourcedata[]. IsReservedKeyword() routes [FOR] → PushForLoop, [IF] → PushConditionalKeyword, [PRINT] → PushRealTimePrintOperation. TypeChecking/ validates data types. Each Push* function emits one typed token. Result: tokens[] — a flat, ordered instruction set.',
+        why: 'Flat array, not an AST. The interpreter walks it sequentially — like CPython bytecode. No tree traversal needed. This keeps the interpreter simple: one while-loop, one switch on token.type. The skipInterpretation flag replaces branch elimination in a tree.',
+        inputLabel: 'cleaned_sourcedata[ ] — 42 raw strings',
+        inputHTML: `[
+  <span class="str">"Fibonacci"</span>, <span class="str">"="</span>, <span class="str">"[]"</span>,
+  <span class="str">"[FOR]"</span>, <span class="str">"a"</span>, <span class="str">"[TO]"</span>, <span class="str">"("</span>, <span class="str">"0"</span>, <span class="str">","</span>, <span class="str">"25"</span>, <span class="str">")"</span>,
+  <span class="str">"[IN]"</span>, <span class="str">"{"</span>,
+  <span class="str">"[IF]"</span>, <span class="str">"("</span>, <span class="str">"a"</span>, <span class="str">"&lt;"</span>, <span class="str">"3"</span>, <span class="str">")"</span>, <span class="str">"{"</span>,
+  <span class="str">"Fibonacci"</span>, <span class="str">"["</span>, <span class="str">"a"</span>, <span class="str">"]"</span>, <span class="str">"="</span>, <span class="str">"a"</span>, <span class="str">"}"</span>,
+  <span class="str">"[IF]"</span>, <span class="str">"("</span>, <span class="str">"a"</span>, <span class="str">"&gt;"</span>, <span class="str">"1"</span>, <span class="str">")"</span>, <span class="str">"{"</span>,
+  <span class="str">"x"</span>, <span class="str">"="</span>, <span class="str">"Fibonacci"</span>, <span class="str">"["</span>, <span class="str">"a-2"</span>, <span class="str">"]"</span>,
+  <span class="str">"y"</span>, <span class="str">"="</span>, <span class="str">"Fibonacci"</span>, <span class="str">"["</span>, <span class="str">"a-1"</span>, <span class="str">"]"</span>,
+  <span class="str">"Fibonacci"</span>, <span class="str">"["</span>, <span class="str">"a"</span>, <span class="str">"]"</span>, <span class="str">"="</span>, <span class="str">"x"</span>, <span class="str">"+"</span>, <span class="str">"y"</span>,
+  <span class="str">"}"</span>, <span class="str">"}"</span>, <span class="str">"[PRINT]"</span>, <span class="str">"("</span>, <span class="str">"Fibonacci"</span>, <span class="str">")"</span>
+]
+<span class="cm">// No types. No structure. Just strings.</span>`,
+
+        outputLabel: 'tokens[ ] — 21 typed instruction objects',
+        outputHTML: `[
+  { type: <span class="str">"variable"</span>,  varName: <span class="kw">"Fibonacci"</span>              },
+  { type: <span class="str">"varValue"</span>,   value:   <span class="val">"[]"</span>,  dataType: <span class="str">"array"</span>  },
+
+  { type: <span class="str">"forLoop"</span>,   loopVar: <span class="kw">"a"</span>,   range: <span class="val">"0 to 24"</span>  },
+  { type: <span class="str">"blockOpen"</span>                                         },
+
+  { type: <span class="str">"if"</span>,        condition: <span class="val">"a &lt; 3"</span>                 },
+  { type: <span class="str">"blockOpen"</span>                                         },
+  { type: <span class="str">"variable"</span>,  varName:   <span class="kw">"Fibonacci[a]"</span>           },
+  { type: <span class="str">"varValue"</span>,   value:     <span class="val">"a"</span>                       },
+  { type: <span class="str">"blockClose"</span>                                        },
+
+  { type: <span class="str">"if"</span>,        condition: <span class="val">"a &gt; 1"</span>                 },
+  { type: <span class="str">"blockOpen"</span>                                         },
+  { type: <span class="str">"variable"</span>,  varName:   <span class="kw">"x"</span>                        },
+  { type: <span class="str">"varValue"</span>,   value:     <span class="val">"Fibonacci[a-2]"</span>          },
+  { type: <span class="str">"variable"</span>,  varName:   <span class="kw">"y"</span>                        },
+  { type: <span class="str">"varValue"</span>,   value:     <span class="val">"Fibonacci[a-1]"</span>          },
+  { type: <span class="str">"variable"</span>,  varName:   <span class="kw">"Fibonacci[a]"</span>           },
+  { type: <span class="str">"arithmetic"</span>, expr:      <span class="val">"x + y"</span>                   },
+  { type: <span class="str">"blockClose"</span>                                        },
+  { type: <span class="str">"blockClose"</span>  <span class="cm">// end forLoop</span>                     },
+  { type: <span class="str">"print"</span>,      value:     <span class="val">"Fibonacci"</span>               },
+]
+<span class="cm">// 21 typed objects. Flat. Sequential. No tree.</span>`,
+
+        changes: ['42 strings → 21 objects', '[FOR] → forLoop token', '[IF] → if token', 'dataType inferred']
+      },
+
+      // ── 8. Control Flow ──────────────────────────────────────────────────────
+      {
+        title: 'Control Flow',
+        subtitle: 'HandleBlocks() drives the for loop; skipInterpretation flag bypasses false if-branches',
+        fn: 'Scripts/main.js\nHandleBlocks()\nGetConditionValue()\nskipInterpretation flag',
+        desc: 'When the forLoop token is hit, HandleBlocks() records the block start index and re-walks it 25 times (a = 0 to 24). Each iteration evaluates two if-tokens via GetConditionValue(). If the condition is false, skipInterpretation is set to 1 — all tokens until the matching "}" are bypassed without evaluation.',
+        why: 'skipInterpretation replaces tree-based branch elimination. No AST needed. The interpreter just increments an index. When it sees a blockClose and skipInterpretation > 0, it decrements back to 0 and resumes normal execution. Simple integer state replaces recursive traversal.',
+        inputLabel: 'tokens[] — interpreter walks this 25 times',
+        inputHTML: `<span class="cm">// Interpreter initial state:</span>
+memory             = {}
+skipInterpretation = <span class="val">0</span>
+isError            = <span class="val">false</span>
+
+<span class="cm">// forLoop token hit:</span>
+{ type: <span class="str">"forLoop"</span>, loopVar: <span class="kw">"a"</span>, range: <span class="val">"0–24"</span> }
+→ HandleBlocks() records blockStart index
+→ begins 25 iterations
+
+<span class="cm">// Each iteration: two if evaluations</span>
+<span class="cm">// If condition false → skipInterpretation = 1</span>
+<span class="cm">// All tokens until } → SKIPPED</span>
+<span class="cm">// blockClose seen   → skipInterpretation = 0</span>
+<span class="cm">// Resume normal execution</span>`,
+
+        outputLabel: 'per-iteration branch trace',
+        outputHTML: `a=<span class="val">0</span>: a&lt;3 <span class="kw">✓ execute</span>  | a&gt;1 <span class="del">✗ skip</span>
+  Fibonacci[0] = 0   <span class="cm">← a&lt;3 branch runs</span>
+
+a=<span class="val">1</span>: a&lt;3 <span class="kw">✓ execute</span>  | a&gt;1 <span class="del">✗ skip</span>
+  Fibonacci[1] = 1
+
+a=<span class="val">2</span>: a&lt;3 <span class="kw">✓ execute</span>  | a&gt;1 <span class="kw">✓ execute</span>
+  Fibonacci[2] = 2   <span class="cm">← a&lt;3 branch</span>
+  Fibonacci[2] = 0+1 = <span class="new">1</span>  <span class="cm">← a&gt;1 overwrites!</span>
+
+a=<span class="val">3</span>: a&lt;3 <span class="del">✗ skip</span>     | a&gt;1 <span class="kw">✓ execute</span>
+  Fibonacci[3] = 1+1 = <span class="new">2</span>
+
+a=<span class="val">4</span>: a&lt;3 <span class="del">✗ skip</span>     | a&gt;1 <span class="kw">✓ execute</span>
+  Fibonacci[4] = 1+2 = <span class="new">3</span>
+
+a=<span class="val">5</span>: Fibonacci[5] = 2+3 = <span class="new">5</span>
+<span class="cm">... 19 more iterations ...</span>
+a=<span class="val">24</span>: Fibonacci[24] = 17711+28657 = <span class="new">46368</span>`,
+
+        changes: ['25 loop iterations', 'skipInterpretation flag', 'HandleBlocks() used', 'No AST traversal']
+      },
+
+      // ── 9. Memory State ──────────────────────────────────────────────────────
+      {
+        title: 'Memory & Trace',
+        subtitle: 'AssignorUpdateValues() writes to memory{}; ExecutionStack[] builds the Learning Mode trace',
+        fn: 'Scripts/main.js\nAssignorUpdateValues()\nAddtoExecutionStack()\nmemory{} · V8 hidden class',
+        desc: 'Every assignment writes into memory{} — a plain JS object. V8\'s hidden class optimization makes property access fast. As a side-effect, every operation also appends a human-readable line to ExecutionStack[] in the student\'s language. After all 25 iterations, both data structures are complete.',
+        why: 'ExecutionStack[] is free — it\'s a side-effect of sequential interpretation, not a separate pass. The interpreter already visits every operation; appending a string costs almost nothing. This is what powers Learning Mode: the trace was already built by the time output is shown.',
+        inputLabel: 'AssignorUpdateValues() — called each assignment',
+        inputHTML: `<span class="cm">// memory{} starts empty:</span>
+memory = {}
+
+<span class="cm">// Each assignment calls AssignorUpdateValues():</span>
+<span class="cm">// → writes value into memory{}</span>
+<span class="cm">// → appends trace to ExecutionStack[]</span>
+
+<span class="cm">// Example — a=2 iteration:</span>
+AssignorUpdateValues(<span class="str">"Fibonacci[2]"</span>, <span class="val">1</span>)
+  → memory[<span class="str">"Fibonacci"</span>][2] = <span class="val">1</span>
+  → ExecutionStack.push(
+      <span class="str">"a=2: Fibonacci[2] = 0+1 = 1"</span>
+    )
+
+<span class="cm">// V8 hidden class: memory{} has stable shape</span>
+<span class="cm">// after first assignment → property access O(1)</span>`,
+
+        outputLabel: 'memory{} + ExecutionStack[] — after 25 iterations',
+        outputHTML: `<span class="cm">// Final memory{} state:</span>
+memory = {
+  <span class="kw">Fibonacci</span>: [<span class="new">0,1,1,2,3,5,8,13,21,34,</span>
+              <span class="new">55,89,144,233,377,610,987,</span>
+              <span class="new">1597,2584,4181,6765,10946,</span>
+              <span class="new">17711,28657,46368</span>],
+  <span class="kw">a</span>: <span class="val">24</span>,
+  <span class="kw">x</span>: <span class="val">17711</span>,
+  <span class="kw">y</span>: <span class="val">28657</span>
+}
+
+<span class="cm">// ExecutionStack[] — 78 entries (Learning Mode fuel):</span>
+ExecutionStack = [
+  <span class="str">"Fibonacci को [] का मान दिया"</span>,
+  <span class="str">"a=0: a&lt;3 सच → Fibonacci[0]=0"</span>,
+  <span class="str">"a=1: a&lt;3 सच → Fibonacci[1]=1"</span>,
+  <span class="str">"a=2: दोनों शर्तें सच → Fibonacci[2]=1"</span>,
+  <span class="str">"a=3: a&lt;3 झूठ, a&gt;1 सच → Fibonacci[3]=2"</span>,
+  <span class="cm">  ... 73 more entries ...</span>
+  <span class="str">"दिखाए(Fibonacci) → [0,1,1,2,3,5,...]"</span>
+]`,
+
+        changes: ['memory{} complete', 'Fibonacci[0..24] built', 'ExecutionStack: 78 entries', 'V8 hidden class O(1)']
+      },
+
+      // ── 10. Output ───────────────────────────────────────────────────────────
+      {
+        title: 'Output',
+        subtitle: 'Compile() assembles kalaam{} and returns — Practise.vue renders the result in milliseconds',
+        fn: 'Compile()\nperformance.now()\nkalaam{} assembly\nLearning Mode replay',
+        desc: 'All interpreter state is packaged into the kalaam{} return object. Practise.vue receives it and renders the Fibonacci array instantly. No server, no spinner. Learning Mode replays ExecutionStack[] line-by-line in the student\'s language, teaching not just what the code does, but how the interpreter evaluated it.',
+        why: 'Pure function — same return object for the Vue frontend, npm consumers, and Jest tests. The npm package kalaam v2.3.3 exports this exact Compile() function with zero runtime dependencies. Anyone can npm install kalaam and run Hindi code in Node.',
+        inputLabel: 'memory{} + ExecutionStack[] — ready to package',
+        inputHTML: `memory = {
+  <span class="kw">Fibonacci</span>: [0,1,1,2,3,5,8,13,21,34,
+              55,89,144,233,377,610,987,
+              1597,2584,4181,6765,10946,
+              17711,28657,46368],
+  <span class="kw">a</span>: <span class="val">24</span>, <span class="kw">x</span>: <span class="val">17711</span>, <span class="kw">y</span>: <span class="val">28657</span>
+}
+isError        = <span class="val">false</span>
+t1 - t0        = <span class="val">8.2ms</span>   <span class="cm">// performance.now()</span>
+ExecutionStack = <span class="cm">[ ...78 trace entries... ]</span>`,
+
+        outputLabel: 'kalaam{} — returned to Practise.vue / npm consumers',
+        outputHTML: `<span class="cm">// Compile() return value:</span>
+{
+  output: <span class="new">"[0,1,1,2,3,5,8,13,21,34,55,89,
+   144,233,377,610,987,1597,2584,
+   4181,6765,10946,17711,28657,46368]"</span>,
+
+  isError:            <span class="val">false</span>,
+  TimeTaken:          <span class="new">"8.2ms"</span>,
+  LastConditionValue: <span class="val">true</span>,
+
+  ExecutionStack: [
+    <span class="str">"Fibonacci को [] का मान दिया"</span>,
+    <span class="str">"a=0: a&lt;3 सच → Fibonacci[0]=0"</span>,
+    <span class="cm">    ... 76 more lines ...</span>
+    <span class="str">"दिखाए(Fibonacci) → [0,1,1,2,...]"</span>
+  ]   <span class="cm">// ← Learning Mode replays this</span>
+}
+
+<span class="cm">// No server. No API. No spinner.</span>
+<span class="cm">// 25-iteration Fibonacci in V8 on a phone: 8.2ms.</span>
+<span class="cm">// npm install kalaam → same function in Node.js</span>`,
+
+        changes: ['kalaam{} returned', '8.2ms on mobile V8', 'Learning Mode: 78 steps', 'npm-compatible']
+      },
+
+    ];
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    let current = 0;
+
+    // ── DOM refs ──────────────────────────────────────────────────────────────
+    const stageNum     = document.getElementById('stageNum');
+    const stageTitle   = document.getElementById('stageTitle');
+    const stageSubtitle= document.getElementById('stageSubtitle');
+    const inputLabel   = document.getElementById('inputLabel');
+    const inputCode    = document.getElementById('inputCode');
+    const outputLabel  = document.getElementById('outputLabel');
+    const outputCode   = document.getElementById('outputCode');
+    const txFn         = document.getElementById('txFn');
+    const txDesc       = document.getElementById('txDesc');
+    const txWhy        = document.getElementById('txWhy');
+    const changesRow   = document.getElementById('changesRow');
+    const stageCounter = document.getElementById('stageCounter');
+    const btnPrev      = document.getElementById('btnPrev');
+    const btnNext      = document.getElementById('btnNext');
+
+    // ── Pipeline nodes ────────────────────────────────────────────────────────
+    const pipeNodes = document.querySelectorAll('.pipe-node');
+    const pipeConns = document.querySelectorAll('.pipe-connector');
+
+    function updatePipeline(idx) {
+      pipeNodes.forEach((n, i) => {
+        n.classList.remove('active', 'done');
+        if (i === idx) n.classList.add('active');
+        if (i <  idx) n.classList.add('done');
+      });
+      pipeConns.forEach((c, i) => {
+        c.classList.toggle('done', i < idx);
+      });
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    function render(idx) {
+      const s = STAGES[idx];
+
+      stageNum.textContent      = `Stage ${idx + 1} of ${STAGES.length}`;
+      stageTitle.textContent    = s.title;
+      stageSubtitle.textContent = s.subtitle;
+      stageCounter.textContent  = `${idx + 1} / ${STAGES.length}`;
+
+      inputLabel.textContent  = s.inputLabel;
+      outputLabel.textContent = s.outputLabel;
+      inputCode.innerHTML     = s.inputHTML;
+      outputCode.innerHTML    = s.outputHTML;
+      txFn.textContent        = s.fn;
+      txDesc.textContent      = s.desc;
+      txWhy.textContent       = s.why;
+
+      changesRow.innerHTML = '<span class="changes-label">What changed</span>';
+      s.changes.forEach(c => {
+        const tag = document.createElement('span');
+        tag.className = 'change-tag';
+        tag.textContent = c;
+        changesRow.appendChild(tag);
+      });
+
+      updatePipeline(idx);
+
+      btnPrev.disabled = idx === 0;
+      btnNext.disabled = idx === STAGES.length - 1;
+    }
+
+    function goTo(idx) {
+      current = Math.max(0, Math.min(STAGES.length - 1, idx));
+      render(current);
+    }
+
+    // ── Controls ──────────────────────────────────────────────────────────────
+    btnPrev.addEventListener('click', () => goTo(current - 1));
+    btnNext.addEventListener('click', () => goTo(current + 1));
+
+    pipeNodes.forEach(n => {
+      n.addEventListener('click', () => goTo(parseInt(n.dataset.idx)));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+    });
+
+    render(0);
+  </script>
+</body>
+</html>

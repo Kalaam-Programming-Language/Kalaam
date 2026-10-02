@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalaam — System Architecture</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1f2e;
+      --border: #2a3045;
+      --green: #10b981;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --indigo: #6366f1;
+      --amber: #f59e0b;
+      --red: #e63946;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 32px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .header h1 span { color: var(--green); }
+    .header p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Badge Strip ── */
+    .badges {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .badge.g {
+      border-color: rgba(16,185,129,0.4);
+      color: var(--green);
+      background: rgba(16,185,129,0.07);
+    }
+
+    /* ── Main Layout ── */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Diagram Column ── */
+    .diagram-col {
+      flex: 1;
+      padding: 28px 32px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ── Layer wrapper ── */
+    .layer-wrap {
+      width: 100%;
+      max-width: 640px;
+    }
+    .layer-header {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+    .layer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Component Card ── */
+    .comp {
+      flex: 1;
+      min-width: 170px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      background: var(--bg);
+      position: relative;
+    }
+    .comp:hover {
+      border-color: var(--c, var(--green));
+      background: rgba(var(--cr, '16,185,129'), 0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .comp.active {
+      border-color: var(--c, var(--green));
+      background: rgba(var(--cr, '16,185,129'), 0.09);
+      box-shadow: 0 0 0 1px var(--c, var(--green)), 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .comp-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c, var(--green));
+      margin-bottom: 10px;
+    }
+    .comp-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .comp-sub {
+      font-size: 0.73rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .comp-chevron {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .comp:hover .comp-chevron,
+    .comp.active .comp-chevron { opacity: 1; }
+
+    /* ── Pipeline row inside interpreter layer ── */
+    .pipeline {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .pipe-stage {
+      flex: 1;
+      min-width: 90px;
+      padding: 12px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+      text-align: center;
+      background: var(--bg);
+    }
+    .pipe-stage:hover {
+      border-color: var(--green);
+      background: rgba(16,185,129,0.06);
+      transform: translateY(-2px);
+    }
+    .pipe-stage.active {
+      border-color: var(--green);
+      background: rgba(16,185,129,0.1);
+      box-shadow: 0 0 0 1px var(--green);
+    }
+    .pipe-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--green);
+      margin-bottom: 5px;
+    }
+    .pipe-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .pipe-file {
+      font-size: 0.66rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pipe-arr {
+      color: var(--muted);
+      font-size: 1.1rem;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    /* ── Language cards ── */
+    .lang-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .lang-card {
+      flex: 1;
+      min-width: 95px;
+      padding: 12px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+      background: var(--bg);
+      text-align: center;
+    }
+    .lang-card:hover {
+      border-color: var(--amber);
+      background: rgba(245,158,11,0.06);
+      transform: translateY(-2px);
+    }
+    .lang-card.active {
+      border-color: var(--amber);
+      background: rgba(245,158,11,0.1);
+      box-shadow: 0 0 0 1px var(--amber);
+    }
+    .lang-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .lang-sample {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.6;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Connector between layers ── */
+    .connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      gap: 5px;
+      width: 100%;
+      max-width: 640px;
+    }
+    .connector-track {
+      position: relative;
+      width: 2px;
+      height: 28px;
+      background: var(--border);
+      overflow: visible;
+    }
+    .conn-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      left: -2px;
+      box-shadow: 0 0 8px var(--green);
+      animation: flowDown 2.8s ease-in-out infinite;
+    }
+    @keyframes flowDown {
+      0%   { top: -4px; opacity: 0; }
+      12%  { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { top: calc(100% + 4px); opacity: 0; }
+    }
+    .connector-label {
+      font-size: 0.67rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      text-align: center;
+      max-width: 500px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Detail Panel ── */
+    .detail-panel {
+      width: 390px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--muted);
+      padding: 32px;
+    }
+    .panel-empty-glyph {
+      font-size: 3rem;
+      opacity: 0.18;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+    }
+    .panel-empty-text {
+      font-size: 0.84rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .panel-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .panel-top {
+      padding: 24px 26px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .panel-color-bar {
+      width: 3px;
+      min-height: 28px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .panel-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0 26px;
+      margin-top: 16px;
+    }
+    .section-label {
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-body {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      line-height: 1.75;
+    }
+
+    .panel-code-wrap {
+      padding: 16px 26px 26px;
+      margin-top: 12px;
+    }
+    .panel-code {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.77rem;
+      color: #94a3b8;
+      line-height: 1.85;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .panel-code .kw  { color: var(--green); }
+    .panel-code .cm  { color: var(--muted); }
+    .panel-code .str { color: #f87171; }
+    .panel-code .val { color: var(--amber); }
+
+    /* ── Bottom hint ── */
+    .click-hint {
+      border-top: 1px solid var(--border);
+      padding: 10px 24px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Kalaam — <span>System Architecture</span></h1>
+    <p>A programming language in Hindi, Marathi, Bengali, Telugu &amp; Odia — built for students without laptops or internet</p>
+  </div>
+
+  <div class="badges">
+    <span class="badge g">📱 Mobile First</span>
+    <span class="badge g">✈️ Offline First</span>
+    <span class="badge g">⚡ Zero API Calls</span>
+    <span class="badge g">📦 Zero Runtime Deps</span>
+    <span class="badge">5 Indian Languages</span>
+    <span class="badge">Runs entirely in V8</span>
+    <span class="badge">npm: kalaam v2.3.3</span>
+  </div>
+
+  <div class="main">
+
+    <!-- ── Diagram ── -->
+    <div class="diagram-col">
+
+      <!-- Layer 1: Student Device -->
+      <div class="layer-wrap">
+        <div class="layer-header">Student Device</div>
+        <div class="layer">
+          <div class="comp" data-id="browser" style="--c:#6366f1;--cr:99,102,241">
+            <div class="comp-dot"></div>
+            <div class="comp-name">Mobile Browser</div>
+            <div class="comp-sub">Chrome / Safari / Firefox on Android · iOS<br>V8 is the execution runtime for Kalaam itself</div>
+            <div class="comp-chevron">›</div>
+          </div>
+          <div class="comp" data-id="serviceworker" style="--c:#3b82f6;--cr:59,130,246">
+            <div class="comp-dot" style="background:#3b82f6"></div>
+            <div class="comp-name">Service Worker</div>
+            <div class="comp-sub">Offline PWA cache · Workbox (via Quasar)<br>First HTTP load → cached forever</div>
+            <div class="comp-chevron">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector">
+        <div class="connector-track"><div class="conn-dot" style="animation-delay:0s"></div></div>
+        <div class="connector-label">HTTP · First load only · All subsequent requests served from Service Worker cache</div>
+      </div>
+
+      <!-- Layer 2: Frontend -->
+      <div class="layer-wrap">
+        <div class="layer-header">Frontend — Vue 2 + Quasar PWA (kalaamlang.in)</div>
+        <div class="layer">
+          <div class="comp" data-id="codemirror" style="--c:#8b5cf6;--cr:139,92,246">
+            <div class="comp-dot" style="background:#8b5cf6"></div>
+            <div class="comp-name">CodeMirror + kalaam mode</div>
+            <div class="comp-sub">Custom syntax highlighting · Fork of CM JS mode<br>Devanagari · Bengali · Telugu · Odia keywords</div>
+            <div class="comp-chevron">›</div>
+          </div>
+          <div class="comp" data-id="practicevue" style="--c:#6366f1;--cr:99,102,241">
+            <div class="comp-dot" style="background:#6366f1"></div>
+            <div class="comp-name">Practise.vue</div>
+            <div class="comp-sub">Editor · Output panel · Language selector<br>Run → Compile() → instant result · no async</div>
+            <div class="comp-chevron">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector">
+        <div class="connector-track"><div class="conn-dot" style="animation-delay:0.9s"></div></div>
+        <div class="connector-label">Compile(source, KalaamKeywords[lang]) · In-process function call · No HTTP · Returns in 2–10ms</div>
+      </div>
+
+      <!-- Layer 3: Interpreter Pipeline -->
+      <div class="layer-wrap">
+        <div class="layer-header">Interpreter Core — npm: kalaam v2.3.3 · Zero runtime dependencies</div>
+        <div class="layer">
+          <div class="pipeline">
+            <div class="pipe-stage" data-id="cleaning">
+              <div class="pipe-num">01</div>
+              <div class="pipe-name">Cleaning</div>
+              <div class="pipe-file">DataCleaning.js</div>
+            </div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-stage" data-id="scanning">
+              <div class="pipe-num">02</div>
+              <div class="pipe-name">Scanning</div>
+              <div class="pipe-file">scanner/main.js</div>
+            </div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-stage" data-id="tokenization">
+              <div class="pipe-num">03</div>
+              <div class="pipe-name">Tokenization</div>
+              <div class="pipe-file">Compiler/main.js</div>
+            </div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-stage" data-id="interpretation">
+              <div class="pipe-num">04</div>
+              <div class="pipe-name">Interpretation</div>
+              <div class="pipe-file">Scripts/main.js</div>
+            </div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-stage" data-id="output">
+              <div class="pipe-num">05</div>
+              <div class="pipe-name">Output</div>
+              <div class="pipe-file">kalaam{} object</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector">
+        <div class="connector-track"><div class="conn-dot" style="animation-delay:1.8s"></div></div>
+        <div class="connector-label">All runs inside V8 · No eval() · Student code never becomes JavaScript · No server round-trips</div>
+      </div>
+
+      <!-- Layer 4: Language Maps -->
+      <div class="layer-wrap">
+        <div class="layer-header">Language Layer — KalaamKeywords (per-language constant maps · src/lib/Compiler/constants.js)</div>
+        <div class="layer">
+          <div class="lang-row">
+            <div class="lang-card" data-id="hindi">
+              <div class="lang-name">Hindi</div>
+              <div class="lang-sample">दिखाए<br>अगर · जबतक</div>
+            </div>
+            <div class="lang-card" data-id="marathi">
+              <div class="lang-name">Marathi</div>
+              <div class="lang-sample">दाखवा<br>जर · जोपर्यंत</div>
+            </div>
+            <div class="lang-card" data-id="bengali">
+              <div class="lang-name">Bengali</div>
+              <div class="lang-sample">দেখাও<br>যদি · যখন</div>
+            </div>
+            <div class="lang-card" data-id="telugu">
+              <div class="lang-name">Telugu</div>
+              <div class="lang-sample">చూపించు<br>ఉంటే · అయితే</div>
+            </div>
+            <div class="lang-card" data-id="odia">
+              <div class="lang-name">Odia</div>
+              <div class="lang-sample">ଦେଖାଅ<br>ଯଦି · ଯେବେ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Detail Panel ── -->
+    <div class="detail-panel">
+      <div class="panel-empty" id="panelEmpty">
+        <div class="panel-empty-glyph">{ }</div>
+        <div class="panel-empty-text">Click any component<br>to explore the architectural decision behind it</div>
+      </div>
+      <div class="panel-content" id="panelContent" style="display:none">
+        <div class="panel-top">
+          <div class="panel-header">
+            <div class="panel-color-bar" id="panelBar"></div>
+            <div class="panel-title" id="panelTitle"></div>
+          </div>
+        </div>
+        <div class="panel-section" id="panelWhatSec">
+          <div class="section-label">What it does</div>
+          <div class="section-body" id="panelWhat"></div>
+        </div>
+        <div class="panel-section" id="panelWhySec">
+          <div class="section-label">Why this choice</div>
+          <div class="section-body" id="panelWhy"></div>
+        </div>
+        <div class="panel-section" id="panelInsightSec">
+          <div class="section-label">Key insight</div>
+          <div class="section-body" id="panelInsight"></div>
+        </div>
+        <div class="panel-code-wrap" id="panelCodeWrap">
+          <div class="panel-code" id="panelCode"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="click-hint">Click any component · Press Esc to close · Keyboard arrows navigate between components</div>
+
+  <script>
+    const COMPONENTS = {
+      browser: {
+        title: 'Student Mobile Browser',
+        color: '#6366f1',
+        what: 'The primary runtime environment — Chrome or Safari on a budget Android device. The student\'s phone is the only hardware Kalaam needs. No laptop, no tablet, no desktop required.',
+        why: 'Tier-3 city students in India have smartphones but no laptops. This was the founding constraint from the school that commissioned Kalaam — not a product assumption. The entire architecture flows from this single fact.',
+        insight: 'The browser\'s V8 engine is already a high-performance, memory-safe sandbox. Sandboxed code execution — usually an infrastructure challenge — was solved for free by choosing the browser as the platform. No server to provision, no per-execution cost.',
+        code: `// No server. No cloud. No API calls.
+// V8 executes everything on-device.
+
+// First HTTP request: load all static assets.
+// All subsequent requests: served from
+// Service Worker cache — no network needed.
+
+const result = Compile(source, KalaamKeywords.Hindi);
+// Returns in 2–10ms.
+// No async. No spinner. No network.`
+      },
+      serviceworker: {
+        title: 'Service Worker — Offline Cache',
+        color: '#3b82f6',
+        what: 'Intercepts all resource requests after the first load and serves them from the browser cache. After the PWA is installed, Kalaam runs identically with zero internet connection — same experience, same performance.',
+        why: 'Intermittent connectivity is the norm in rural India. A student in a village with no cell signal shouldn\'t lose work or be blocked from running code. "Offline" had to be the default, not a fallback mode.',
+        insight: '"How do we handle offline?" was answered at install time, once. The service worker made it a deployment question, not a runtime question. After that, it doesn\'t exist as an engineering problem.',
+        code: `// Quasar generates the service worker via Workbox.
+// Strategy: cache-first for all static assets.
+
+// First load (with internet):
+//   → download app shell + all JS/CSS/fonts
+//   → store in browser cache
+
+// All subsequent loads (with or without internet):
+//   → Service Worker intercepts fetch
+//   → returns cached asset immediately
+//   → never touches the network
+
+// A student with no signal: identical experience.`
+      },
+      codemirror: {
+        title: 'CodeMirror + kalaam Syntax Mode',
+        color: '#8b5cf6',
+        what: 'The code editor with a custom "kalaam" syntax highlighting mode. Forked from CodeMirror\'s built-in JavaScript mode. Hindi, Marathi, and other language keywords were added to the existing keyword table. Used for display only — not for parsing.',
+        why: 'CodeMirror 5 is ~300KB. Monaco Editor (VS Code\'s engine) is 3–5MB. On a 2G connection that\'s 15 seconds vs 2+ minutes. On a device with 2GB RAM the memory difference is real. CodeMirror won on every constraint: size, speed, and extensibility.',
+        insight: 'JavaScript is UTF-16 native. CodeMirror\'s existing word character regex already covered every Indian script: /[\\w$\\xa1-\\uffff]/. Devanagari (U+0900–U+097F) sits inside \\xa1–\\uffff. Adding Kalaam support was 14 entries in a keyword table. Nothing else changed.',
+        code: `// src/components/Kalaam.js
+// Fork of CodeMirror's built-in JavaScript mode.
+
+// This line already existed in CodeMirror — unchanged:
+var wordRE = /[\\w$\\xa1-\\uffff]/;
+//                     ↑ U+00A1–U+FFFF covers:
+//                       Devanagari: U+0900–U+097F ✓
+//                       Bengali:    U+0980–U+09FF ✓
+//                       Telugu:     U+0C00–U+0C7F ✓
+//                       Odia:       U+0B00–U+0B7F ✓
+
+// Only addition: keyword table entries
+keywords = {
+  "दिखाए": kw("दिखाए"),  // print (Hindi)
+  "दाखवा": kw("दाखवा"),  // print (Marathi)
+  "अगर":   kw("अगर"),    // if
+  // ... 14 total
+}`
+      },
+      practicevue: {
+        title: 'Practise.vue — Frontend Controller',
+        color: '#6366f1',
+        what: 'The main Vue 2 component. Owns the code editor, output panel, language selector dropdown, and Learning Mode toggle. Orchestrates the full user loop: write code → run → display output → trace execution.',
+        why: 'Vue 2 + Quasar provides mobile-native UI patterns (FAB buttons, bottom sheets, pickers) that feel native on Android. The student sees an app, not a web page.',
+        insight: 'Compile() is called synchronously. It returns in 2–10ms for typical student programs — assignments, loops, simple functions. There\'s no loading state, no async/await, no spinner. The UI is instantly reactive. Zero perceived latency.',
+        code: `// Practise.vue — simplified run handler
+onClickRun() {
+  const result = Compile(
+    this.sourceCode,
+    KalaamKeywords[this.activeLanguage]
+    //  ↑ 'Hindi' | 'Marathi' | 'Bengali' | ...
+  );
+
+  // Vue reactivity propagates instantly:
+  this.output         = result.output;
+  this.executionStack = result.ExecutionStack;
+  this.timeTaken      = result.TimeTaken;
+  this.isError        = result.isError;
+}`
+      },
+      cleaning: {
+        title: 'Phase 1 — Cleaning',
+        color: '#10b981',
+        what: 'Two sequential operations: earlyCleaning() strips trailing whitespace, normalizes line endings (\\r\\n → \\n), and removes empty lines. Then SourceDataReplaceforEasyParsing() substitutes surface language keywords with normalized internal tokens ([PRINT], [IF], [WHILE]...).',
+        why: 'This single phase is the entire language abstraction strategy. After cleaning, the tokenizer and interpreter have zero awareness of Hindi vs Marathi vs Bengali vs any future language. One parser handles them all.',
+        insight: 'N languages = N keyword maps, not N parsers. Adding Bengali was one commit: add the keyword map in constants.js. No tokenizer changes, no interpreter changes, no new tests for the parser. The architecture made it free.',
+        code: `// earlyCleaning():
+// "x = 5\\r\\n\\r\\nदिखाए(x)\\r\\n"
+//          ↓
+// "x = 5\\nदिखाए(x)"
+
+// SourceDataReplaceforEasyParsing():
+// Hindi:    "दिखाए(x)"   → "[PRINT](x)"
+// Marathi:  "दाखवा(x)"   → "[PRINT](x)"
+// Bengali:  "দেখাও(x)"   → "[PRINT](x)"
+// Telugu:   "చూపించు(x)" → "[PRINT](x)"
+// Odia:     "ଦେଖାଅ(x)"   → "[PRINT](x)"
+
+// After this phase: identical source string.
+// Tokenizer never sees a language keyword.`
+      },
+      scanning: {
+        title: 'Phase 2 — Scanning',
+        color: '#10b981',
+        what: 'scanner/main.js walks the cleaned source character by character. IsSpecialChar() detects token boundaries — operators, brackets, and punctuation. The output is a flat cleaned_sourcedata[] string array. No type information assigned at this stage.',
+        why: 'Character-level scanning is simple, deterministic, and has no backtracking. The scanner has one responsibility: split source into tokens. Type inference is the tokenizer\'s job in Phase 3.',
+        insight: 'The separation between scanning (what are the tokens?) and tokenization (what type is each token?) means the scanner never needs to change when new language constructs are added. Only the tokenizer\'s dispatch table grows.',
+        code: `// scanner/main.js
+// Input: "x = 5\\n[PRINT](x)"
+
+// IsSpecialChar() matches:
+// = + - * / > < ( ) { } , ; : ? == != **
+
+// Output: flat string[]
+cleaned_sourcedata = [
+  "x", "=", "5",
+  "[PRINT]", "(", "x", ")"
+]
+
+// Whitespace: gone.
+// Language keywords: gone (Phase 1 handled that).
+// Types: not yet — that's Phase 3.`
+      },
+      tokenization: {
+        title: 'Phase 3 — Tokenization',
+        color: '#10b981',
+        what: 'Compiler/main.js walks cleaned_sourcedata[]. IsReservedKeyword() routes each construct to one of 20 specialized Push* functions. Each function creates a typed token object and appends it to the tokens[] array. TypeCheck and AdvancedTypeCheck classify value tokens before pushing.',
+        why: 'The key architectural choice: tokens[] is flat, not tree-shaped. This is deliberate — a flat array means interpretation is a sequential walk, not a recursive tree traversal. Simpler to reason about, simpler to debug, simpler to trace.',
+        insight: 'CPython doesn\'t execute its AST directly either — it compiles to bytecode (a flat instruction array) then executes that. Kalaam makes the same choice. tokens[] is the instruction set. The AST step is entirely eliminated.',
+        code: `// 20 Push* functions, one per construct:
+// [IF]         → PushConditionalKeyword()
+// [WHILE]      → PushWhileLoop()
+// "दुहराओ"     → PushForLoop()
+// [PRINT]      → PushRealTimePrintOperation()
+// "रचना"       → PushFunctionData()
+// "}"          → block close marker
+
+// Each creates a typed token object:
+PushVariable("x")
+  → { type: "variable", varName: "x" }
+
+PushVariableValue("5")
+  → { type: "varValue", value: "5", dataType: "number" }
+
+PushCalculation("x + y")
+  → { type: "arithmetic", expr: "x + y" }
+
+// tokens[]: flat. Sequential. No tree.`
+      },
+      interpretation: {
+        title: 'Phase 4 — Interpretation',
+        color: '#10b981',
+        what: 'Scripts/main.js walks tokens[] sequentially. Maintains three key state objects: memory{} (the variable store), ExecutionStack[] (the learning trace), and a skipInterpretation integer flag (control flow). Each token type dispatches to a handler function in Scripts/.',
+        why: 'Plain JS object for memory{} — V8\'s hidden class optimization makes small, structurally consistent objects extremely fast to read and write. No Map, no WeakMap overhead. For programs with under ~50 variables (all student programs), V8 monomorphizes the object.',
+        insight: 'skipInterpretation is how control flow works without a tree. If a condition is false, skipInterpretation = 1. All tokens until the closing "}" are bypassed in the sequential walk. Control flow without tree traversal — just a flag and a counter.',
+        code: `// Scripts/main.js — interpreter state:
+let memory             = {};   // { x: 5, y: 3, z: 8 }
+let ExecutionStack     = [];   // learning trace
+let skipInterpretation = 0;    // control flow flag
+
+// Condition false → skip block:
+if (!conditionResult) {
+  skipInterpretation = 1;
+}
+// All tokens until "}" are bypassed.
+// No branch in the data structure — a flag.
+
+// memory{} grows as variables are assigned:
+// memory["x"] = 5    ← V8 hidden class optimized
+// memory["y"] = 3
+// memory["z"] = 8`
+      },
+      output: {
+        title: 'Phase 5 — Output',
+        color: '#10b981',
+        what: 'Assembles the kalaam{} return object: output string, ExecutionStack[], isError flag, TimeTaken (performance.now() delta), LastConditionValue. Returned to whatever called Compile() — the Vue frontend, an npm consumer, or the Jest test suite.',
+        why: 'Caller-agnostic API. The same object is consumed by Practise.vue, by external developers using the npm package, and by the test suite. No caller-specific fields. Compile() is a pure function with no side effects.',
+        insight: 'ExecutionStack[] is built as a free side-effect of sequential interpretation — because interpretation is strictly sequential and every meaningful operation appends to the array in execution order, the trace is the execution. The Learning Mode feature cost zero additional work in the interpreter.',
+        code: `// Compile() return value — the kalaam object:
+{
+  output:             "8",
+  isError:            false,
+  TimeTaken:          "2.4ms",
+  LastConditionValue: [],
+  ExecutionStack: [
+    "x को 5 का मान दिया गया",
+    "y को 3 का मान दिया गया",
+    "z = x + y = 5 + 3 = 8",
+    "दिखाए(z) → z की value है 8"
+  ]
+}
+
+// Same object. Same API.
+// Frontend, npm, CLI — all identical.`
+      },
+      hindi: {
+        title: 'KalaamKeywords.Hindi',
+        color: '#f59e0b',
+        what: 'The keyword map for Hindi. Maps Devanagari surface keywords to the normalized internal tokens that the tokenizer in Phase 3 consumes.',
+        why: 'Hindi is the default language — most student programs are written in Hindi. The original school that commissioned Kalaam serves Hindi-speaking students in tier-3 cities in Uttar Pradesh and Bihar.',
+        insight: 'The keyword map is the only thing that needs to change to add a new language. Scanner, tokenizer, and interpreter are all entirely language-agnostic after Phase 1 cleaning.',
+        code: `KalaamKeywords.Hindi = {
+  print:    "दिखाए",   // → [PRINT]
+  if:       "अगर",     // → [IF]
+  else:     "अन्यथा",  // → [ELSE]
+  while:    "जबतक",    // → [WHILE]
+  for:      "दुहराओ",  // → [FOR]
+  function: "रचना",    // → [FUNCTION]
+  input:    "इनपुट",   // → [INPUT]
+  push:     "पुश",     // → [PUSH]
+  length:   "संख्या",  // → [LENGTH]
+  in:       "में",
+  to:       "को"
+}`
+      },
+      marathi: {
+        title: 'KalaamKeywords.Marathi',
+        color: '#f59e0b',
+        what: 'Keyword map for Marathi. Same Devanagari script as Hindi but different vocabulary — most keywords differ.',
+        why: 'Maharashtra schools adopted Kalaam early. Marathi-speaking students needed their own language, not a transliteration of Hindi keywords.',
+        insight: 'Same script, different vocabulary. Both map to identical internal tokens. The scanner sees the same character ranges after substitution. The architecture handles same-script/different-language transparently.',
+        code: `KalaamKeywords.Marathi = {
+  print:  "दाखवा",    // ← different from Hindi दिखाए
+  if:     "जर",       // ← different from Hindi अगर
+  while:  "जोपर्यंत", // ← different
+  for:    "दुहराओ",   // ← same as Hindi (shared word)
+  else:   "अन्यथा",  // ← same as Hindi
+  ...
+}
+// Same Devanagari script.
+// Different keywords.
+// Zero parser changes.`
+      },
+      bengali: {
+        title: 'KalaamKeywords.Bengali',
+        color: '#f59e0b',
+        what: 'Keyword map for Bengali. Uses the Bengali script — a completely different script from Devanagari. Added after the initial Hindi/Marathi release in response to requests from Bangladesh and West Bengal.',
+        why: 'Bengali is the fifth most spoken language in the world. Schools in West Bengal and Bangladesh requested support. The keyword substitution architecture made this trivial.',
+        insight: 'One commit. One file changed (constants.js). Zero parser changes, zero tokenizer changes, zero interpreter changes. A completely different script — U+0980–U+09FF vs Devanagari U+0900–U+097F — added at zero engineering cost.',
+        code: `KalaamKeywords.Bengali = {
+  print:  "দেখাও",
+  if:     "যদি",
+  while:  "যখন",
+  for:    "যতক্ষণ",
+  else:   "অন্যথায়",
+  ...
+}
+
+// Bengali script: U+0980–U+09FF
+// wordRE /[\\w$\\xa1-\\uffff]/ already covers it.
+// One commit. Zero parser changes.`
+      },
+      telugu: {
+        title: 'KalaamKeywords.Telugu',
+        color: '#f59e0b',
+        what: 'Keyword map for Telugu. Telugu script — a Brahmic script family distinct from Devanagari. Covers South India, particularly Andhra Pradesh and Telangana.',
+        why: 'South India coverage. Telugu has ~85 million native speakers. The Dravidian language family needed representation.',
+        insight: 'A completely different script family from Devanagari. The architecture didn\'t care — V8 strings are UTF-16, the word regex covers all Indian scripts in the BMP, and keyword substitution is script-agnostic.',
+        code: `KalaamKeywords.Telugu = {
+  print:  "చూపించు",
+  if:     "ఉంటే",
+  while:  "అయితే",
+  for:    "కొరకు",
+  ...
+}
+
+// Telugu script: U+0C00–U+0C7F
+// Still inside \\xa1–\\uffff. Works automatically.
+// No scanner change. No parser change.`
+      },
+      odia: {
+        title: 'KalaamKeywords.Odia',
+        color: '#f59e0b',
+        what: 'Keyword map for Odia (Oriya). Odia script — another distinct Brahmic script. Covers Odisha.',
+        why: 'Odisha coverage and completing the Eastern Indian language cluster: Bengali + Odia.',
+        insight: '5 languages. 5 different scripts. 1 parser. 1 tokenizer. 1 interpreter. The keyword substitution architecture — Phase 1 cleaning — made all of this possible without any architectural changes after the first version.',
+        code: `KalaamKeywords.Odia = {
+  print:  "ଦେଖାଅ",
+  if:     "ଯଦି",
+  while:  "ଯେବେ",
+  ...
+}
+
+// Summary:
+// N languages = N keyword maps
+// NOT N parsers
+// NOT N tokenizers
+// NOT N interpreters
+
+// Adding a language = one constants.js commit.`
+      }
+    };
+
+    // All clickable elements in order (for keyboard nav)
+    const ALL_IDS = [
+      'browser', 'serviceworker',
+      'codemirror', 'practicevue',
+      'cleaning', 'scanning', 'tokenization', 'interpretation', 'output',
+      'hindi', 'marathi', 'bengali', 'telugu', 'odia'
+    ];
+
+    // DOM refs
+    const panelEmpty   = document.getElementById('panelEmpty');
+    const panelContent = document.getElementById('panelContent');
+    const panelBar     = document.getElementById('panelBar');
+    const panelTitle   = document.getElementById('panelTitle');
+    const panelWhat    = document.getElementById('panelWhat');
+    const panelWhy     = document.getElementById('panelWhy');
+    const panelInsight = document.getElementById('panelInsight');
+    const panelInsightSec = document.getElementById('panelInsightSec');
+    const panelCode    = document.getElementById('panelCode');
+    const panelCodeWrap = document.getElementById('panelCodeWrap');
+
+    let activeEl = null;
+    let activeId = null;
+
+    function activateById(id) {
+      const el = document.querySelector(`[data-id="${id}"]`);
+      if (!el) return;
+      if (activeEl) activeEl.classList.remove('active');
+      if (activeId === id) {
+        activeEl = null;
+        activeId = null;
+        panelEmpty.style.display = 'flex';
+        panelContent.style.display = 'none';
+        return;
+      }
+      activeEl = el;
+      activeId = id;
+      el.classList.add('active');
+      const data = COMPONENTS[id];
+
+      panelEmpty.style.display = 'none';
+      panelContent.style.display = 'flex';
+      panelBar.style.background = data.color;
+      panelTitle.textContent = data.title;
+      panelWhat.textContent  = data.what;
+      panelWhy.textContent   = data.why;
+
+      if (data.insight) {
+        panelInsightSec.style.display = 'flex';
+        panelInsight.textContent = data.insight;
+      } else {
+        panelInsightSec.style.display = 'none';
+      }
+
+      if (data.code) {
+        panelCodeWrap.style.display = 'block';
+        panelCode.textContent = data.code;
+      } else {
+        panelCodeWrap.style.display = 'none';
+      }
+
+      // Scroll panel back to top
+      panelContent.scrollTop = 0;
+    }
+
+    document.querySelectorAll('[data-id]').forEach(el => {
+      el.addEventListener('click', () => activateById(el.dataset.id));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (activeEl) { activeEl.classList.remove('active'); activeEl = null; activeId = null; }
+        panelEmpty.style.display = 'flex';
+        panelContent.style.display = 'none';
+        return;
+      }
+      if (!activeId) return;
+      const idx = ALL_IDS.indexOf(activeId);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        const next = ALL_IDS[(idx + 1) % ALL_IDS.length];
+        activateById(next);
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        const prev = ALL_IDS[(idx - 1 + ALL_IDS.length) % ALL_IDS.length];
+        activateById(prev);
+      }
+    });
+  </script>
+</body>
+</html>
