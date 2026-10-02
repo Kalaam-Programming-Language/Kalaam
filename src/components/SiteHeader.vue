@@ -1,6 +1,9 @@
 <template>
   <header class="masthead">
-    <router-link to="/" class="wordmark" aria-label="Kalaam home">कलाम</router-link>
+    <router-link to="/" class="wordmark" aria-label="Kalaam home">
+      <img class="mark" src="../assets/logo-mark.png" alt="" width="35" height="32" />
+      <span>कलाम</span>
+    </router-link>
 
     <div class="masthead-end">
       <!-- Page-specific controls, e.g. the language picker on Practice -->
@@ -53,11 +56,20 @@ export default {
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--k-serif);
   font-size: 30px;
   line-height: 1;
   color: var(--k-ink);
   text-decoration: none;
+}
+
+.mark {
+  display: block;
+  width: auto;
+  height: 32px;
 }
 
 .masthead-end {
