@@ -622,9 +622,11 @@ input:checked + .slider:before {
 
 .output-line {
   margin: 0 0 4px;
-  font-family: var(--k-serif);
-  font-size: 18px;
-  line-height: 1.8;
+  /* same stack as the editor, so output reads like a console */
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+    'Roboto Mono', 'Noto Sans Mono', 'Noto Sans Devanagari', monospace;
+  font-size: 16px;
+  line-height: 1.75;
   white-space: pre-wrap;
   word-break: break-word;
   color: var(--k-text);
@@ -656,111 +658,125 @@ input:checked + .slider:before {
 </style>
 
 <style>
-/* CodeMirror override: light sheet matching the Kalaam design system.
-   Prefixed with .k-practice to beat the dark global rules in public/index.html
-   without editing that file. */
+/* CodeMirror theme: a light code editor (One Light palette).
+   Prefixed with .k-practice to beat the dark global rules in public/index.html.
+   Latin text uses the system monospace; Devanagari falls back to the system
+   Devanagari sans, the way desktop editors render it. */
 
 .k-practice .CodeMirror {
-  --hang: 15px;
-  background: var(--k-sheet);
-  color: var(--k-ink);
-  font-family: var(--k-serif);
-  font-size: 20px;
-  line-height: 40px;
+  background: #ffffff;
+  color: #383a42;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+    'Roboto Mono', 'Noto Sans Mono', 'Noto Sans Devanagari', monospace;
+  font-size: 17px;
+  line-height: 30px;
   direction: ltr;
+  border: 1px solid #e3e6ee;
+  border-radius: 4px;
 }
 
 .k-practice .CodeMirror-lines {
-  padding: 4px 0;
+  padding: 8px 0;
 }
 
-/* Each code line hangs from its own rule, the way Devanagari hangs from the
-   shirorekha (same technique as Home's .editor, but applied per CodeMirror
-   line so it isn't thrown off by the lines container's own padding). */
 .k-practice .CodeMirror pre.CodeMirror-line,
 .k-practice .CodeMirror pre.CodeMirror-line-like {
-  padding: 0 8px;
-  background-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent var(--hang),
-    var(--k-rule) var(--hang),
-    var(--k-rule) calc(var(--hang) + 1px),
-    transparent calc(var(--hang) + 1px),
-    transparent 100%
-  );
+  padding: 0 12px;
 }
 
 .k-practice .CodeMirror-gutters {
-  background: var(--k-sheet);
-  border-right: 2px solid var(--k-ink);
+  background: #f7f8fa;
+  border-right: 1px solid #e3e6ee;
 }
 
 .k-practice .CodeMirror-linenumber {
-  color: var(--k-muted);
-  font-family: var(--k-sans);
-  font-size: 14px;
-  padding: 0 10px 0 4px;
+  color: #9da2ad;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 0 8px 0 12px;
 }
 
-.k-practice .CodeMirror-cursor {
-  border-left: 2px solid var(--k-ink);
-}
-
-.k-practice .CodeMirror-selected {
-  background: rgba(31, 39, 102, 0.12);
+.k-practice .CodeMirror-activeline-gutter .CodeMirror-linenumber {
+  color: #383a42;
 }
 
 .k-practice .CodeMirror-activeline-background {
-  background: rgba(31, 39, 102, 0.035);
+  background: #f2f4f9;
+}
+
+.k-practice .CodeMirror-cursor {
+  border-left: 2px solid #526fff;
+}
+
+.k-practice .CodeMirror-selected,
+.k-practice .CodeMirror-focused .CodeMirror-selected {
+  background: #dfe5fb;
 }
 
 .k-practice .CodeMirror-matchingbracket {
-  color: var(--k-ink) !important;
-  font-weight: 400;
-  text-decoration: underline;
+  color: #383a42 !important;
+  background: #e2e6f2;
+  text-decoration: none;
 }
 
-/* Syntax colors for the kalaam CodeMirror mode */
+.k-practice .CodeMirror-foldgutter-open,
+.k-practice .CodeMirror-foldgutter-folded {
+  color: #9da2ad;
+}
+
+/* Syntax colours for the kalaam mode */
 .k-practice .cm-keyword {
-  color: var(--k-ink);
-  /* Tiro has one weight; colour carries the emphasis, not a faux bold */
-  font-weight: 400;
+  color: #a626a4;
+}
+
+.k-practice .cm-def {
+  color: #4078f2;
+}
+
+.k-practice .cm-variable,
+.k-practice .cm-variable-2,
+.k-practice .cm-variable-3 {
+  color: #383a42;
+}
+
+.k-practice .cm-property {
+  color: #0184bc;
+}
+
+.k-practice .cm-operator {
+  color: #0184bc;
+}
+
+.k-practice .cm-number,
+.k-practice .cm-atom {
+  color: #986801;
 }
 
 .k-practice .cm-string,
 .k-practice .cm-string-2 {
-  color: #6b4e16;
-}
-
-.k-practice .cm-number {
-  color: #5a2a6e;
+  color: #50a14f;
 }
 
 .k-practice .cm-comment {
-  color: var(--k-muted);
+  color: #a0a1a7;
   font-style: italic;
 }
 
-.k-practice .cm-atom,
-.k-practice .cm-variable,
-.k-practice .cm-variable-2,
-.k-practice .cm-variable-3,
-.k-practice .cm-property,
-.k-practice .cm-operator,
-.k-practice .cm-def,
+.k-practice .cm-bracket,
 .k-practice .cm-meta,
 .k-practice .cm-tag,
-.k-practice .cm-bracket,
 .k-practice .cm-qualifier {
-  color: var(--k-text);
+  color: #383a42;
+}
+
+.k-practice .cm-error {
+  color: #e45649;
 }
 
 @media (max-width: 480px) {
   .k-practice .CodeMirror {
-    --hang: 14px;
-    font-size: 18px;
-    line-height: 36px;
+    font-size: 16px;
+    line-height: 28px;
   }
 }
 </style>
