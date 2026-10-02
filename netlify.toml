@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Vue CLI 4 / webpack 4 uses MD4 hashing, which Node 17+ disables by default.
+  NODE_OPTIONS = "--openssl-legacy-provider"
