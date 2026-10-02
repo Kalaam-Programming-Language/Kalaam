@@ -1,928 +1,626 @@
 <template>
-  <div class="about">
-     <Header/>
+  <div class="k-page">
+    <SiteHeader />
 
-    <div>
-<button  v-on:click="showStar0 = !showStar0"  type="button" class="collapsible">दिखाए()</button>
+    <main class="k-main">
+      <header class="k-page-head">
+        <h1 class="k-title">Documentation</h1>
+        <p>Every keyword, what it does, and a working example.</p>
+      </header>
 
-<transition name="slide-fade">
-<div v-if="showStar0" class="content">
+      <nav class="contents" aria-label="Topics">
+        <a v-for="t in topics" :key="t.id" class="k-link" :href="'#' + t.id">{{ t.word }}</a>
+      </nav>
 
-<div>
+      <!-- दिखाए() -->
+      <section id="dikhae" class="k-band topic" :class="{ open: showStar0 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar0 ? 'true' : 'false'"
+            @click="showStar0 = !showStar0"
+          >
+            <span class="k-code" lang="hi">दिखाए()</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar0 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
-<h6>काम</h6>
+        <transition name="slide-fade">
+          <div v-if="showStar0" class="band-body">
+            <h3>Purpose</h3>
+            <p>Shows a result on the output screen.</p>
 
-<p> RESULTS को OUTPUT SCREEN पे दिखाने के लिए दिखाए() का उपयोग होता है। </p>
+            <h3>How to use it</h3>
+            <p>
+              1. Show a declared variable:
+              <code class="k-code">Name = "Hello World"</code>, then
+              <code class="k-code">दिखाए(Name)</code>.
+            </p>
+            <p>
+              2. Show text or a number directly:
+              <code class="k-code">दिखाए("Hello World")</code>,
+              <code class="k-code">दिखाए(007)</code>.
+            </p>
+            <p>
+              3. Show concatenated text: <code class="k-code">Name = "Kalam"</code>, then
+              <code class="k-code">दिखाए("Hello World," + "My Name is" + Name + "!")</code>.
+            </p>
 
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>1.एक घोषित (declared) वेरिएबल को दिखाए करने के लिए ।   </h6>
-<p>Name &#61; "Hello World" </p>  
-<p>दिखाए(Name) </p>  
-<p>    </p>
-
-<h6>२. Direct शब्दों दिखाए करने के लिए ।  </h6>
-<p>दिखाए("Hello World")</p> 
-<p>दिखाए(007)</p> 
-
-<h6>३. Multi/Concatenated शब्दों को दिखाए करने के लिए ।    </h6>
-<p>Name &#61; "Kalam" </p> 
-<p>दिखाए("Hello World," + "My Name is" + Name + "!")</p> 
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-Name="Hello World"   
-दिखाए(Name)   
-
-
-दिखाए("Tic Tac Toe") 
-दिखाए(007) 
-
-
-Name="Kalam"  
-दिखाए("Hello World," + "My Name is" + Name + "!") 
-
-
- 
-
-</pre>
-</p>
-</div>
-
-
-</div>
-
-</transition>
-    </div>
-<button   v-on:click="showStar2 = !showStar2"  type="button" class="collapsible">इनपुट()</button>
-
-<transition name="slide-fade">
-<div v-if="showStar2" class="content">
-<div>
-
-<h6>काम</h6>
-
-
-<p> किसी नई VALUE को स्वीकार करना।  </p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>१: <i> इनपुट() </i> को बताये आपको किस VARIABLE की  VALUE स्वीकार करनी है   </h6>
-<p>इनपुट(<i> VARIABLE </i>)</p>  
-
-<h6> उदाहरण</h6>
-
-<p>इनपुट(Name)</p> 
-<p>अगर आपने इनपुट के दौर पर <i>Kalam</i>  डाला होगा तो COMPUTER उसे इस तरह स्वीकार करेगा ।  <b> Name="Kalam".</b> </p> 
-<p>एकबार VARIABLE की Value सेट होनेपर उसे Program में कभी भी use किया जा सकता है ।</p> 
-
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-
-इनपुट(Name)
-
- 
+            <div class="example-head">
+              <h3>Example</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1">Name="Hello World"
 दिखाए(Name)
 
+दिखाए("Tic Tac Toe")
+दिखाए(007)
 
- 
+Name="Kalam"
+दिखाए("Hello World," + "My Name is" + Name + "!")</pre>
+          </div>
+        </transition>
+      </section>
 
-</pre>
-</p>
-</div>
-</div>
-</transition>
-<button   v-on:click="showStar3 = !showStar3"  type="button" class="collapsible">अगर()</button>
-<transition name="slide-fade">
-<div v-if="showStar3" class="content">
-<div>
+      <!-- इनपुट() -->
+      <section id="input" class="k-band topic" :class="{ open: showStar2 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar2 ? 'true' : 'false'"
+            @click="showStar2 = !showStar2"
+          >
+            <span class="k-code" lang="hi">इनपुट()</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar2 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
-<h6>काम</h6>
+        <transition name="slide-fade">
+          <div v-if="showStar2" class="band-body">
+            <h3>Purpose</h3>
+            <p>Accepts a new value from the person running the program.</p>
 
+            <h3>How to use it</h3>
+            <p>
+              Tell <code class="k-code">इनपुट()</code> which variable should receive the
+              value: <code class="k-code">इनपुट(VARIABLE)</code>.
+            </p>
 
-<p> एक Certain Conditionके तहत कोड Execution को Allow करता है। 
-इसमें २ Conditions होती है |
-1.True
-2.False  </p>
+            <h3>Example</h3>
+            <p>
+              <code class="k-code">इनपुट(Name)</code>. If you type
+              <i>Kalam</i> at the prompt, the computer accepts it as
+              <code class="k-code">Name="Kalam"</code>. Once a variable's value is set,
+              it can be used anywhere in the program.
+            </p>
 
-<h6>इसका उपयोग कैसे करे?</h6>
+            <div class="example-head">
+              <h3>Try it</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1">इनपुट(Name)
+दिखाए(Name)</pre>
+          </div>
+        </transition>
+      </section>
 
-<h6>१ . Single Condition को मूल्यांकन (Evaluate) करना।   </h6>
-<p> अगर (Language &#61;&#61; 'kalam') </p>  
-<p> अगर (Age &gt; 18) </p>  
-<p><b> स्वीकृत  Comparion operators नीचे दिए गए है : </b>  </p>
-<p><b>&gt;</b> - Greater than</p>
-<p><b>&lt;</b> -  Less than</p>
-<p><b>&#61;&#61;</b> - is Equal to</p>
-<p><b>&#33;&#61;</b> - is Not Equal to</p>
+      <!-- अगर() -->
+      <section id="agar" class="k-band topic" :class="{ open: showStar3 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar3 ? 'true' : 'false'"
+            @click="showStar3 = !showStar3"
+          >
+            <span class="k-code" lang="hi">अगर()</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar3 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
+        <transition name="slide-fade">
+          <div v-if="showStar3" class="band-body">
+            <h3>Purpose</h3>
+            <p>
+              Allows code execution under a certain condition. There are two outcomes:
+              true and false.
+            </p>
 
+            <h3>How to use it</h3>
+            <p>
+              1. Evaluate a single condition: <code class="k-code">अगर (Language == 'kalam')</code>,
+              <code class="k-code">अगर (Age &gt; 18)</code>.
+            </p>
+            <p>The accepted comparison operators are:</p>
+            <ul>
+              <li><code class="k-code">&gt;</code> &mdash; greater than</li>
+              <li><code class="k-code">&lt;</code> &mdash; less than</li>
+              <li><code class="k-code">==</code> &mdash; is equal to</li>
+              <li><code class="k-code">!=</code> &mdash; is not equal to</li>
+            </ul>
 
-<h6>२: Multiple Conditions को मूल्यांकन (Evaluate) करना। 
- </h6>
-<p>अगर (Age &gt; 16 &amp;&amp; Education &#61;&#61; 'ssc')</p> 
-<p>अगर (Country&#61;&#61;'india' || Language &#61;&#61; 'hindi')</p> 
+            <p>
+              2. Evaluate multiple conditions:
+              <code class="k-code">अगर (Age &gt; 16 &amp;&amp; Education == 'ssc')</code>,
+              <code class="k-code">अगर (Country=='india' || Language == 'hindi')</code>.
+            </p>
+            <ul>
+              <li><code class="k-code">&amp;&amp;</code> &mdash; true only if both conditions are true</li>
+              <li><code class="k-code">||</code> &mdash; true if at least one condition is true</li>
+            </ul>
 
-
-<p><b>  स्वीकृत comparison Operators नीचे दिए गए है: </b> </p>
-<p><b>&amp;&amp;</b> - अगर दोनों Conditions सत्य हो तो उसे True समझा जाता है। </p>
-<p><b>&#124;&#124;</b> - अगर एक Condition सत्य हो तो True समझा जाता है।</p>
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-इनपुट(language)
-
-
+            <div class="example-head">
+              <h3>Example</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1">इनपुट(language)
 अगर(language=='kalam')
-
 {
-
-दिखाए('Alright, that's cool!')
-
-
+  दिखाए('Alright, that is cool!')
 }
 
-
-उदाहरण 2
-
-
+# उदाहरण 2
 इनपुट(language)
-
 इनपुट(country)
-
-
 अगर(language=='kalam' || country=='india')
 {
+  दिखाए('That works too.')
+}</pre>
+          </div>
+        </transition>
+      </section>
 
+      <!-- दुहराओ x को y मे -->
+      <section id="duharao" class="k-band topic" :class="{ open: showStar4 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar4 ? 'true' : 'false'"
+            @click="showStar4 = !showStar4"
+          >
+            <span class="k-code" lang="hi">दुहराओ x को y मे</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar4 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
+        <transition name="slide-fade">
+          <div v-if="showStar4" class="band-body">
+            <h3>Purpose</h3>
+            <p>Repeats the same block of code.</p>
 
-दिखाए('That works too.')
+            <h3>How to use it</h3>
+            <p>
+              Define the loop as <code class="k-code">दुहराओ x को y मे</code>. Here
+              <code class="k-code">y</code> is a range, defined like
+              <code class="k-code">(0,10)</code> or <code class="k-code">(5,100)</code>.
+              <code class="k-code">x</code> is the index, or iterator &mdash; for
+              example it can take any value between 1 and 10, inclusive, for the range
+              <code class="k-code">(0,10)</code>.
+            </p>
+            <p>
+              <code class="k-code">दुहराओ x को City मे</code>: instead of a custom range,
+              this iterates over the length of a variable. If
+              <code class="k-code">City='Pusad'</code>, the range is set automatically
+              to <code class="k-code">(0,5)</code>, because the length of
+              <i>Pusad</i> is 5.
+            </p>
 
-
-}
-
-
-
- 
-
-</pre>
-</p>
-</div>
-</div>
-</transition>
-
-<!--
-<button   v-on:click="showStar8 = !showStar8"  type="button" class="collapsible">अन्यथा</button>
-<transition name="slide-fade">
-<div v-if="showStar8" class="content">
-<div>
-
-<h6>काम</h6>
-
-
-<p> अगर कोई भी कंडीशन satisfy ना हो तो एक Block of code  execute करना |</p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>1: Define  </h6>
-<p>अन्यथा </p>  
-
-<p> कृपया इस बात की दखल ले की अन्यथा ओपन ब्रैकेट्स होने पर भी कोई पर्याय नहीं लेता। </p>
-
-
-
-</div>
-
-<div style="border: solid 2px #31d8f3;">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-
-language='kalaam'
-
-
-अगर(language=='kalaam')
-
-{
-
-
-दिखाए('Alright, that's cool!')
-
-
-}
-
-
-अन्यथा
-{
-
-दिखाए('Sorry, that did not worked!')
-
-
-
-}
-
-
-
- 
-
-</pre>
-</p>
-</div>
-</div>
-</transition>
--->
-
-<button   v-on:click="showStar4 = !showStar4"  type="button" class="collapsible">दुहराओ x को y मे</button>
-<transition name="slide-fade">
-<div v-if="showStar4" class="content">
-<div>
-
-<h6>काम</h6>
-
-
-<p> एक ही कोड को बार-बार दोहराना। </p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>१ . लूप को डिफाइन करे।  </h6>
-<p> <b> दुहराओ x को y मे </b></p>  
-
-<p> यहाँ  y एक रेंज है और (०,१० ) , (५,१०० ) आदि की तरह Define की जा सकती है।   </p>
-<p> x एक index या फिर iterator है। . For e.g  १ और १० के बीच में की Values ले सकता है (१ और १० भी )
-(० , १०)  </p>
-
-<p> <b> दुहराओ x को City मे </b></p>  
- <p>Here instead of a custom range we iterate it over the length of variable.</p>  
- <p>Basically, if City='Pusad', the range will be automatically set as (0,5) because length of 'Pusad' is 5. </p>
-<p>    </p>
-
-
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-#उदाहरण 1  
-
-
-
+            <div class="example-head">
+              <h3>Example</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1"># उदाहरण 1
 दुहराओ x को (0,10) मे
-
 {
-
-value= x*5
-
-दिखाए(value)
-
+  value= x*5
+  दिखाए(value)
 }
 
-
-#उदाहरण 2  
-
-
+# उदाहरण 2
 Name="HALF COOKED RICE"
-
 दुहराओ y को Name मे
-
 {
+  value=Name[y]
+  दिखाए(value + y)
+}</pre>
+          </div>
+        </transition>
+      </section>
 
-value=Name[y]
+      <!-- जबतक() -->
+      <section id="jabtak" class="k-band topic" :class="{ open: showStar5 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar5 ? 'true' : 'false'"
+            @click="showStar5 = !showStar5"
+          >
+            <span class="k-code" lang="hi">जबतक()</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar5 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
-दिखाए(value + y)
+        <transition name="slide-fade">
+          <div v-if="showStar5" class="band-body">
+            <h3>Purpose</h3>
+            <p>Runs the following code for as long as the given condition holds.</p>
 
-}
+            <h3>How to use it</h3>
+            <p><code class="k-code">जबतक(YourCondition)</code>. The accepted comparison operators are:</p>
+            <ul>
+              <li><code class="k-code">&gt;</code> &mdash; greater than</li>
+              <li><code class="k-code">&lt;</code> &mdash; less than</li>
+              <li><code class="k-code">==</code> &mdash; is equal to</li>
+              <li><code class="k-code">!=</code> &mdash; is not equal to</li>
+            </ul>
 
+            <h3>Example</h3>
+            <p>
+              <code class="k-code">जबतक(count &lt; 25)</code>: the code runs until the
+              condition evaluates to false. When <code class="k-code">count</code>
+              reaches 26, execution stops.
+            </p>
 
-
-
-
- 
-
-</pre>
-</p>
-</div>
-</div>
-</transition>
-<button   v-on:click="showStar5 = !showStar5"  type="button" class="collapsible">जबतक()</button>
-<transition name="slide-fade">
-<div v-if="showStar5" class="content">
-<div>
-
-<h6>काम</h6>
-
-
-<p>जबतक में दिए हुए शर्त(Condition) के पूरा होने तक आगे के कोड को रन करे |  </p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>1: Define </h6>
-<p>जबतक(<i>YourCondition</i> ) </p>  
-
-<p><b> The accepted comparison operators are: </b>  </p>
-<p><b>&gt;</b> - Greater than</p>
-<p><b>&lt;</b> -  Less than</p>
-<p><b>&#61;&#61;</b> - is Equal to</p>
-<p><b>&#33;&#61;</b> - is Not Equal to</p>
-
-<h6> उदाहरण</h6>
-
-<p> <b>जबतक(count &lt; 25)</b> </p> 
-<p>The code will run until the condition evaluates itself to true. </p> 
-<p>When the value of count reaches 26, code execution will stop. </p> 
-
-
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-
-count=0
-
-
-जबतक(count<25)
+            <div class="example-head">
+              <h3>Try it</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1">count=0
+जबतक(count&lt;25)
 {
+  दिखाए(count)
+  count=count+1
+}</pre>
+          </div>
+        </transition>
+      </section>
 
-दिखाए(count)
+      <!-- .संख्या() -->
+      <section id="sankhya" class="k-band topic" :class="{ open: showStar6 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar6 ? 'true' : 'false'"
+            @click="showStar6 = !showStar6"
+          >
+            <span class="k-code" lang="hi">.संख्या()</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar6 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
+        <transition name="slide-fade">
+          <div v-if="showStar6" class="band-body">
+            <h3>Purpose</h3>
+            <p>Finds the length of a string or array directly.</p>
 
-count=count+1
+            <h3>How to use it</h3>
+            <p><code class="k-code">YourVariable.संख्या()</code></p>
 
+            <h3>Example</h3>
+            <p>
+              <code class="k-code">City.संख्या()</code>: if
+              <code class="k-code">City = 'Banglore'</code> this outputs <b>8</b>. If
+              <code class="k-code">City = ['Pusad','Pune','Mumbai','Delhi']</code> this
+              outputs <b>4</b>.
+            </p>
 
-}
-
-
-
-
-
- 
-
-</pre>
-</p>
-</div>
-</div>
-</transition>
-<button   v-on:click="showStar6 = !showStar6"  type="button" class="collapsible">.संख्या()</button>
-<transition name="slide-fade">
-<div v-if="showStar6" class="content">
-<div>
-
-<h6>काम</h6>
-
-
-<p> Directly find out the length of a String or Array</p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>1: Define</h6>
-<p> <i>YourVariable</i>.संख्या() </p>  
-
-<h6> उदाहरण</h6>
-
-<p> <b>City.संख्या()</b> </p> 
-<p>If City &#61; 'Banglore' then City.संख्या() will output the value <b>8</b>  </p> 
-<p>If City &#61; ['Pusad','Pune','Mumbai','Delhi'] then City.संख्या() will output the value <b>4</b> </p> 
-
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-
-City='Banglore'
-
+            <div class="example-head">
+              <h3>Try it</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1">City='Banglore'
 Cities=['Pusad','Pune','Mumbai','Delhi']
 
-
 Citylength= City.संख्या()
-
 Citieslength=Cities.संख्या()
 
-
 दिखाए('The length of the City is' + Citylength )
+दिखाए('The length of the Cities is' + Citieslength )</pre>
+          </div>
+        </transition>
+      </section>
 
-दिखाए('The length of the Cities is' + Citieslength )
+      <!-- .पुश() -->
+      <section id="push" class="k-band topic" :class="{ open: showStar7 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar7 ? 'true' : 'false'"
+            @click="showStar7 = !showStar7"
+          >
+            <span class="k-code" lang="hi">.पुश()</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar7 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
+        <transition name="slide-fade">
+          <div v-if="showStar7" class="band-body">
+            <h3>Purpose</h3>
+            <p>Pushes a value onto an array.</p>
 
+            <h3>How to use it</h3>
+            <p>
+              Push a value onto an array: <code class="k-code">ArrayName = []</code>,
+              then <code class="k-code">ArrayName.पुश(YourValue)</code>.
+            </p>
 
-
- 
-
-</pre>
-</p>
-</div>
-</div>
-</transition>
-<button   v-on:click="showStar7 = !showStar7"  type="button" class="collapsible">.पुश()</button>
-<transition name="slide-fade">
-<div v-if="showStar7" class="content">
-<div>
-
-<h6>काम</h6>
-
-
-<p> Push values to array</p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>1: Push Value to an Array </h6>
-<p> <i>ArrayName</i> = &nbsp;[ &nbsp; ] </p>  
-<p>ArrayName.पुश(<i>YourValue</i>) </p>  
-
-
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID1')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID1" >
-
-
-
-#उदाहरण 1
-
+            <div class="example-head">
+              <h3>Example</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID1"># उदाहरण 1
 Numbers=[]
-
 दुहराओ x को (1,10)
-
 {
-
-
-Numbers.पुश(x)
-
-
+  Numbers.पुश(x)
 }
-
 दिखाए(Numbers)
 
-
-#उदाहरण 2
-
+# उदाहरण 2
 Numbers=[]
-
-
 Name='Angry Birds'
 type='Game'
-
-
 Numbers.पुश(Name)
-
 Numbers.पुश(type)
+दिखाए(Numbers)</pre>
+          </div>
+        </transition>
+      </section>
 
+      <!-- रचना -->
+      <section id="rachna" class="k-band topic" :class="{ open: showStar1 }">
+        <h2 class="k-heading">
+          <button
+            type="button"
+            class="topic-toggle"
+            :aria-expanded="showStar1 ? 'true' : 'false'"
+            @click="showStar1 = !showStar1"
+          >
+            <span class="k-code" lang="hi">रचना</span>
+            <span class="topic-mark" aria-hidden="true">{{ showStar1 ? '−' : '+' }}</span>
+          </button>
+        </h2>
 
+        <transition name="slide-fade">
+          <div v-if="showStar1" class="band-body">
+            <h3>Purpose</h3>
+            <p>
+              Code that will be reused is wrapped in a block, which we call
+              <code class="k-code">रचना</code> (a function).
+            </p>
 
-दिखाए(Numbers)
+            <h3>How to use it</h3>
+            <p>1. Define a function:</p>
+            <pre class="k-code">रचना रचना-का-नाम (पर्याय1, पर्याय2)</pre>
+            <p>
+              <b>Function name:</b> case sensitive, and should use only letters of the
+              alphabet.
+            </p>
+            <p>
+              <b>Function parameters:</b> used to hold temporary values, passed in when
+              the function is called. Parameter names are also case sensitive and can be
+              changed freely, but should use only letters of the alphabet.
+            </p>
 
+            <p>2. Call the function:</p>
+            <pre class="k-code">रचना-का-नाम (पर्याय1, पर्याय2)</pre>
+            <p>
+              When calling a function, its name must match the declared name exactly
+              &mdash; for example, <code class="k-code">PrintFullName</code> is not the
+              same as <code class="k-code">printfullname</code>.
+            </p>
 
-
- 
-
-</pre>
-</p>
-</div>
-</div>
-</transition>
-
-<button   v-on:click="showStar1 = !showStar1"  type="button" class="collapsible">रचना</button>
-<transition name="slide-fade">
-<div v-if="showStar1" class="content">
-
-<div>
-
-<h6>काम</h6>
-
-
-<p> कोड जो दोबारा इस्तेमाल किया जा सकता है उसे एक ब्लॉक में wrap किया जाता है, जिसे हम रचना कहते है। </p>
-
-<h6>इसका उपयोग कैसे करे?</h6>
-
-<h6>।. एक रचना को डिफाइन करने के लिए </h6>
-<h3>रचना <i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3>  
-<p><b>रचना का नाम:</b></p>  
-<p>रचना का नाम केस सेंसिटिव होता है और उसमे सिर्फ अक्षरोंका (अल्फाबेट्स का) इस्तेमाल करना चाहिए। </p>  
-<p> <b>रचना पर्याय:</b>  </p>  
-<p>रचना पर्याय का टेम्पररी वैल्यूज स्टोर  करनेमे इस्तेमाल किया जा सकता है। जब किसी रचना को कॉल किया जाता है तभी ये वैल्यूज पास किये जाते है।  </p>  
-<p>पर्याय के नाम भी  केस सेंसिटिव होते है और ये आपकी चॉइस के हिसाब से चेंज किये जा सकते है।  मगर इनमे सिर्फ अक्षरोंका अर्थात अल्फाबेट्स का इस्तेमाल करे। </p> 
-
-
-
-
-<h6>2: रचना को कॉल करना ।  </h6>
-<h3><i>रचना-का-नाम</i> (<i>पर्याय1</i> ,<i>पर्याय2</i> ) </h3> 
-<p><b>रचना का नाम - PrintFullName</b>  </p>  
-<p>जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।   <br> For e.g PrintFullName &ne; printfullname  </p>  
-
-<h6> उदाहरण</h6>
-<p><b> वेरिएबल्स (Variables) को डिफाइन करे। </b></p>
-<p>FirstName &#61; 'Sachin' </p> 
-<p>LastName 	&#61; 'Tendulkar' </p> 
-
-<p><b> रचना declaration</b></p>
- <p>PrintFullName (x, y) </p> 
-
- <p><b> रचना Body</b></p>
- <p>{</p>
- <p>दिखाए( x 	&#43; y ) </p> 
- <p>}</p>
-
-<p><b>रचना call</b>  </p>  
-<p>PrintFullName(FirstName,LastName)</p>
-
-<p># जब आप रचना को कॉल करते है तभी इस बात का ध्यान जरूर रखना चाहिए की रचना का नाम और जब आप रचना को कॉल करते हो तबका नाम same होना चाहिए।  <br> For e.g PrintFullName≠printfullname  </p>  
-
-<p> <b>रचना पर्याय- ('Sachin','Tendulkar')</b>  </p>  
-<p>इस प्रोग्रामिंग भाषा के  तहत निर्धारित ग्रामर के अनुसार, (x, y) ('Sachin','Tendulkar) बन जाएगा। </p>
-<p>x will take a temporary value of 'Sachin'</p>
-<p>y will take a temporary value of 'Tendulkar'</p>
-
-
-
-</div>
-
-<div id="doc">
- <button id="TryCodebtn" @click="CopyCode('CodeID2')">कोड के साथ खेलिए।</button>
-<p id="CodePara" >
-
-
-<pre id="CodeID2" >
-
-
-
-FirstName='Sachin'
-
-LastName='Tendulkar'
-
-
-
-रचना PrintFullName(First,Last)
-
+            <h3>Example</h3>
+            <p>Define the variables:</p>
+            <p>
+              <code class="k-code">FirstName = 'Sachin'</code>,
+              <code class="k-code">LastName = 'Tendulkar'</code>
+            </p>
+            <p>Function declaration and body:</p>
+            <pre class="k-code">PrintFullName (x, y)
 {
+  दिखाए( x + y )
+}</pre>
+            <p>Function call: <code class="k-code">PrintFullName(FirstName,LastName)</code></p>
+            <p>
+              With parameters <code class="k-code">('Sachin','Tendulkar')</code>,
+              <code class="k-code">x</code> takes the temporary value
+              <code class="k-code">'Sachin'</code> and <code class="k-code">y</code>
+              takes <code class="k-code">'Tendulkar'</code>.
+            </p>
 
-दिखाए(First + Last)
-
-
-
+            <div class="example-head">
+              <h3>Try it</h3>
+              <button class="k-button-quiet" @click="CopyCode('CodeID2')">Open in practice</button>
+            </div>
+            <pre class="k-code" id="CodeID2">FirstName='Sachin'
+LastName='Tendulkar'
+रचना PrintFullName(First,Last)
+{
+  दिखाए(First + Last)
 }
-
-
 PrintFullName(FirstName,LastName)
-
 
 Job='Doctor'
 City='Pune'
-
 रचना AboutMe(x,y)
-
 {
-
-
-
-दिखाए("I am a" + x + "in" + y)
-
-
+  दिखाए("I am a" + x + "in" + y)
 }
-
-
 AboutMe(Job,City)
-
 
 NumberOne=20
 NumberTwo=40
-
 रचना Add(a,b)
 {
-
-c=a+b
-
-दिखाए(c)
-
-
+  c=a+b
+  दिखाए(c)
 }
+Add(NumberOne,NumberTwo)</pre>
+          </div>
+        </transition>
+      </section>
+    </main>
 
-
-Add(NumberOne,NumberTwo)
-
-
- 
-
- 
-
-
-
-
- 
-
- 
-
-</pre>
-</p>
-</div>
-
-
-
-</div>
-</transition>
-</div>
-
+    <SiteFooter />
   </div>
 </template>
+
 <script>
-import Header from '../components/Header'
+import { mapState } from 'vuex';
+import SiteHeader from '../components/SiteHeader.vue';
+import SiteFooter from '../components/SiteFooter.vue';
 
-import { mapState } from 'vuex'
+export default {
+  name: 'Documentation',
 
-export default
+  components: { SiteHeader, SiteFooter },
 
-{
-data() {
-  return {
-    showStar0: false,
-    showStar1: false,
-    showStar2: false,
-    showStar3: false,
-    showStar4: false,
-    showStar5: false,
-    showStar6: false,
-    showStar7: false,
-    showStar8: false,
-      }
-
-    }
-,
-   components:{
-    Header
-
-
-    },
-
-
-
+  data() {
+    return {
+      showStar0: false,
+      showStar1: false,
+      showStar2: false,
+      showStar3: false,
+      showStar4: false,
+      showStar5: false,
+      showStar6: false,
+      showStar7: false,
+      showStar8: false,
+      topics: [
+        { id: 'dikhae', word: 'दिखाए()' },
+        { id: 'input', word: 'इनपुट()' },
+        { id: 'agar', word: 'अगर()' },
+        { id: 'duharao', word: 'दुहराओ x को y मे' },
+        { id: 'jabtak', word: 'जबतक()' },
+        { id: 'sankhya', word: '.संख्या()' },
+        { id: 'push', word: '.पुश()' },
+        { id: 'rachna', word: 'रचना' },
+      ],
+    };
+  },
 
   computed: mapState(['CurrentCode']),
 
-
   methods: {
-      
-CopyCode:function(el)
-
-{
-
-
- var copyText = document.getElementById(el);
-
-
-this.$store.state.CurrentCode= copyText.innerHTML
-
-
-  this.$router.push('/Practice')
-
-
-
-}
-      
+    CopyCode(el) {
+      const copyText = document.getElementById(el);
+      this.$store.state.CurrentCode = copyText.innerHTML;
+      this.$router.push('/Practice');
+    },
   },
-}
-
+};
 </script>
+
 <style scoped>
-#doc{
-	border: solid 2px #31d8f3;
+.contents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding: 16px 0 32px;
+  border-top: 1px solid var(--k-rule);
+  border-bottom: 1px solid var(--k-rule);
 }
 
-
-.collapsible {
-     background-color: white;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    padding: 18px;
-    width: 90%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 110%;
-    font-weight: 500;
-    border: solid 0.5px #cad638;;
-    margin-top: 2%;
-}
-.collapsible:hover {
-
-       background-color: rgb(236, 214, 87);
-
-
+.contents a {
+  font-family: var(--k-serif);
+  font-size: 16px;
 }
 
-
-
-
-.about{
-
-
-  display: inline-block;
+.topic-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
   width: 100%;
-      margin-bottom: 10%;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
 }
 
-.content {
-    overflow: hidden;
-    background-color: #fdfbfb;
-   
-    display: flex;
-    text-align: left;
-        width: 90%;
-    margin-left: 5%;
+.topic-toggle:hover .k-code {
+  color: var(--k-ink-hover);
 }
 
-
-.content div:nth-child(1){
-
-
-  width: 55%;
-  padding-right: 7%;
-    font-size: large;
-    margin-left: 2%
+.topic-mark {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--k-ink);
 }
 
-.content div:nth-child(2){
-
-
-  width: 45%;
-    margin-top: 4%;
-    background-color: black;
-    color: white;
-    padding-left: 2%;
-    height: fit-content;
+.topic-toggle .k-code {
+  font-size: 22px;
+  font-weight: 400;
 }
 
-
-h3{
-
-  margin-bottom: 0
+.topic {
+  padding: 14px 0;
 }
 
-pre{
+.topic.open {
+  padding-bottom: 48px;
+}
 
+.band-body h3 {
+  font-family: var(--k-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--k-muted);
+  margin: 24px 0 8px;
+}
+
+.band-body h3:first-child {
   margin-top: 0;
-  font-size: 111%;
 }
 
-h6{
-
-      margin-top: 6%;
-    margin-bottom: 6%;
-    color: #144577;
-
+.band-body p {
+  max-width: 42em;
+  margin: 0 0 12px;
 }
 
-#TryCodebtn
-{
-
-margin-top: 3%;
-
-  width: 38%;
-  height: 50px;
-      cursor: pointer;
-      border: none;
-
-        background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
-
-
+.band-body ul {
+  max-width: 42em;
+  margin: 0 0 16px;
+  padding-left: 20px;
 }
 
-#TryCodebtn:hover{
-
-      background-image: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgb(22, 21, 3) 91.8% );
-
+.band-body li {
+  margin-bottom: 4px;
 }
 
-#CodePara{
-
-     
-    width: 100%;
-    text-align: left;
-  
-    font-size: 100%;
-    color: white;
+.band-body pre.k-code {
+  margin: 8px 0 16px;
 }
 
-h6{
+.example-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: 20px;
+}
 
-  color: #acb708;
+.example-head h3 {
+  margin: 0;
 }
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
+
+.slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all .2s ease-out cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: opacity 0.15s ease;
 }
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateY(10px);
+
+.slide-fade-enter,
+.slide-fade-leave-to {
   opacity: 0;
 }
-p{
- 
-    color: black;
-    font-family: inherit;
-    font-weight: 400;
-
-}
-p{
-
-  font-size: 90%;
-  margin-top: 6%
-}
-
-@media only screen
-and (max-width : 480px) {
-
-.content{
-
-
-  display: grid;
-  padding: 0;
-  width: 90%;
-  padding-left: 3%;
-  margin-top: 2%
-}
-
-.content div:nth-child(1)
-{
-
-
-  width: 90%
-}
-
-.content div:nth-child(2)
-{
-
-
-  width: 95%;
-  overflow: auto
-}
-.about{
-
-  width: 100%;
-  margin-top: 3%
-}
-
-
-}
-
-
 </style>

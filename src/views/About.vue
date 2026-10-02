@@ -1,113 +1,149 @@
 <template>
-  <div>
-    <Header />
+  <div class="k-page">
+    <SiteHeader />
 
-    <div id="Section">
-      <div id="Section1">
-        <div id="KLogo">
-          <img src="../assets/Logo.png" alt="" />
+    <main class="k-main">
+      <header class="k-page-head">
+        <h1 class="k-title">About</h1>
+        <p>The project, and how to reach me.</p>
+      </header>
+
+      <section class="k-band">
+        <h2 class="k-heading">The project</h2>
+        <div class="band-body">
+          <p>
+            Kalaam is a programming language in Hindi with the basic functionality of a
+            modern language: for loops, while loops, functions and conditional
+            statements. It also has a beta framework for building web apps &mdash; HTML,
+            CSS and JS written in Hindi. A basic to-do app is possible today; improvements
+            are ongoing.
+          </p>
+          <p>Anyone with a smartphone or a computer can start coding in Kalaam.</p>
+          <p>
+            To stay updated with the project, or to share ideas and suggestions, connect
+            here:
+          </p>
+          <ul class="links">
+            <li><a class="k-link" href="https://www.linkedin.com/in/swanandkadam/">LinkedIn</a></li>
+            <li>
+              <a class="k-link" href="https://github.com/Kalaam-Programming-Language/Kalaam">GitHub</a>
+            </li>
+          </ul>
         </div>
-      </div>
+      </section>
 
-      <div id="Section2">
-        <p>
-          Kalaam is the programming language in Hindi and has all the basic functionalities of a modern programming
-          language. From for loops to while loops and from functions to conditional statements. Kalaam also has a beta
-          framework to build web apps. You can code HTML, CSS, JS and all the browser functionalities in Hindi. For now,
-          a basic todo app is possible, we are working on improvements.
-        </p>
+      <section class="k-band">
+        <h2 class="k-heading">Frequently asked questions</h2>
+        <div class="band-body">
+          <div class="faq-item">
+            <button
+              type="button"
+              class="faq-toggle"
+              :aria-expanded="showStar0 ? 'true' : 'false'"
+              @click="showStar0 = !showStar0"
+            >
+              How can I contribute to Kalaam?
+              <span class="faq-mark" aria-hidden="true">{{ showStar0 ? '−' : '+' }}</span>
+            </button>
+            <transition name="slide-fade">
+              <div v-if="showStar0" class="faq-body">
+                <p>
+                  Kalaam is an open source project and anyone can start contributing to
+                  it. There is a
+                  <a class="k-link" href="https://github.com/Kalaam-Programming-Language/Kalaam#readme">
+                    readme document</a
+                  >
+                  on the Kalaam GitHub repo with all the details about contributing.
+                </p>
+              </div>
+            </transition>
+          </div>
 
-        <p>
-          Anyone with a smartphone or a computer can start coding in Kalaam. <br />
+          <div class="faq-item">
+            <button
+              type="button"
+              class="faq-toggle"
+              :aria-expanded="showStar1 ? 'true' : 'false'"
+              @click="showStar1 = !showStar1"
+            >
+              How can I add comments to my code in Kalaam?
+              <span class="faq-mark" aria-hidden="true">{{ showStar1 ? '−' : '+' }}</span>
+            </button>
+            <transition name="slide-fade">
+              <div v-if="showStar1" class="faq-body">
+                <p>
+                  Comments are an experimental feature for now and might introduce some
+                  issues. You can still use the
+                  <code class="k-code">#This is a comment</code> format, with a mandatory
+                  <code class="k-code">#</code> at the start of every comment.
+                </p>
+              </div>
+            </transition>
+          </div>
 
-          To stay updated with the project, share your ideas and suggestions, you can connect with me on the following
-          platforms:
-        </p>
+          <div class="faq-item">
+            <button
+              type="button"
+              class="faq-toggle"
+              :aria-expanded="showStar2 ? 'true' : 'false'"
+              @click="showStar2 = !showStar2"
+            >
+              Where can I learn more about how Kalaam was built?
+              <span class="faq-mark" aria-hidden="true">{{ showStar2 ? '−' : '+' }}</span>
+            </button>
+            <transition name="slide-fade">
+              <div v-if="showStar2" class="faq-body">
+                <p>
+                  Visit the
+                  <a class="k-link" href="https://github.com/Kalaam-Programming-Language/Kalaam">
+                    GitHub repo</a
+                  >
+                  of Kalaam to explore the project. It is commented at each step to help
+                  you understand how it works.
+                </p>
+              </div>
+            </transition>
+          </div>
 
-        <div id="sociallinks">
-          <a href="https://www.linkedin.com/in/swanandkadam/"
-            ><img id="Linkedin" src="../assets/Linkedin.png" alt=""
-          /></a>
-          <a href="https://github.com/Kalaam-Programming-Language/Kalaam"
-            ><img id="github" src="../assets/git.png" alt=""
-          /></a>
-        </div>
-      </div>
-    </div>
-
-    <div id="faq">
-      <h3>FAQ'S</h3>
-
-      <button v-on:click="showStar0 = !showStar0" type="button" class="collapsible">
-        How can I contribute to Kalaam?
-      </button>
-
-      <transition name="slide-fade">
-        <div v-if="showStar0" class="content">
-          <div>
-            <p>
-              Kalaam is an open source project and anyone can start contrubuting to it. We have created a
-              <a href="https://github.com/Kalaam-Programming-Language/Kalaam#readme"> Readme document</a>
-              on Github repo of kalaam, you will find all the details about contributions there.
-            </p>
+          <div class="faq-item">
+            <button
+              type="button"
+              class="faq-toggle"
+              :aria-expanded="showStar3 ? 'true' : 'false'"
+              @click="showStar3 = !showStar3"
+            >
+              What if I have an issue with my code execution?
+              <span class="faq-mark" aria-hidden="true">{{ showStar3 ? '−' : '+' }}</span>
+            </button>
+            <transition name="slide-fade">
+              <div v-if="showStar3" class="faq-body">
+                <p>
+                  Kalaam is still in its first stage and has only been tested by a
+                  handful of people. Any issue you run into should be minor and fixable
+                  in a day or two. Please share feedback and issues on the Kalaam Discord
+                  server or my Instagram handle so the Kalaam community can keep
+                  improving the language.
+                </p>
+              </div>
+            </transition>
           </div>
         </div>
-      </transition>
+      </section>
+    </main>
 
-      <button v-on:click="showStar1 = !showStar1" type="button" class="collapsible">
-        How can I add comments to my code in Kalaam?
-      </button>
-
-      <transition name="slide-fade">
-        <div v-if="showStar1" class="content">
-          <div>
-            <p>
-              Comments is an experimental feature for now and might introduce some issues. You can still go on and use
-              <b> <i>"#This is a comment"</i></b> like format with mandatory '#' at the beginning of every comment.
-            </p>
-          </div>
-        </div>
-      </transition>
-
-      <button v-on:click="showStar2 = !showStar2" type="button" class="collapsible">
-        Where can I learn more about how Kalaam was built?
-      </button>
-
-      <transition name="slide-fade">
-        <div v-if="showStar2" class="content">
-          <div>
-            <p>
-              Visit <a href="https://github.com/Kalaam-Programming-Language/Kalaam">Github repo</a> of Kalaam to explore
-              the project. The project is well commented at each step and will help you to understand how it works
-            </p>
-          </div>
-        </div>
-      </transition>
-
-      <button v-on:click="showStar3 = !showStar3" type="button" class="collapsible">
-        What if I am having a issue with my code execution?
-      </button>
-
-      <transition name="slide-fade">
-        <div v-if="showStar3" class="content">
-          <div>
-            <p>
-              Kalaam is still in it's first stage and have been tested by handful of people. The issue that you might
-              face will be very minor and can be fixed in a day or two. Please make sure to share your feedback and
-              faced issues on Kalaam discord server or my instagram handle so that Kalaam community can keep on
-              improving the language.
-            </p>
-          </div>
-        </div>
-      </transition>
-    </div>
+    <SiteFooter />
   </div>
 </template>
 
 <script>
-import Header from '../components/Header';
+import SiteHeader from '../components/SiteHeader.vue';
+import SiteFooter from '../components/SiteFooter.vue';
 
 export default {
+  name: 'About',
+
+  components: { SiteHeader, SiteFooter },
+
   data() {
     return {
       showStar0: false,
@@ -121,197 +157,73 @@ export default {
       showStar8: false,
     };
   },
-
-  components: {
-    Header,
-  },
 };
 </script>
 
 <style scoped>
-#Section {
+.k-band {
+  padding-top: 24px;
+}
+
+.band-body p {
+  max-width: 38em;
+  margin: 0 0 20px;
+}
+
+.links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  width: 100%;
-  margin-top: 6%;
+  gap: 24px;
 }
-#Section1 {
-  width: 50%;
+
+.faq-item {
+  border-top: 1px solid var(--k-rule);
+}
+
+.faq-toggle {
   display: flex;
-}
-
-.content {
-  overflow: hidden;
-  background-color: #fdfbfb;
-
-  display: flex;
-  text-align: left;
-  width: 90%;
-  margin-left: 5%;
-  margin-top: 2%;
-}
-
-.content p {
-  font-size: large;
-}
-#Section1 img {
-  width: 50%;
-  margin-top: 5%;
-}
-
-#KLogo {
-  width: 100%;
-  float: initial;
-}
-
-#KLogo img {
-  width: 25%;
-  float: initial;
-}
-
-#MyLogo {
-  width: 50%;
-}
-
-#MyLogo img {
-  width: 40%;
-}
-
-#Section2 {
-  width: 60%;
-}
-
-#Section2 p {
-  font-size: 110%;
-  color: #2c3e50;
-  word-spacing: 2px;
-  text-align: left;
-  margin-right: 5%;
-}
-
-#faq {
-  display: inline-block;
-  width: 100%;
-
-  margin-top: 6%;
-  margin-bottom: 5%;
-}
-
-.collapsible {
-  background-color: rgb(236, 236, 236);
-  color: rgb(0, 0, 0);
-  cursor: pointer;
-  padding: 18px;
-  width: 90%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 110%;
-  font-weight: 500;
-  border: solid 0.5px;
-  margin-top: 2%;
-}
-.collapsible:hover {
-  background-color: rgb(236, 214, 87);
-}
-
-#sociallinks {
   align-items: center;
-  display: flex;
-  margin-top: 3%;
-}
-
-#github {
-  width: 80%;
-  height: 70px;
-  cursor: pointer;
-}
-#instagram {
-  width: 57%;
-  height: 45px;
-  cursor: pointer;
-  margin-left: 19%;
-}
-#Linkedin {
-  width: 46%;
-  height: 40px;
-  margin-top: 1%;
-  cursor: pointer;
-  float: left;
-}
-
-a {
-  width: 10%;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
   text-align: left;
+  color: var(--k-text);
+  background: none;
+  border: 0;
+  padding: 16px 0;
+  cursor: pointer;
 }
 
-@media only screen and (max-width: 480px) {
-  #Section {
-    display: grid;
-  }
+.faq-toggle:hover {
+  color: var(--k-ink);
+}
 
-  #Section1 {
-    width: 100%;
-  }
+.faq-mark {
+  color: var(--k-ink);
+  font-weight: 600;
+  flex-shrink: 0;
+}
 
-  .collapsible {
-    margin-top: 6%;
-  }
-  .content {
-    display: grid;
-    padding: 0;
-    width: 90%;
-    padding-left: 3%;
-    margin-top: 2%;
-  }
+.faq-body {
+  padding-bottom: 20px;
+}
 
-  #Section2 {
-    width: 98%;
-    font-size: 130%;
-    /* padding-left: 4%; */
-    margin-left: 3%;
-  }
-  #Section2 p {
-    font-size: 16px;
-    color: #2c3e50;
-    text-align: left;
-    text-align: justify;
-    text-justify: inter-word;
-    margin-right: 5%;
-    width: 95%;
-    line-height: 1.6em;
-    margin: 1.2em 0 -1.2em;
-    padding-bottom: 1.2em;
-    position: relative;
-    z-index: 1;
-  }
+.faq-body p {
+  margin: 0;
+  max-width: 38em;
+}
 
-  #github {
-    width: 130%;
-    height: 50px;
-    cursor: pointer;
-    margin-left: 70%;
-  }
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.15s ease;
+}
 
-  #sociallinks {
-    margin-top: 8%;
-  }
-  #instagram {
-    width: 120%;
-    height: 45px;
-    cursor: pointer;
-    margin-left: 140%;
-  }
-  #Linkedin {
-    width: 130%;
-    height: 40px;
-    margin-top: 1%;
-    cursor: pointer;
-  }
-
-  .content p {
-    word-spacing: 2px;
-    line-height: 24px;
-    text-align: justify;
-  }
+.slide-fade-enter,
+.slide-fade-leave-to {
+  opacity: 0;
 }
 </style>

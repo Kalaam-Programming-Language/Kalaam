@@ -180,3 +180,24 @@ pre.k-code {
   outline: 2px solid var(--k-ink);
   outline-offset: 3px;
 }
+
+/* Title block at the top of a content page (not Home). */
+.k-page-head {
+  padding: 40px 0 24px;
+}
+
+.k-page-head .k-title {
+  margin-bottom: 8px;
+}
+
+.k-page-head p {
+  margin: 0;
+  max-width: 38em;
+  color: var(--k-muted);
+}
+
+@media (min-width: 720px) {
+  .k-page-head {
+    padding: 56px 0 32px;
+  }
+}
