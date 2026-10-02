@@ -1,682 +1,662 @@
 <template>
-<div>
-  <div class="home">
- 
+  <div class="page">
+    <header class="masthead">
+      <router-link to="/" class="wordmark" aria-label="Kalaam home">कलाम</router-link>
 
-  <div id="header">
-<div id="LogoandTitle">
-<!--<router-link  to="/" ><img id="KalamLogo" src="../src/assets/LogoBlack.png" alt=""></router-link> -->
-<router-link id="Kalaam" to="/" >कलाम</router-link> 
-</div>
-  <button @click="toggleMenu()" id="stackMenuIcon" >☰</button> 
+      <button
+        class="menu-toggle"
+        :aria-expanded="showMenu ? 'true' : 'false'"
+        aria-controls="site-nav"
+        @click="showMenu = !showMenu"
+      >
+        {{ showMenu ? 'Close' : 'Menu' }}
+      </button>
 
-<ul id="headerlist">
-   <li><router-link to="/Practice">Practice</router-link> </li>
- <li><router-link to="/Documentation">Documentation</router-link> </li>
-  <li><router-link to="/Examples">Examples</router-link> </li>
- <!--  <li><router-link to="/Support">Support</router-link> </li>-->
-    <li><router-link to="/About">About</router-link> </li>
-   
-   
-</ul>
-<transition name="slide-fade">
+      <nav id="site-nav" class="nav" :class="{ open: showMenu }">
+        <router-link to="/Practice">Practice</router-link>
+        <router-link to="/Documentation">Documentation</router-link>
+        <router-link to="/Examples">Examples</router-link>
+        <router-link to="/About">About</router-link>
+      </nav>
+    </header>
 
-<ul v-if="showMenu==true" id="headerlistMobile">
- <div @click="toggleMenu()" ><li><router-link  to="/Practice">Practice</router-link> </li></div>  
- <div @click="toggleMenu()"><li><router-link to="/Documentation">Documentation</router-link> </li></div>  
- <div @click="toggleMenu()"> <li><router-link to="/Examples">Examples</router-link> </li></div>  
-  <!--  <div @click="toggleMenu()"> <li><router-link to="/Support">Support</router-link> </li></div>  -->
-   <div @click="toggleMenu()"> <li><router-link to="/About">About</router-link> </li></div>  
-   
-   
-</ul>
+    <main>
+      <section class="hero">
+        <div class="hero-text">
+          <h1 lang="hi">अपनी भाषा में कोड लिखो</h1>
+          <p class="lede">
+            Kalaam is a programming language with keywords in Hindi, Marathi, Bengali,
+            Telugu and Odia. Write a program on your phone and run it in the browser,
+            even without internet.
+          </p>
+          <div class="actions">
+            <router-link to="/Practice" class="button">Start coding</router-link>
+            <router-link to="/Documentation" class="link">Read the documentation</router-link>
+          </div>
+        </div>
 
-</transition>
+        <div class="sheet">
+          <div class="sheet-head">
+            <span lang="hi">7 का पहाड़ा</span>
+            <span class="hint">Change 7 to any number, then run it.</span>
+          </div>
 
-   </div>
-   
+          <div class="editor">
+            <ol class="gutter" aria-hidden="true">
+              <li v-for="n in lineCount" :key="n">{{ n }}</li>
+            </ol>
+            <textarea
+              v-model="code"
+              class="code"
+              lang="hi"
+              :rows="lineCount"
+              wrap="off"
+              spellcheck="false"
+              autocapitalize="off"
+              autocomplete="off"
+              aria-label="Kalaam program"
+            ></textarea>
+          </div>
 
+          <div class="run-row">
+            <button class="button" @click="run">Run program</button>
+            <span v-if="timeTaken !== null" class="timing">Ran in {{ timeTaken }} ms</span>
+          </div>
 
-    <router-view/>
+          <div class="output" aria-live="polite">
+            <p v-if="!hasRun" class="output-empty">Output appears here.</p>
+            <p v-else-if="error" class="output-error">{{ error }}</p>
+            <ol v-else class="output-lines" :key="runId">
+              <li
+                v-for="(line, i) in output"
+                :key="i"
+                :style="{ animationDelay: i * 40 + 'ms' }"
+              >{{ line }}</li>
+            </ol>
+          </div>
+        </div>
+      </section>
 
+      <section class="band">
+        <h2>Keywords</h2>
+        <div class="band-body">
+          <p class="band-intro">
+            Everyday Hindi words do the work of <i>if</i>, <i>for</i> and <i>print</i>.
+            Everything else, like numbers, maths and brackets, works the way it does in
+            any other language.
+          </p>
+          <dl class="glossary">
+            <div v-for="k in keywords" :key="k.word" class="entry">
+              <dt lang="hi">{{ k.word }}</dt>
+              <dd>
+                <span class="en">{{ k.en }}</span>
+                {{ k.does }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="band">
+        <h2>Five languages</h2>
+        <div class="band-body">
+          <p class="band-intro">
+            Pick your language in the editor. Here is the word for <i>print</i> in each.
+          </p>
+          <ul class="scripts">
+            <li v-for="s in scripts" :key="s.name">
+              <span class="script-word" :lang="s.lang">{{ s.print }}</span>
+              <span class="script-name">{{ s.name }}</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="colophon">
+      <p>
+        Open source under the MIT licence.
+        <a href="https://github.com/Kalaam-Programming-Language/Kalaam">Source on GitHub</a>.
+      </p>
+      <p>Made by Swanand Kadam.</p>
+    </footer>
   </div>
-
-<div id="HomeSection">
-
-  
-<div id="LogoSection">
-  <transition name="fade">
-  
-<img id="KalamLogo" class = "fadeIn" src="../assets/Logo.png" alt="">
-  </transition>
-
-</div>
-
-
-<div id="IntroductionSection">
-
-
-<h1>The Programming Language <br>in <span id="lang">हिन्दी</span> </h1>
-
-  <div class="container">
-      <span id="TypeWriter" class="typed-text">{{ typeValue }}</span>
-            <span class="cursor" :class="{'typing': typeStatus}">&nbsp;</span>
-
-  </div>
-
-<div id="buttons">
-
-
-<router-link to="/Practice"><button>Start Coding</button></router-link> 
-<router-link to="/Documentation"><button id="button2">Learn Kalaam</button></router-link> 
-
-
-</div>
-
-</div>
-
-
-
-
-</div>
-
-<div class="footer">
- <!-- <p style=" color: white">Released Under the MIT Licence</p>-->
-  <p style=""><a id="credit"> © Swanand Kadam</a></p>
-</div>
-
-
-  </div>
-
 </template>
 
 <script>
+import { Compile, KalaamKeywords } from 'kalaam';
 
-import Header from '../components/Header'
-
-import { setTimeout } from 'timers';
-  export default {
-    data: () => {
-      return {
-        typeValue: '',
-        typeStatus: false,
-        typeArray: ['अगर', 'दुहराओ','जबतक', 'दिखाए()', 'इनपुट()','रचना'],
-        typingSpeed: 120,
-        erasingSpeed: 280,
-        newTextDelay: 600,
-        typeArrayIndex: 0,
-        charIndex: 0,
-         showMenu:false
-      }
-    },
-
-    components:{
-Header
-
-
-    },
-    methods: {
-      toggleMenu:function()
+// The interpreter reads `a*b` but not `a * b`, and ranges include both ends.
+const SAMPLE = `अंक=7
+दुहराओ i को (1,10) मे
 {
+  जवाब=अंक*i
+  दिखाए(जवाब)
+}`;
 
-if(this.showMenu==false)
+export default {
+  name: 'Home',
 
-{
-this.showMenu=true
+  data() {
+    return {
+      showMenu: false,
+      code: SAMPLE,
+      output: [],
+      error: '',
+      hasRun: false,
+      runId: 0,
+      timeTaken: null,
+      keywords: [
+        { word: 'अगर', en: 'if', does: 'runs a block only when a condition is true.' },
+        { word: 'दुहराओ', en: 'for', does: 'repeats a block for each number in a range.' },
+        { word: 'जबतक', en: 'while', does: 'repeats a block as long as a condition holds.' },
+        { word: 'दिखाए()', en: 'print', does: 'shows a value on screen.' },
+        { word: 'इनपुट()', en: 'input', does: 'asks the person running the program for a value.' },
+        { word: 'रचना', en: 'function', does: 'names a block so you can run it again later.' },
+      ],
+      scripts: [
+        { name: 'Hindi', lang: 'hi', print: KalaamKeywords.Hindi.Print },
+        { name: 'Marathi', lang: 'mr', print: KalaamKeywords.Marathi.Print },
+        { name: 'Bengali', lang: 'bn', print: KalaamKeywords.Bengali.Print },
+        { name: 'Telugu', lang: 'te', print: KalaamKeywords.Telugu.Print },
+        { name: 'Odia', lang: 'or', print: KalaamKeywords.Odia.Print },
+      ],
+    };
+  },
 
-
-}
-
-else if(this.showMenu==true)
-{
-this.showMenu=false
-
-
-}
-
-
-},
-      typeText() {
-        if(this.charIndex < this.typeArray[this.typeArrayIndex].length) {
-          if(!this.typeStatus)
-            this.typeStatus = true;
-          this.typeValue += this.typeArray[this.typeArrayIndex].charAt(this.charIndex);
-          this.charIndex += 1;
-          setTimeout(this.typeText, this.typingSpeed);
-        }
-        else {
-          this.typeStatus = false;
-          setTimeout(this.eraseText, this.newTextDelay);
-        }
-      },
-      eraseText() {
-        if(this.charIndex > 0) {
-          if(!this.typeStatus)
-            this.typeStatus = true;
-          this.typeValue = this.typeArray[this.typeArrayIndex].substring(0, this.charIndex - 1);
-          this.charIndex -= 1;
-          setTimeout(this.eraseText, this.erasingSpeed);
-        }
-        else {
-          this.typeStatus = false;
-          this.typeArrayIndex += 1;
-          if(this.typeArrayIndex >= this.typeArray.length)
-            this.typeArrayIndex = 0;
-          setTimeout(this.typeText, this.typingSpeed + 1000);
-        }
-      }
+  computed: {
+    lineCount() {
+      return this.code.split('\n').length;
     },
-    created() {
-      setTimeout(this.typeText, this.newTextDelay + 200);
-    }
-  }
+  },
+
+  methods: {
+    run() {
+      const result = Compile(this.code, KalaamKeywords.Hindi);
+      this.hasRun = true;
+      this.runId += 1;
+      this.error = result.isError ? String(result.error || 'The program could not run.') : '';
+      this.output = result.linebylineOutput || [];
+      // TimeTaken comes back as text, e.g. "सफल | speed - 0.3 ms"
+      const ms = /([\d.]+)\s*ms/.exec(String(result.TimeTaken || ''));
+      this.timeTaken = ms && !this.error ? Number(ms[1]).toFixed(1) : null;
+    },
+  },
+};
 </script>
 
+<style scoped>
+.page {
+  --paper: #f5f6f8;
+  --sheet: #ffffff;
+  --ink: #1f2766;
+  --ink-hover: #2c378a;
+  --text: #24262d;
+  --muted: #5b6070;
+  --rule: #cfd4e2;
+  --bar: #1f2766;
+  --error: #a3261c;
 
-<style scoped >
-#lang{
-	color: rgb(52, 204, 218);
+  --serif: 'Tiro Devanagari Hindi', 'Tiro Bangla', 'Tiro Telugu', 'Noto Serif Oriya',
+    'Noto Serif Devanagari', serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+
+  --code-size: 22px;
+  --code-line: 44px;
+
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  text-align: left;
 }
-#credit{
-	text-decoration:none;color: white
-}
-#KalamLogo
-{
 
-      width: 35%;
-    float: initial;;
-    margin-top: 15%;
-     -webkit-animation-duration: 10s;
-            animation-duration: 5s;
-            -webkit-animation-fill-mode: both;
-            animation-fill-mode: both;
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
 }
 
+/* Masthead */
 
-.container {
-    width: 100%;
-    display: flex;
-    justify-content: left;
-    align-items: left;
-  }
-  #buttons{
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  border-bottom: 3px solid var(--bar);
+}
 
-    padding-top: 15%;
-    
-    text-align: left;
-    width: 100%
-  }
-
-
-
-  #button2{
-
-
-    margin-left: 3%
-  }
-
-  #buttons button{
-
-   border-radius: 2em;
-   border: solid 0.3px black;
-   font-size: 100%;
-   width: 30%;
-   height: 43px;
-   background-color: white;
-     cursor: pointer;
-
-  }
-
-  button:focus {outline:0;}
-a{
-
-  border: none;
+.wordmark {
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink);
   text-decoration: none;
 }
 
-   #buttons button:hover{
-
-   
-   background: radial-gradient( circle 534px at 7.8% 17.6%,  rgba(254,253,112,1) 1.7%, rgba(248,143,111,1) 91.8% );
-   border: none
-  }
-
-
-#HomeSection{
-
-
-display: flex;
-
-margin-top: -1%;
- background-image: url('../assets/wave.png');
-background-size: cover;
- 
+.menu-toggle {
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 6px 14px;
+  cursor: pointer;
 }
-  
-  #TypeWriter{
 
-
-    float: left;
-    font-size: 300%;
-    font-weight: 600;
-    height: 37px;
-    color: rgb(223, 219, 11)
-  }
-  #LogoSection{
-
-width: 50%
-
+.nav {
+  display: none;
+  flex-basis: 100%;
+  flex-direction: column;
+  padding-top: 8px;
 }
-#IntroductionSection{
 
-width: 50%
-
-
+.nav.open {
+  display: flex;
 }
-a{
 
+.nav a {
+  color: var(--text);
   text-decoration: none;
-  color: black
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
 }
 
-#IntroductionSection h1{
-
-text-align: left;
-margin-top: 13%;
-font-size: 320%;
-font-weight: 800;
-
-
+.nav a:hover {
+  color: var(--ink);
 }
 
-h1{
+/* Hero */
 
-
-
-  margin-top: 0%
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-    span.cursor {
-
-        text-align: left;
-    width: 3px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    height: 38px;
-    margin-left: 1%;
-     background-color: rgb(0, 0, 0);
-      
-      text-align: left;
-margin-top: 3%;
-      width: 3px;
-      
-display: flex;
-      height: 37px;
-     color: rgb(0, 0, 0);
-      animation: cursorBlink 1s infinite;
-    }
-    span.cursor.typing {
-      animation: none;
-    }
-  
-  @-webkit-keyframes fadeIn {
-            0% {opacity: 0;}
-            100% {opacity: 1;}
-         }
-         
-         @keyframes fadeIn {
-            0% {opacity: 0;}
-            100% {opacity: 1;}
-         }
-         
-         .fadeIn {
-            -webkit-animation-name: fadeIn;
-            animation-name: fadeIn;
-         }
-
-
-#Kalaam{
-
-  float: left;
-    text-decoration: none;
-    margin-left: 2%;
-    font-size: 163%;
-    color: black;
+.hero {
+  display: grid;
+  gap: 32px;
+  padding: 40px 0 56px;
 }
 
-#LogoandTitle{
-
-position: absolute;
-    display: block;
-    width: 65%;
-
-
+h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: 0 0 16px;
+  text-wrap: balance;
 }
 
-
-
-#header{
-
-display: inline-block;
-width: 100%;
-background-color: #FFFC31;
-    height: 48px;
-    position: relative;
-    z-index: 20;
-    padding-top: 1%;
-
-
+.lede {
+  max-width: 34em;
+  margin: 0 0 28px;
+  color: var(--text);
 }
 
-#headerlistMobile{
-
-  display: none 
-  }
-
-#headerlist{
-
-      list-style-type: none;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    right: 7%;
-    
-    line-height: 40px;
-
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
 }
 
-#headerlist li{
-
-      display: inline-block;
-    margin: 0 2em;
-    font-size: 138%;
-
-}
-#headerlist a{
-
+.button {
+  display: inline-block;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ink);
+  border: 0;
+  border-radius: 4px;
+  padding: 12px 20px;
   text-decoration: none;
-   cursor:pointer; 
-   color: rgb(12, 12, 12)
+  cursor: pointer;
 }
 
-#headerlist a:hover{
-
- 
-   color: rgb(52, 204, 218)
+.button:hover {
+  background: var(--ink-hover);
 }
 
-.footer{
-
-    background-color: #0fb1ac;
-    height: 40px;
-    margin-top: 27%
+.link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.footer p{
+/* The sheet: code hangs from ruled lines the way Devanagari hangs from its shirorekha */
 
-position: relative;
-    top: 21%;
-
-}
-#stackMenuIcon
-{
-
-
-  display: none
+.sheet {
+  background: var(--sheet);
+  border-top: 6px solid var(--bar);
+  padding: 16px 16px 20px;
+  box-shadow: 0 1px 0 var(--rule);
 }
 
-
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
-.slide-fade-leave-active {
-  transition: all .3s ease cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateY(10px);
-  opacity: 0;
+.sheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 12px;
+  font-size: 15px;
 }
 
-/* Smartphones (portrait) ----------- */
-@media only screen
-and (max-width : 480px) {
+.sheet-head [lang='hi'] {
+  font-family: var(--serif);
+  font-size: 19px;
+  color: var(--ink);
+}
 
+.hint {
+  color: var(--muted);
+}
 
+.editor {
+  display: grid;
+  grid-template-columns: 2.2em 1fr;
+  font-family: var(--serif);
+  font-size: var(--code-size);
+  line-height: var(--code-line);
+  /* one rule per line, sitting where the shirorekha of each line falls */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent var(--hang),
+    var(--rule) var(--hang),
+    var(--rule) calc(var(--hang) + 1px),
+    transparent calc(var(--hang) + 1px),
+    transparent var(--code-line)
+  );
+  --hang: 17px;
+}
 
-  #HomeSection{
+.gutter {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: var(--code-line);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding-right: 12px;
+  border-right: 2px solid var(--bar);
+  user-select: none;
+}
 
-    display: block;
-    margin-top: -2%
-    
+.code {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 0 12px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: pre;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  line-height: var(--code-line);
+  tab-size: 2;
+}
+
+.editor:focus-within {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.run-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 20px;
+}
+
+.timing {
+  font-size: 14px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.output {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  min-height: 3.5em;
+}
+
+.output-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.output-error {
+  margin: 0;
+  color: var(--error);
+}
+
+.output-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-family: var(--serif);
+  font-size: var(--code-size);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.output-lines li {
+  animation: appear 240ms ease-out both;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
-  .footer{
-
-    background-color: #0fb1ac;
-    height: 40px;
-    margin-top: 15%
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.footer p{
+/* Bands below the hero */
 
-position: relative;
-    top: 21%;
-
+.band {
+  border-top: 3px solid var(--bar);
+  padding: 20px 0 48px;
 }
 
- #buttons{
+h2 {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
 
-    margin-top: 5%;
-    
-    text-align: left;
-    width: 100%;
- 
+.band-intro {
+  max-width: 38em;
+  margin: 0 0 24px;
+}
+
+.glossary {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 6.5em 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.entry dt {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.entry dd {
+  margin: 0;
+  padding-top: 4px;
+}
+
+.en {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.scripts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0 16px;
+}
+
+.scripts li {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.script-word {
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.script-name {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* Footer */
+
+.colophon {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.colophon p {
+  margin: 0 0 4px;
+}
+
+.colophon a {
+  color: var(--ink);
+}
+
+/* Focus */
+
+.page a:focus-visible,
+.page button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Wider screens */
+
+@media (min-width: 720px) {
+  .menu-toggle {
+    display: none;
   }
 
-#header{
- background-image: url('../assets/wave.png');
-background-size: cover;
-
-}
-
-#LogoSection{
-
-  width: 100%
-}
-
-#IntroductionSection{
-
-  width: 95%;
-  margin-left: 5%;
-}
-
-#IntroductionSection h1{
-
- margin-top: 0%
-}
-#headerlist{
-
-
-  display: none
-}
-#stackMenuIcon
-{
-
-
-  display:block;
-  float: right;
-  font-size: 150%;
-  border: none;
-    background: #FFFC31;
-    color: black;
-}
-
-#Kalaam{
-
-  float: left;
-    text-decoration: none;
-    margin-left: 4%;
-    font-size: 163%;
-    margin-top: 1%;
-    color: black;
-}
-
-#LogoandTitle{
-
-position: absolute;
-    display: block;
-    width: 65%;
-
-
-}
-#KalamLogo{
-
-  width: 60%;
-  margin-top: 5%
-   
-}
-
-#headerlistMobile{
-
-       display: inline-grid;
-    position: absolute;
-    left: 0%;
-    width: 100%;
-    background-color: #FFFC31;
-    line-height: 40px;
-    top: 86%;
-    padding: 0%;
-    
-}
-
-
-#headerlistMobile li{
-
-      display: inline-block;
-    font-size: 120%;
-    margin-top: 1%
-
-}
-#headerlistMobile a{
-
-  text-decoration: none;
-   cursor:pointer; 
-   color: rgb(12, 12, 12)
-}
-
-#headerlistMobile a:hover{
-
- 
-   color: rgb(214, 200, 0)
-}
-::-webkit-input-placeholder {
-text-align: center;
-vertical-align: middle;
-
-line-height: 500px;}
-
-:-moz-placeholder { /* Firefox 18- */
-text-align: center;
-vertical-align: middle;
-
-line-height: 500px;}
-
-::-moz-placeholder {  /* Firefox 19+ */
-text-align: center;
-vertical-align: middle;
-
-line-height: 500px;}
-
-:-ms-input-placeholder {  
-text-align: center;
-vertical-align: middle;
-
-line-height: 500px;}
-
-#button2{
-
-
-    margin-left: 3%
-  }
-
-  #buttons button{
-
-   border-radius: 2em;
-   border: solid 0.3px black;
-   font-size: 100%;
-   width: 40%;
-   height: 43px;
-   background-color: white;
-   color: black
-  }
-
-  span.cursor {
-      
-     text-align: left;
-    margin-top: 5%;
-    width: 3px;
-    display: -webkit-box;
-    display: -ms-flexbox;
+  .nav,
+  .nav.open {
     display: flex;
-    height: 38px;
-    margin-left: 1%;
-     background-color: rgb(0, 0, 0);
-      animation: cursorBlink 1s infinite;
-    }
+    flex-direction: row;
+    flex-basis: auto;
+    gap: 28px;
+    padding-top: 0;
+  }
 
-}
-@media only screen
-and (min-width : 768px)
-and (max-width : 1024px) {
+  .nav a {
+    border-top: 0;
+    padding: 4px 0;
+  }
 
+  .masthead,
+  main,
+  .colophon {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 
+  h1 {
+    font-size: 60px;
+  }
 
-#headerlist li{
+  .band {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 32px;
+  }
 
-margin-left: 0%
-}
-
-
- span.cursor {
-      
-     text-align: left;
-    margin-top: 4%;
-    width: 3px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    height: 38px;
-    margin-left: 1%;
-     background-color: rgb(0, 0, 0);
-      animation: cursorBlink 1s infinite;
-    }
-
-#LogoSection{
-
-
-  width: 40%
+  .entry {
+    grid-template-columns: 8em 1fr;
+  }
 }
 
-#IntroductionSection{
+@media (min-width: 1024px) {
+  .page {
+    --code-size: 28px;
+    --code-line: 56px;
+  }
 
+  .editor {
+    --hang: 22px;
+  }
 
-  width: 60%
+  .hero {
+    grid-template-columns: 5fr 7fr;
+    gap: 64px;
+    align-items: start;
+    padding: 72px 0 88px;
+  }
+
+  h1 {
+    font-size: 64px;
+  }
+
+  .sheet {
+    padding: 20px 28px 28px;
+  }
 }
 
-#KalamLogo{
-
-  width: 50%
+@media (prefers-reduced-motion: reduce) {
+  .output-lines li {
+    animation: none;
+  }
 }
-
-#buttons button{
-
-  width: 35%;
-  margin-top: 10%
-}
-
-}
-
-  
-
 </style>
