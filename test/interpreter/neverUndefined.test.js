@@ -32,15 +32,16 @@ test('जबतक over an undefined variable returns a result', () => {
   expect(run('जबतक(x<3)\n{\n}')).toEqual({ out: [], isError: false });
 });
 
-// The real browser trigger: with Marathi selected when the page loads,
-// isVariable has no regex for Marathi and throws on the first Devanagari word.
-test('Marathi selected at page load', () => {
+// The real browser trigger before plan item D: with Marathi selected when the
+// page loads, isVariable had no regex for Marathi and threw on the first
+// Devanagari word, so every Marathi program returned undefined.
+test('Marathi selected at page load runs', () => {
   localStorage.setItem('ActiveLangugae', 'Marathi');
   try {
     // constants.js reads localStorage once, at import: load a fresh copy.
     jest.resetModules();
     const fresh = require('../../src/kalaam/Compiler/main');
-    expectErrorShape(fresh.Compile('दाखवा(1)', fresh.KalaamKeywords.Marathi)); // quirk, plan item D
+    expect(fresh.Compile('दाखवा(1)', fresh.KalaamKeywords.Marathi).linebylineOutput).toEqual(['1']);
   } finally {
     localStorage.removeItem('ActiveLangugae');
   }

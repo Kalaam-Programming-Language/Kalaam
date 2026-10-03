@@ -1,21 +1,30 @@
 import { ActiveLangugaeKeywords, ActiveLanguage } from '../Compiler/constants';
 
-let _AK = ActiveLangugaeKeywords;
-const Keywords = [
-  _AK.Print, //Still have to change this manually where REGEX are implemented
-  _AK.Input,
-  _AK.If,
-  _AK.For,
-  _AK.While,
-  _AK.Length,
-  _AK.Push,
-  _AK.Function,
-];
+//The active language can change between two Compile() runs, so the keyword map is read at call time.
+function _AK() {
+  return ActiveLangugaeKeywords;
+}
+
+function Keywords() {
+  let ak = _AK();
+  return [
+    ak.Print, //Still have to change this manually where REGEX are implemented
+    ak.Input,
+    ak.If,
+    ak.For,
+    ak.While,
+    ak.Length,
+    ak.Push,
+    ak.Function,
+  ];
+}
 
 // var PrintKeywordRegex = "^" + "(" + ActiveLangugaeKeywords.Print + ")*$"
 // PrintKeywordRegex = new RegExp(PrintKeywordRegex)
 
-const NativeOperations = [_AK.Length];
+function NativeOperations() {
+  return [_AK().Length];
+}
 
 function RemoveBrackets(element) {
   const a = element.replace('(', '');
@@ -47,9 +56,10 @@ export function isVariable() {
     const OdiaRegex = /(?:^|\s)[\u0B05-\u0B32]+?(?:\s|$)/g;
 
     let al = ActiveLanguage;
-    let regex = al === 'Hindi' ? HindiRegex : al === 'Bengali' ? BengaliRegex : al === 'Telugu' ? TeluguRegex : al === 'Odia' ? OdiaRegex : console.log('ERR: NO REGEX FOUND ');
+    //Marathi is written in Devanagari, like Hindi
+    let regex = al === 'Hindi' || al === 'Marathi' ? HindiRegex : al === 'Bengali' ? BengaliRegex : al === 'Telugu' ? TeluguRegex : al === 'Odia' ? OdiaRegex : console.log('ERR: NO REGEX FOUND ');
 
-    return (/^[a-z]+$/i.test(element) || regex.test(element)) && !Keywords.includes(element);
+    return (/^[a-z]+$/i.test(element) || regex.test(element)) && !Keywords().includes(element);
   };
 }
 export function isNumber() {
@@ -66,37 +76,37 @@ export function isOperator() {
 
 export function isInput() {
   return function (element) {
-    return element.includes(_AK.Input);
+    return element.includes(_AK().Input);
   };
 }
 
 export function isPrintOperation() {
   return function (element) {
-    return element.includes(_AK.Print);
+    return element.includes(_AK().Print);
   };
 }
 
 export function isConditionalKeyword() {
   return function (element) {
-    return element == _AK.If || element == _AK.While || element == 'अन्यथा';
+    return element == _AK().If || element == _AK().While || element == 'अन्यथा';
   };
 }
 
 export function isForLoop() {
   return function (element) {
-    return element == _AK.For;
+    return element == _AK().For;
   };
 }
 
 export function isWhileLoop() {
   return function (element) {
-    return element == _AK.While;
+    return element == _AK().While;
   };
 }
 
 export function isFunction() {
   return function (element) {
-    return element == _AK.Function;
+    return element == _AK().Function;
   };
 }
 
@@ -148,7 +158,7 @@ export function isNativeOperation() {
   return function (element) {
     let flag = false;
 
-    NativeOperations.forEach((el) => {
+    NativeOperations().forEach((el) => {
       if (element.includes(el)) {
         flag = true;
       }
@@ -160,7 +170,7 @@ export function isNativeOperation() {
 
 export function isFunctionCall() {
   return function (element, tokens, cleaned_sourcedata, i) {
-    if (!Keywords.includes(cleaned_sourcedata[i - 1])) {
+    if (!Keywords().includes(cleaned_sourcedata[i - 1])) {
       const CheckFunctionExpression = element.split('(');
 
       const token = tokens.find((el) => el.type == 'function' && el.value == CheckFunctionExpression[0]);

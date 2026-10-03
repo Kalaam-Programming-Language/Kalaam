@@ -94,4 +94,15 @@ if (ActiveLanguage == 'Odia') {
 }
 //
 
-export { ActiveLangugaeKeywords, KalaamKeywords, ActiveLanguage };
+//Compile() calls this with the language of the keyword map it was given, so switching language takes
+//effect on the next run instead of after a page reload. Reassigning the exported bindings updates every
+//module that imported them (ES module live bindings).
+function setActiveLanguage(name) {
+  if (!KalaamKeywords[name]) {
+    name = 'Hindi';
+  }
+  ActiveLanguage = name;
+  ActiveLangugaeKeywords = KalaamKeywords[name];
+}
+
+export { ActiveLangugaeKeywords, KalaamKeywords, ActiveLanguage, setActiveLanguage };

@@ -9,7 +9,7 @@
 //To check variable types: Number, String, Array etc.
 import * as TypeCheck from '../TypeCheck/TypeChecking';
 
-import { KalaamKeywords } from '../Compiler/constants';
+import { KalaamKeywords, setActiveLanguage } from '../Compiler/constants';
 
 //To check other operations like MultiString, Arithmetic Operation etc.
 import * as AdvancedTypeCheck from '../TypeCheck/AdvancedTypeChecking';
@@ -60,6 +60,9 @@ const WHILE_LOOP_LIMIT = 100000;
 
 function Compile(sourcecode, ActiveLangugaeKeywords) {
   try {
+    //Every stage reads the active language; make it the language of the keywords passed in.
+    setActiveLanguage((ActiveLangugaeKeywords && ActiveLangugaeKeywords.Langugae) || 'Hindi');
+
     //t0 along with t1 takes record of Time taken to run the code. t1-t0 gives us the exact time taken.
     var t0 = performance.now(); // eslint-disable-line
 
