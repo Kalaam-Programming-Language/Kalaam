@@ -1,98 +1,157 @@
 <template>
-  <div class="k-page k-practice">
+  <div class="k-page k-practice" :class="{ 'theme-dark': themeDark }">
     <SiteHeader />
 
-    <main class="ide-shell">
-      <div class="ide">
-        <!-- Top bar: mode toggle on the left, Clear + Run/Next on the right -->
-        <div class="ide-topbar">
-          <div class="mode-toggle">
-            <button type="button" class="mode-label" :class="{ on: !learning }" @click="setLearning(false)">Practice</button>
-            <button
-              type="button"
-              role="switch"
-              class="switch"
-              :class="{ on: learning }"
-              :aria-checked="learning ? 'true' : 'false'"
-              aria-label="Learning mode"
-              @click="SwitchMode()"
-            ><span class="knob"></span></button>
-            <button type="button" class="mode-label" :class="{ on: learning }" @click="setLearning(true)">Learning</button>
-          </div>
-
-          <div class="ide-topbar-actions">
-            <button type="button" class="ide-clear" @click="Clear()">Clear</button>
-            <button type="button" class="ide-run" :title="runTitle" @click="RunShortcut()">
-              <span class="run-icon"></span>{{ runLabel }}
-            </button>
-          </div>
+    <!-- Toolbar: mode toggle, language select, theme toggle on the left;
+         mode-specific actions on the right. -->
+    <div class="pr-toolbar">
+      <div class="pr-toolbar-left">
+        <div class="mode-toggle">
+          <button type="button" class="mode-label" :class="{ on: !learning }" @click="setLearning(false)">Practice</button>
+          <button
+            type="button"
+            role="switch"
+            class="switch"
+            :class="{ on: learning }"
+            :aria-checked="learning ? 'true' : 'false'"
+            aria-label="Learning mode"
+            @click="SwitchMode()"
+          ><span class="knob"></span></button>
+          <button type="button" class="mode-label" :class="{ on: learning }" @click="setLearning(true)">Learning</button>
         </div>
 
-        <!-- Editor + console panes -->
-        <div class="panes">
-          <section class="pane editor-pane">
-            <no-ssr placeholder="...">
-              <codemirror
-                id="codearea"
-                ref="myCm"
-                :value="code"
-                placeholder="Welcome to Kalaam, this is your code editor."
-                :options="cmOptions"
-                @ready="onCmReady"
-                @focus="onCmFocus"
-                @input="onCmCodeChange"
-                @cursorActivity="onCmCursorActivity"
-              ></codemirror>
-            </no-ssr>
+        <label class="pr-lang">Language
+          <select class="pr-lang-select" v-model="ActiveLanguage" aria-label="Language">
+            <option v-for="l in languageLabels" :key="l.value" :value="l.value" :lang="l.lang">{{ l.label }} ({{ l.value }})</option>
+          </select>
+        </label>
 
-            <div class="chip-bar">
-              <button class="chip" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</button>
-              <button class="chip" @click="Add(Keyword.Input + '()')">{{ Keyword.Input }}</button>
-              <button class="chip" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</button>
-              <button class="chip" @click="Add(forChipInsert)">{{ forChipLabel }}</button>
-              <button class="chip" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</button>
-              <button class="chip" @click="Add(lengthChipInsert)">{{ lengthChipLabel }}</button>
-              <button class="chip" @click="Add(pushChipInsert)">{{ pushChipLabel }}</button>
-              <button class="chip" @click="Add(Keyword.Function)">{{ Keyword.Function }}</button>
+        <button
+          type="button"
+          class="theme-toggle"
+          :aria-label="themeToggleLabel"
+          :title="themeToggleLabel"
+          @click="toggleTheme()"
+        >
+          <svg v-if="themeDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="12" y1="2" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="22"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="2" y1="12" x2="4" y2="12"></line>
+            <line x1="20" y1="12" x2="22" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="pr-toolbar-right">
+        <template v-if="!learning">
+          <button type="button" class="btn-quiet" @click="Clear()">Clear</button>
+          <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
+            <span class="run-icon"></span>Run
+          </button>
+          <span class="shortcut-hint">{{ shortcutHint }}</span>
+        </template>
+        <template v-else>
+          <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
+          <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
+          <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
+        </template>
+      </div>
+    </div>
+
+    <main class="pr-main">
+      <section class="pr-editor">
+        <div class="chip-bar">
+          <button class="chip" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</button>
+          <button class="chip" @click="Add(Keyword.Input + '()')">{{ Keyword.Input }}</button>
+          <button class="chip" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</button>
+          <button class="chip" @click="Add(forChipInsert)">{{ forChipLabel }}</button>
+          <button class="chip" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</button>
+          <button class="chip" @click="Add(lengthChipInsert)">{{ lengthChipLabel }}</button>
+          <button class="chip" @click="Add(pushChipInsert)">{{ pushChipLabel }}</button>
+          <button class="chip" @click="Add(Keyword.Function)">{{ Keyword.Function }}</button>
+        </div>
+
+        <no-ssr placeholder="...">
+          <codemirror
+            id="codearea"
+            ref="myCm"
+            :value="code"
+            placeholder="Welcome to Kalaam, this is your code editor."
+            :options="cmOptions"
+            @ready="onCmReady"
+            @focus="onCmFocus"
+            @input="onCmCodeChange"
+          ></codemirror>
+        </no-ssr>
+      </section>
+
+      <aside class="pr-aside">
+        <template v-if="!learning">
+          <div class="pr-panel">
+            <div class="pr-panel-head">
+              <h2>Output</h2>
+              <span v-if="runTimingMs" class="pr-timing">{{ runTimingMs }}</span>
             </div>
-          </section>
-
-          <section class="pane output-pane">
-            <div class="console-head">
-              <span class="console-head-label">Output</span>
-            </div>
-
-            <div class="console-body" ref="consoleBody" :class="{ 'is-error': isError === true }">
-              <p v-if="!hasConsoleOutput" class="console-empty">{{ emptyConsoleHint }}</p>
+            <div class="pr-output" :class="{ 'is-error': isError === true }">
+              <p v-if="!hasConsoleOutput" class="pr-empty">{{ emptyConsoleHint }}</p>
               <template v-else>
-                <p v-if="!learning" class="console-line console-echo">{{ runEchoLine }}</p>
-                <template v-if="!learning">
-                  <p
-                    v-for="(line, index) in linebylineOutput"
-                    :key="'out-' + index"
-                    class="console-line"
-                  >{{ line }}</p>
-                </template>
-                <p v-if="learning" class="console-line console-steps">{{ ExecutionStackLinebyLine }}</p>
+                <p v-for="(line, index) in linebylineOutput" :key="'out-' + index" class="pr-line">{{ line }}</p>
               </template>
             </div>
-          </section>
-        </div>
+          </div>
 
-        <!-- Status bar: language + mode on the left, cursor position + shortcut on the right -->
-        <div class="ide-statusbar">
-          <div class="status-left">
-            <select class="status-lang" v-model="ActiveLanguage" aria-label="Language">
-              <option v-for="l in languageLabels" :key="l.value" :value="l.value" :lang="l.lang">{{ l.label }} ({{ l.value }})</option>
-            </select>
-            <span class="status-mode">{{ modeStatusLabel }}</span>
+          <div class="pr-panel">
+            <h2>Memory</h2>
+            <p v-if="!practiceMemoryRows.length" class="pr-empty">Variables appear here after you run your program.</p>
+            <table v-else class="pr-memory">
+              <tbody>
+                <tr v-for="row in practiceMemoryRows" :key="row.name">
+                  <td class="pr-mem-name">{{ row.name }}</td>
+                  <td class="pr-mem-value">{{ row.value }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="status-right">
-            <span class="status-pos">Ln {{ cursorLine }}, Col {{ cursorCol }}</span>
-            <span class="status-shortcut">{{ shortcutHint }} to run</span>
+        </template>
+
+        <template v-else>
+          <div class="pr-panel">
+            <h2>What the computer did</h2>
+            <p v-if="currentStep" class="pr-explain">{{ currentStep.message }}</p>
+            <p v-else-if="learningIsError" class="pr-explain is-error">{{ learningErrorText }}</p>
+            <p v-else class="pr-empty">Press Next step to run your program one line at a time.</p>
           </div>
-        </div>
-      </div>
+
+          <div class="pr-panel">
+            <h2>Memory</h2>
+            <p v-if="!learningMemoryRows.length" class="pr-empty">Variables appear here after you run your program.</p>
+            <table v-else class="pr-memory">
+              <tbody>
+                <tr v-for="row in learningMemoryRows" :key="row.name" :class="{ 'is-changed': row.changed }">
+                  <td class="pr-mem-name">{{ row.name }}</td>
+                  <td class="pr-mem-value">{{ row.value }}<span v-if="row.changed && row.previousValue !== null" class="pr-mem-was"> (was {{ row.previousValue }})</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pr-panel">
+            <h2>Output so far</h2>
+            <p v-if="!learningOutputSoFar.length" class="pr-empty">Nothing printed yet.</p>
+            <div v-else class="pr-output">
+              <p v-for="(line, index) in learningOutputSoFar" :key="'ls-' + index" class="pr-line">{{ line }}</p>
+            </div>
+          </div>
+        </template>
+      </aside>
     </main>
   </div>
 </template>
@@ -116,8 +175,8 @@ import "../components/Kalaam";
 // theme css
 //import 'codemirror/theme/yonce.css'
 //import 'codemirror/theme/monokai.css'
-// The editor is styled as a dark, One Dark-palette IDE in the <style>
-// block below (see .k-practice .CodeMirror rules), not via a theme import.
+// The editor is styled with the page's own light/dark variables in the
+// <style> block below (see .k-practice .CodeMirror rules), not via a theme import.
 
 // require active-line.js
 import "codemirror/addon/selection/active-line.js";
@@ -147,6 +206,38 @@ import { Compile } from "kalaam";
 
 import SiteHeader from "../components/SiteHeader.vue";
 
+// Pulls the computed value out of a "=" execution-stack step's message --
+// the interpreter doesn't return a separate "computed value" field, it's
+// baked into the human-readable message text, in one of two shapes:
+//   simple assignment:      ... को "7" ये VALUE ...
+//   calculated assignment:  ... की कीमत (Value) , "7" आती है ... को "7" ये VALUE ...
+// Both shapes are tried (in that order) before falling back to step.value.
+function extractAssignedValue(step) {
+  if (step && typeof step.message === "string") {
+    const simple = step.message.match(/को\s*"([^"]*)"\s*ये\s*VALUE/);
+    if (simple) return simple[1];
+    const calculated = step.message.match(/की कीमत \(Value\)\s*,\s*"([^"]*)"\s*आती है/);
+    if (calculated) return calculated[1];
+  }
+  return step ? step.value : undefined;
+}
+
+// Replays "=" steps (string variable only -- loop headers and other
+// keywords carry a token array instead and aren't variable assignments)
+// in order, keeping first-seen insertion order while letting a later
+// assignment update that row's value in place.
+function buildMemoryRows(steps) {
+  const order = [];
+  const values = new Map();
+  (steps || []).forEach((step) => {
+    if (step && step.keyword === "=" && typeof step.variable === "string") {
+      if (!values.has(step.variable)) order.push(step.variable);
+      values.set(step.variable, extractAssignedValue(step));
+    }
+  });
+  return order.map((name) => ({ name, value: values.get(name) }));
+}
+
 export default {
   name: "HelloWorld",
   props: {
@@ -171,16 +262,30 @@ export default {
 
       //Calculating the time taken to compile the code
       TimeTaken: "",
-      flag: false,
       inputIndexes: [],
       //input: '',
       isError: "",
       ExecutionStack: [],
-      ExecutionStackLinebyLine: "",
 
-      LastConditionValue: [],
+      // Learning mode steps over its own compiled ExecutionStack, kept
+      // separate from Practice's Run() output above so switching modes
+      // never clobbers the other mode's last result.
+      learningExecutionStack: [],
+      learningLinebylineOutput: [],
+      learningIsError: "",
+      learningError: [],
+      // The code the learning stack was compiled from -- Compile() only
+      // runs again when this stops matching `code` (Learning starts, or
+      // the code changed since the last compile).
+      learningCodeSnapshot: null,
+      // 0 = no step taken yet; otherwise the 1-based count of steps
+      // executed so far. The active step is learningExecutionStack[stepIndex - 1].
+      stepIndex: 0,
+      // 0-based CodeMirror line currently carrying the k-current-line class,
+      // so it can be removed before the next one is added.
+      highlightedLine: null,
+
       LineByLineCode: [],
-      CurrentLine: 0,
       Keyword: "",
 
       isRoutePractise: false,
@@ -191,12 +296,11 @@ export default {
 
       ActiveLanguage: "",
 
-      // Live cursor position for the status bar, updated from CodeMirror's
-      // cursorActivity event (1-based, the way editors display it).
-      cursorLine: 1,
-      cursorCol: 1,
+      // Light by default, matching the approved mockup. Dark reuses the
+      // One Dark palette. Persisted so a reload keeps the choice.
+      themeDark: false,
 
-      // Native-script labels for the status bar's language dropdown.
+      // Native-script labels for the language select.
       // `value` matches an existing KalaamKeywords key (and ActiveLanguage option) exactly.
       languageLabels: [
         { value: "Hindi", label: "हिन्दी", lang: "hi" },
@@ -224,12 +328,13 @@ export default {
         keyMap: "sublime",
         matchBrackets: true,
         showCursorWhenSelecting: true,
-        theme: "onedark",
+        theme: "kalaam",
         scrollbarStyle: "null",
-        // Ctrl/Cmd-Enter runs the program -- same method the toolbar's Run
-        // (or Next, in Learning mode) button calls. Arrow functions here
-        // close over `this` from data()'s own `this` (the component
-        // instance), since Vue calls data() with `this` bound to the vm.
+        // Ctrl/Cmd-Enter runs the program in Practice mode, or steps to the
+        // next line in Learning mode -- same as the toolbar's Run/Next step
+        // button. Arrow functions here close over `this` from data()'s own
+        // `this` (the component instance), since Vue calls data() with
+        // `this` bound to the vm.
         extraKeys: {
           "Ctrl-Enter": () => this.RunShortcut(),
           "Cmd-Enter": () => this.RunShortcut(),
@@ -266,14 +371,12 @@ export default {
       return "Ctrl + Enter";
     },
 
-    runLabel() {
-      return this.learning ? "Next" : "Run";
-    },
     runTitle() {
-      return `Run (${this.shortcutHint})`;
+      return `${this.learning ? "Next step" : "Run"} (${this.shortcutHint})`;
     },
-    modeStatusLabel() {
-      return this.learning ? "Learning mode" : "Practice mode";
+
+    themeToggleLabel() {
+      return this.themeDark ? "Switch to light theme" : "Switch to dark theme";
     },
 
     // The For/Length/Push chips insert (and label) slightly differently
@@ -299,9 +402,6 @@ export default {
     },
 
     hasConsoleOutput() {
-      if (this.learning) {
-        return !!this.ExecutionStackLinebyLine;
-      }
       return !!(this.linebylineOutput && this.linebylineOutput.length);
     },
     emptyConsoleHint() {
@@ -309,14 +409,65 @@ export default {
     },
     // The interpreter returns TimeTaken as text like "सफल | speed - 0.3 ms"
     // (or a compile-error message with no number in it) -- pull just the
-    // number-plus-unit out of it for the console echo line.
+    // number-plus-unit out of it for the Output panel's timing display.
     runTimingMs() {
       if (!this.TimeTaken) return "";
       const match = String(this.TimeTaken).match(/([\d.]+)\s*ms/);
       return match ? `${match[1]} ms` : "";
     },
-    runEchoLine() {
-      return this.runTimingMs ? `› Run  ${this.runTimingMs}` : "› Run";
+
+    // Practice mode's Memory panel: the final variable values after the
+    // last Run(), built by replaying every "=" step in that run's stack.
+    practiceMemoryRows() {
+      return buildMemoryRows(this.ExecutionStack);
+    },
+
+    totalLearningSteps() {
+      return this.learningExecutionStack.length;
+    },
+    // The step that was just executed (stepIndex is a 1-based count of
+    // steps taken, so the active one is at stepIndex - 1), or null before
+    // the first Next step.
+    currentStep() {
+      if (this.stepIndex === 0) return null;
+      return this.learningExecutionStack[this.stepIndex - 1] || null;
+    },
+    canGoNext() {
+      return this.stepIndex < this.totalLearningSteps;
+    },
+    canGoPrev() {
+      return this.stepIndex > 0;
+    },
+    learningErrorText() {
+      return Array.isArray(this.learningError) ? this.learningError.join(" ") : this.learningError;
+    },
+    // Learning mode's Memory panel: the variables set by every step up to
+    // and including the current one, with the row the current step just
+    // touched flagged so the template can highlight it and show "(was X)".
+    learningMemoryRows() {
+      if (this.stepIndex === 0) return [];
+      const steps = this.learningExecutionStack.slice(0, this.stepIndex);
+      const rows = buildMemoryRows(steps);
+      const active = this.currentStep;
+      if (active && active.keyword === "=" && typeof active.variable === "string") {
+        const priorRows = buildMemoryRows(steps.slice(0, -1));
+        const prior = priorRows.find((row) => row.name === active.variable);
+        return rows.map((row) => {
+          if (row.name !== active.variable) return { ...row, changed: false, previousValue: null };
+          return { ...row, changed: true, previousValue: prior ? prior.value : null };
+        });
+      }
+      return rows.map((row) => ({ ...row, changed: false, previousValue: null }));
+    },
+    // Learning mode's "Output so far": the first K printed lines, where K
+    // is how many print steps have been executed up to the current step.
+    learningOutputSoFar() {
+      if (this.stepIndex === 0) return [];
+      const steps = this.learningExecutionStack.slice(0, this.stepIndex);
+      const printKeyword = this.Keyword && this.Keyword.Print;
+      const printed = steps.filter((step) => step && step.keyword === printKeyword).length;
+      const lines = this.learningLinebylineOutput || [];
+      return lines.slice(0, printed);
     },
   },
 
@@ -330,6 +481,16 @@ export default {
         this.Keyword = KalaamKeywords["Hindi"];
       }
     },
+    // Switching mode (either direction) retires whatever step/highlight
+    // Learning was on; entering Learning compiles its own stack right away
+    // so "Step 0 of N" shows a real total immediately.
+    learning(isLearning) {
+      this.clearCurrentLineHighlight();
+      this.stepIndex = 0;
+      if (isLearning) {
+        this.ensureLearningCompiled();
+      }
+    },
   },
 
   created() {
@@ -340,6 +501,8 @@ export default {
     }
 
     this.checked = true;
+
+    this.themeDark = localStorage.getItem("kalaamTheme") === "dark";
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
     let m = this.$store.state.CurrentCode.replace(/&lt;/g, "<");
@@ -372,21 +535,20 @@ export default {
       //console.log(this.ActiveLanguage);
     },
     Clear: function () {
-      if (this.$store.state.PractiseOn) {
-        this.code = "";
+      if (this.learning) {
+        this.stepIndex = 0;
+        this.learningExecutionStack = [];
+        this.learningLinebylineOutput = [];
+        this.learningCodeSnapshot = null;
+        this.clearCurrentLineHighlight();
       } else {
+        this.code = "";
         this.ExecutionStack = [];
-        this.ExecutionStackLinebyLine = [];
-        this.output = "";
         this.linebylineOutput = "";
-
-        this.LineByLineCode = [];
-
-        this.flag = false;
-        this.CurrentLine = 0;
-        var doc = this.cm.getDoc();
-
-        doc.setCursor({ line: this.CurrentLine });
+        this.output = "";
+        this.TimeTaken = "";
+        this.isError = "";
+        this.error = [];
       }
     },
 
@@ -418,10 +580,6 @@ export default {
 
       this.isMobile = window.innerWidth < 960;
 
-      const cursor = cm.getCursor();
-      this.cursorLine = cursor.line + 1;
-      this.cursorCol = cursor.ch + 1;
-
       this.$nextTick(() => cm.refresh());
 
       this._onResize = () => {
@@ -435,13 +593,6 @@ export default {
 
     onCmFocus(cm) {},
 
-    // Keeps the status bar's "Ln X, Col Y" live as the cursor moves.
-    onCmCursorActivity(cm) {
-      const cursor = cm.getCursor();
-      this.cursorLine = cursor.line + 1;
-      this.cursorCol = cursor.ch + 1;
-    },
-
     onCmCodeChange(newCode) {
       this.code = newCode;
 
@@ -450,7 +601,7 @@ export default {
       this.$store.state.CurrentCode = newCode;
     },
     //Add() is a function used to add clicked keywords on to the code editor.
-    //This keywords are in hindi, provided in the control panel at the bottom of our code editor.
+    //This keywords are in hindi, provided in the control panel above the code editor.
     Add: function (insert) {
       //Getting a codemirror instance
       var doc = this.cm.getDoc();
@@ -500,43 +651,70 @@ export default {
       this.scrollConsoleToBottom();
     },
 
-    RunLinebyLine: function () {
-      //Compile is our #1 function located in /lib/compiler/main.js
-      //this.$data is the local data restricted to Kalaam.io/practise component which we have declared in 'data()' above
-      //try  to see what we are sending to our compiler
-
-      if (this.flag == false) {
-        let { ExecutionStack } = Compile(this.code, this.ActiveLanguage);
-        this.ExecutionStack = ExecutionStack;
+    // Compiles the current code into its own ExecutionStack for Learning
+    // mode to step over, separate from Practice's Run() above. Only
+    // re-compiles when the code has changed since the last time (or the
+    // first time Learning starts), per the "compile once, then step" rule.
+    ensureLearningCompiled() {
+      if (this.learningCodeSnapshot !== this.code) {
+        const { ExecutionStack, linebylineOutput, isError, error } = Compile(this.code, this.Keyword);
+        this.learningExecutionStack = ExecutionStack || [];
+        this.learningLinebylineOutput = linebylineOutput || [];
+        this.learningIsError = isError;
+        this.learningError = error;
+        this.learningCodeSnapshot = this.code;
+        this.stepIndex = 0;
+        this.clearCurrentLineHighlight();
       }
+    },
 
-      this.flag = true;
+    NextStep() {
+      this.ensureLearningCompiled();
+      if (this.stepIndex < this.learningExecutionStack.length) {
+        this.stepIndex += 1;
+        this.applyCurrentLineHighlight();
+      }
+    },
 
-      this.ExecutionStackLinebyLine =
-        this.ExecutionStackLinebyLine +
-        this.ExecutionStack[this.CurrentLine].message +
-        "\n" +
-        "\n";
+    PreviousStep() {
+      if (this.stepIndex > 0) {
+        this.stepIndex -= 1;
+        this.applyCurrentLineHighlight();
+      }
+    },
 
-      let Line = this.ExecutionStack[this.CurrentLine].Linenumber;
+    clearCurrentLineHighlight() {
+      if (this.cm && this.highlightedLine !== null) {
+        this.cm.removeLineClass(this.highlightedLine, "background", "k-current-line");
+      }
+      this.highlightedLine = null;
+    },
 
-      //this.cm.state.activeLines
+    applyCurrentLineHighlight() {
+      this.clearCurrentLineHighlight();
+      const step = this.currentStep;
+      if (step && this.cm && typeof step.Linenumber === "number") {
+        const line = step.Linenumber - 1;
+        this.cm.addLineClass(line, "background", "k-current-line");
+        this.highlightedLine = line;
+        this.cm.scrollIntoView({ line: line, ch: 0 }, 80);
+      }
+    },
 
-      var doc = this.cm.getDoc();
-
-      doc.setCursor({ line: Line - 1 });
-
-      this.CurrentLine += 1;
-
-      this.scrollConsoleToBottom();
+    toggleTheme() {
+      this.themeDark = !this.themeDark;
+      localStorage.setItem("kalaamTheme", this.themeDark ? "dark" : "light");
+      this.$nextTick(() => {
+        if (this.cm) this.cm.refresh();
+      });
     },
 
     // Ctrl/Cmd-Enter from the editor: run the program in Practice mode,
     // or step to the next line in Learning mode -- the same methods the
-    // toolbar's Run/Next button calls.
+    // toolbar's Run/Next step button calls.
     RunShortcut: function () {
-      if (this.$store.state.LearningOn) {
-        this.RunLinebyLine();
+      if (this.learning) {
+        this.NextStep();
       } else {
         this.Run();
       }
@@ -550,55 +728,49 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: var(--pr-bg);
+  color: var(--pr-text);
 }
 
 /* In a flex column, margin:auto children shrink to their content;
-   the header and IDE shell must still span the page. */
+   the header and toolbar/main must still span the page. */
 .k-practice > * {
   width: 100%;
 }
 
-.ide-shell {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-width: 0;
-}
+/* Toolbar */
 
-.ide {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 520px;
-  background: var(--ide-bg);
-}
-
-/* Top bar */
-
-.ide-topbar {
+.pr-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--pr-panel);
+  border-bottom: 1px solid var(--pr-border);
+}
+
+.pr-toolbar-left,
+.pr-toolbar-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
-  height: 44px;
-  flex: 0 0 44px;
-  padding: 0 16px;
-  background: var(--ide-panel);
-  border-bottom: 1px solid var(--ide-border);
+  font-size: 14px;
 }
 
 .mode-toggle {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
 .mode-label {
   font-family: var(--k-sans);
-  font-size: 13px;
-  color: var(--ide-muted);
+  font-size: 14px;
+  color: var(--pr-muted);
   background: none;
   border: 0;
   padding: 4px 2px;
@@ -607,82 +779,140 @@ export default {
 }
 
 .mode-label.on {
-  color: var(--ide-text);
+  color: var(--pr-ink);
   font-weight: 600;
 }
 
 .switch {
   position: relative;
-  width: 34px;
-  height: 18px;
+  width: 40px;
+  height: 22px;
   padding: 0;
   border: 0;
-  border-radius: 9px;
-  background: var(--ide-border-strong);
+  border-radius: 11px;
+  background: var(--pr-border-strong);
   cursor: pointer;
   transition: background 150ms ease;
   flex: 0 0 auto;
 }
 
 .switch.on {
-  background: var(--ide-accent);
+  background: var(--pr-ink);
 }
 
 .knob {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #fff;
   transition: transform 150ms ease;
 }
 
 .switch.on .knob {
-  transform: translateX(16px);
+  transform: translateX(18px);
 }
 
-.ide-topbar-actions {
+.pr-lang {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
+  color: var(--pr-muted);
+  font-family: var(--k-sans);
+  font-size: 14px;
+}
+
+.pr-lang-select {
+  font: inherit;
+  color: var(--pr-ink);
+  background: var(--pr-panel);
+  border: 1px solid var(--pr-border-strong);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.pr-lang-select option {
+  background: var(--pr-panel);
+  color: var(--pr-text);
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--pr-ink);
+  background: var(--pr-panel);
+  border: 1px solid var(--pr-border-strong);
+  border-radius: 6px;
+  cursor: pointer;
   flex: 0 0 auto;
 }
 
-.ide-clear {
+.theme-toggle:hover {
+  border-color: var(--pr-ink);
+}
+
+.btn-quiet {
   font-family: var(--k-sans);
-  font-size: 13px;
-  color: var(--ide-muted);
+  font-size: 14px;
+  color: var(--pr-muted);
   background: none;
   border: 0;
   padding: 6px 4px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
-.ide-clear:hover {
-  color: var(--ide-text);
+.btn-quiet:hover {
+  color: var(--pr-text);
 }
 
-.ide-run {
+.btn-outline {
+  font-family: var(--k-sans);
+  font-size: 14px;
+  color: var(--pr-ink);
+  background: var(--pr-panel);
+  border: 1px solid var(--pr-border-strong);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--pr-ink);
+}
+
+.btn-ink {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: var(--k-sans);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #fff;
-  background: var(--ide-accent);
+  background: var(--pr-ink);
   border: 0;
-  border-radius: 4px;
-  padding: 6px 14px;
+  border-radius: 6px;
+  padding: 8px 16px;
   cursor: pointer;
   transition: filter 150ms ease;
 }
 
-.ide-run:hover {
+.btn-ink:hover:not(:disabled) {
   filter: brightness(1.1);
+}
+
+.btn-quiet:disabled,
+.btn-outline:disabled,
+.btn-ink:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .run-icon {
@@ -694,253 +924,282 @@ export default {
   flex: 0 0 auto;
 }
 
+.shortcut-hint,
+.step-counter {
+  font-family: var(--k-sans);
+  font-size: 13px;
+  color: var(--pr-muted);
+  white-space: nowrap;
+}
+
+.step-counter {
+  min-width: 92px;
+  text-align: center;
+}
+
 .mode-label:focus-visible,
-.ide-clear:focus-visible,
-.ide-run:focus-visible,
 .switch:focus-visible,
-.status-lang:focus-visible,
+.pr-lang-select:focus-visible,
+.theme-toggle:focus-visible,
+.btn-quiet:focus-visible,
+.btn-outline:focus-visible,
+.btn-ink:focus-visible,
 .chip:focus-visible {
-  outline: 2px solid var(--ide-cursor);
+  outline: 2px solid var(--pr-cursor);
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .switch,
   .knob,
-  .ide-run {
+  .btn-ink {
     transition: none;
   }
 }
 
-/* Panes: editor on top (phone) / left (desktop), console below / right */
+/* Main: editor + aside, wrapping on narrow viewports */
 
-.panes {
+.pr-main {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   flex: 1 1 auto;
-  min-height: 0;
   min-width: 0;
 }
 
-.pane {
+.pr-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 999 1 560px;
   min-width: 0;
-  min-height: 0;
+  background: var(--pr-panel);
+  padding: 20px 0;
 }
 
-.editor-pane {
+.pr-aside {
   display: flex;
   flex-direction: column;
-  flex: 0 0 55vh;
-  min-height: 0;
+  flex: 1 1 380px;
+  min-width: 0;
+  background: var(--pr-bg);
+  border-left: 1px solid var(--pr-border);
 }
 
-.output-pane {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 30vh;
-  background: var(--ide-bg);
-}
-
-/* Snippet strip, bottom of the editor pane */
+/* Chip row, top of the editor section */
 
 .chip-bar {
   display: flex;
-  flex: 0 0 40px;
+  flex: 0 0 auto;
   align-items: center;
   gap: 6px;
-  padding: 0 12px;
+  padding: 0 24px 14px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  background: var(--ide-panel);
 }
 
 .chip {
   flex: 0 0 auto;
   font-family: var(--k-mono);
   font-size: 13px;
-  color: var(--ide-keyword);
-  background: var(--ide-chip);
-  border: 1px solid var(--ide-border);
-  border-radius: 4px;
+  color: var(--pr-keyword);
+  background: var(--pr-chip);
+  border: 1px solid var(--pr-border-strong);
+  border-radius: 6px;
   padding: 5px 10px;
   white-space: nowrap;
   cursor: pointer;
 }
 
 .chip:hover {
-  border-color: var(--ide-keyword);
+  border-color: var(--pr-keyword);
 }
 
-/* Output console */
+/* Aside panels */
 
-.console-head {
+.pr-panel {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--pr-border);
+}
+
+.pr-panel:last-child {
+  border-bottom: 0;
+}
+
+.pr-panel h2 {
+  margin: 0 0 10px;
+  font-family: var(--k-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pr-muted);
+}
+
+.pr-panel-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 16px 6px;
-  flex: 0 0 auto;
 }
 
-.console-head-label {
-  font-family: var(--k-sans);
-  font-size: 12px;
-  color: var(--ide-muted);
+.pr-timing {
+  font-family: var(--k-mono);
+  font-size: 13px;
+  color: var(--pr-muted);
 }
 
-.console-body {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  padding: 12px 16px;
-}
-
-.console-empty {
+.pr-empty {
   margin: 0;
   font-family: var(--k-sans);
   font-size: 14px;
-  color: var(--ide-muted);
+  color: var(--pr-muted);
 }
 
-.console-line {
+.pr-explain {
+  margin: 0;
+  font-family: "Tiro Devanagari Hindi", serif;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--pr-ink);
+  white-space: pre-line;
+}
+
+.pr-explain.is-error {
+  color: var(--pr-error);
+}
+
+.pr-output {
+  font-family: var(--k-mono);
+}
+
+.pr-line {
   margin: 0 0 4px;
   font-family: var(--k-mono);
   font-size: 15px;
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
-  color: var(--ide-text);
+  color: var(--pr-text);
 }
 
-.console-echo {
-  color: var(--ide-muted);
+.pr-output.is-error .pr-line {
+  color: var(--pr-error);
 }
 
-.console-body.is-error .console-line {
-  color: var(--ide-error);
+.pr-memory {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--k-mono);
+  font-size: 15px;
 }
 
-/* Status bar -- brand ink, VS Code style */
-
-.ide-statusbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  height: 26px;
-  flex: 0 0 26px;
-  padding: 0 12px;
-  background: #1f2766;
-  color: #fff;
-  font-family: var(--k-sans);
-  font-size: 12px;
-  overflow: hidden;
+.pr-memory tr {
+  border-bottom: 1px solid var(--pr-border);
 }
 
-.status-left,
-.status-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
+.pr-memory tr:last-child {
+  border-bottom: 0;
 }
 
-.status-lang {
-  font-family: var(--k-sans);
-  font-size: 12px;
-  color: #fff;
-  background-color: transparent;
-  border: 0;
-  padding: 2px 16px 2px 2px;
-  cursor: pointer;
-  appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, #fff 50%),
-    linear-gradient(135deg, #fff 50%, transparent 50%);
-  background-position: calc(100% - 10px) 55%, calc(100% - 6px) 55%;
-  background-size: 4px 4px, 4px 4px;
-  background-repeat: no-repeat;
+.pr-mem-name {
+  padding: 8px 0;
+  color: var(--pr-text);
+  text-align: left;
 }
 
-.status-lang option {
-  background: var(--ide-panel);
-  color: var(--ide-text);
+.pr-mem-value {
+  padding: 8px 0;
+  color: var(--pr-number);
+  text-align: right;
 }
 
-.status-mode,
-.status-pos,
-.status-shortcut {
-  white-space: nowrap;
-  opacity: 0.92;
+.pr-memory tr.is-changed {
+  background: var(--pr-current-line);
+}
+
+.pr-memory tr.is-changed .pr-mem-name,
+.pr-memory tr.is-changed .pr-mem-value {
+  color: var(--pr-ink);
+  font-weight: 600;
+}
+
+.pr-mem-was {
+  font-weight: 400;
+  opacity: 0.8;
 }
 
 @media (max-width: 480px) {
-  .status-shortcut {
-    display: none;
+  .pr-toolbar {
+    padding: 10px 16px;
   }
 
-  .console-line,
-  .console-empty {
+  .pr-panel,
+  .chip-bar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .pr-line,
+  .pr-empty,
+  .pr-explain {
     font-size: 14px;
-  }
-}
-
-@media (max-width: 720px) {
-  .ide-topbar {
-    gap: 10px;
-  }
-}
-
-@media (min-width: 960px) {
-  .panes {
-    flex-direction: row;
-  }
-
-  .editor-pane {
-    flex: 3 1 0;
-    min-width: 0;
-    min-height: 0;
-    border-right: 1px solid var(--ide-border);
-  }
-
-  .output-pane {
-    flex: 2 1 0;
-    min-width: 0;
-    min-height: 0;
   }
 }
 </style>
 
 <style>
-/* CSS custom properties for the Dark IDE (One Dark palette), plus the
-   CodeMirror theme -- both live in this non-scoped block because
-   CodeMirror renders its own DOM outside this component's scoped-style
-   boundary, and the variables need to reach that DOM too. */
+/* CSS custom properties for the light (default) and dark workspace
+   themes, plus the CodeMirror rules that key off them -- both live in
+   this non-scoped block because CodeMirror renders its own DOM outside
+   this component's scoped-style boundary, and the variables need to
+   reach that DOM too. Light matches the approved mockup; dark reuses the
+   One Dark palette this page shipped with previously. */
 .k-practice {
-  --ide-bg: #282c34;
-  --ide-panel: #21252b;
-  --ide-border: #181a1f;
-  --ide-border-strong: #3e4451;
-  --ide-text: #abb2bf;
-  --ide-muted: #7f848e;
-  --ide-lineno: #4b5263;
-  --ide-lineno-active: #abb2bf;
-  --ide-active-line: #2c313a;
-  --ide-selection: #3e4451;
-  --ide-cursor: #528bff;
-  --ide-keyword: #c678dd;
-  --ide-def: #61afef;
-  --ide-string: #98c379;
-  --ide-number: #d19a66;
-  --ide-operator: #56b6c2;
-  --ide-property: #e5c07b;
-  --ide-comment: #5c6370;
-  --ide-error: #e06c75;
-  --ide-chip: #2c313a;
-  --ide-accent: #4d78cc;
+  --pr-bg: #f5f6f8;
+  --pr-panel: #ffffff;
+  --pr-border: #e3e6ee;
+  --pr-border-strong: #cfd4e2;
+  --pr-text: #24262d;
+  --pr-muted: #5b6070;
+  --pr-ink: #1f2766;
+  --pr-current-line: #eef0fa;
+  --pr-chip: #ffffff;
+  --pr-lineno: #9da2ad;
+  --pr-lineno-active: #1f2766;
+  --pr-cursor: #1f2766;
+  --pr-selection: #d7e3fa;
+  --pr-keyword: #a626a4;
+  --pr-def: #4078f2;
+  --pr-string: #50a14f;
+  --pr-number: #986801;
+  --pr-operator: #0184bc;
+  --pr-property: #c18401;
+  --pr-comment: #a0a1a7;
+  --pr-error: #a3261c;
 }
 
-.k-practice .editor-pane no-ssr,
+.k-practice.theme-dark {
+  --pr-bg: #282c34;
+  --pr-panel: #21252b;
+  --pr-border: #181a1f;
+  --pr-border-strong: #3e4451;
+  --pr-text: #abb2bf;
+  --pr-muted: #7f848e;
+  --pr-ink: #4d78cc;
+  --pr-current-line: #2c3350;
+  --pr-chip: #2c313a;
+  --pr-lineno: #4b5263;
+  --pr-lineno-active: #abb2bf;
+  --pr-cursor: #528bff;
+  --pr-selection: #3e4451;
+  --pr-keyword: #c678dd;
+  --pr-def: #61afef;
+  --pr-string: #98c379;
+  --pr-number: #d19a66;
+  --pr-operator: #56b6c2;
+  --pr-property: #e5c07b;
+  --pr-comment: #5c6370;
+  --pr-error: #e06c75;
+}
+
+.k-practice .pr-editor no-ssr,
 .k-practice .vue-codemirror,
 .k-practice .CodeMirror {
   min-width: 0;
@@ -950,7 +1209,7 @@ export default {
 /* <no-ssr> (Quasar's QNoSsr, registered under the bare "no-ssr" tag here)
    renders as a literal wrapping element around the codemirror component --
    it has to join the flex chain too, or the editor below it can't grow. */
-.k-practice .editor-pane no-ssr {
+.k-practice .pr-editor no-ssr {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -960,9 +1219,10 @@ export default {
 /* vue-codemirror wraps .CodeMirror in its own, non-flex .vue-codemirror div
    (see node_modules/vue-codemirror/src/codemirror.vue) -- that wrapper has
    to be a flex container too, or flex: 1 on .CodeMirror itself has no
-   parent to grow against. The editor pane's own height (55vh on phone,
-   flex: 3 on desktop -- see the scoped block above) sets the total size;
-   CodeMirror just fills whatever is left above the chip bar. */
+   parent to grow against. .pr-editor and .pr-aside are flex-row siblings
+   (see .pr-main in the scoped block) and stretch to match height on wide
+   viewports; on narrow ones .pr-editor wraps onto its own row, so the
+   min-height floors below keep CodeMirror from collapsing. */
 .k-practice .vue-codemirror {
   display: flex;
   flex-direction: column;
@@ -971,8 +1231,8 @@ export default {
 }
 
 .k-practice .CodeMirror {
-  background: var(--ide-bg);
-  color: var(--ide-text);
+  background: var(--pr-panel);
+  color: var(--pr-text);
   font-family: var(--k-mono);
   font-size: 16px;
   line-height: 26px;
@@ -980,7 +1240,7 @@ export default {
   border: 0;
   height: auto;
   flex: 1 1 auto;
-  min-height: 0;
+  min-height: 420px;
 }
 
 .k-practice .CodeMirror-lines {
@@ -989,85 +1249,90 @@ export default {
 
 .k-practice .CodeMirror pre.CodeMirror-line,
 .k-practice .CodeMirror pre.CodeMirror-line-like {
-  padding: 0 16px;
+  padding: 0 24px;
 }
 
 .k-practice .CodeMirror-gutters {
-  background: var(--ide-bg);
+  background: var(--pr-panel);
   border: none;
 }
 
 .k-practice .CodeMirror-linenumber {
-  color: var(--ide-lineno);
+  color: var(--pr-lineno);
   font-family: inherit;
   font-size: 13px;
   padding: 0 8px 0 12px;
 }
 
 .k-practice .CodeMirror-activeline-gutter .CodeMirror-linenumber {
-  color: var(--ide-lineno-active);
+  color: var(--pr-lineno-active);
 }
 
 .k-practice .CodeMirror-activeline-background {
-  background: var(--ide-active-line);
+  background: transparent;
+}
+
+.k-practice .CodeMirror-linebackground.k-current-line {
+  background: var(--pr-current-line);
+  border-left: 3px solid var(--pr-ink);
 }
 
 .k-practice .CodeMirror-cursor {
-  border-left: 2px solid var(--ide-cursor);
+  border-left: 2px solid var(--pr-cursor);
 }
 
 .k-practice .CodeMirror-selected,
 .k-practice .CodeMirror-focused .CodeMirror-selected {
-  background: var(--ide-selection);
+  background: var(--pr-selection);
 }
 
 .k-practice .CodeMirror-matchingbracket {
-  color: var(--ide-text) !important;
+  color: var(--pr-text) !important;
   background: transparent;
-  border-bottom: 1px solid var(--ide-text);
+  border-bottom: 1px solid var(--pr-text);
   text-decoration: none;
 }
 
 .k-practice .CodeMirror-foldgutter-open,
 .k-practice .CodeMirror-foldgutter-folded {
-  color: var(--ide-lineno);
+  color: var(--pr-lineno);
 }
 
-/* Syntax colours for the kalaam mode (One Dark) */
+/* Syntax colours for the kalaam mode */
 .k-practice .cm-keyword {
-  color: var(--ide-keyword);
+  color: var(--pr-keyword);
 }
 
 .k-practice .cm-def {
-  color: var(--ide-def);
+  color: var(--pr-def);
 }
 
 .k-practice .cm-variable,
 .k-practice .cm-variable-2,
 .k-practice .cm-variable-3 {
-  color: var(--ide-text);
+  color: var(--pr-text);
 }
 
 .k-practice .cm-property {
-  color: var(--ide-property);
+  color: var(--pr-property);
 }
 
 .k-practice .cm-operator {
-  color: var(--ide-operator);
+  color: var(--pr-operator);
 }
 
 .k-practice .cm-number,
 .k-practice .cm-atom {
-  color: var(--ide-number);
+  color: var(--pr-number);
 }
 
 .k-practice .cm-string,
 .k-practice .cm-string-2 {
-  color: var(--ide-string);
+  color: var(--pr-string);
 }
 
 .k-practice .cm-comment {
-  color: var(--ide-comment);
+  color: var(--pr-comment);
   font-style: italic;
 }
 
@@ -1075,17 +1340,18 @@ export default {
 .k-practice .cm-meta,
 .k-practice .cm-tag,
 .k-practice .cm-qualifier {
-  color: var(--ide-text);
+  color: var(--pr-text);
 }
 
 .k-practice .cm-error {
-  color: var(--ide-error);
+  color: var(--pr-error);
 }
 
-@media (max-width: 959px) {
+@media (max-width: 719px) {
   .k-practice .CodeMirror {
     font-size: 15px;
     line-height: 24px;
+    min-height: 50vh;
   }
 }
 </style>
