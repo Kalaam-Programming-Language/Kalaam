@@ -23,21 +23,27 @@
             <span class="hint">Change 7 to any number, then run it.</span>
           </div>
 
-          <div class="editor">
+          <div class="editor k-home-code" :class="{ typing }" @mousedown="skipTyping">
             <ol class="gutter" aria-hidden="true">
-              <li v-for="n in lineCount" :key="n">{{ n }}</li>
+              <li v-for="n in gutterLines" :key="n">{{ n }}</li>
             </ol>
-            <textarea
-              v-model="code"
-              class="code"
-              lang="hi"
-              :rows="lineCount"
-              wrap="off"
-              spellcheck="false"
-              autocapitalize="off"
-              autocomplete="off"
-              aria-label="Kalaam program"
-            ></textarea>
+            <div class="code-scroll">
+              <div class="code-layer">
+                <pre class="code-view" aria-hidden="true" v-html="highlighted"></pre>
+                <textarea
+                  v-model="code"
+                  class="code-input"
+                  lang="hi"
+                  wrap="off"
+                  spellcheck="false"
+                  autocapitalize="off"
+                  autocomplete="off"
+                  aria-label="Kalaam program"
+                  :readonly="typing"
+                  @focus="skipTyping"
+                ></textarea>
+              </div>
+            </div>
           </div>
 
           <div class="run-row">
@@ -111,6 +117,28 @@ const SAMPLE = `अंक=7
   जवाब=अंक*i
   दिखाए(जवाब)
 }`;
+const SAMPLE_LINES = SAMPLE.split('\n').length;
+
+// Words the editor colours as keywords: the Hindi keyword map plus the loop particles.
+const H = KalaamKeywords.Hindi;
+const KEYWORDS = new Set([H.Print, H.Input, H.If, H.For, H.While, H.Length, H.Push, H.Function, 'को', 'मे']);
+
+const TOKEN = /("[^"\n]*"?|'[^'\n]*'?)|(\d+(?:\.\d+)?)|([\p{L}\p{M}_][\p{L}\p{M}\p{N}_]*)|([=+\-*/<>!%&|]+)|([\s\S])/gu;
+
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function highlight(source) {
+  return source.replace(TOKEN, (match, str, num, word, op) => {
+    const text = escapeHtml(match);
+    if (str) return `<span class="tok-string">${text}</span>`;
+    if (num) return `<span class="tok-number">${text}</span>`;
+    if (word) return KEYWORDS.has(word) ? `<span class="tok-keyword">${text}</span>` : text;
+    if (op) return `<span class="tok-operator">${text}</span>`;
+    return text;
+  });
+}
 
 export default {
   name: 'Home',
@@ -120,6 +148,8 @@ export default {
   data() {
     return {
       code: SAMPLE,
+      typing: false,
+      typingTimer: null,
       output: [],
       error: '',
       hasRun: false,
@@ -147,9 +177,59 @@ export default {
     lineCount() {
       return this.code.split('\n').length;
     },
+
+    // Keep the editor at full height while the sample types itself out.
+    gutterLines() {
+      return this.typing ? SAMPLE_LINES : this.lineCount;
+    },
+
+    highlighted() {
+      const caret = this.typing ? '<span class="caret"></span>' : '';
+      // The trailing newline keeps an empty last line at full height.
+      return `${highlight(this.code)}${caret}\n`;
+    },
+  },
+
+  mounted() {
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) this.typeSample();
+  },
+
+  beforeDestroy() {
+    clearTimeout(this.typingTimer);
   },
 
   methods: {
+    // Types the sample out character by character, then runs it once.
+    typeSample() {
+      const chars = Array.from(SAMPLE);
+      let i = 0;
+      this.code = '';
+      this.typing = true;
+
+      const step = () => {
+        this.code += chars[i];
+        i += 1;
+        if (i >= chars.length) {
+          this.typing = false;
+          this.typingTimer = setTimeout(this.run, 450);
+          return;
+        }
+        const pause = chars[i - 1] === '\n' ? 220 : 45 + Math.random() * 50;
+        this.typingTimer = setTimeout(step, pause);
+      };
+
+      this.typingTimer = setTimeout(step, 600);
+    },
+
+    // Clicking into the editor mid-animation jumps straight to the full program.
+    skipTyping() {
+      if (!this.typing) return;
+      clearTimeout(this.typingTimer);
+      this.code = SAMPLE;
+      this.typing = false;
+    },
+
     run() {
       const result = Compile(this.code, KalaamKeywords.Hindi);
       this.hasRun = true;
@@ -158,7 +238,12 @@ export default {
       this.output = result.linebylineOutput || [];
       // TimeTaken comes back as text, e.g. "सफल | speed - 0.3 ms"
       const ms = /([\d.]+)\s*ms/.exec(String(result.TimeTaken || ''));
-      this.timeTaken = ms && !this.error ? Number(ms[1]).toFixed(1) : null;
+      if (!ms || this.error) {
+        this.timeTaken = null;
+      } else {
+        const value = Number(ms[1]);
+        this.timeTaken = value < 0.1 ? 'under 0.1' : value.toFixed(1);
+      }
     },
   },
 };
@@ -167,8 +252,8 @@ export default {
 
 <style scoped>
 .page {
-  --code-size: 22px;
-  --code-line: 44px;
+  --code-size: 16px;
+  --code-line: 28px;
 }
 
 /* Hero */
@@ -195,7 +280,8 @@ export default {
   gap: 12px 24px;
 }
 
-/* The sheet: code hangs from ruled lines the way Devanagari hangs from its shirorekha */
+/* The sample editor: a highlighted <pre> under a transparent <textarea>,
+   so it looks like the Practice editor but stays a plain, light textarea. */
 
 .sheet-head {
   display: flex;
@@ -217,58 +303,78 @@ export default {
 }
 
 .editor {
-  --hang: 17px;
   display: grid;
-  grid-template-columns: 2.2em 1fr;
-  font-family: var(--k-serif);
+  grid-template-columns: auto 1fr;
+  background: var(--k-code-bg);
+  border: 1px solid var(--k-code-border);
+  border-radius: 4px;
+  font-family: var(--k-mono);
   font-size: var(--code-size);
   line-height: var(--code-line);
-  /* one rule per line, sitting where the shirorekha of each line falls */
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent var(--hang),
-    var(--k-rule) var(--hang),
-    var(--k-rule) calc(var(--hang) + 1px),
-    transparent calc(var(--hang) + 1px),
-    transparent var(--code-line)
-  );
+  overflow: hidden;
 }
 
 .gutter {
   list-style: none;
   margin: 0;
-  padding: 0 12px 0 0;
-  font-size: 14px;
+  padding: 10px 10px 10px 14px;
+  background: var(--k-code-gutter);
+  border-right: 1px solid var(--k-code-border);
+  color: var(--k-code-lineno);
+  font-size: 0.8em;
   line-height: var(--code-line);
-  color: var(--k-muted);
   font-variant-numeric: tabular-nums;
   text-align: right;
-  border-right: 2px solid var(--k-bar);
   user-select: none;
 }
 
-.code {
-  display: block;
-  width: 100%;
+.code-scroll {
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.code-layer {
+  position: relative;
+  display: inline-block;
+  min-width: 100%;
+}
+
+.code-view,
+.code-input {
   margin: 0;
-  padding: 0 0 0 12px;
+  padding: 0 14px;
+  font: inherit;
+  line-height: var(--code-line);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.code-view {
+  color: var(--k-code-text);
+}
+
+.code-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   border: 0;
   outline: 0;
   resize: none;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: pre;
+  overflow: hidden;
   background: transparent;
-  color: var(--k-ink);
-  font: inherit;
-  line-height: var(--code-line);
-  tab-size: 2;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--k-code-cursor);
+}
+
+.code-input::selection {
+  background: var(--k-code-selection);
 }
 
 .editor:focus-within {
   outline: 2px solid var(--k-ink);
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
 
 .run-row {
@@ -309,7 +415,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 20px;
-  font-family: var(--k-serif);
+  font-family: var(--k-mono);
   font-size: var(--code-size);
   font-variant-numeric: tabular-nums;
 }
@@ -405,13 +511,10 @@ export default {
 
 @media (min-width: 1024px) {
   .page {
-    --code-size: 28px;
-    --code-line: 56px;
+    --code-size: 19px;
+    --code-line: 32px;
   }
 
-  .editor {
-    --hang: 22px;
-  }
 
   .hero {
     grid-template-columns: 5fr 7fr;
@@ -432,6 +535,42 @@ export default {
 @media (prefers-reduced-motion: reduce) {
   .output-lines li {
     animation: none;
+  }
+}
+</style>
+
+
+<style>
+/* Token colours and the typing caret live inside v-html, which scoped styles can't reach. */
+.k-home-code .tok-keyword {
+  color: var(--k-code-keyword);
+}
+
+.k-home-code .tok-string {
+  color: var(--k-code-string);
+}
+
+.k-home-code .tok-number {
+  color: var(--k-code-number);
+}
+
+.k-home-code .tok-operator {
+  color: var(--k-code-operator);
+}
+
+.k-home-code .caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: -0.2em;
+  background: var(--k-code-cursor);
+  animation: k-caret-blink 1s steps(1) infinite;
+}
+
+@keyframes k-caret-blink {
+  50% {
+    opacity: 0;
   }
 }
 </style>

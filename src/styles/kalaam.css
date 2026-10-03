@@ -21,6 +21,26 @@
     'Noto Serif Devanagari', serif;
   --k-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
 
+  /* Code editors (One Light palette). Latin uses the system monospace;
+     Devanagari falls back to the system Devanagari sans, as desktop editors do. */
+  --k-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Roboto Mono',
+    'Noto Sans Mono', 'Noto Sans Devanagari', monospace;
+  --k-code-bg: #ffffff;
+  --k-code-border: #e3e6ee;
+  --k-code-gutter: #f7f8fa;
+  --k-code-lineno: #9da2ad;
+  --k-code-text: #383a42;
+  --k-code-keyword: #a626a4;
+  --k-code-def: #4078f2;
+  --k-code-operator: #0184bc;
+  --k-code-number: #986801;
+  --k-code-string: #50a14f;
+  --k-code-comment: #a0a1a7;
+  --k-code-error: #e45649;
+  --k-code-cursor: #526fff;
+  --k-code-selection: #dfe5fb;
+  --k-code-active-line: #f2f4f9;
+
   --k-max: 1200px;
   --k-gutter: 16px;
 }
