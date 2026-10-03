@@ -435,6 +435,38 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
       }
     }
 
+    //Two beginner mistakes that used to run silently: अगर(a=5) (assigns, always true) and an अगर with no { }
+    //(there is no block to skip, so the code below runs anyway). words[i] is the keyword.
+    function checkConditionSyntax(keyword, words, i) {
+      //only the usual form: the condition in brackets right after the keyword
+      if (!String(words[i + 1] || '').startsWith('(')) {
+        return;
+      }
+
+      let depth = 0;
+      let k = i + 1;
+      for (; k < words.length; k++) {
+        for (const c of words[k]) {
+          depth += c === '(' ? 1 : c === ')' ? -1 : 0;
+        }
+        if (depth <= 0) {
+          break;
+        }
+      }
+
+      let condition = words.slice(i + 1, k + 1).join(' ');
+      let where = linePrefix(keyword + condition);
+
+      //spaces removed first: cleaning splits a>=5 into 'a>', '=', '5'
+      if (/(^|[^=!<>])=($|[^=])/.test(condition.replace(/\s+/g, ''))) {
+        kalaam.error.push(`${where}use == to compare (= sets a value)`);
+      }
+
+      if (k < words.length && !String(words[k]).endsWith('{') && words[k + 1] !== '{') {
+        kalaam.error.push(`${where}${keyword} needs { } around the code it controls`);
+      }
+    }
+
     function _analyzeToken(cleaned_sourcedata, i, tokens) {
       let element = cleaned_sourcedata[i];
 
@@ -596,6 +628,10 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
 
             if (foundcondition != '') {
               PushCondition(foundcondition, tokens);
+            }
+
+            if (element === ActiveLangugaeKeywords.If || element === ActiveLangugaeKeywords.While) {
+              checkConditionSyntax(element, cleaned_sourcedata, i);
             }
           } catch (e) {
             console.log(e, `Error in operating on conditionals ${element}`);

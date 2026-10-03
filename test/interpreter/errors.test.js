@@ -23,7 +23,18 @@ const cases = [
   ['English keyword', 'print(1)', err("Line 1: 'print(1)' समझ नहीं आया")],
   ['undefined function', 'foo(1)', err("Line 1: 'foo(1)' समझ नहीं आया")],
   ['unknown word on a later line', 'a=1\nदिखाए(a)\nshow(a)', err("Line 3: 'show(a)' समझ नहीं आया")],
+  // I: = in a condition, a condition without { }
+  ['single = in an अगर', 'a=5\nअगर(a=5)\n{\nदिखाए("ok")\n}', err('Line 2: use == to compare (= sets a value)')],
+  ['single = with spaces', 'a=5\nअगर (a = 5)\n{\nदिखाए("ok")\n}', err('Line 2: use == to compare (= sets a value)')],
+  ['single = in a जबतक', 'i=0\nजबतक(i=3)\n{\ni=i+1\n}', err('Line 2: use == to compare (= sets a value)')],
+  ['अगर without { }', 'अगर(5>3)\nदिखाए("ok")', err('Line 1: अगर needs { } around the code it controls')],
+  ['अगर without { } before another अगर', 'अगर(5>3)\nदिखाए("ok")\nअगर(1<2)\n{\nदिखाए("b")\n}', err('Line 1: अगर needs { } around the code it controls')],
+  ['जबतक without { }', 'i=0\nजबतक(i<3)\ni=i+1', err('Line 2: जबतक needs { } around the code it controls')],
   // correct programs stay quiet
+  ['>= is a comparison, not an assignment', 'a=5\nअगर(a>=5)\n{\nदिखाए("ok")\n}', { out: ['ok'], isError: false }],
+  ['!= is a comparison', 'a=5\nअगर(a!=4)\n{\nदिखाए("ok")\n}', { out: ['ok'], isError: false }],
+  ['<= with &&', 'a=5\nअगर(a<=5 && a>1)\n{\nदिखाए("ok")\n}', { out: ['ok'], isError: false }],
+  ['{ on the same line as अगर', 'a=5\nअगर(a>1) {\nदिखाए("ok")\n}', { out: ['ok'], isError: false }],
   ['function reads its argument and a global', 'x=10\nरचना f(a)\n{\nदिखाए(a)\nदिखाए(x)\n}\nf(2)', { out: ['2', '10'], isError: false }],
   ['tab before a statement', 'अगर(1<2)\n{\n\tदिखाए(1)\n}', { out: ['1'], isError: false }],
 ];

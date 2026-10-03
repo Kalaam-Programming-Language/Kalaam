@@ -70,13 +70,13 @@ const cases = [
   ["if else वरना", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nवरना\n{\nदिखाए(\"नहीं\")\n}", {"out":["नहीं"],"isError":false}],
   ["if else अन्यथा", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nअन्यथा\n{\nदिखाए(\"नहीं\")\n}", {"out":["नहीं"],"isError":false}],
   ["if ==", "a=5\nअगर(a==5)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
-  ["if single =", "a=5\nअगर(a=5)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}], // quirk, plan item I
+  ["if single =", "a=5\nअगर(a=5)\n{\nदिखाए(\"ok\")\n}", {"out":["Line 2: use == to compare (= sets a value)"],"isError":true}],
   ["if string ==", "a=\"x\"\nअगर(a==\"x\")\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
   ["if and &&", "a=5\nअगर(a>1 && a<10)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
   ["if or ||", "a=5\nअगर(a<1 || a==5)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
   ["if space before brace", "अगर (5>3)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
   ["if brace same line", "अगर(5>3) {\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
-  ["if no braces", "अगर(5>3)\nदिखाए(\"ok\")", {"out":["ok"],"isError":false}], // quirk, plan item I
+  ["if no braces", "अगर(5>3)\nदिखाए(\"ok\")", {"out":["Line 1: अगर needs { } around the code it controls"],"isError":true}],
   ["nested if", "अगर(1<2)\n{\nअगर(2<3)\n{\nदिखाए(\"in\")\n}\n}", {"out":["in"],"isError":false}],
   ["if inside for", "दुहराओ i को (1,5) मे\n{\nअगर(i==3)\n{\nदिखाए(i)\n}\n}", {"out":["3"],"isError":false}],
   ["else-if chain", "a=2\nअगर(a==1)\n{\nदिखाए(1)\n}\nवरना अगर(a==2)\n{\nदिखाए(2)\n}", {"out":["2"],"isError":false}],
