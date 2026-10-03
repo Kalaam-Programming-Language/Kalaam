@@ -84,9 +84,6 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
     //The variables with their calculated values are pushed here. If c=a+b, memory is where you will find the calculated value
     var memory = [];
 
-    //Variable-value pairs similar to memory but limits itself to a user created function.
-    var functionContextmemory = [];
-
     var variables_array = [];
 
     //Pushing the variables that are assigned to filter out defined and undefined variables. Useful in error handling
@@ -1041,6 +1038,10 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
               //Operating on function arguments and setting their values. For e.g the function add(x,y) might be called as add(3,4)
 
               //so we set x=3, y=4 and set self variable-value pair in functionContextmemory
+
+              //Variable-value pairs similar to memory but limited to this one call. A fresh array per call, so a
+              //second call does not see (and print) the arguments of the first one.
+              let functionContextmemory = [];
 
               functionArguments.forEach((el, index) => {
                 let val = passedValues[index];

@@ -78,7 +78,7 @@ const cases = [
   ["function basic", "रचना जोड़(a,b)\n{\nदिखाए(a+b)\n}\nजोड़(2,3)", {"out":["5"],"isError":false}],
   ["function return", "रचना जोड़(a,b)\n{\nवापस a+b\n}\nc=जोड़(2,3)\nदिखाए(c)", {"out":["जोड़"],"isError":false}],
   ["function no params", "रचना hi()\n{\nदिखाए(\"hi\")\n}\nhi()", {"out":["hi"],"isError":false}],
-  ["function twice", "रचना hi(x)\n{\nदिखाए(x)\n}\nhi(1)\nhi(2)", {"out":["1","1","2"],"isError":false}], // quirk, plan item E
+  ["function twice", "रचना hi(x)\n{\nदिखाए(x)\n}\nhi(1)\nhi(2)", {"out":["1","2"],"isError":false}],
   ["function sees global", "g=7\nरचना f()\n{\nदिखाए(g)\n}\nf()", {"out":["7"],"isError":false}],
   ["call undefined fn", "foo(1)", {"out":[],"isError":false}], // quirk, plan item H1
   ["array literal print", "a=[1,2,3]\nदिखाए(a)", {"out":["[1,2,3]"],"isError":false}],
