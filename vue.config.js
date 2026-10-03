@@ -1,4 +1,7 @@
 module.exports = {
+  // Don't publish .map files: they expose the readable source on the live site.
+  productionSourceMap: false,
+
   "transpileDependencies": [
     "vuetify",
     "pwa"
