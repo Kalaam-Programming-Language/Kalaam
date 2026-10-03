@@ -30,8 +30,11 @@
             <div class="code-scroll">
               <div class="code-layer">
                 <pre class="code-view" aria-hidden="true" v-html="highlighted"></pre>
+                <!-- :value + @input rather than v-model: v-model waits for IME
+                     composition to finish, so Hindi keyboards would show nothing
+                     in the highlighted layer until each word is committed. -->
                 <textarea
-                  v-model="code"
+                  :value="code"
                   class="code-input"
                   lang="hi"
                   wrap="off"
@@ -40,6 +43,7 @@
                   autocomplete="off"
                   aria-label="Kalaam program"
                   :readonly="typing"
+                  @input="code = $event.target.value"
                   @focus="skipTyping"
                 ></textarea>
               </div>
@@ -208,6 +212,8 @@ export default {
       clearTimeout(this.typingTimer);
       this.code = SAMPLE;
       this.typing = false;
+      // The cancelled timer would have run the sample; run it now instead.
+      this.run();
     },
 
     run() {
