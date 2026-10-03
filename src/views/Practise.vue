@@ -6,35 +6,26 @@
       <!-- Learning Mode: step through the program one line at a time -->
       <div v-if="this.$store.state.LearningOn" class="ide">
         <div class="toolbar">
-          <div class="toolbar-group mode-switch" role="group" aria-label="Mode">
+          <div class="toolbar-group mode-toggle">
+            <button type="button" class="mode-label" :class="{ on: !learning }" @click="setLearning(false)">Practice</button>
             <button
               type="button"
-              class="seg-btn"
-              :class="{ active: this.$store.state.PractiseOn }"
-              :aria-pressed="this.$store.state.PractiseOn ? 'true' : 'false'"
-              @click="this.$store.state.PractiseOn ? null : SwitchMode()"
-            >Practice</button>
-            <button
-              type="button"
-              class="seg-btn"
-              :class="{ active: this.$store.state.LearningOn }"
-              :aria-pressed="this.$store.state.LearningOn ? 'true' : 'false'"
-              @click="this.$store.state.LearningOn ? null : SwitchMode()"
-            >Learning</button>
+              role="switch"
+              class="switch"
+              :class="{ on: learning }"
+              :aria-checked="learning ? 'true' : 'false'"
+              aria-label="Learning mode"
+              @click="SwitchMode()"
+            ><span class="knob"></span></button>
+            <button type="button" class="mode-label" :class="{ on: learning }" @click="setLearning(true)">Learning</button>
           </div>
 
-          <div class="toolbar-group lang-switch" role="group" aria-label="Keyword language">
-            <button
-              v-for="l in languageLabels"
-              :key="l.value"
-              type="button"
-              class="lang-btn"
-              :class="{ active: ActiveLanguage === l.value }"
-              :aria-pressed="ActiveLanguage === l.value ? 'true' : 'false'"
-              :lang="l.lang"
-              @click="ActiveLanguage = l.value"
-            >{{ l.label }}</button>
-          </div>
+          <label class="toolbar-group lang-select">
+            <span class="k-muted">Language</span>
+            <select v-model="ActiveLanguage">
+              <option v-for="l in languageLabels" :key="l.value" :value="l.value" :lang="l.lang">{{ l.label }} ({{ l.value }})</option>
+            </select>
+          </label>
 
           <div class="toolbar-actions">
             <button class="k-button" @click="RunLinebyLine()">Next</button>
@@ -86,35 +77,26 @@
       <!-- Practice Mode: write code and run it -->
       <div v-if="this.$store.state.PractiseOn" class="ide">
         <div class="toolbar">
-          <div class="toolbar-group mode-switch" role="group" aria-label="Mode">
+          <div class="toolbar-group mode-toggle">
+            <button type="button" class="mode-label" :class="{ on: !learning }" @click="setLearning(false)">Practice</button>
             <button
               type="button"
-              class="seg-btn"
-              :class="{ active: this.$store.state.PractiseOn }"
-              :aria-pressed="this.$store.state.PractiseOn ? 'true' : 'false'"
-              @click="this.$store.state.PractiseOn ? null : SwitchMode()"
-            >Practice</button>
-            <button
-              type="button"
-              class="seg-btn"
-              :class="{ active: this.$store.state.LearningOn }"
-              :aria-pressed="this.$store.state.LearningOn ? 'true' : 'false'"
-              @click="this.$store.state.LearningOn ? null : SwitchMode()"
-            >Learning</button>
+              role="switch"
+              class="switch"
+              :class="{ on: learning }"
+              :aria-checked="learning ? 'true' : 'false'"
+              aria-label="Learning mode"
+              @click="SwitchMode()"
+            ><span class="knob"></span></button>
+            <button type="button" class="mode-label" :class="{ on: learning }" @click="setLearning(true)">Learning</button>
           </div>
 
-          <div class="toolbar-group lang-switch" role="group" aria-label="Keyword language">
-            <button
-              v-for="l in languageLabels"
-              :key="l.value"
-              type="button"
-              class="lang-btn"
-              :class="{ active: ActiveLanguage === l.value }"
-              :aria-pressed="ActiveLanguage === l.value ? 'true' : 'false'"
-              :lang="l.lang"
-              @click="ActiveLanguage = l.value"
-            >{{ l.label }}</button>
-          </div>
+          <label class="toolbar-group lang-select">
+            <span class="k-muted">Language</span>
+            <select v-model="ActiveLanguage">
+              <option v-for="l in languageLabels" :key="l.value" :value="l.value" :lang="l.lang">{{ l.label }} ({{ l.value }})</option>
+            </select>
+          </label>
 
           <div class="toolbar-actions">
             <button class="k-button" @click="Run()">Run</button>
@@ -322,6 +304,9 @@ export default {
   //Created() is Called synchronously after the instance is created or when kalaam.io/practise is visited
 
   computed: {
+    learning() {
+      return this.$store.state.LearningOn;
+    },
     // "Ctrl + Enter" everywhere except Mac, where it's "⌘ Enter".
     shortcutHint() {
       if (
@@ -418,6 +403,10 @@ export default {
 
     SwitchMode: function () {
       this.$store.commit("changeMode");
+    },
+    // Labels beside the toggle switch to the named mode (no-op if already there).
+    setLearning(on) {
+      if (on !== this.learning) this.SwitchMode();
     },
     // Below 3 are the fucntions provided by Codemirror code editor out of the box.
     // The editor fills its pane via CSS (see .k-practice .CodeMirror in the
@@ -551,6 +540,86 @@ export default {
   min-width: 0;
 }
 
+/* Practice / Learning toggle */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-label {
+  font: inherit;
+  font-size: 14px;
+  color: var(--k-muted);
+  background: none;
+  border: 0;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+.mode-label.on {
+  color: var(--k-ink);
+  font-weight: 600;
+}
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  background: var(--k-rule);
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.switch.on {
+  background: var(--k-ink);
+}
+
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 150ms ease;
+}
+
+.switch.on .knob {
+  transform: translateX(18px);
+}
+
+/* Language dropdown */
+.lang-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.lang-select select {
+  font: inherit;
+  font-size: 14px;
+  color: var(--k-ink);
+  background: var(--k-code-bg);
+  border: 1px solid var(--k-rule);
+  border-radius: 4px;
+  padding: 6px 28px 6px 10px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .knob {
+    transition: none;
+  }
+}
+
 /* Toolbar actions match the height of the segmented controls. */
 .toolbar .k-button,
 .toolbar .k-button-quiet {
@@ -602,32 +671,6 @@ export default {
 .shortcut-hint {
   font-size: 13px;
   white-space: nowrap;
-}
-
-.seg-btn,
-.lang-btn {
-  font: inherit;
-  font-family: var(--k-sans);
-  font-size: 14px;
-  color: var(--k-ink);
-  background: transparent;
-  border: 1px solid var(--k-rule);
-  border-radius: 4px;
-  padding: 7px 12px;
-  line-height: 1.2;
-  cursor: pointer;
-}
-
-.seg-btn:hover,
-.lang-btn:hover {
-  border-color: var(--k-ink);
-}
-
-.seg-btn.active,
-.lang-btn.active {
-  background: var(--k-ink);
-  border-color: var(--k-ink);
-  color: #fff;
 }
 
 /* Panes: editor left, console right on desktop; stacked on phone */
@@ -780,11 +823,6 @@ export default {
     font-size: 15px;
   }
 
-  .seg-btn,
-  .lang-btn {
-    font-size: 13px;
-    padding: 6px 10px;
-  }
 }
 </style>
 
