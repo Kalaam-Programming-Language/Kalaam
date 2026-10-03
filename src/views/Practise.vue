@@ -161,7 +161,7 @@
 
 // import { KalaamKeywords } from "../lib/Compiler/constants";
 
-import { KalaamKeywords } from "kalaam";
+import { KalaamKeywords } from "../kalaam/Compiler/main";
 
 const langs = Object.keys(KalaamKeywords);
 
@@ -200,7 +200,7 @@ import "codemirror/addon/fold/xml-fold.js";
 //this should come from npm package.
 //import Compile from "../lib/Compiler/main";
 
-import { Compile } from "kalaam";
+import { Compile } from "../kalaam/Compiler/main";
 // //Central data storage of Kalaam
 // import { mapState } from "vuex";
 

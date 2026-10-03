@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import { Compile, KalaamKeywords } from 'kalaam';
+import { Compile, KalaamKeywords } from '../kalaam/Compiler/main';
 import { highlight } from '../components/kalaamHighlight';
 import SiteHeader from '../components/SiteHeader.vue';
 import SiteFooter from '../components/SiteFooter.vue';

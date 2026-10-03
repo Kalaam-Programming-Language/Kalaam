@@ -2,7 +2,7 @@
 // (the Home sample, Examples, Documentation). Colours come from the
 // --k-code-* tokens in src/styles/kalaam.css.
 
-import { KalaamKeywords } from 'kalaam';
+import { KalaamKeywords } from '../kalaam/Compiler/main';
 
 const KEYWORD_FIELDS = ['Print', 'Input', 'If', 'For', 'While', 'Length', 'Push', 'Function'];
 
