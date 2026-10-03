@@ -5,7 +5,7 @@
     <main class="k-main">
       <section class="hero">
         <div class="hero-text">
-          <h1 class="k-title" lang="hi">अपनी भाषा में कोड लिखो</h1>
+          <h1 class="k-title">Programming in Indian languages</h1>
           <p class="lede">
             Kalaam is a programming language with keywords in Hindi, Marathi, Bengali,
             Telugu and Odia. Write a program on your phone and run it in the browser,
@@ -245,7 +245,7 @@ export default {
 }
 
 .hero .k-title {
-  font-size: 44px;
+  font-size: 38px;
 }
 
 .lede {
@@ -481,7 +481,7 @@ export default {
 
 @media (min-width: 720px) {
   .hero .k-title {
-    font-size: 60px;
+    font-size: 48px;
   }
 
   .entry {
@@ -504,7 +504,7 @@ export default {
   }
 
   .hero .k-title {
-    font-size: 64px;
+    font-size: 52px;
   }
 
   .k-sheet {
