@@ -331,6 +331,8 @@ function CalculateValues(calculation, j, updated_tokens, multiCal) {
 
     if (isNumber(joinStringVar.charAt(0)) || multiCal) {
       NewStringVar = eval(joinStringVar);
+
+      checkCalculatedValue(NewStringVar, calculation);
     }
 
     //Not realted to numbers at all but strings
@@ -349,9 +351,35 @@ function CalculateValues(calculation, j, updated_tokens, multiCal) {
   } catch (e) {
     //if c=a+b, and either b,a is undefined
     result = e;
+
+    let undefinedName = e && e.name === 'ReferenceError' ? /^(\S+) is not defined/.exec(e.message) : null;
+
+    //only blame a name the user wrote in the calculation (a string value can also end up unquoted here)
+    if (undefinedName && !String(calculation).split(/[\s+\-*\/%()[\],<>=!&|]/).includes(undefinedName[1])) {
+      undefinedName = null;
+    }
+
+    CalculationProblems.push(undefinedName ? { kind: 'undefined', name: undefinedName[1], expression: calculation } : { kind: 'calculate', expression: calculation });
   }
 
   return result;
+}
+
+//Problems found while calculating (undefined variable, division by zero, ...). Compile() turns them into
+//Kalaam errors; the calculation itself still returns what it always returned.
+var CalculationProblems = [];
+
+function getCalculationProblems() {
+  return CalculationProblems;
+}
+
+//eval() gives Infinity or NaN instead of failing, e.g. for 5/0 and 0/0
+function checkCalculatedValue(value, expression) {
+  if (typeof value === 'number' && !isFinite(value)) {
+    let isDivision = String(expression).includes('/') || String(expression).includes('%');
+
+    CalculationProblems.push({ kind: isDivision ? 'divide' : 'calculate', expression: String(expression) });
+  }
 }
 
 //Have to move this two functions to Pushfunctions.js
@@ -729,6 +757,7 @@ var AccumulateValue = '';
 
 function ResetValue() {
   AccumulateValue = '';
+  CalculationProblems = [];
 }
 
 //One of the most important functions
@@ -939,6 +968,8 @@ function AssignorUpdateValues(sourcedata, i, updated_tokens, iterator, OriginalI
 
         if (isPureEval(varvalue)) {
           let value = eval(varvalue);
+
+          checkCalculatedValue(value, varvalue);
 
           //write function for this, so repeatable
           updated_tokens.push({
@@ -1362,4 +1393,6 @@ export {
   UpdateUpdated_tokenswithValues,
   SetArrayIndexValue,
   AddtoExecutionStack,
+  getCalculationProblems,
+  checkCalculatedValue,
 };

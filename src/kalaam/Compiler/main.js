@@ -45,6 +45,8 @@ import {
   ForLoopSetMetadata,
   SetArrayIndexValue,
   AddtoExecutionStack,
+  getCalculationProblems,
+  checkCalculatedValue,
 } from '../Scripts/main.js';
 
 import scanner from '../scanner/main';
@@ -73,6 +75,7 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
     const sourcedata = sourcecode;
 
     var LinebylineSourcedata = sourcedata.replace(/(?:\r\n|\r|\n)/g, 'breakpoint').split('breakpoint');
+    const SourceLines = LinebylineSourcedata.slice();
 
     //This is where formatted and cleaned sourcedata will go.
     var cleaned_sourcedata = [];
@@ -159,9 +162,15 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
 
     const BuildCondition = BuildOperation.BuildCondition();
 
-    //"Line N: " for the first source line containing text, for error messages ('' when no line has it)
+    //"Line N: " for the first source line containing text, for error messages ('' when no line has it).
+    //Searches SourceLines, because findtokenPositioninCode cleans LinebylineSourcedata in place while running.
     function linePrefix(text) {
-      let index = LinebylineSourcedata.findIndex((line) => line.includes(text));
+      let index = SourceLines.findIndex((line) => line.includes(text));
+
+      if (index === -1) {
+        let cleanedText = GetcleanedExpression(String(text));
+        index = SourceLines.findIndex((line) => GetcleanedExpression(line).includes(cleanedText));
+      }
 
       return index === -1 ? '' : `Line ${index + 1}: `;
     }
@@ -219,6 +228,8 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
               //we are using Javascript's eval function to calculate direct arithmetic operations
               let outputpure = eval(el.value);
 
+              checkCalculatedValue(outputpure, el.value);
+
               el.value = outputpure;
 
               handleOutput(el.value, kalaam);
@@ -243,6 +254,15 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
           }
         }
       });
+
+      //दिखाए(zzz) with zzz never assigned used to print nothing
+      if (Tokens[j + 1].type === 'expression' && isVariable(VariableToPrint) && !memory.some((el) => el.name === VariableToPrint)) {
+        let message = `${linePrefix(token + NextTokenValue)}'${VariableToPrint}' is not defined`;
+
+        if (!kalaam.error.includes(message)) {
+          kalaam.error.push(message);
+        }
+      }
 
       //This is how we print Array in Kalaam
       if (Tokens[j + 1].type === 'Array') {
@@ -313,6 +333,8 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
           handleOutput(NextTokenValue, kalaam);
         } else {
           let a = eval(NextTokenValue);
+
+          checkCalculatedValue(a, NextTokenValue);
 
           handleOutput(a, kalaam);
         }
@@ -1255,6 +1277,16 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
     function onlyUnique(value, index, arr) {
       return arr.indexOf(value) === index;
     }
+
+    //Calculations that failed or divided by zero become Kalaam errors (each message once)
+    getCalculationProblems().forEach((problem) => {
+      let where = linePrefix(problem.expression);
+      let message = problem.kind === 'undefined' ? `${where}'${problem.name}' is not defined` : problem.kind === 'divide' ? `${where}cannot divide by zero` : `${where}cannot calculate '${problem.expression}'`;
+
+      if (!kalaam.error.includes(message)) {
+        kalaam.error.push(message);
+      }
+    });
 
     var assigned_variables = assigned_variables.filter(onlyUnique);
 
