@@ -11,10 +11,12 @@
       <section v-for="group in groups" :key="group.heading" class="k-band">
         <h2 class="k-heading">{{ group.heading }}</h2>
         <div class="band-body examples">
-          <article v-for="ex in group.items" :key="ex.id" class="k-sheet example">
-            <h3 class="example-title" lang="hi">{{ ex.title }}</h3>
-            <pre class="k-code" :id="ex.id">{{ ex.code }}</pre>
-            <button class="k-button-quiet" @click="CopyCode(ex.id)">Open in practice</button>
+          <article v-for="ex in group.items" :key="ex.id" class="example">
+            <header class="example-bar">
+              <h3 class="example-title" lang="hi">{{ ex.title }}</h3>
+              <button class="example-open" @click="CopyCode(ex.id)">Open in practice</button>
+            </header>
+            <pre v-kalaam-code class="k-code" :id="ex.id">{{ ex.code }}</pre>
           </article>
         </div>
       </section>
@@ -322,7 +324,8 @@ DecimalValue=DecimalValue+value
   methods: {
     CopyCode(el) {
       const copyText = document.getElementById(el);
-      this.$store.state.CurrentCode = copyText.innerHTML;
+      // textContent, not innerHTML: the block is highlighted markup now
+      this.$store.state.CurrentCode = copyText.textContent;
       this.$router.push('/Practice');
     },
   },
@@ -336,26 +339,56 @@ DecimalValue=DecimalValue+value
   grid-template-columns: 1fr;
 }
 
+/* Each example is an editor window: a title bar, then the code. */
 .example {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  background: var(--k-code-bg);
+  border: 1px solid var(--k-code-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.example-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 8px 14px;
+  background: var(--k-code-gutter);
+  border-bottom: 1px solid var(--k-code-border);
 }
 
 .example-title {
-  font-family: var(--k-serif);
-  font-size: 19px;
-  font-weight: 400;
-  color: var(--k-ink);
   margin: 0;
+  font-family: var(--k-serif);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--k-ink);
 }
 
+.example-open {
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--k-ink);
+  background: var(--k-code-bg);
+  border: 1px solid var(--k-code-border);
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.example-open:hover {
+  border-color: var(--k-ink);
+}
+
+/* The window provides the frame, so the code block drops its own. */
 .example pre.k-code {
   flex: 1;
-}
-
-.example .k-button-quiet {
-  align-self: flex-start;
+  border: 0;
+  border-radius: 0;
 }
 
 @media (min-width: 720px) {

@@ -6,11 +6,13 @@ import VueRouter from 'vue-router';
 import router from './router';
 import './quasar';
 import './styles/kalaam.css';
+import { kalaamCode } from './components/kalaamHighlight';
 
 
 
 
 Vue.config.productionTip = false;
+Vue.directive('kalaam-code', kalaamCode);
 
 new Vue({
     store,

@@ -49,9 +49,9 @@
 
             <div class="example-head">
               <h3>Example</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode1')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1">Name="Hello World"
+            <pre v-kalaam-code class="k-code" id="DocCode1">Name="Hello World"
 दिखाए(Name)
 
 दिखाए("Tic Tac Toe")
@@ -98,9 +98,9 @@ Name="Kalam"
 
             <div class="example-head">
               <h3>Try it</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode2')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1">इनपुट(Name)
+            <pre v-kalaam-code class="k-code" id="DocCode2">इनपुट(Name)
 दिखाए(Name)</pre>
           </div>
         </transition>
@@ -153,9 +153,9 @@ Name="Kalam"
 
             <div class="example-head">
               <h3>Example</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode3')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1">इनपुट(language)
+            <pre v-kalaam-code class="k-code" id="DocCode3">इनपुट(language)
 अगर(language=='kalam')
 {
   दिखाए('Alright, that is cool!')
@@ -210,9 +210,9 @@ Name="Kalam"
 
             <div class="example-head">
               <h3>Example</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode4')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1"># उदाहरण 1
+            <pre v-kalaam-code class="k-code" id="DocCode4"># उदाहरण 1
 दुहराओ x को (0,10) मे
 {
   value= x*5
@@ -267,9 +267,9 @@ Name="HALF COOKED RICE"
 
             <div class="example-head">
               <h3>Try it</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode5')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1">count=0
+            <pre v-kalaam-code class="k-code" id="DocCode5">count=0
 जबतक(count&lt;25)
 {
   दिखाए(count)
@@ -311,9 +311,9 @@ Name="HALF COOKED RICE"
 
             <div class="example-head">
               <h3>Try it</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode6')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1">City='Banglore'
+            <pre v-kalaam-code class="k-code" id="DocCode6">City='Banglore'
 Cities=['Pusad','Pune','Mumbai','Delhi']
 
 Citylength= City.संख्या()
@@ -352,9 +352,9 @@ Citieslength=Cities.संख्या()
 
             <div class="example-head">
               <h3>Example</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID1')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode7')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID1"># उदाहरण 1
+            <pre v-kalaam-code class="k-code" id="DocCode7"># उदाहरण 1
 Numbers=[]
 दुहराओ x को (1,10)
 {
@@ -397,7 +397,7 @@ Numbers.पुश(type)
 
             <h3>How to use it</h3>
             <p>1. Define a function:</p>
-            <pre class="k-code">रचना रचना-का-नाम (पर्याय1, पर्याय2)</pre>
+            <pre v-kalaam-code class="k-code">रचना रचना-का-नाम (पर्याय1, पर्याय2)</pre>
             <p>
               <b>Function name:</b> case sensitive, and should use only letters of the
               alphabet.
@@ -409,7 +409,7 @@ Numbers.पुश(type)
             </p>
 
             <p>2. Call the function:</p>
-            <pre class="k-code">रचना-का-नाम (पर्याय1, पर्याय2)</pre>
+            <pre v-kalaam-code class="k-code">रचना-का-नाम (पर्याय1, पर्याय2)</pre>
             <p>
               When calling a function, its name must match the declared name exactly
               &mdash; for example, <code class="k-code">PrintFullName</code> is not the
@@ -423,7 +423,7 @@ Numbers.पुश(type)
               <code class="k-code">LastName = 'Tendulkar'</code>
             </p>
             <p>Function declaration and body:</p>
-            <pre class="k-code">PrintFullName (x, y)
+            <pre v-kalaam-code class="k-code">PrintFullName (x, y)
 {
   दिखाए( x + y )
 }</pre>
@@ -437,9 +437,9 @@ Numbers.पुश(type)
 
             <div class="example-head">
               <h3>Try it</h3>
-              <button class="k-button-quiet" @click="CopyCode('CodeID2')">Open in practice</button>
+              <button class="k-button-quiet" @click="CopyCode('DocCode8')">Open in practice</button>
             </div>
-            <pre class="k-code" id="CodeID2">FirstName='Sachin'
+            <pre v-kalaam-code class="k-code" id="DocCode8">FirstName='Sachin'
 LastName='Tendulkar'
 रचना PrintFullName(First,Last)
 {
@@ -511,7 +511,8 @@ export default {
   methods: {
     CopyCode(el) {
       const copyText = document.getElementById(el);
-      this.$store.state.CurrentCode = copyText.innerHTML;
+      // textContent, not innerHTML: the block is highlighted markup now
+      this.$store.state.CurrentCode = copyText.textContent;
       this.$router.push('/Practice');
     },
   },

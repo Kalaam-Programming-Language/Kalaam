@@ -221,3 +221,65 @@ pre.k-code {
     padding: 56px 0 32px;
   }
 }
+
+/* Syntax token colours (used by kalaamHighlight.js output) */
+.tok-keyword {
+  color: var(--k-code-keyword);
+}
+
+.tok-string {
+  color: var(--k-code-string);
+}
+
+.tok-number {
+  color: var(--k-code-number);
+}
+
+.tok-operator {
+  color: var(--k-code-operator);
+}
+
+.tok-comment {
+  color: var(--k-code-comment);
+  font-style: italic;
+}
+
+/* Read-only code block (v-kalaam-code): looks like the editor, numbered lines */
+pre.k-codeblock {
+  margin: 0;
+  padding: 10px 14px 10px 0;
+  font-family: var(--k-mono);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--k-code-text);
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+  counter-reset: k-line;
+  background-color: var(--k-code-bg);
+  background-image: linear-gradient(
+    to right,
+    var(--k-code-gutter) 0,
+    var(--k-code-gutter) 40px,
+    var(--k-code-border) 40px,
+    var(--k-code-border) 41px,
+    transparent 41px
+  );
+  background-attachment: local;
+  border: 1px solid var(--k-code-border);
+  border-radius: 4px;
+}
+
+pre.k-codeblock .k-line::before {
+  counter-increment: k-line;
+  content: counter(k-line);
+  display: inline-block;
+  width: 40px;
+  padding-right: 10px;
+  margin-right: 14px;
+  font-size: 12px;
+  color: var(--k-code-lineno);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}

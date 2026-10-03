@@ -51,7 +51,7 @@ export default {
   max-width: var(--k-max);
   margin: 0 auto;
   padding: 16px var(--k-gutter);
-  border-bottom: 3px solid var(--k-bar);
+  border-bottom: 1px solid var(--k-rule);
   font-family: var(--k-sans);
 }
 

@@ -107,6 +107,7 @@
 
 <script>
 import { Compile, KalaamKeywords } from 'kalaam';
+import { highlight } from '../components/kalaamHighlight';
 import SiteHeader from '../components/SiteHeader.vue';
 import SiteFooter from '../components/SiteFooter.vue';
 
@@ -118,27 +119,6 @@ const SAMPLE = `अंक=7
   दिखाए(जवाब)
 }`;
 const SAMPLE_LINES = SAMPLE.split('\n').length;
-
-// Words the editor colours as keywords: the Hindi keyword map plus the loop particles.
-const H = KalaamKeywords.Hindi;
-const KEYWORDS = new Set([H.Print, H.Input, H.If, H.For, H.While, H.Length, H.Push, H.Function, 'को', 'मे']);
-
-const TOKEN = /("[^"\n]*"?|'[^'\n]*'?)|(\d+(?:\.\d+)?)|([\p{L}\p{M}_][\p{L}\p{M}\p{N}_]*)|([=+\-*/<>!%&|]+)|([\s\S])/gu;
-
-function escapeHtml(text) {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function highlight(source) {
-  return source.replace(TOKEN, (match, str, num, word, op) => {
-    const text = escapeHtml(match);
-    if (str) return `<span class="tok-string">${text}</span>`;
-    if (num) return `<span class="tok-number">${text}</span>`;
-    if (word) return KEYWORDS.has(word) ? `<span class="tok-keyword">${text}</span>` : text;
-    if (op) return `<span class="tok-operator">${text}</span>`;
-    return text;
-  });
-}
 
 export default {
   name: 'Home',
@@ -541,23 +521,7 @@ export default {
 
 
 <style>
-/* Token colours and the typing caret live inside v-html, which scoped styles can't reach. */
-.k-home-code .tok-keyword {
-  color: var(--k-code-keyword);
-}
-
-.k-home-code .tok-string {
-  color: var(--k-code-string);
-}
-
-.k-home-code .tok-number {
-  color: var(--k-code-number);
-}
-
-.k-home-code .tok-operator {
-  color: var(--k-code-operator);
-}
-
+/* The typing caret lives inside v-html, which scoped styles can't reach. */
 .k-home-code .caret {
   display: inline-block;
   width: 2px;
