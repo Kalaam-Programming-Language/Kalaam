@@ -59,7 +59,8 @@ export function isVariable() {
     //Marathi is written in Devanagari, like Hindi
     let regex = al === 'Hindi' || al === 'Marathi' ? HindiRegex : al === 'Bengali' ? BengaliRegex : al === 'Telugu' ? TeluguRegex : al === 'Odia' ? OdiaRegex : console.log('ERR: NO REGEX FOUND ');
 
-    return (/^[a-z]+$/i.test(element) || regex.test(element)) && !Keywords().includes(element);
+    //letters, then letters, digits or _ (a1, my_var)
+    return (/^[a-z_][a-z0-9_]*$/i.test(element) || regex.test(element)) && !Keywords().includes(element);
   };
 }
 export function isNumber() {

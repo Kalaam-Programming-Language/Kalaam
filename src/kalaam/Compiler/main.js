@@ -911,13 +911,17 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
                 let WhileLoopSourcedataIndexStart = 0;
                 let WhileLoopSourcedataTokens = [];
 
+                //a name starts with a letter and may go on with digits or _ (i1, my_var)
+                let isNameChar = (c, isFirst) => c !== '' && (isVariable(c) || (!isFirst && /^[0-9_]$/.test(c)));
+
                 for (let i = 0; i < element.length; i++) {
                   let x = element.charAt(i);
+                  let isPartOfName = isNameChar(x, variable === '');
 
-                  if (isVariable(x)) {
+                  if (isPartOfName) {
                     variable = variable + x;
                   }
-                  if (!isVariable(element.charAt(i + 1)) && isVariable(x)) {
+                  if (isPartOfName && !isNameChar(element.charAt(i + 1), false)) {
                     let token = memory.find((el) => el.name === variable);
 
                     ExtratcedVariable.push({

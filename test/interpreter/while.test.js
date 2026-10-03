@@ -34,3 +34,13 @@ test('loop guard: a जबतक that never increments returns within 5s', () =>
 test('loop guard: an empty body that never changes the variable', () => {
   expect(run('i=0\nजबतक(i<3)\n{\n}', { timeout: 5000 })).toEqual({ out: [LOOP_GUARD], isError: true });
 });
+
+// Plan item H3: the condition's variable extractor keeps names with digits
+// and underscores whole (it used to cut i1 down to i).
+test('while over a name with a digit', () => {
+  expect(run('i1=0\nजबतक(i1<3)\n{\nदिखाए(i1)\ni1=i1+1\n}')).toEqual({ out: ['0', '1', '2'], isError: false });
+});
+
+test('while with an underscore name as the limit', () => {
+  expect(run('n_max=2\ni=0\nजबतक(i<n_max)\n{\ni=i+1\n}\nदिखाए(i)')).toEqual({ out: ['2'], isError: false });
+});

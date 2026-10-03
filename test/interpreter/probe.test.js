@@ -30,8 +30,8 @@ const cases = [
   ["decimal", "c=1.5+1.5\nदिखाए(c)", {"out":["3"],"isError":false}],
   ["divide by zero", "c=5/0\nदिखाए(c)", {"out":["Line 1: cannot divide by zero"],"isError":true}],
   ["reassign", "a=1\na=a+1\nदिखाए(a)", {"out":["2"],"isError":false}],
-  ["var with digit", "a1=5\nदिखाए(a1)", {"out":["Line 1: 'a1' समझ नहीं आया"],"isError":true}], // quirk, plan item H3
-  ["var underscore", "my_var=5\nदिखाए(my_var)", {"out":["Line 1: 'my_var' समझ नहीं आया"],"isError":true}], // quirk, plan item H3
+  ["var with digit", "a1=5\nदिखाए(a1)", {"out":["5"],"isError":false}],
+  ["var underscore", "my_var=5\nदिखाए(my_var)", {"out":["5"],"isError":false}],
   ["devanagari digits", "a=५\nदिखाए(a)", {"out":["5"],"isError":false}],
   ["string with spaces", "a=\"hello world\"\nदिखाए(a)", {"out":["hello world"],"isError":false}],
   ["single quotes", "a='hi'\nदिखाए(a)", {"out":["hi"],"isError":false}],
@@ -54,6 +54,10 @@ const cases = [
   ["B: keyword fragment inside a word in a string", "a=\"आपको जरूर\"\nदिखाए(a)", {"out":["आपको जरूर"],"isError":false}],
   ["I: Devanagari digits in arithmetic", "x=१०+५\nदिखाए(x)", {"out":["15"],"isError":false}],
   ["I: Devanagari digit printed", "दिखाए(२)", {"out":["2"],"isError":false}],
+  // plan item H3: names with digits and underscores
+  ["H3: name with digit in a calculation", "ab2=3\nc=ab2*2\nदिखाए(c)", {"out":["6"],"isError":false}],
+  ["H3: name with digit in an if", "x2=1\nअगर(x2==1)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["H3: loop iterator with digit", "दुहराओ k1 को (1,2) मे\n{\nदिखाए(k1)\n}", {"out":["1","2"],"isError":false}],
   ["comment line", "# टिप्पणी\nदिखाए(1)", {"out":["1"],"isError":false}],
   ["trailing comment", "दिखाए(1) # टिप्पणी", {"out":["1"],"isError":false}],
   ["blank lines", "\n\na=1\n\nदिखाए(a)\n\n", {"out":["1"],"isError":false}],
