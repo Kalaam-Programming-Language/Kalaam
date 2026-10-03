@@ -55,6 +55,9 @@ import { findtokenPositioninCode } from '../Scripts/finders';
 import { isInterpretableType } from '../Scripts/testers';
 //We will be importing this whole function to practise.vue and it will be executed when user clicks on 'RUN'
 
+//A जबतक loop stops with an error after this many iterations instead of freezing the page.
+const WHILE_LOOP_LIMIT = 100000;
+
 function Compile(sourcecode, ActiveLangugaeKeywords) {
   try {
     //t0 along with t1 takes record of Time taken to run the code. t1-t0 gives us the exact time taken.
@@ -874,7 +877,16 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
 
                 //constantly accessing the conditionvalue
 
+                //Compile() is synchronous: a condition that never turns false would freeze the browser tab, so cap the iterations.
+                let WhileLoopIterations = 0;
+
                 while (GetConditionValue(element, memory, j + 1)) {
+                  WhileLoopIterations += 1;
+                  if (WhileLoopIterations > WHILE_LOOP_LIMIT) {
+                    kalaam.error.push(`${ActiveLangugaeKeywords.While} loop ran ${WHILE_LOOP_LIMIT} times and the condition never became false. Check the line that changes the variable.`);
+                    break;
+                  }
+
                   for (let i = 0; i < WhileLoopSourcedataTokens.length; i++) {
                     //SECTION while loop context
 

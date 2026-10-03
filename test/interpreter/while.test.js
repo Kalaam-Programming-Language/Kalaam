@@ -12,11 +12,25 @@ jest.setTimeout(20000);
 
 const cases = [
   ["while basic", "i=0\nजबतक(i<3)\n{\nदिखाए(i)\ni=i+1\n}", {"out":["0","1","2"],"isError":false}],
-  ["while spaces", "i = 0\nजबतक (i < 3)\n{\nदिखाए(i)\ni = i + 1\n}", 'HANG'], // quirk, plan item C, then A
+  ["while spaces", "i = 0\nजबतक (i < 3)\n{\nदिखाए(i)\ni = i + 1\n}", {"out":["जबतक loop ran 100000 times and the condition never became false. Check the line that changes the variable."],"isError":true}], // quirk, plan item A (was HANG before C)
   ["while false", "जबतक(1>2)\n{\nदिखाए(1)\n}\nदिखाए(\"end\")", {"out":["end"],"isError":false}],
   ["while with var limit", "n=2\ni=0\nजबतक(i<n)\n{\ni=i+1\n}\nदिखाए(i)", {"out":["2"],"isError":false}],
 ];
 
 test.each(cases)('%s', (name, src, expected) => {
   expect(run(src)).toEqual(expected);
+});
+
+// Plan item C: a condition that never turns false stops with an error.
+const LOOP_GUARD = 'जबतक loop ran 100000 times and the condition never became false. Check the line that changes the variable.';
+
+test('loop guard: a जबतक that never increments returns within 5s', () => {
+  const start = Date.now();
+  const r = run('i=0\nजबतक(i<3)\n{\nदिखाए(i)\n}', { timeout: 5000 });
+  expect(Date.now() - start).toBeLessThan(5000);
+  expect(r).toEqual({ out: [LOOP_GUARD], isError: true });
+});
+
+test('loop guard: an empty body that never changes the variable', () => {
+  expect(run('i=0\nजबतक(i<3)\n{\n}', { timeout: 5000 })).toEqual({ out: [LOOP_GUARD], isError: true });
 });
