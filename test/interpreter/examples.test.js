@@ -304,6 +304,23 @@ describe('Examples page', () => {
   });
 });
 
+// The program the Home page types out and runs.
+const HOME_SAMPLE = `अंक=7
+दुहराओ i को (1,10) मे
+{
+  जवाब=अंक*i
+  दिखाए(जवाब)
+}`;
+
+describe('Home page sample', () => {
+  test('output', () => {
+    expect(run(HOME_SAMPLE)).toEqual({ out: ['7', '14', '21', '28', '35', '42', '49', '56', '63', '70'], isError: false });
+  });
+  test('ExecutionStack', () => {
+    expect(stackOf(HOME_SAMPLE)).toEqual(stacks.HomeSample);
+  });
+});
+
 describe('Documentation page', () => {
   test.each(docs)('%s output', (id, src, inputs, expected) => {
     expect(run(src, { inputs })).toEqual(expected);

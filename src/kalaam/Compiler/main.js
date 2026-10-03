@@ -58,6 +58,9 @@ import { isInterpretableType } from '../Scripts/testers';
 //A जबतक loop stops with an error after this many iterations instead of freezing the page.
 const WHILE_LOOP_LIMIT = 100000;
 
+//Structural words the scanner does not classify on purpose; every other unrecognised word is reported.
+const UNKNOWN_WORDS_ALLOWED = ['{', '}', '(', ')', 'को', 'मे', 'वरना', 'अन्यथा'];
+
 function Compile(sourcecode, ActiveLangugaeKeywords) {
   try {
     //Every stage reads the active language; make it the language of the keywords passed in.
@@ -155,6 +158,13 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
     //self function is the first step to handlle operations like अगर (ageone===10 && AverageAge<1000 && agetwo>100 || ageone===10) OR (ageone===10 )
 
     const BuildCondition = BuildOperation.BuildCondition();
+
+    //"Line N: " for the first source line containing text, for error messages ('' when no line has it)
+    function linePrefix(text) {
+      let index = LinebylineSourcedata.findIndex((line) => line.includes(text));
+
+      return index === -1 ? '' : `Line ${index + 1}: `;
+    }
 
     //This will run for every दिखाए() statement encountered in the program, not just for loops
 
@@ -368,6 +378,41 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
 
     //scanning every single element from cleaned_sourcedata array and pushing it to Tokens depending upon the type pf element
 
+    //The parser moves one word at a time, but some handlers also read the words after their own: the print
+    //argument, a condition, the loop header, the function name, the rest of a string. Those words come
+    //back from the scanner as UNKNOWN on the next step and are not mistakes; remember which they are.
+    var consumedWords = new Set();
+
+    function markConsumedWords(token_type, words, i) {
+      let consume = (k) => consumedWords.add(k);
+
+      if (token_type === 'PRINT' || token_type === 'FUNCTION') {
+        consume(i + 1);
+      } else if (token_type === 'CONDITIONAL_KEYWORD') {
+        //same stop words as BuildCondition
+        for (let k = i + 1; k < words.length && !['{', '){', ') {'].includes(words[k]); k++) {
+          consume(k);
+        }
+      } else if (token_type === 'FOR_LOOP') {
+        //दुहराओ i को (1,3) मे: the iterator, को, the range or the name, मे
+        let end = words.indexOf('मे', i + 1);
+        end = end !== -1 && end <= i + 4 ? end : i + 3;
+        for (let k = i + 1; k <= end; k++) {
+          consume(k);
+        }
+      } else if (token_type === 'STRING') {
+        //same stop rule as BuildString: the string ends at the word that ends with a quote
+        for (let k = i + 1; k < words.length; k++) {
+          let previous = words[k - 1];
+          let last = previous.charAt(previous.length - 1);
+          if (last === '"' || last === "'") {
+            break;
+          }
+          consume(k);
+        }
+      }
+    }
+
     function _analyzeToken(cleaned_sourcedata, i, tokens) {
       let element = cleaned_sourcedata[i];
 
@@ -377,6 +422,7 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
       let prevEl = cleaned_sourcedata.prevElement(i);
 
       let token_type = scanner(cleaned_sourcedata, i, tokens);
+      markConsumedWords(token_type, cleaned_sourcedata, i);
       console.log('token_type:', token_type);
       //Push variables to tokens
       //Format: {type: "variable", value: "ReverseString"}
@@ -702,6 +748,13 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
             PushArray(element, tokens);
           } catch (e) {
             console.log(e, `error in array push ${element}`);
+          }
+          break;
+
+        //A word no stage recognises used to be dropped silently (a typo like दिखाओ, an English keyword, a bad name).
+        case 'UNKNOWN':
+          if (element.trim() !== '' && !UNKNOWN_WORDS_ALLOWED.includes(element) && !consumedWords.has(i)) {
+            kalaam.error.push(`${linePrefix(element)}'${element}' समझ नहीं आया`);
           }
           break;
       }

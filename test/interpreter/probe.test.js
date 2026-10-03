@@ -30,8 +30,8 @@ const cases = [
   ["decimal", "c=1.5+1.5\nदिखाए(c)", {"out":["3"],"isError":false}],
   ["divide by zero", "c=5/0\nदिखाए(c)", {"out":["Infinity"],"isError":false}], // quirk, plan item H2
   ["reassign", "a=1\na=a+1\nदिखाए(a)", {"out":["2"],"isError":false}],
-  ["var with digit", "a1=5\nदिखाए(a1)", {"out":[],"isError":false}], // quirk, plan item H1, then H3
-  ["var underscore", "my_var=5\nदिखाए(my_var)", {"out":[],"isError":false}], // quirk, plan item H1, then H3
+  ["var with digit", "a1=5\nदिखाए(a1)", {"out":["Line 1: 'a1' समझ नहीं आया"],"isError":true}], // quirk, plan item H3
+  ["var underscore", "my_var=5\nदिखाए(my_var)", {"out":["Line 1: 'my_var' समझ नहीं आया"],"isError":true}], // quirk, plan item H3
   ["devanagari digits", "a=५\nदिखाए(a)", {"out":["5"],"isError":false}],
   ["string with spaces", "a=\"hello world\"\nदिखाए(a)", {"out":["hello world"],"isError":false}],
   ["single quotes", "a='hi'\nदिखाए(a)", {"out":["hi"],"isError":false}],
@@ -42,7 +42,7 @@ const cases = [
   ["string index", "a=\"hello\"\nदिखाए(a[1])", {"out":[],"isError":false}],
   ["num + str", "a=5\nb=\"x\"\nc=a+b\nदिखाए(c)", {"out":["ReferenceError: x is not defined"],"isError":false}], // quirk, plan item H2
   ["boolean compare print", "दिखाए(5>3)", {"out":[],"isError":false}],
-  ["compare to var", "a=5\nb=a>3\nदिखाए(b)", {"out":["Assignment error in \"b = \""],"isError":true}],
+  ["compare to var", "a=5\nb=a>3\nदिखाए(b)", {"out":["Line 2: 'a>3' समझ नहीं आया","Assignment error in \"b = \""],"isError":true}], // booleans are not values (plan J)
   // plan items A, B and I-digits (string-aware cleaning pre-pass)
   ["A: spaces in literal arithmetic", "c=2 + 3\nदिखाए(c)", {"out":["5"],"isError":false}],
   ["A: spaces around %", "a=2\nb=a % 2\nदिखाए(b)", {"out":["0"],"isError":false}],
@@ -84,14 +84,14 @@ const cases = [
   ["for accumulate", "s=0\nदुहराओ i को (1,4) मे\n{\ns=s+i\n}\nदिखाए(s)", {"out":["10"],"isError":false}],
   ["for over string", "a=\"abc\"\nदुहराओ x को a मे\n{\nदिखाए(a[x])\n}", {"out":[],"isError":false}],
   ["nested for", "दुहराओ i को (1,2) मे\n{\nदुहराओ j को (1,2) मे\n{\nदिखाए(i*j)\n}\n}", {"out":["1","2","2","4"],"isError":false}],
-  ["for no spaces", "दुहराओ i को(1,3)मे\n{\nदिखाए(i)\n}", {"out":[],"isError":false}],
+  ["for no spaces", "दुहराओ i को(1,3)मे\n{\nदिखाए(i)\n}", {"out":["Line 3: '(i)' समझ नहीं आया"],"isError":true}], // मे glued to the range: the header swallows दिखाए, so the error lands on (i)
   ["for with spaces in range", "दुहराओ i को (1, 3) मे\n{\nदिखाए(i)\n}", {"out":["1","2","3"],"isError":false}],
   ["function basic", "रचना जोड़(a,b)\n{\nदिखाए(a+b)\n}\nजोड़(2,3)", {"out":["5"],"isError":false}],
   ["function return", "रचना जोड़(a,b)\n{\nवापस a+b\n}\nc=जोड़(2,3)\nदिखाए(c)", {"out":["जोड़"],"isError":false}],
   ["function no params", "रचना hi()\n{\nदिखाए(\"hi\")\n}\nhi()", {"out":["hi"],"isError":false}],
   ["function twice", "रचना hi(x)\n{\nदिखाए(x)\n}\nhi(1)\nhi(2)", {"out":["1","2"],"isError":false}],
   ["function sees global", "g=7\nरचना f()\n{\nदिखाए(g)\n}\nf()", {"out":["7"],"isError":false}],
-  ["call undefined fn", "foo(1)", {"out":[],"isError":false}], // quirk, plan item H1
+  ["call undefined fn", "foo(1)", {"out":["Line 1: 'foo(1)' समझ नहीं आया"],"isError":true}],
   ["array literal print", "a=[1,2,3]\nदिखाए(a)", {"out":["[1,2,3]"],"isError":false}],
   ["array index", "a=[1,2,3]\nदिखाए(a[0])", {"out":[],"isError":false}],
   ["array length", "a=[1,2,3]\nदिखाए(a.संख्या())", {"out":[],"isError":false}],
@@ -101,15 +101,15 @@ const cases = [
   ["array assign index", "a=[1,2]\na[0]=9\nदिखाए(a[0])", {"out":[],"isError":false}],
   ["array of strings", "a=[\"x\",\"y\"]\nदिखाए(a[1])", {"out":[],"isError":false}],
   ["undefined var", "दिखाए(b)", {"out":[],"isError":false}], // quirk, plan item H2
-  ["typo keyword", "दिखाओ(1)", {"out":[],"isError":false}], // quirk, plan item H1
-  ["english print", "print(1)", {"out":[],"isError":false}], // quirk, plan item H1
+  ["typo keyword", "दिखाओ(1)", {"out":["Line 1: 'दिखाओ(1)' समझ नहीं आया"],"isError":true}],
+  ["english print", "print(1)", {"out":["Line 1: 'print(1)' समझ नहीं आया"],"isError":true}],
   ["missing close paren", "दिखाए(1", {"out":["1"],"isError":false}],
   ["missing close brace", "अगर(1<2)\n{\nदिखाए(1)", {"out":["1"],"isError":false}],
   ["extra close brace", "दिखाए(1)\n}", {"out":["1"],"isError":false}],
   ["unclosed string", "दिखाए(\"hi)", {"out":["hi"],"isError":false}],
   ["assign keyword", "अगर=5", {"out":[],"isError":false}],
   ["uppercase var mismatch", "Abc=1\nदिखाए(abc)", {"out":[],"isError":false}], // quirk, plan item H2
-  ["marathi kw in hindi mode", "दाखवा(1)", {"out":[],"isError":false}], // quirk, plan item H1
+  ["marathi kw in hindi mode", "दाखवा(1)", {"out":["Line 1: 'दाखवा(1)' समझ नहीं आया"],"isError":true}],
   ["input call", "इनपुट(x)\nदिखाए(x)", {"out":["7"],"isError":false}, { inputs: ["7"] }],
   ["print no parens", "दिखाए 5", {"out":["5"],"isError":false}],
   ["semicolon", "a=5;\nदिखाए(a)", {"out":["5"],"isError":false}],

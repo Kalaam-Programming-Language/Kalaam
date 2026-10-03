@@ -25,7 +25,7 @@ const cases = [
   ["Bengali print string", "দেখাও(\"হ্যালো\")", "Bengali", {"out":["হ্যালো"],"isError":false}],
   ["Telugu print variable", "a=5\nచూపించు(a)", "Telugu", {"out":["5"],"isError":false}],
   ["Odia print variable", "a=5\nଦେଖାଅ(a)", "Odia", {"out":["5"],"isError":false}],
-  ["Marathi keyword in Hindi mode", "दाखवा(1)", "Hindi", {"out":[],"isError":false}], // quirk, plan item H1
+  ["Marathi keyword in Hindi mode", "दाखवा(1)", "Hindi", {"out":["Line 1: 'दाखवा(1)' समझ नहीं आया"],"isError":true}],
   ["Hindi again at the end", "a=2\nदिखाए(a)", "Hindi", {"out":["2"],"isError":false}],
 ];
 
