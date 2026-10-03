@@ -1221,6 +1221,19 @@ function Compile(sourcecode, ActiveLangugaeKeywords) {
     return kalaam;
   } catch (e) {
     console.log(e);
+
+    //Never hand the UI undefined: it destructures the result. Report the failure as a Kalaam error instead.
+    const friendly = 'Kalaam could not run this program. Check your code for a mistake on the line where it stops.';
+    return {
+      isError: true,
+      output: '',
+      linebylineOutput: [friendly],
+      error: [friendly],
+      ExecutionStack: [],
+      TimeTaken: '',
+      LastConditionValue: [],
+      OperationObjects: [],
+    };
   }
 }
 
