@@ -738,6 +738,31 @@ export default {
   width: 100%;
 }
 
+/* The workspace sits inside the same content width as the site header:
+   its edges line up with the logo and the last nav link. */
+.pr-toolbar,
+.pr-main {
+  max-width: calc(var(--k-max) - 2 * var(--k-gutter));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 720px) {
+  .pr-toolbar {
+    margin-top: 20px;
+    border: 1px solid var(--pr-border);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .pr-main {
+    margin-bottom: 28px;
+    border: 1px solid var(--pr-border);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+}
+
 /* Toolbar */
 
 .pr-toolbar {
