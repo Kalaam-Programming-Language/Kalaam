@@ -100,7 +100,7 @@
               <h2>Output</h2>
               <span v-if="runTimingMs" class="pr-timing">{{ runTimingMs }}</span>
             </div>
-            <div class="pr-output" :class="{ 'is-error': isError === true }">
+            <div ref="consoleBody" class="pr-output pr-console" :class="{ 'is-error': isError === true }">
               <p v-if="!hasConsoleOutput" class="pr-empty">{{ emptyConsoleHint }}</p>
               <template v-else>
                 <p v-for="(line, index) in linebylineOutput" :key="'out-' + index" class="pr-line">{{ line }}</p>
@@ -214,7 +214,7 @@ import SiteHeader from "../components/SiteHeader.vue";
 // Both shapes are tried (in that order) before falling back to step.value.
 function extractAssignedValue(step) {
   if (step && typeof step.message === "string") {
-    const simple = step.message.match(/को\s*"([^"]*)"\s*ये\s*VALUE/);
+    const simple = step.message.match(/को,?\s*"([^"]*)"\s*ये\s*VALUE/);
     if (simple) return simple[1];
     const calculated = step.message.match(/की कीमत \(Value\)\s*,\s*"([^"]*)"\s*आती है/);
     if (calculated) return calculated[1];
@@ -281,18 +281,16 @@ export default {
       // 0 = no step taken yet; otherwise the 1-based count of steps
       // executed so far. The active step is learningExecutionStack[stepIndex - 1].
       stepIndex: 0,
-      // 0-based CodeMirror line currently carrying the k-current-line class,
-      // so it can be removed before the next one is added.
+      // The CodeMirror line *handle* (as returned by addLineClass(), not
+      // an index) currently carrying the k-current-line class, so it can
+      // be removed via that handle before the next one is added -- a line
+      // handle tracks its line through edits, a plain index doesn't.
       highlightedLine: null,
 
       LineByLineCode: [],
       Keyword: "",
 
       isRoutePractise: false,
-
-      ShowSupport: true,
-      ShowAbout: true,
-      isMobile: false,
 
       ActiveLanguage: "",
 
@@ -432,7 +430,21 @@ export default {
       if (this.stepIndex === 0) return null;
       return this.learningExecutionStack[this.stepIndex - 1] || null;
     },
+    // A snapshot key that changes whenever the code or the active language
+    // changes -- used to tell whether the compiled Learning stack is stale
+    // (Compile() needs to run again before stepping can continue).
+    learningSnapshotKey() {
+      return `${this.ActiveLanguage}::${this.code}`;
+    },
+    isLearningStale() {
+      return this.learningCodeSnapshot !== this.learningSnapshotKey;
+    },
     canGoNext() {
+      if (!this.code) return false;
+      // Stale means NextStep() will recompile before stepping -- Next
+      // should stay enabled so that recompile can happen (e.g. right
+      // after Clear(), or after editing code at the last step).
+      if (this.isLearningStale) return true;
       return this.stepIndex < this.totalLearningSteps;
     },
     canGoPrev() {
@@ -493,6 +505,17 @@ export default {
     },
   },
 
+  mounted() {
+    // If the component mounts with Learning already on (e.g. Learning on
+    // -> Examples -> "Open in practice"), the `learning` watcher below
+    // never fires (it only reacts to a change), so the stack would stay
+    // empty ("Step 0 of 0", Next disabled) until the user toggled modes.
+    // Compile it here too, once `code` is set up by created().
+    if (this.learning) {
+      this.ensureLearningCompiled();
+    }
+  },
+
   created() {
     this.ActiveLanguage = localStorage.getItem("ActiveLangugae");
 
@@ -505,12 +528,10 @@ export default {
     this.themeDark = localStorage.getItem("kalaamTheme") === "dark";
 
     //Setting the formatted code to this.code. this.code is how you can access the code written by user.
-    let m = this.$store.state.CurrentCode.replace(/&lt;/g, "<");
-
-    m = m.replace(/&gt;/g, ">");
-
-    m = m.replace(/&amp;/g, "&");
-    this.code = m;
+    // Examples/Documentation send plain text (textContent) now, not
+    // HTML-escaped markup, so it's used as-is -- decoding here used to
+    // double-decode real code that happened to contain "&lt;" etc.
+    this.code = this.$store.state.CurrentCode;
 
     if (this.code == "") {
       this.code = localStorage.getItem("Code");
@@ -531,9 +552,6 @@ export default {
 
   //This is the start of our functions.
   methods: {
-    Reload: function () {
-      //console.log(this.ActiveLanguage);
-    },
     Clear: function () {
       if (this.learning) {
         this.stepIndex = 0;
@@ -563,7 +581,7 @@ export default {
     StarterCode(lang) {
       if (lang === "Hindi") {
         return (
-          "# नमस्ते! Run दबाओ या ⌘ Enter\n" +
+          `# नमस्ते! Run दबाओ या ${this.shortcutHint}\n` +
           'नाम="दुनिया"\n' +
           'दिखाए("नमस्ते " + नाम)'
         );
@@ -578,12 +596,9 @@ export default {
     onCmReady(cm) {
       this.cm = cm;
 
-      this.isMobile = window.innerWidth < 960;
-
       this.$nextTick(() => cm.refresh());
 
       this._onResize = () => {
-        this.isMobile = window.innerWidth < 960;
         if (this.cm) {
           this.cm.refresh();
         }
@@ -653,16 +668,23 @@ export default {
 
     // Compiles the current code into its own ExecutionStack for Learning
     // mode to step over, separate from Practice's Run() above. Only
-    // re-compiles when the code has changed since the last time (or the
-    // first time Learning starts), per the "compile once, then step" rule.
+    // re-compiles when the code or the active language has changed since
+    // the last time (or the first time Learning starts), per the "compile
+    // once, then step" rule -- so switching language resets stepping too.
     ensureLearningCompiled() {
-      if (this.learningCodeSnapshot !== this.code) {
-        const { ExecutionStack, linebylineOutput, isError, error } = Compile(this.code, this.Keyword);
+      const snapshotKey = this.learningSnapshotKey;
+      if (this.learningCodeSnapshot !== snapshotKey) {
+        // this.Keyword is set by the ActiveLanguage watcher, which runs
+        // asynchronously -- fall back to resolving it directly so a very
+        // first compile (e.g. from mounted(), before that watcher has
+        // flushed) still uses the right keyword map.
+        const keyword = this.Keyword || KalaamKeywords[this.ActiveLanguage] || KalaamKeywords.Hindi;
+        const { ExecutionStack, linebylineOutput, isError, error } = Compile(this.code, keyword);
         this.learningExecutionStack = ExecutionStack || [];
         this.learningLinebylineOutput = linebylineOutput || [];
         this.learningIsError = isError;
         this.learningError = error;
-        this.learningCodeSnapshot = this.code;
+        this.learningCodeSnapshot = snapshotKey;
         this.stepIndex = 0;
         this.clearCurrentLineHighlight();
       }
@@ -695,8 +717,10 @@ export default {
       const step = this.currentStep;
       if (step && this.cm && typeof step.Linenumber === "number") {
         const line = step.Linenumber - 1;
-        this.cm.addLineClass(line, "background", "k-current-line");
-        this.highlightedLine = line;
+        // addLineClass() returns the line *handle*, not the index -- keep
+        // that handle so removeLineClass() below still targets the right
+        // line even after lines are inserted/removed above it.
+        this.highlightedLine = this.cm.addLineClass(line, "background", "k-current-line");
         this.cm.scrollIntoView({ line: line, ch: 0 }, 80);
       }
     },
@@ -1092,6 +1116,14 @@ export default {
 
 .pr-output {
   font-family: var(--k-mono);
+}
+
+/* Practice mode's Output panel is the one scrollConsoleToBottom() scrolls
+   after a Run() -- bound so long output scrolls inside the panel instead
+   of growing it (and the page) without limit. */
+.pr-console {
+  max-height: 360px;
+  overflow-y: auto;
 }
 
 .pr-line {
