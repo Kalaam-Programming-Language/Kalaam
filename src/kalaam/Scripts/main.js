@@ -70,6 +70,13 @@ function GetCleanSourcedata(sourcedata, cleaned_sourcedata, impurities) {
       impurities.push(element); //push such element as impurity in impurities
 
       let elements = element.split('=');
+
+      //a="x=1": the value is a string that itself contains '=', so split only at the first '='
+      let firstEquals = element.indexOf('=');
+      if (elements.length > 2 && /^["']/.test(element.slice(firstEquals + 1))) {
+        elements = [element.slice(0, firstEquals), element.slice(firstEquals + 1)];
+      }
+
       let index = cleaned_sourcedata.length;
 
       cleaned_sourcedata[index] = elements[0];

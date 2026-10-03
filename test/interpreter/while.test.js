@@ -12,7 +12,7 @@ jest.setTimeout(20000);
 
 const cases = [
   ["while basic", "i=0\nजबतक(i<3)\n{\nदिखाए(i)\ni=i+1\n}", {"out":["0","1","2"],"isError":false}],
-  ["while spaces", "i = 0\nजबतक (i < 3)\n{\nदिखाए(i)\ni = i + 1\n}", {"out":["जबतक loop ran 100000 times and the condition never became false. Check the line that changes the variable."],"isError":true}], // quirk, plan item A (was HANG before C)
+  ["while spaces", "i = 0\nजबतक (i < 3)\n{\nदिखाए(i)\ni = i + 1\n}", {"out":["0","1","2"],"isError":false}],
   ["while false", "जबतक(1>2)\n{\nदिखाए(1)\n}\nदिखाए(\"end\")", {"out":["end"],"isError":false}],
   ["while with var limit", "n=2\ni=0\nजबतक(i<n)\n{\ni=i+1\n}\nदिखाए(i)", {"out":["2"],"isError":false}],
 ];
