@@ -10,7 +10,7 @@ silenceConsole();
 // [name, source, expected, options]
 const cases = [
   ["print number", "दिखाए(5)", {"out":["5"],"isError":false}],
-  ["print string", "दिखाए(\"नमस्ते\")", {"out":[" नमस्ते"],"isError":false}], // quirk, plan item F
+  ["print string", "दिखाए(\"नमस्ते\")", {"out":["नमस्ते"],"isError":false}],
   ["print var", "a=5\nदिखाए(a)", {"out":["5"],"isError":false}],
   ["print expr direct", "दिखाए(2+3)", {"out":["5"],"isError":false}],
   ["print var expr direct", "a=2\nb=3\nदिखाए(a+b)", {"out":["5"],"isError":false}],
@@ -50,19 +50,19 @@ const cases = [
   ["tab indent", "अगर(1<2)\n{\n\tदिखाए(1)\n}", {"out":["1"],"isError":false}],
   ["CRLF", "a=1\r\nदिखाए(a)\r\n", {"out":["1"],"isError":false}],
   ["empty program", "", {"out":[],"isError":false}],
-  ["if true", "अगर(5>3)\n{\nदिखाए(\"हाँ\")\n}", {"out":[" हाँ"],"isError":false}], // quirk, plan item F
-  ["if false no else", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nदिखाए(\"बाद\")", {"out":[" बाद"],"isError":false}], // quirk, plan item F
-  ["if else वरना", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nवरना\n{\nदिखाए(\"नहीं\")\n}", {"out":[" नहीं"],"isError":false}], // quirk, plan item F
-  ["if else अन्यथा", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nअन्यथा\n{\nदिखाए(\"नहीं\")\n}", {"out":[" नहीं"],"isError":false}], // quirk, plan item F
-  ["if ==", "a=5\nअगर(a==5)\n{\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F
-  ["if single =", "a=5\nअगर(a=5)\n{\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F, then I
-  ["if string ==", "a=\"x\"\nअगर(a==\"x\")\n{\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F
-  ["if and &&", "a=5\nअगर(a>1 && a<10)\n{\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F
-  ["if or ||", "a=5\nअगर(a<1 || a==5)\n{\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F
-  ["if space before brace", "अगर (5>3)\n{\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F
-  ["if brace same line", "अगर(5>3) {\nदिखाए(\"ok\")\n}", {"out":[" ok"],"isError":false}], // quirk, plan item F
-  ["if no braces", "अगर(5>3)\nदिखाए(\"ok\")", {"out":[" ok"],"isError":false}], // quirk, plan item F, then I
-  ["nested if", "अगर(1<2)\n{\nअगर(2<3)\n{\nदिखाए(\"in\")\n}\n}", {"out":[" in"],"isError":false}], // quirk, plan item F
+  ["if true", "अगर(5>3)\n{\nदिखाए(\"हाँ\")\n}", {"out":["हाँ"],"isError":false}],
+  ["if false no else", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nदिखाए(\"बाद\")", {"out":["बाद"],"isError":false}],
+  ["if else वरना", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nवरना\n{\nदिखाए(\"नहीं\")\n}", {"out":["नहीं"],"isError":false}],
+  ["if else अन्यथा", "अगर(5<3)\n{\nदिखाए(\"हाँ\")\n}\nअन्यथा\n{\nदिखाए(\"नहीं\")\n}", {"out":["नहीं"],"isError":false}],
+  ["if ==", "a=5\nअगर(a==5)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["if single =", "a=5\nअगर(a=5)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}], // quirk, plan item I
+  ["if string ==", "a=\"x\"\nअगर(a==\"x\")\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["if and &&", "a=5\nअगर(a>1 && a<10)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["if or ||", "a=5\nअगर(a<1 || a==5)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["if space before brace", "अगर (5>3)\n{\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["if brace same line", "अगर(5>3) {\nदिखाए(\"ok\")\n}", {"out":["ok"],"isError":false}],
+  ["if no braces", "अगर(5>3)\nदिखाए(\"ok\")", {"out":["ok"],"isError":false}], // quirk, plan item I
+  ["nested if", "अगर(1<2)\n{\nअगर(2<3)\n{\nदिखाए(\"in\")\n}\n}", {"out":["in"],"isError":false}],
   ["if inside for", "दुहराओ i को (1,5) मे\n{\nअगर(i==3)\n{\nदिखाए(i)\n}\n}", {"out":["3"],"isError":false}],
   ["else-if chain", "a=2\nअगर(a==1)\n{\nदिखाए(1)\n}\nवरना अगर(a==2)\n{\nदिखाए(2)\n}", {"out":["2"],"isError":false}],
   ["for basic", "दुहराओ i को (1,3) मे\n{\nदिखाए(i)\n}", {"out":["1","2","3"],"isError":false}],
@@ -77,7 +77,7 @@ const cases = [
   ["for with spaces in range", "दुहराओ i को (1, 3) मे\n{\nदिखाए(i)\n}", {"out":[],"isError":false}], // quirk, plan item A
   ["function basic", "रचना जोड़(a,b)\n{\nदिखाए(a+b)\n}\nजोड़(2,3)", {"out":["5"],"isError":false}],
   ["function return", "रचना जोड़(a,b)\n{\nवापस a+b\n}\nc=जोड़(2,3)\nदिखाए(c)", {"out":["जोड़"],"isError":false}],
-  ["function no params", "रचना hi()\n{\nदिखाए(\"hi\")\n}\nhi()", {"out":[" hi"],"isError":false}], // quirk, plan item F
+  ["function no params", "रचना hi()\n{\nदिखाए(\"hi\")\n}\nhi()", {"out":["hi"],"isError":false}],
   ["function twice", "रचना hi(x)\n{\nदिखाए(x)\n}\nhi(1)\nhi(2)", {"out":["1","1","2"],"isError":false}], // quirk, plan item E
   ["function sees global", "g=7\nरचना f()\n{\nदिखाए(g)\n}\nf()", {"out":["7"],"isError":false}],
   ["call undefined fn", "foo(1)", {"out":[],"isError":false}], // quirk, plan item H1
@@ -95,7 +95,7 @@ const cases = [
   ["missing close paren", "दिखाए(1", {"out":["1"],"isError":false}],
   ["missing close brace", "अगर(1<2)\n{\nदिखाए(1)", {"out":["1"],"isError":false}],
   ["extra close brace", "दिखाए(1)\n}", {"out":["1"],"isError":false}],
-  ["unclosed string", "दिखाए(\"hi)", {"out":[" hi"],"isError":false}], // quirk, plan item F
+  ["unclosed string", "दिखाए(\"hi)", {"out":["hi"],"isError":false}],
   ["assign keyword", "अगर=5", {"out":[],"isError":false}],
   ["uppercase var mismatch", "Abc=1\nदिखाए(abc)", {"out":[],"isError":false}], // quirk, plan item H2
   ["marathi kw in hindi mode", "दाखवा(1)", {"out":[],"isError":false}], // quirk, plan item H1

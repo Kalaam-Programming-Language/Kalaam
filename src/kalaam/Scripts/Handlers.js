@@ -61,7 +61,7 @@ function handleRealtimePrint(cleaned_sourcedata, i) {
         }
 
         if (conditionEnd == ')"' || element.charAt(element.length - 1) == ')') {
-            foundString = foundString + ' ' + cleaned_sourcedata[k];
+            foundString = foundString ? foundString + ' ' + cleaned_sourcedata[k] : cleaned_sourcedata[k];
             break;
         } else if (flag == 1) {
             foundString = foundString + ' ' + cleaned_sourcedata[k];
