@@ -1,5 +1,5 @@
 <template>
-  <div class="k-page k-practice" :class="{ 'theme-dark': themeDark }">
+  <div class="k-page k-practice" :class="{ 'theme-dark': themeDark, 'is-learning': learning }">
     <SiteHeader />
 
     <!-- Toolbar: mode toggle, language select, theme toggle on the left;
@@ -68,17 +68,6 @@
 
     <main class="pr-main">
       <section class="pr-editor">
-        <div class="chip-bar">
-          <button class="chip" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</button>
-          <button class="chip" @click="Add(Keyword.Input + '()')">{{ Keyword.Input }}</button>
-          <button class="chip" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</button>
-          <button class="chip" @click="Add(forChipInsert)">{{ forChipLabel }}</button>
-          <button class="chip" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</button>
-          <button class="chip" @click="Add(lengthChipInsert)">{{ lengthChipLabel }}</button>
-          <button class="chip" @click="Add(pushChipInsert)">{{ pushChipLabel }}</button>
-          <button class="chip" @click="Add(Keyword.Function)">{{ Keyword.Function }}</button>
-        </div>
-
         <no-ssr placeholder="...">
           <codemirror
             id="codearea"
@@ -91,6 +80,17 @@
             @input="onCmCodeChange"
           ></codemirror>
         </no-ssr>
+
+        <div class="chip-bar">
+          <button type="button" class="chip" :disabled="learning" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(Keyword.Input + '()')">{{ Keyword.Input }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(Keyword.If + '()')">{{ Keyword.If }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(forChipInsert)">{{ forChipLabel }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(Keyword.While + '()')">{{ Keyword.While }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(lengthChipInsert)">{{ lengthChipLabel }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(pushChipInsert)">{{ pushChipLabel }}</button>
+          <button type="button" class="chip" :disabled="learning" @click="Add(Keyword.Function)">{{ Keyword.Function }}</button>
+        </div>
       </section>
 
       <aside class="pr-aside">
@@ -100,10 +100,20 @@
               <h2>Output</h2>
               <span v-if="runTimingMs" class="pr-timing">{{ runTimingMs }}</span>
             </div>
-            <div ref="consoleBody" class="pr-output pr-console" :class="{ 'is-error': isError === true }">
-              <p v-if="!hasConsoleOutput" class="pr-empty">{{ emptyConsoleHint }}</p>
+            <div ref="consoleBody" class="pr-term pr-output pr-console" :class="{ 'is-error': isError === true }">
+              <template v-if="!hasConsoleOutput">
+                <p class="pr-term-prompt">kalaam ▸ <span class="pr-cursor" aria-hidden="true">▌</span></p>
+                <p class="pr-term-hint">Press Run or {{ shortcutHint }}</p>
+              </template>
               <template v-else>
-                <p v-for="(line, index) in linebylineOutput" :key="'out-' + index" class="pr-line">{{ line }}</p>
+                <p class="pr-term-prompt">kalaam ▸ run</p>
+                <p
+                  v-for="(line, index) in linebylineOutput"
+                  :key="'out-' + runId + '-' + index"
+                  class="pr-line pr-line-in"
+                  :style="{ animationDelay: index * 25 + 'ms' }"
+                >{{ line }}</p>
+                <p class="pr-term-prompt"><span class="pr-cursor" aria-hidden="true">▌</span></p>
               </template>
             </div>
           </div>
@@ -123,7 +133,7 @@
         </template>
 
         <template v-else>
-          <div class="pr-panel">
+          <div class="pr-panel pr-panel-did">
             <h2>What the computer did</h2>
             <p v-if="currentStep" class="pr-explain">{{ currentStep.message }}</p>
             <p v-else-if="learningIsError" class="pr-explain is-error">{{ learningErrorText }}</p>
@@ -146,7 +156,7 @@
           <div class="pr-panel">
             <h2>Output so far</h2>
             <p v-if="!learningOutputSoFar.length" class="pr-empty">Nothing printed yet.</p>
-            <div v-else class="pr-output">
+            <div v-else class="pr-term pr-output">
               <p v-for="(line, index) in learningOutputSoFar" :key="'ls-' + index" class="pr-line">{{ line }}</p>
             </div>
           </div>
@@ -281,6 +291,8 @@ export default {
       // 0 = no step taken yet; otherwise the 1-based count of steps
       // executed so far. The active step is learningExecutionStack[stepIndex - 1].
       stepIndex: 0,
+      // Bumped on every Run() so the terminal's fade-in restarts per run.
+      runId: 0,
       // The CodeMirror line *handle* (as returned by addLineClass(), not
       // an index) currently carrying the k-current-line class, so it can
       // be removed via that handle before the next one is added -- a line
@@ -317,7 +329,7 @@ export default {
         styleSelectedText: false,
         line: true,
         foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        gutters: ["CodeMirror-linenumbers", "k-step-gutter", "CodeMirror-foldgutter"],
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true },
         mode: "kalaam",
         hintOptions: {
@@ -499,6 +511,7 @@ export default {
     learning(isLearning) {
       this.clearCurrentLineHighlight();
       this.stepIndex = 0;
+      this.applyReadOnly();
       if (isLearning) {
         this.ensureLearningCompiled();
       }
@@ -595,6 +608,7 @@ export default {
     // CodeMirror's internal measurements, instead of a fixed pixel height.
     onCmReady(cm) {
       this.cm = cm;
+      this.applyReadOnly();
 
       this.$nextTick(() => cm.refresh());
 
@@ -604,6 +618,15 @@ export default {
         }
       };
       window.addEventListener("resize", this._onResize);
+    },
+
+    // Learning mode shows the program, it does not edit it. 'nocursor' is
+    // deliberately not used so the current-line highlight stays visible.
+    applyReadOnly() {
+      if (this.cm) {
+        this.cm.setOption("readOnly", this.learning ? true : false);
+        this.$nextTick(() => this.cm && this.cm.refresh());
+      }
     },
 
     onCmFocus(cm) {},
@@ -662,6 +685,7 @@ export default {
       this.error = error;
       this.output = output;
       this.ExecutionStack = ExecutionStack;
+      this.runId += 1;
 
       this.scrollConsoleToBottom();
     },
@@ -708,6 +732,7 @@ export default {
     clearCurrentLineHighlight() {
       if (this.cm && this.highlightedLine !== null) {
         this.cm.removeLineClass(this.highlightedLine, "background", "k-current-line");
+        this.cm.setGutterMarker(this.highlightedLine, "k-step-gutter", null);
       }
       this.highlightedLine = null;
     },
@@ -721,6 +746,10 @@ export default {
         // that handle so removeLineClass() below still targets the right
         // line even after lines are inserted/removed above it.
         this.highlightedLine = this.cm.addLineClass(line, "background", "k-current-line");
+        const marker = document.createElement("span");
+        marker.className = "k-step-marker";
+        marker.textContent = "▶";
+        this.cm.setGutterMarker(this.highlightedLine, "k-step-gutter", marker);
         this.cm.scrollIntoView({ line: line, ch: 0 }, 80);
       }
     },
@@ -830,6 +859,36 @@ export default {
 .mode-label.on {
   color: var(--pr-ink);
   font-weight: 600;
+}
+
+.is-learning .mode-label.on {
+  color: #b88a1e;
+}
+
+/* Learning is a different room: gold rule under the toolbar, softer panels. */
+.is-learning .pr-toolbar {
+  border-bottom: 3px solid #b88a1e;
+}
+
+.pr-panel-did {
+  transition: background-color 180ms ease;
+}
+
+.is-learning .pr-panel-did {
+  background: #fffbe8;
+}
+
+.is-learning.theme-dark .pr-panel-did {
+  background: #3a3322;
+}
+
+.k-practice,
+.pr-toolbar,
+.pr-editor,
+.pr-aside,
+.pr-panel,
+.chip-bar {
+  transition: background-color 180ms ease, border-color 180ms ease;
 }
 
 .switch {
@@ -1001,8 +1060,20 @@ export default {
 @media (prefers-reduced-motion: reduce) {
   .switch,
   .knob,
-  .btn-ink {
+  .btn-ink,
+  .k-practice,
+  .pr-toolbar,
+  .pr-editor,
+  .pr-aside,
+  .pr-panel,
+  .pr-panel-did,
+  .chip-bar {
     transition: none;
+  }
+
+  .pr-cursor,
+  .pr-line-in {
+    animation: none;
   }
 }
 
@@ -1021,7 +1092,7 @@ export default {
   flex: 999 1 560px;
   min-width: 0;
   background: var(--pr-panel);
-  padding: 20px 0;
+  padding: 20px 0 0;
 }
 
 .pr-aside {
@@ -1033,14 +1104,15 @@ export default {
   border-left: 1px solid var(--pr-border);
 }
 
-/* Chip row, top of the editor section */
+/* Chip row, directly under the editor */
 
 .chip-bar {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   gap: 6px;
-  padding: 0 24px 14px;
+  padding: 12px 24px 14px;
+  border-top: 1px solid var(--pr-border);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -1058,8 +1130,13 @@ export default {
   cursor: pointer;
 }
 
-.chip:hover {
+.chip:hover:not(:disabled) {
   border-color: var(--pr-keyword);
+}
+
+.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* Aside panels */
@@ -1122,8 +1199,72 @@ export default {
    after a Run() -- bound so long output scrolls inside the panel instead
    of growing it (and the page) without limit. */
 .pr-console {
-  max-height: 360px;
+  max-height: 420px;
   overflow-y: auto;
+}
+
+/* Terminal look, shared by the Practice output and Learning's "Output so far". */
+.pr-term {
+  box-sizing: border-box;
+  background: #1e1f26;
+  color: #d6d8e0;
+  font-family: var(--k-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 14px 16px;
+  border-radius: 6px;
+  min-height: 180px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.theme-dark .pr-term {
+  background: #15161b;
+}
+
+.pr-term .pr-line {
+  margin: 0;
+  font-size: 14px;
+  color: #d6d8e0;
+}
+
+.pr-term.pr-output.is-error .pr-line {
+  color: #ff7b72;
+}
+
+.pr-term-prompt,
+.pr-term-hint {
+  margin: 0;
+  font-family: var(--k-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  color: #8b90a3;
+  white-space: pre-wrap;
+}
+
+.pr-cursor {
+  color: #d6d8e0;
+  animation: pr-blink 1s steps(1) infinite;
+}
+
+@keyframes pr-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.pr-line-in {
+  opacity: 0;
+  animation: pr-fade 150ms ease forwards;
+}
+
+@keyframes pr-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .pr-line {
@@ -1193,7 +1334,6 @@ export default {
     padding-right: 16px;
   }
 
-  .pr-line,
   .pr-empty,
   .pr-explain {
     font-size: 14px;
@@ -1230,6 +1370,7 @@ export default {
   --pr-property: #c18401;
   --pr-comment: #a0a1a7;
   --pr-error: #a3261c;
+  --pr-line-accent: var(--pr-ink);
 }
 
 .k-practice.theme-dark {
@@ -1254,6 +1395,30 @@ export default {
   --pr-property: #e5c07b;
   --pr-comment: #5c6370;
   --pr-error: #e06c75;
+}
+
+/* Learning mode: a warm, paper-like second room. */
+.k-practice.is-learning {
+  --pr-bg: #faf6ee;
+  --pr-panel: #fffdf8;
+  --pr-border: #e6ddc9;
+  --pr-border-strong: #d8cdb3;
+  --pr-current-line: #fbf1cf;
+  --pr-line-accent: #b88a1e;
+}
+
+.k-practice.is-learning.theme-dark {
+  --pr-bg: #2a2621;
+  --pr-panel: #332e27;
+  --pr-border: #4a4238;
+  --pr-border-strong: #5a5044;
+  --pr-current-line: #3d3523;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-practice .CodeMirror-gutters {
+    transition: none;
+  }
 }
 
 .k-practice .pr-editor no-ssr,
@@ -1312,6 +1477,24 @@ export default {
 .k-practice .CodeMirror-gutters {
   background: var(--pr-panel);
   border: none;
+  transition: background-color 180ms ease;
+}
+
+.k-practice .k-step-gutter {
+  width: 16px;
+}
+
+/* The marker column only exists in the Learning room. */
+.k-practice:not(.is-learning) .k-step-gutter {
+  width: 0;
+}
+
+.k-practice .k-step-marker {
+  display: block;
+  color: #b88a1e;
+  font-size: 11px;
+  line-height: 26px;
+  text-align: center;
 }
 
 .k-practice .CodeMirror-linenumber {
@@ -1331,7 +1514,7 @@ export default {
 
 .k-practice .CodeMirror-linebackground.k-current-line {
   background: var(--pr-current-line);
-  border-left: 3px solid var(--pr-ink);
+  border-left: 3px solid var(--pr-line-accent);
 }
 
 .k-practice .CodeMirror-cursor {
