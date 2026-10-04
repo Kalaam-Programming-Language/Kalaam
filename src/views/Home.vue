@@ -103,6 +103,26 @@
           </ul>
         </div>
       </section>
+
+      <section class="k-band">
+        <h2 class="k-heading">Open source since 2020</h2>
+        <div class="band-body">
+          <ul class="stats">
+            <li v-for="st in stats" :key="st.label">
+              <a v-if="st.href" :href="st.href" class="stat-value">{{ st.value }}</a>
+              <span v-else class="stat-value">{{ st.value }}</span>
+              <span class="stat-label">{{ st.label }}</span>
+            </li>
+          </ul>
+          <p class="band-intro featured-intro">Featured in</p>
+          <ul class="featured">
+            <li v-for="f in featured" :key="f.href">
+              <a :href="f.href" rel="noopener">{{ f.title }}</a>
+              <span class="featured-source">{{ f.source }}</span>
+            </li>
+          </ul>
+        </div>
+      </section>
     </main>
 
     <SiteFooter />
@@ -147,6 +167,24 @@ export default {
         { word: 'इनपुट()', en: 'input', does: 'asks the person running the program for a value.' },
         { word: 'रचना', en: 'function', does: 'names a block so you can run it again later.' },
       ],
+      github: { stars: 197, forks: 68 },
+      featured: [
+        {
+          title: 'मिलें भारत के पहले हिंदी ऑनलाइन प्रोग्रामिंग लैंग्वेज प्लेटफॉर्म के निर्माता से',
+          source: 'YourStory',
+          href: 'https://yourstory.com/hindi/swanand-kadam-masai-school-1st-ever-hindi-online-programming-language-platform-kalaam',
+        },
+        {
+          title: 'What if you could code in Hindi? Meet Swanand, inventor of Kalaam',
+          source: 'Masai School',
+          href: 'https://www.masaischool.com/blog/what-if-you-could-code-in-hindi-meet-swanand-inventor-of-kalaam-io/',
+        },
+        {
+          title: 'How he made the first Indian programming language: the story of Kalaam',
+          source: 'YouTube',
+          href: 'https://www.youtube.com/watch?v=lbLKk8NmzDA',
+        },
+      ],
       scripts: [
         { name: 'Hindi', lang: 'hi', print: KalaamKeywords.Hindi.Print },
         { name: 'Marathi', lang: 'mr', print: KalaamKeywords.Marathi.Print },
@@ -158,6 +196,17 @@ export default {
   },
 
   computed: {
+    stats() {
+      const n = (v) => v.toLocaleString('en-IN');
+      return [
+        { value: n(this.github.stars), label: 'GitHub stars', href: 'https://github.com/Kalaam-Programming-Language/Kalaam' },
+        { value: n(this.github.forks), label: 'forks', href: 'https://github.com/Kalaam-Programming-Language/Kalaam/forks' },
+        { value: '12', label: 'contributors', href: 'https://github.com/Kalaam-Programming-Language/Kalaam/graphs/contributors' },
+        { value: '5', label: 'languages' },
+        { value: 'MIT', label: 'licence' },
+      ];
+    },
+
     lineCount() {
       return this.code.split('\n').length;
     },
@@ -177,6 +226,7 @@ export default {
   mounted() {
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion) this.typeSample();
+    this.refreshStars();
   },
 
   beforeDestroy() {
@@ -184,6 +234,17 @@ export default {
   },
 
   methods: {
+    // Live counts when online; the numbers in data() are the offline fallback.
+    refreshStars() {
+      if (typeof fetch !== 'function' || !navigator.onLine) return;
+      fetch('https://api.github.com/repos/Kalaam-Programming-Language/Kalaam')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d && d.stargazers_count) this.github = { stars: d.stargazers_count, forks: d.forks_count };
+        })
+        .catch(() => {});
+    },
+
     // Types the sample out character by character, then runs it once.
     typeSample() {
       const chars = Array.from(SAMPLE);
@@ -482,6 +543,78 @@ export default {
 
 .script-name {
   font-size: 15px;
+  color: var(--k-muted);
+}
+
+/* Credibility band */
+
+.stats {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0 16px;
+}
+
+.stats li {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  border-top: 1px solid var(--k-rule);
+}
+
+.stat-value {
+  font-family: var(--k-serif);
+  font-size: 34px;
+  line-height: 1.3;
+  color: var(--k-ink);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+a.stat-value:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.stat-label {
+  font-size: 15px;
+  color: var(--k-muted);
+}
+
+.featured-intro {
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.featured {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.featured li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  padding: 12px 0;
+  border-top: 1px solid var(--k-rule);
+}
+
+.featured li:first-child {
+  border-top: 0;
+}
+
+.featured a {
+  color: var(--k-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.featured-source {
+  font-size: 14px;
   color: var(--k-muted);
 }
 
