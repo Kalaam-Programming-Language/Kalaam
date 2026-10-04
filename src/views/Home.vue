@@ -70,6 +70,32 @@
       </section>
 
       <section class="k-band">
+        <h2 class="k-heading">Open source since 2020</h2>
+        <div class="band-body">
+          <ul class="stats">
+            <li v-for="st in stats" :key="st.label">
+              <a v-if="st.href" :href="st.href" class="stat-value">{{ st.value }}</a>
+              <span v-else class="stat-value">{{ st.value }}</span>
+              <span class="stat-label">{{ st.label }}</span>
+            </li>
+          </ul>
+          <p class="band-intro featured-intro">Featured in</p>
+          <ul class="featured">
+            <li v-for="f in featured" :key="f.href">
+              <a :href="f.href" rel="noopener" class="featured-card">
+                <img v-if="f.image" :src="f.image" alt="" class="featured-thumb" loading="lazy" width="640" height="360" />
+                <span v-else class="featured-thumb featured-thumb-text" :style="{ background: f.tint }">{{ f.source }}</span>
+                <span class="featured-body">
+                  <span class="featured-title">{{ f.title }}</span>
+                  <span class="featured-source">{{ f.source }}</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="k-band">
         <h2 class="k-heading">Keywords</h2>
         <div class="band-body">
           <p class="band-intro">
@@ -104,25 +130,6 @@
         </div>
       </section>
 
-      <section class="k-band">
-        <h2 class="k-heading">Open source since 2020</h2>
-        <div class="band-body">
-          <ul class="stats">
-            <li v-for="st in stats" :key="st.label">
-              <a v-if="st.href" :href="st.href" class="stat-value">{{ st.value }}</a>
-              <span v-else class="stat-value">{{ st.value }}</span>
-              <span class="stat-label">{{ st.label }}</span>
-            </li>
-          </ul>
-          <p class="band-intro featured-intro">Featured in</p>
-          <ul class="featured">
-            <li v-for="f in featured" :key="f.href">
-              <a :href="f.href" rel="noopener">{{ f.title }}</a>
-              <span class="featured-source">{{ f.source }}</span>
-            </li>
-          </ul>
-        </div>
-      </section>
     </main>
 
     <SiteFooter />
@@ -132,6 +139,7 @@
 <script>
 import { Compile, KalaamKeywords } from '../kalaam/Compiler/main';
 import { highlight } from '../components/kalaamHighlight';
+import youtubeThumb from '../assets/press/youtube.jpg';
 import SiteHeader from '../components/SiteHeader.vue';
 import SiteFooter from '../components/SiteFooter.vue';
 
@@ -172,16 +180,21 @@ export default {
         {
           title: 'मिलें भारत के पहले हिंदी ऑनलाइन प्रोग्रामिंग लैंग्वेज प्लेटफॉर्म के निर्माता से',
           source: 'YourStory',
+          image: null,
+          tint: '#e5322d',
           href: 'https://yourstory.com/hindi/swanand-kadam-masai-school-1st-ever-hindi-online-programming-language-platform-kalaam',
         },
         {
           title: 'What if you could code in Hindi? Meet Swanand, inventor of Kalaam',
           source: 'Masai School',
+          image: null,
+          tint: '#1f2766',
           href: 'https://www.masaischool.com/blog/what-if-you-could-code-in-hindi-meet-swanand-inventor-of-kalaam-io/',
         },
         {
           title: 'How he made the first Indian programming language: the story of Kalaam',
           source: 'YouTube',
+          image: youtubeThumb,
           href: 'https://www.youtube.com/watch?v=lbLKk8NmzDA',
         },
       ],
@@ -592,30 +605,69 @@ a.stat-value:hover {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
-.featured li {
+.featured-card {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 14px;
-  padding: 12px 0;
-  border-top: 1px solid var(--k-rule);
+  flex-direction: column;
+  height: 100%;
+  background: var(--k-sheet);
+  border: 1px solid var(--k-rule);
+  border-radius: 8px;
+  overflow: hidden;
+  color: var(--k-text);
+  text-decoration: none;
 }
 
-.featured li:first-child {
-  border-top: 0;
-}
-
-.featured a {
-  color: var(--k-ink);
+.featured-card:hover .featured-title {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
+.featured-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--k-rule);
+  flex: 0 0 auto;
+}
+
+.featured-thumb-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--k-serif);
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.featured-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px 14px;
+}
+
+.featured-title {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--k-ink);
+}
+
 .featured-source {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--k-muted);
+}
+
+@media (min-width: 720px) {
+  .featured {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 720px) {
