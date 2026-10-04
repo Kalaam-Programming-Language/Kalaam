@@ -1052,10 +1052,6 @@ export default {
 .btn-quiet:focus-visible,
 .btn-outline:focus-visible,
 .btn-ink:focus-visible,
-.chip:focus-visible {
-  outline: 2px solid var(--pr-cursor);
-  outline-offset: 2px;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .switch,
@@ -1104,38 +1100,48 @@ export default {
   border-left: 1px solid var(--pr-border);
 }
 
-/* Chip row, directly under the editor */
+/* Keyword buttons under the editor: a 4x2 grid on a black strip,
+   like the original site's keyboard. */
 
 .chip-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
   flex: 0 0 auto;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 24px 14px;
-  border-top: 1px solid var(--pr-border);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  padding: 14px 24px 16px;
+  background: #111318;
+  border-top: 1px solid #000;
 }
 
 .chip {
-  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 48px;
   font-family: var(--k-mono);
-  font-size: 13px;
-  color: var(--pr-keyword);
-  background: var(--pr-chip);
-  border: 1px solid var(--pr-border-strong);
-  border-radius: 6px;
-  padding: 5px 10px;
+  font-size: 17px;
+  color: #e9ecf3;
+  background: #1f2330;
+  border: 1px solid #343a4a;
+  border-radius: 8px;
+  padding: 10px 12px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
 }
 
 .chip:hover:not(:disabled) {
-  border-color: var(--pr-keyword);
+  background: #2a3042;
+  border-color: #c792ea;
+  color: #ffffff;
+}
+
+.chip:focus-visible {
+  outline: 2px solid #c792ea;
+  outline-offset: 2px;
 }
 
 .chip:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: default;
 }
 
@@ -1328,10 +1334,20 @@ export default {
     padding: 10px 16px;
   }
 
-  .pr-panel,
-  .chip-bar {
+  .pr-panel {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .chip-bar {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  .chip {
+    font-size: 15px;
+    min-height: 44px;
+    padding: 8px 6px;
   }
 
   .pr-empty,
