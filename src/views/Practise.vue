@@ -50,26 +50,26 @@
         </button>
       </div>
 
-      <div class="pr-toolbar-right">
-        <template v-if="!learning">
-          <button type="button" class="btn-quiet" @click="Clear()">Clear</button>
-          <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
-            <span class="run-icon"></span>Run
-          </button>
-          <span class="shortcut-hint">{{ shortcutHint }}</span>
-        </template>
-        <template v-else>
-          <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
-          <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
-          <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
-        </template>
-      </div>
     </div>
 
     <main class="pr-main">
       <section class="pr-editor">
-        <div class="pr-tabbar" aria-hidden="true">
-          <div class="pr-tab"><span class="pr-tab-dot"></span>main.kalaam</div>
+        <div class="pr-tabbar">
+          <span class="pr-tabbar-title">{{ learning ? 'Learning' : 'Editor' }}</span>
+          <div class="pr-toolbar-right">
+            <template v-if="!learning">
+              <button type="button" class="btn-quiet" @click="Clear()">Clear</button>
+              <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
+                <span class="run-icon"></span>Run
+              </button>
+              <span class="shortcut-hint">{{ shortcutHint }}</span>
+            </template>
+            <template v-else>
+              <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
+              <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
+              <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
+            </template>
+          </div>
         </div>
 
         <no-ssr placeholder="...">
@@ -1107,31 +1107,49 @@ export default {
 /* VS Code-style window chrome: tab strip on top, status bar below. */
 .pr-tabbar {
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
   flex: 0 0 auto;
-  height: 36px;
+  min-height: 44px;
+  padding: 6px 12px 6px 16px;
   background: var(--ed-tabbar);
+  border-bottom: 1px solid var(--ed-border);
 }
 
-.pr-tab {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 16px;
+.pr-tabbar-title {
   font-family: var(--k-sans);
   font-size: 13px;
-  color: #ffffff;
-  background: var(--ed-bg);
-  border-bottom: 2px solid var(--ed-dot);
-  box-sizing: border-box;
+  color: #9da2ad;
 }
 
-.pr-tab-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ed-dot);
-  flex: 0 0 auto;
+.pr-tabbar .btn-quiet,
+.pr-tabbar .btn-outline {
+  color: #d4d4d4;
+}
+
+.pr-tabbar .btn-outline {
+  border-color: var(--ed-border);
+}
+
+.pr-tabbar .btn-quiet:hover,
+.pr-tabbar .btn-outline:hover:not(:disabled) {
+  color: #ffffff;
+  border-color: #9da2ad;
+}
+
+.pr-tabbar .btn-ink {
+  background: #0e639c;
+}
+
+.pr-tabbar .btn-ink:hover:not(:disabled) {
+  background: #1177bb;
+}
+
+.pr-tabbar .shortcut-hint,
+.pr-tabbar .step-counter {
+  color: #9da2ad;
 }
 
 .pr-statusbar {
