@@ -49,25 +49,25 @@
           </svg>
         </button>
       </div>
-
-      <div class="pr-toolbar-right">
-        <template v-if="!learning">
-          <button type="button" class="btn-quiet" @click="Clear()">Clear</button>
-          <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
-            <span class="run-icon"></span>Run
-          </button>
-          <span class="shortcut-hint">{{ shortcutHint }}</span>
-        </template>
-        <template v-else>
-          <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
-          <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
-          <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
-        </template>
-      </div>
     </div>
 
     <main class="pr-main">
       <section class="pr-editor">
+        <div class="pr-actions">
+          <template v-if="!learning">
+            <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
+              <span class="run-icon"></span>Run
+            </button>
+            <span class="shortcut-hint">{{ shortcutHint }}</span>
+            <button type="button" class="btn-quiet pr-actions-end" @click="Clear()">Clear</button>
+          </template>
+          <template v-else>
+            <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
+            <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
+            <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
+          </template>
+        </div>
+
         <no-ssr placeholder="...">
           <codemirror
             id="codearea"
@@ -95,7 +95,7 @@
 
       <aside class="pr-aside">
         <template v-if="!learning">
-          <div class="pr-panel">
+          <div class="pr-panel pr-panel-term">
             <div class="pr-panel-head">
               <h2>Output</h2>
               <span v-if="runTimingMs" class="pr-timing">{{ runTimingMs }}</span>
@@ -116,19 +116,6 @@
                 <p class="pr-term-prompt"><span class="pr-cursor" aria-hidden="true">▌</span></p>
               </template>
             </div>
-          </div>
-
-          <div class="pr-panel">
-            <h2>Memory</h2>
-            <p v-if="!practiceMemoryRows.length" class="pr-empty">Variables appear here after you run your program.</p>
-            <table v-else class="pr-memory">
-              <tbody>
-                <tr v-for="row in practiceMemoryRows" :key="row.name">
-                  <td class="pr-mem-name">{{ row.name }}</td>
-                  <td class="pr-mem-value">{{ row.value }}</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </template>
 
@@ -424,12 +411,6 @@ export default {
       if (!this.TimeTaken) return "";
       const match = String(this.TimeTaken).match(/([\d.]+)\s*ms/);
       return match ? `${match[1]} ms` : "";
-    },
-
-    // Practice mode's Memory panel: the final variable values after the
-    // last Run(), built by replaying every "=" step in that run's stack.
-    practiceMemoryRows() {
-      return buildMemoryRows(this.ExecutionStack);
     },
 
     totalLearningSteps() {
@@ -1088,8 +1069,34 @@ export default {
   flex: 999 1 560px;
   min-width: 0;
   background: var(--pr-panel);
-  padding: 20px 0 0;
+  padding: 0;
 }
+
+/* Run / Clear (Practice) or step controls (Learning) above the editor. */
+.pr-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  flex: 0 0 auto;
+  padding: 10px 24px;
+  background: var(--pr-panel);
+  border-bottom: 1px solid #000;
+}
+
+.is-learning .pr-actions {
+  border-bottom-color: var(--pr-border-strong);
+}
+
+.pr-actions-end {
+  margin-left: auto;
+}
+
+.pr-actions .btn-ink,
+.pr-actions .btn-outline {
+  padding: 7px 16px;
+}
+
 
 .pr-aside {
   display: flex;
@@ -1205,7 +1212,31 @@ export default {
    after a Run() -- bound so long output scrolls inside the panel instead
    of growing it (and the page) without limit. */
 .pr-console {
-  max-height: 420px;
+  max-height: none;
+  overflow-y: auto;
+}
+
+.pr-panel-term {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 12px 24px 20px;
+}
+
+.pr-panel-term .pr-panel-head {
+  margin-bottom: 8px;
+}
+
+.pr-panel-term h2 {
+  margin: 0;
+  line-height: 1.3;
+}
+
+.pr-panel-term .pr-term {
+  flex: 1 1 auto;
+  min-height: 260px;
+  max-height: none;
   overflow-y: auto;
 }
 
@@ -1331,6 +1362,10 @@ export default {
 
 @media (max-width: 480px) {
   .pr-toolbar {
+    padding: 10px 16px;
+  }
+
+  .pr-actions {
     padding: 10px 16px;
   }
 
