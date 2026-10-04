@@ -49,23 +49,27 @@
           </svg>
         </button>
       </div>
+
+      <div class="pr-toolbar-right">
+        <template v-if="!learning">
+          <button type="button" class="btn-quiet" @click="Clear()">Clear</button>
+          <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
+            <span class="run-icon"></span>Run
+          </button>
+          <span class="shortcut-hint">{{ shortcutHint }}</span>
+        </template>
+        <template v-else>
+          <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
+          <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
+          <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
+        </template>
+      </div>
     </div>
 
     <main class="pr-main">
       <section class="pr-editor">
-        <div class="pr-actions">
-          <template v-if="!learning">
-            <button type="button" class="btn-ink" :title="runTitle" @click="Run()">
-              <span class="run-icon"></span>Run
-            </button>
-            <span class="shortcut-hint">{{ shortcutHint }}</span>
-            <button type="button" class="btn-quiet pr-actions-end" @click="Clear()">Clear</button>
-          </template>
-          <template v-else>
-            <button type="button" class="btn-outline" :disabled="!canGoPrev" @click="PreviousStep()">Previous step</button>
-            <span class="step-counter">Step {{ stepIndex }} of {{ totalLearningSteps }}</span>
-            <button type="button" class="btn-ink" :disabled="!canGoNext" :title="runTitle" @click="NextStep()">Next step</button>
-          </template>
+        <div class="pr-tabbar" aria-hidden="true">
+          <div class="pr-tab"><span class="pr-tab-dot"></span>main.kalaam</div>
         </div>
 
         <no-ssr placeholder="...">
@@ -80,6 +84,14 @@
             @input="onCmCodeChange"
           ></codemirror>
         </no-ssr>
+
+        <div class="pr-statusbar">
+          <span class="pr-status-left">Kalaam {{ activeLanguageLabel }}</span>
+          <span class="pr-status-right">
+            <span class="pr-status-pos">Ln {{ cursorLine }}, Col {{ cursorCol }}</span>
+            <span>Spaces: 2</span>
+          </span>
+        </div>
 
         <div class="chip-bar">
           <button type="button" class="chip" :disabled="learning" @click="Add(Keyword.Print + '()')">{{ Keyword.Print }}</button>
@@ -286,6 +298,10 @@ export default {
       // handle tracks its line through edits, a plain index doesn't.
       highlightedLine: null,
 
+      // Cursor position for the status bar (1-based, like VS Code).
+      cursorLine: 1,
+      cursorCol: 1,
+
       LineByLineCode: [],
       Keyword: "",
 
@@ -370,6 +386,11 @@ export default {
 
     runTitle() {
       return `${this.learning ? "Next step" : "Run"} (${this.shortcutHint})`;
+    },
+
+    activeLanguageLabel() {
+      const l = this.languageLabels.find((x) => x.value === this.ActiveLanguage);
+      return l ? l.label : "";
     },
 
     themeToggleLabel() {
@@ -590,6 +611,14 @@ export default {
     onCmReady(cm) {
       this.cm = cm;
       this.applyReadOnly();
+
+      const updateCursor = () => {
+        const pos = cm.getCursor();
+        this.cursorLine = pos.line + 1;
+        this.cursorCol = pos.ch + 1;
+      };
+      cm.on("cursorActivity", updateCursor);
+      updateCursor();
 
       this.$nextTick(() => cm.refresh());
 
@@ -1032,7 +1061,10 @@ export default {
 .theme-toggle:focus-visible,
 .btn-quiet:focus-visible,
 .btn-outline:focus-visible,
-.btn-ink:focus-visible,
+.btn-ink:focus-visible {
+  outline: 2px solid var(--pr-cursor);
+  outline-offset: 2px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .switch,
@@ -1068,35 +1100,60 @@ export default {
   flex-direction: column;
   flex: 999 1 560px;
   min-width: 0;
-  background: var(--pr-panel);
+  background: var(--ed-bg);
   padding: 0;
 }
 
-/* Run / Clear (Practice) or step controls (Learning) above the editor. */
-.pr-actions {
+/* VS Code-style window chrome: tab strip on top, status bar below. */
+.pr-tabbar {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  height: 36px;
+  background: var(--ed-tabbar);
+}
+
+.pr-tab {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 8px;
+  padding: 0 16px;
+  font-family: var(--k-sans);
+  font-size: 13px;
+  color: #ffffff;
+  background: var(--ed-bg);
+  border-bottom: 2px solid var(--ed-dot);
+  box-sizing: border-box;
+}
+
+.pr-tab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ed-dot);
   flex: 0 0 auto;
-  padding: 10px 24px;
-  background: var(--pr-panel);
-  border-bottom: 1px solid #000;
 }
 
-.is-learning .pr-actions {
-  border-bottom-color: var(--pr-border-strong);
+.pr-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 0 0 auto;
+  height: 22px;
+  padding: 0 14px;
+  background: #007acc;
+  color: #ffffff;
+  font-family: var(--k-sans);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.pr-actions-end {
-  margin-left: auto;
+.pr-status-right {
+  display: flex;
+  gap: 16px;
 }
-
-.pr-actions .btn-ink,
-.pr-actions .btn-outline {
-  padding: 7px 16px;
-}
-
 
 .pr-aside {
   display: flex;
@@ -1105,6 +1162,11 @@ export default {
   min-width: 0;
   background: var(--pr-bg);
   border-left: 1px solid var(--pr-border);
+}
+
+.k-practice:not(.is-learning) .pr-aside {
+  background: var(--ed-bg);
+  border-left-color: var(--ed-border);
 }
 
 /* Keyword buttons under the editor: a 4x2 grid on a black strip,
@@ -1117,7 +1179,7 @@ export default {
   flex: 0 0 auto;
   padding: 14px 24px 16px;
   background: #111318;
-  border-top: 1px solid #000;
+  border-top: 0;
 }
 
 .chip {
@@ -1231,6 +1293,22 @@ export default {
 .pr-panel-term h2 {
   margin: 0;
   line-height: 1.3;
+  color: #9d9d9d;
+}
+
+.pr-panel-term {
+  background: var(--ed-bg);
+  border-bottom: 0;
+}
+
+.pr-panel-term .pr-timing {
+  color: #858585;
+}
+
+.pr-panel-term .pr-term,
+.theme-dark .pr-panel-term .pr-term {
+  background: var(--ed-bg);
+  border: 1px solid var(--ed-border);
 }
 
 .pr-panel-term .pr-term {
@@ -1365,10 +1443,6 @@ export default {
     padding: 10px 16px;
   }
 
-  .pr-actions {
-    padding: 10px 16px;
-  }
-
   .pr-panel {
     padding-left: 16px;
     padding-right: 16px;
@@ -1422,6 +1496,33 @@ export default {
   --pr-comment: #a0a1a7;
   --pr-error: #a3261c;
   --pr-line-accent: var(--pr-ink);
+}
+
+/* The editor is a VS Code Dark+ window in BOTH page themes. */
+.k-practice {
+  --ed-bg: #1e1e1e;
+  --ed-tabbar: #252526;
+  --ed-gutter: #1e1e1e;
+  --ed-lineno: #858585;
+  --ed-lineno-active: #c6c6c6;
+  --ed-text: #d4d4d4;
+  --ed-active-line: #282828;
+  --ed-selection: #264f78;
+  --ed-cursor: #aeafad;
+  --ed-keyword: #c586c0;
+  --ed-def: #dcdcaa;
+  --ed-string: #ce9178;
+  --ed-number: #b5cea8;
+  --ed-operator: #d4d4d4;
+  --ed-property: #9cdcfe;
+  --ed-comment: #6a9955;
+  --ed-error: #f44747;
+  --ed-border: #3c3c3c;
+  --ed-dot: #8a97e0;
+}
+
+.k-practice.theme-dark {
+  --ed-dot: #c678dd;
 }
 
 .k-practice.theme-dark {
@@ -1504,11 +1605,11 @@ export default {
 }
 
 .k-practice .CodeMirror {
-  background: var(--pr-panel);
-  color: var(--pr-text);
+  background: var(--ed-bg);
+  color: var(--ed-text);
   font-family: var(--k-mono);
-  font-size: 16px;
-  line-height: 26px;
+  font-size: 15px;
+  line-height: 24px;
   direction: ltr;
   border: 0;
   height: auto;
@@ -1526,7 +1627,7 @@ export default {
 }
 
 .k-practice .CodeMirror-gutters {
-  background: var(--pr-panel);
+  background: var(--ed-gutter);
   border: none;
   transition: background-color 180ms ease;
 }
@@ -1544,104 +1645,111 @@ export default {
   display: block;
   color: #b88a1e;
   font-size: 11px;
-  line-height: 26px;
+  line-height: 24px;
   text-align: center;
 }
 
 .k-practice .CodeMirror-linenumber {
-  color: var(--pr-lineno);
+  color: var(--ed-lineno);
   font-family: inherit;
-  font-size: 13px;
-  padding: 0 8px 0 12px;
+  font-size: 14px;
+  min-width: 40px;
+  padding: 0 12px 0 0;
+  text-align: right;
+  box-sizing: border-box;
 }
 
 .k-practice .CodeMirror-activeline-gutter .CodeMirror-linenumber {
-  color: var(--pr-lineno-active);
+  color: var(--ed-lineno-active);
 }
 
 .k-practice .CodeMirror-activeline-background {
+  background: var(--ed-active-line);
+}
+
+.k-practice.is-learning .CodeMirror-activeline-background {
   background: transparent;
 }
 
 .k-practice .CodeMirror-linebackground.k-current-line {
-  background: var(--pr-current-line);
-  border-left: 3px solid var(--pr-line-accent);
+  background: #3a3320;
+  border-left: 3px solid #b88a1e;
 }
 
 .k-practice .CodeMirror-cursor {
-  border-left: 2px solid var(--pr-cursor);
+  border-left: 2px solid var(--ed-cursor);
+  border-right: 0;
 }
 
 .k-practice .CodeMirror-selected,
 .k-practice .CodeMirror-focused .CodeMirror-selected {
-  background: var(--pr-selection);
+  background: var(--ed-selection);
 }
 
 .k-practice .CodeMirror-matchingbracket {
-  color: var(--pr-text) !important;
+  color: var(--ed-text) !important;
   background: transparent;
-  border-bottom: 1px solid var(--pr-text);
+  border-bottom: 1px solid var(--ed-text);
   text-decoration: none;
 }
 
 .k-practice .CodeMirror-foldgutter-open,
 .k-practice .CodeMirror-foldgutter-folded {
-  color: var(--pr-lineno);
+  color: var(--ed-lineno);
 }
 
 /* Syntax colours for the kalaam mode */
 .k-practice .cm-keyword {
-  color: var(--pr-keyword);
+  color: var(--ed-keyword);
 }
 
 .k-practice .cm-def {
-  color: var(--pr-def);
+  color: var(--ed-def);
 }
 
 .k-practice .cm-variable,
 .k-practice .cm-variable-2,
 .k-practice .cm-variable-3 {
-  color: var(--pr-text);
+  color: var(--ed-text);
 }
 
 .k-practice .cm-property {
-  color: var(--pr-property);
+  color: var(--ed-property);
 }
 
 .k-practice .cm-operator {
-  color: var(--pr-operator);
+  color: var(--ed-operator);
 }
 
 .k-practice .cm-number,
 .k-practice .cm-atom {
-  color: var(--pr-number);
+  color: var(--ed-number);
 }
 
 .k-practice .cm-string,
 .k-practice .cm-string-2 {
-  color: var(--pr-string);
+  color: var(--ed-string);
 }
 
 .k-practice .cm-comment {
-  color: var(--pr-comment);
-  font-style: italic;
+  color: var(--ed-comment);
 }
 
 .k-practice .cm-bracket,
 .k-practice .cm-meta,
 .k-practice .cm-tag,
 .k-practice .cm-qualifier {
-  color: var(--pr-text);
+  color: var(--ed-text);
 }
 
 .k-practice .cm-error {
-  color: var(--pr-error);
+  color: var(--ed-error);
 }
 
 @media (max-width: 719px) {
   .k-practice .CodeMirror {
-    font-size: 15px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 22px;
     min-height: 50vh;
   }
 }
