@@ -50,6 +50,13 @@ function SourceDataReplaceforEasyParsing(data) {
     .split('\n')
     .map((line) => {
       let parts = line.split(QuotedString);
+      // A comment starts at the first # outside a string literal; drop it,
+      // keep the line so line numbers still match the source.
+      let commentAt = parts.findIndex((part, index) => index % 2 === 0 && part.includes('#'));
+      if (commentAt !== -1) {
+        parts = parts.slice(0, commentAt + 1);
+        parts[commentAt] = parts[commentAt].slice(0, parts[commentAt].indexOf('#'));
+      }
       let isPrintLine = parts.some((part, index) => index % 2 === 0 && part.includes(_AK.Print));
 
       return parts.map((part, index) => (index % 2 === 0 ? NormaliseCode(part, keywords, isPrintLine) : part)).join('');
